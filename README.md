@@ -11,10 +11,10 @@ git clone https://github.com/Purritzo/esc-cohort3-team1.git
 ## Making New changes
 
 Before you work on a new feature, you need to do 2 things.   
-Step 1: Get updated master branch with the following commands. 
+Step 1: Get updated main branch with the following commands. 
 
 ```
-#Get updated master branch
+#Get updated main branch
 git checkout main
 git pull origin main
 ```
@@ -59,11 +59,11 @@ git push origin carina-readme
 
 ```
 
-Step 5: Submit a Pull Request to the `master` branch using the GitHub website `Repo master page -> Pull Request -> New pull request`
+Step 5: Submit a Pull Request to the `main` branch using the GitHub website `Repo master page -> Pull Request -> New pull request`
 
 ## Seeing new changes
 
-After your pull request is successfully merged above, update your master branch with
+After your pull request is successfully merged above, update your main branch with
 
 ```
 git checkout main
