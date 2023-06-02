@@ -5,7 +5,7 @@
 
 First, clone the repository using `git clone`   
 ```
-git clone git clone https://github.com/Purritzo/esc-cohort3-team1.git
+git clone https://github.com/Purritzo/esc-cohort3-team1.git
 ```
 
 ## Making New changes
@@ -15,8 +15,8 @@ Step 1: Get updated master branch with the following commands.
 
 ```
 #Get updated master branch
-git checkout master
-git pull origin master
+git checkout main
+git pull origin main
 ```
 
 Step 2: Create a new branch with this format `<name>-<featurename>` with the following commands
@@ -66,7 +66,7 @@ Step 5: Submit a Pull Request to the `master` branch using the GitHub website `R
 After your pull request is successfully merged above, update your master branch with
 
 ```
-git checkout master
-git pull origin master
+git checkout main
+git pull origin main
 
 ```
