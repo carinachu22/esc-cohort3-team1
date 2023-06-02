@@ -1,3 +1,8 @@
+# Instructions to use the GitHub code
+
+In the directory with package.json, "/tenant-lord-app", run npm install.
+Afterwards, follow the instructions below.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
