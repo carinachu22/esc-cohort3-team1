@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import "./landing.css"
 import LandlordLogin from "../../pages/landlord_login";
 import TenantLogin from "../../pages/tenant_login";
-import Button from "react-bootstrap/Button";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import {Routes, Route, useNavigate} from 'react-router-dom';
@@ -10,8 +9,6 @@ import {Routes, Route, useNavigate} from 'react-router-dom';
 const Landing = () => {
 
     const navigate = useNavigate();
-
-    const [popup, setPopup] = useState("hide")
   
     const navigateToLandlordLogin = () => {
       navigate('/pages/landlord_login');

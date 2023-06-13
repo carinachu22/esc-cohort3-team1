@@ -30,7 +30,7 @@
     /* styling for tenant button */
   .tenant-btn {
     width: 80%;
-    height: 3em;
+    height: 4em;
     background-color: rgb(32, 121, 255);
     display: flex;
     justify-content: center;
@@ -44,7 +44,7 @@
   /* styling for landlord button */
   .landlord-btn {
     width: 80%;
-    height: 3em;
+    height: 4em;
     background-color: rgb(32, 121, 255);
     display: flex;
     justify-content: center;
