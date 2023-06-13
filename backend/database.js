@@ -2,10 +2,11 @@ const mysql = require('mysql');
 
 // Make MySQL database connection
 const connection = mysql.createConnection({
-    host : '127.0.0.1:3306',
-    database : 'ESC Database',
+    //host : '127.0.0.1:3306',
+    host : 'local host',
+    database : 'sys',
     user : 'root',
-    password : ''
+    password : 'sqlsql'
 });
 
 //create MySQL connection

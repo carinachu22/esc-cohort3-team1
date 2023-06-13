@@ -19,7 +19,7 @@ router.post('/login', function(request, response, next){
   if(user_landlord_user_id && user_password)
   {
       query = `
-      SELECT * FROM sys.landlord_user 
+      SELECT * FROM landlord_user 
       WHERE landlord_user_id = "${user_landlord_user_id}"
       `;
 
