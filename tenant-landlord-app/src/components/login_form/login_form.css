@@ -45,7 +45,7 @@ input:focus {
 .login-btn {
     width: 60%;
     height: 2.5em;
-    background-color: rgb(32, 121, 255);
+    background-color: rgb(192, 17, 55);
     display: flex;
     justify-content: center;
     align-items: center;
