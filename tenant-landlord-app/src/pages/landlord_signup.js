@@ -6,6 +6,7 @@ const LandlordSignup = () => {
 			<h1>
 				landlord_signup
 			</h1>
+			<p>hello this is landlord</p>
 		</div>
 	);
 };

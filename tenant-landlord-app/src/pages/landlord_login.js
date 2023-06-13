@@ -1,11 +1,11 @@
 import React from "react";
-import LoginForm from "../components/login_form/login_form";
+import LoginFormLandlord from "../components/login_form_landlord/login_form_landlord";
 
 
 const LandlordLogin = () => {
 	return (
 		<div className="page">
-		  <LoginForm/>
+		  <LoginFormLandlord/>
 		</div>
 	  );
 }

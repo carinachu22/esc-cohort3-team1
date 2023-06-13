@@ -1,11 +1,11 @@
 import React from "react";
-import LoginForm from "../components/login_form/login_form";
+import LoginFormTenant from "../components/login_form_tenant/login_form_tenant";
 
 
 const TenantLogin = () => {
 	return (
 		<div className="page">
-		  <LoginForm/>
+		  <LoginFormTenant/>
 		</div>
 	  );
 };
