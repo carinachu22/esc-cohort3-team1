@@ -19,8 +19,8 @@ router.post('/login', function(request, response, next){
   if(user_landlord_user_id && user_password)
   {
       query = `
-      SELECT * FROM user_login 
-      WHERE user_landlord_user_id = "${user_landlord_user_id}"
+      SELECT * FROM sys.landlord_user 
+      WHERE landlord_user_id = "${user_landlord_user_id}"
       `;
 
       database.query(query, function(error, data){
@@ -29,7 +29,7 @@ router.post('/login', function(request, response, next){
           {
               for(var count = 0; count < data.length; count++)
               {
-                  if(data[count].user_password == user_password)
+                  if(data[count].user_password == password)
                   {
                       request.session.user_id = data[count].user_id;
 
@@ -43,14 +43,14 @@ router.post('/login', function(request, response, next){
           }
           else
           {
-              response.send('Incorrect Email Address');
+              response.send('Incorrect User ID');
           }
           response.end();
       });
   }
   else
   {
-      response.send('Please Enter Email Address and Password Details');
+      response.send('Please Enter UserID and Password Details');
       response.end();
   }
 
