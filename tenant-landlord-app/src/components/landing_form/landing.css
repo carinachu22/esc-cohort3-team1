@@ -1,20 +1,20 @@
 * {
     margin: 0;
     box-sizing: border-box;
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-}
-
+    font-family: Arial;
+  }
+  
   /* styling for page */
-.page {
+  .page {
     height: 100vh;
     width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-}
-
-/* styling for container */
-.cover {
+  }
+  
+  /* styling for container */
+  .cover {
     background-color: white;
     width: 30em;
     height: 35em;
@@ -25,26 +25,12 @@
     flex-direction: column;
     align-items: center;
     justify-content: space-around;
-}
-
-/* styling for input boxes */
-input {
-    border: none;
-    background-color: rgb(229, 226, 226);
-    height: 3em;
+  }
+  
+    /* styling for tenant button */
+  .tenant-btn {
     width: 80%;
-    border-radius: 0.25em;
-    text-align: center;
-}
-
-input:focus {
-    outline-color: rgb(32, 177, 255);
-}
-
-/* styling for login button */
-.login-btn {
-    width: 60%;
-    height: 2.5em;
+    height: 3em;
     background-color: rgb(32, 121, 255);
     display: flex;
     justify-content: center;
@@ -53,36 +39,46 @@ input:focus {
     border-radius: 0.25em;
     cursor: pointer;
     color: white;
-    margin-bottom: 10%;
-}
-
-
-.text {
-    position: relative;
-    bottom: -2em;
-}
-
-
-/* -------------------- TABLET OPTIMIZATION -------------------- */
+  }
+  
+  /* styling for landlord button */
+  .landlord-btn {
+    width: 80%;
+    height: 3em;
+    background-color: rgb(32, 121, 255);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: 0.5s;
+    border-radius: 0.25em;
+    cursor: pointer;
+    margin-bottom: 20%;
+    color: white;
+  }
+ 
+  
+  /* -------------------- TABLET OPTIMIZATION -------------------- */
 @media only screen and (min-device-width: 37em) {
-    .page {
-        font-size: 1em;
-    }
+  .page {
+      font-size: 1em;
+  }
 
-    .cover {
-        width: 60%;
-        height: 70%;
-    }
+  .cover {
+      width: 60%;
+      height: 70%;
+  }
 }
 
 /* -------------------- DESKTOP OPTIMIZATION -------------------- */
 @media only screen and (min-device-width: 64em) {
-    .page {
-        font-size: 1.25em;
-    }
+  .page {
+      font-size: 1.25em;
+  }
 
-    .cover {
-        width: 20%;
-        height: 50%;
-    }
+  .cover {
+      width: 20%;
+      height: 50%;
+  }
 }
+
+  
