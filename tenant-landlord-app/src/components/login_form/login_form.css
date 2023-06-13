@@ -4,6 +4,10 @@
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
+.header {
+    margin-top: 5%;
+}
+
   /* styling for page */
 .page {
     height: 100vh;

@@ -8,7 +8,7 @@ const LoginForm = () => {
     return (
         <div className="page">
             <div className="cover">
-                <h1>Welcome!</h1>
+                <h1 className="header">Welcome!</h1>
                 <input type="text" placeholder="USERNAME" />
                 <input type="password" placeholder="PASSWORD" />
                 
