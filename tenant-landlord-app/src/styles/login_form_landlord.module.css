@@ -47,7 +47,7 @@ input:focus {
 }
 
 /* styling for login button */
-.login-btn {
+.login_btn {
     width: 60%;
     height: 2.5em;
     background-color: rgb(192, 17, 55);
@@ -66,18 +66,18 @@ input:focus {
     bottom: -2em;
 }
 
-.password-reset {
+.password_reset {
     font-size: smaller;
     margin-bottom: 5%;
     text-decoration: none;
 }
 
-.sign-up {
+.sign_up {
     margin-bottom: -5%;
     font-size: smaller;
 }
 
-.sign-up-link {
+.sign_up_link {
     text-decoration: none;
 }
 
