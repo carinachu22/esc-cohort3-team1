@@ -1,5 +1,5 @@
 import React from "react";
-import LoginFormLandlord from "../components/login_form_landlord/login_form_landlord";
+import LoginFormLandlord from "../components/login_forms/login_form_landlord";
 
 
 const LandlordLogin = () => {

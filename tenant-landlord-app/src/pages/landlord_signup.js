@@ -1,12 +1,10 @@
 import React from "react";
+import SignupLandlord from "../components/signup_forms/signup_form_landlord";
 
 const LandlordSignup = () => {
 	return (
-		<div>
-			<h1>
-				landlord_signup
-			</h1>
-			<p>hello this is landlord</p>
+		<div className="page">
+			<SignupLandlord />
 		</div>
 	);
 };
