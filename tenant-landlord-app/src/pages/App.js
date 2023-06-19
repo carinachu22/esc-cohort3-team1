@@ -4,7 +4,7 @@ import LandlordLogin from './landlord_login';
 import TenantLogin from './tenant_login';
 import LandlordSignup from './landlord_signup';
 import Dashboard from './Dashboard';
-import CloseTicketPage from './CreateTicketPage';
+import CloseTicketPage from './CloseTicketPage';
 import FeedbackForm from './FeedbackForm';
 import CreateTicketPage from './CreateTicketPage'; 
 import ViewTicketPage from './ViewTicketPage';

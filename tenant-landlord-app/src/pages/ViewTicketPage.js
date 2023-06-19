@@ -5,7 +5,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
 
-function CreateTicketPage() {
+function ViewTicketPage() {
   const navigate = useNavigate();
   const [tenantComment, setTenantComment] = useState('');
 
@@ -146,11 +146,11 @@ function CreateTicketPage() {
             color: 'white',
           }}
         >
-          Submit
+          Recall Ticket
         </Button>
       </Box>
     </Box>
   );
 }
 
-export default CreateTicketPage;
+export default ViewTicketPage;
