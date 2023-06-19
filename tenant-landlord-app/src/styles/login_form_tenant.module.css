@@ -33,18 +33,19 @@
 
 
 /* styling for input boxes */
-input {
+.input {
     border: none;
     background-color: rgb(229, 226, 226);
     height: 3em;
     width: 80%;
     border-radius: 0.25em;
-    text-align: center;
+    text-align: left;
+    padding-left: 0.5em;
+
+    
 }
 
-input:focus {
-    outline-color: rgb(32, 177, 255);
-}
+
 
 /* styling for login button */
 .login_btn {
@@ -68,18 +69,11 @@ input:focus {
 
 .password_reset {
     font-size: smaller;
-    margin-bottom: 5%;
+    margin-bottom: 10%;
+    margin-top: -5%;
     text-decoration: none;
 }
 
-.sign_up {
-    margin-bottom: -5%;
-    font-size: smaller;
-}
-
-.sign_up_link {
-    text-decoration: none;
-}
 
 /* -------------------- TABLET OPTIMIZATION -------------------- */
 @media only screen and (min-device-width: 37em) {

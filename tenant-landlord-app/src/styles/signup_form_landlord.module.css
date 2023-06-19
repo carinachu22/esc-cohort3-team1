@@ -4,13 +4,11 @@
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
-.header {
-    margin-bottom: -20%;
-}
 
 .context {
     font-size: smaller;
     font-family: 'Courier New', Courier, monospace;
+    margin-top: -10%;
 }
 
   /* styling for page */
@@ -37,23 +35,19 @@
 }
     
 
-
 /* styling for input boxes */
-input {
+.input {
     border: none;
     background-color: rgb(229, 226, 226);
     height: 3em;
     width: 80%;
     border-radius: 0.25em;
-    text-align: center;
-    margin-top: -10%;
+    text-align: left;
+    align-items: center;
+    padding-left: 0.5em;
 }
 
 
-
-input:focus {
-    outline-color: rgb(32, 177, 255);
-}
 
 /* styling for login button */
 .next_btn {
@@ -67,6 +61,8 @@ input:focus {
     border-radius: 0.25em;
     cursor: pointer;
     color: white;
+    margin-bottom: 5%;
+    margin-top: 5%;
 }
 
 
@@ -100,7 +96,7 @@ input:focus {
 
     .cover {
         width: 20%;
-        height: 65%;
+        height: 60%;
     }
 
 }
