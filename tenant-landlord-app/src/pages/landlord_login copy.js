@@ -5,7 +5,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import {Link} from 'react-router-dom';
 import {useNavigate} from 'react-router-dom';
 import {useFormik} from "formik";
-import axios, {AxiosError} from "axios";
 
 const LandlordLogin = () => {
     const navigate = useNavigate();
@@ -20,26 +19,8 @@ const LandlordLogin = () => {
 
     const onSubmit = async (values) => {
         console.log("Values: ", values);
-        setError("");
 
-        try{
-            const response = await axios.post(
-                //api to be added
-                "",
-                values
-            )
-        } catch (err){
-            if (err && err instanceof AxiosError) {
-                setError(err.response?.data.message);
-            }
-            else if (err && err instanceof Error){
-                setError(err.message);
-            }
-
-            console.log("Error: ", err);
-        }
-
-        
+        //api to be added
 
     }
   

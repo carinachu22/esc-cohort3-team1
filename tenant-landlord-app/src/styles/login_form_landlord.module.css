@@ -1,0 +1,106 @@
+* {
+    margin: 0;
+    box-sizing: border-box;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+.header {
+    margin-top: 5%;
+}
+
+  /* styling for page */
+.page {
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* styling for container */
+.cover {
+    background-color: white;
+    width: 30em;
+    height: 35em;
+    position: relative;
+    border-radius: 1em;
+    box-shadow: 0 0.188em 1.550em rgb(156, 156, 156);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+}
+
+
+/* styling for input boxes */
+.input {
+    border: none;
+    background-color: rgb(229, 226, 226);
+    height: 3em;
+    width: 80%;
+    border-radius: 0.25em;
+    text-align: left;
+    padding-left: 0.5em;
+}
+
+
+/* styling for login button */
+.login_btn {
+    width: 60%;
+    height: 2.5em;
+    background-color: rgb(192, 17, 55);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: 0.5s;
+    border-radius: 0.25em;
+    cursor: pointer;
+    color: white;
+}
+
+
+.text {
+    position: relative;
+    bottom: -2em;
+}
+
+.password_reset {
+    font-size: smaller;
+    margin-bottom: 5%;
+    text-decoration: none;
+}
+
+.sign_up {
+    margin-bottom: -5%;
+    font-size: smaller;
+}
+
+.sign_up_link {
+    text-decoration: none;
+}
+
+/* -------------------- TABLET OPTIMIZATION -------------------- */
+@media only screen and (min-device-width: 37em) {
+    .page {
+        font-size: 1em;
+    }
+
+    .cover {
+        width: 60%;
+        height: 70%;
+    }
+
+}
+
+/* -------------------- DESKTOP OPTIMIZATION -------------------- */
+@media only screen and (min-device-width: 64em) {
+    .page {
+        font-size: 1.25em;
+    }
+
+    .cover {
+        width: 20%;
+        height: 55%;
+    }
+
+}
