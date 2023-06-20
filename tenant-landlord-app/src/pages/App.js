@@ -3,7 +3,7 @@ import React from 'react';
 import LandlordLogin from './landlord_login';
 import TenantLogin from './tenant_login';
 import LandlordSignup from './landlord_signup';
-import Dashboard from '../Dashboard';
+import Dashboard from './Dashboard';
 
 import {Routes, Route} from 'react-router-dom';
 
