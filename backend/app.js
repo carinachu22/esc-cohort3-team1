@@ -51,3 +51,15 @@ app.use(function(err, req, res, next) {
 });
 
 module.exports = app;
+
+
+app.get("/api", (req, res) => {
+  res.json({
+    success: 1,
+    message: "This is rest APIs working"
+  });
+});
+
+app.listen(3000,()=>{
+  console.log("Server up and running");
+})
