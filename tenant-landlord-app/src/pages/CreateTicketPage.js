@@ -15,7 +15,7 @@ function CreateTicketPage() {
 
   const handleCreateTicket = () => {
     console.log(tenantComment);
-    navigate('/Dashboard'); // Navigate to the Dashboard form page
+    navigate('/pages/Dashboard'); // Navigate to the Dashboard form page
   };
 
   return (

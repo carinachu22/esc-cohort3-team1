@@ -6,6 +6,7 @@ import ListGroup from 'react-bootstrap/ListGroup'
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Tab from 'react-bootstrap/Tab';
+import Button from 'react-bootstrap/Button'
 
 import * as React from 'react';
 
@@ -25,12 +26,13 @@ function NavigationBar(){
                     <Navbar.Brand>Navbar</Navbar.Brand>
                     <Nav className="me-auto">
                         <Nav.Link> Homepage </Nav.Link>
-                        <Nav.Link> Create Service Ticket </Nav.Link>
+                        <Nav.Link href="/pages/CreateTicketPage/"> Create Service Ticket </Nav.Link>
                         <NavDropdown title="Search for Service Ticket by" id="basic-nav-dropdown">
                             <NavDropdown.Item href="#action/3.1">Creation Date</NavDropdown.Item>
                             <NavDropdown.Item href="#action/3.2">Status</NavDropdown.Item>
                             <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
                         </NavDropdown>
+                        <Nav.Link href="/"> Sign out</Nav.Link>
                     </Nav>
                 </Container>
             </Navbar></>
@@ -40,12 +42,13 @@ function NavigationBar(){
 function GetServiceTickets() {
     var count = 10;
     const tickets = [];
+    /* Actually here would be the API Call to get all the tickets */
     for (let i=0;i<count;i++){
         tickets.push(i);
     }
-    console.log(tickets)
+    console.log(tickets);
     const tickets_html = tickets.map(ticket => <ListGroup.Item action href={"#" + ticket}>{ticket}</ListGroup.Item>);
-    console.log(tickets_html)
+    console.log(tickets_html);
     return (
         <>{tickets_html}</>
     )
@@ -58,7 +61,13 @@ function GetServiceTicketsDetails() {
         tickets.push(i);
     }
     console.log(tickets)
-    const tickets_html = tickets.map(ticket => <Tab.Pane eventKey={"#"+ticket}>testing {ticket}</Tab.Pane>);
+    const tickets_html = tickets.map(ticket => 
+    <Tab.Pane eventKey={"#"+ticket}>
+        <Button href="/pages/FeedbackForm/">
+            Give Feedback & Close Ticket
+        </Button>
+        testing {ticket}
+    </Tab.Pane>);
     console.log(tickets_html)
     return (
         <>{tickets_html}</>

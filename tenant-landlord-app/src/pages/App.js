@@ -3,6 +3,7 @@ import React from 'react';
 import LandlordLogin from './landlord_login';
 import TenantLogin from './tenant_login';
 import LandlordSignup from './landlord_signup';
+/*import TenantSignup from './tenant_signup';*/
 import Dashboard from './Dashboard';
 import CloseTicketPage from './CloseTicketPage';
 import FeedbackForm from './FeedbackForm';

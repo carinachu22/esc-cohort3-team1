@@ -4,14 +4,17 @@ import Button from '@mui/material/Button';
 import Rating from '@mui/material/Rating';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 function FeedbackForm() {
   const [comment, setComment] = useState("");
   const [rating, setRating] = useState(0);
 
+  const navigate = useNavigate()
   const handleSubmit = event => {
     event.preventDefault();  // prevent submission of default form
-    alert(`Feedback: ${comment} Rating: ${rating}`); // popup after submission
+    /*alert(`Feedback: ${comment} Rating: ${rating}`); // popup after submission */
+    navigate('/pages/dashboard');
   };
 
   return (
