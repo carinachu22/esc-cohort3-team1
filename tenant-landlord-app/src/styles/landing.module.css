@@ -28,7 +28,7 @@
   }
   
     /* styling for tenant button */
-  .tenant-btn {
+  .tenant_btn {
     width: 80%;
     height: 4em;
     background-color: rgb(192, 17, 55);
@@ -42,7 +42,7 @@
   }
   
   /* styling for landlord button */
-  .landlord-btn {
+  .landlord_btn {
     width: 80%;
     height: 4em;
     background-color: rgb(192, 17, 55);

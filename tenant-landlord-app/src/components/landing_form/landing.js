@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import "./landing.css"
+import styles from "../../styles/landing.module.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import {useNavigate} from 'react-router-dom';
@@ -20,11 +19,11 @@ const Landing = () => {
 
 
     return (
-        <div className="page">
-          <div className='cover'>
+        <div className={styles.page}>
+          <div className={styles.cover}>
             <h1>Service Portal</h1>
-            <div className="tenant-btn" onClick={navigateToTenantLogin}>TENANT LOGIN</div>
-            <div className="landlord-btn" onClick={navigateToLandlordLogin}>LANDLORD LOGIN</div>
+            <div className={styles.tenant_btn} onClick={navigateToTenantLogin}>TENANT LOGIN</div>
+            <div className={styles.landlord_btn} onClick={navigateToLandlordLogin}>LANDLORD LOGIN</div>
 
           </div>
           
