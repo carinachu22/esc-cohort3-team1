@@ -17,6 +17,6 @@ app.get("/api", (req, res) => {
   });
 });
 
-app.listen(process.env.APP_PORT, () => {
-  console.log(`Server is working on port ${process.env.APP_PORT}`);
+app.listen(3000, () => {
+  console.log(`Server is working on port 3000`);
 });
