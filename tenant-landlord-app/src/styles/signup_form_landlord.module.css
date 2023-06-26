@@ -4,8 +4,11 @@
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
-.header {
-    margin-top: 5%;
+
+.context {
+    font-size: smaller;
+    font-family: 'Courier New', Courier, monospace;
+    margin-top: -10%;
 }
 
   /* styling for page */
@@ -30,24 +33,24 @@
     align-items: center;
     justify-content: space-around;
 }
-
+    
 
 /* styling for input boxes */
-input {
+.input {
     border: none;
     background-color: rgb(229, 226, 226);
     height: 3em;
     width: 80%;
     border-radius: 0.25em;
-    text-align: center;
+    text-align: left;
+    align-items: center;
+    padding-left: 0.5em;
 }
 
-input:focus {
-    outline-color: rgb(32, 177, 255);
-}
+
 
 /* styling for login button */
-.login-btn {
+.next_btn {
     width: 60%;
     height: 2.5em;
     background-color: rgb(192, 17, 55);
@@ -58,7 +61,11 @@ input:focus {
     border-radius: 0.25em;
     cursor: pointer;
     color: white;
+    margin-bottom: 5%;
+    margin-top: 5%;
 }
+
+
 
 
 .text {
@@ -66,20 +73,7 @@ input:focus {
     bottom: -2em;
 }
 
-.password-reset {
-    font-size: smaller;
-    margin-bottom: 5%;
-    text-decoration: none;
-}
 
-.sign-up {
-    margin-bottom: -5%;
-    font-size: smaller;
-}
-
-.sign-up-link {
-    text-decoration: none;
-}
 
 /* -------------------- TABLET OPTIMIZATION -------------------- */
 @media only screen and (min-device-width: 37em) {
@@ -102,7 +96,7 @@ input:focus {
 
     .cover {
         width: 20%;
-        height: 55%;
+        height: 60%;
     }
 
 }
