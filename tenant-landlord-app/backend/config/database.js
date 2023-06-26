@@ -1,10 +1,13 @@
+import dotenv from "dotenv";
+
 import { createPool } from "mysql2"; //this is just to import a method
+dotenv.config();
 const pool = createPool({
-  port: 3306,
-  host: "localhost",
-  user: "root",
-  password: "", //INSERT HERE
-  database: "landlord_tenant_portal",
+  port: process.env.DB_PORT,
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_MYSQL,
   connectionLimit: 10,
 });
 

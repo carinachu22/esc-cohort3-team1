@@ -1,8 +1,9 @@
 import {
   controllerCreateLandlord,
   controllerLoginLandlord,
-  controllerCreateTenant,
+
   /**
+  controllerCreateTenant,
   controllerReadTenant,
   controllerUpdateTenant,
   controllerDeleteTenant,

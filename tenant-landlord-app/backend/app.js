@@ -1,9 +1,7 @@
 import dotenv from "dotenv";
-dotenv.config();
-
 import express from "express";
 import landlordRouter from "./routes/landlord_router.js";
-
+dotenv.config();
 const app = express();
 
 app.use(express.json());
@@ -17,6 +15,6 @@ app.get("/api", (req, res) => {
   });
 });
 
-app.listen(3000, () => {
-  console.log(`Server is working on port 3000`);
+app.listen(process.env.APP_PORT, () => {
+  console.log(`Server is working on port ${process.env.APP_PORT}`);
 });
