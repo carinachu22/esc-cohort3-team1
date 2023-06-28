@@ -1,6 +1,5 @@
 import {
   createLandlord,
-  getLandlordByUsername,
   getLandlordByEmail,
   createTenant,
 } from "../models/landlord_model.js";
@@ -29,18 +28,21 @@ export const controllerCreateLandlord = (req, res) => {
 
 export const controllerLoginLandlord = (req, res) => {
   const body = req.body;
-  getLandlordByUsername(body.username, (err, results) => {
+  console.log(body.email);
+  getLandlordByEmail(body.email, (err, results) => {
     if (err) {
       console.log(err);
     }
+    
     if (!results) {
       return res.json({
         success: 0,
-        data: "Invalid username or password",
+        data: "Invalid email or password",
       });
     }
-
+    console.log(body.password, results.password);
     const password_check = compareSync(body.password, results.password);
+    console.log(password_check);
     if (password_check) {
       results.password = undefined;
       const jsontoken = jwt.sign({ result: results }, "qwe1234", {
