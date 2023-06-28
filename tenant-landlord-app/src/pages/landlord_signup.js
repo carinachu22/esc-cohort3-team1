@@ -25,7 +25,6 @@ const LandlordSignup = () => {
               <div className={SignupStyles.context}>sign up as a landlord</div>
               <input type="text" className={SignupStyles.input} placeholder="USERNAME" />
               <input type="email" className={SignupStyles.input} placeholder="EMAIL" />
-              <input type="text" className={SignupStyles.input} placeholder="ORGANISATION" />
               <div className={PasswordStyles.passwordToggle}>
                 <input 
                     type={passwordShown ? "text" : "password"} 
@@ -36,6 +35,7 @@ const LandlordSignup = () => {
                     {passwordShown ? "Hide" : "Show"}
                 </span>
               </div>
+              <input type="text" className={SignupStyles.input} placeholder="TICKET TYPE" />
               <div className={SignupStyles.next_btn} onClick={navigateToDashboard}>FINISH</div>
 
 

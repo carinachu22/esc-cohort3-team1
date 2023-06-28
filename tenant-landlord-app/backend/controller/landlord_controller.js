@@ -1,6 +1,7 @@
 import {
   createLandlord,
   getLandlordByUsername,
+  getLandlordByEmail,
   createTenant,
 } from "../models/landlord_model.js";
 import { genSaltSync, hashSync, compareSync } from "bcrypt";
