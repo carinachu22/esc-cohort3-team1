@@ -90,3 +90,70 @@ export const createTenant = (data, callBack) => {
     }
   );
 };
+
+
+export const getTickets = (callBack) => {
+  pool.query(
+    `
+    SELECT * FROM SERVICE_REQUEST`,
+    (error, results, fields) => {
+      if (error) {
+        callBack(error);
+      }
+      callBack(null, results);
+    }
+  );
+};
+
+export const getTicketById = (id, callBack) => {
+  pool.query(
+    `
+    SELECT * FROM SERVICE_REQUEST
+    WHERE service_request_id = ?
+    `,
+    [id],
+    (error, results, fields) => {
+      if (error) {
+        callBack(error);
+      } else {
+        callBack(null, results[0]);
+      }
+    }
+  );
+};
+
+export const getTicketsByStatus = (status, callBack) => {
+  pool.query(
+    `
+    SELECT * FROM SERVICE_REQUEST
+    WHERE status = ?
+    `,
+    [status],
+    (error, results, fields) => {
+      if (error) {
+        callBack(error);
+      } else {
+        callBack(null, results);
+      }
+    }
+  );
+};
+export const updateQuotation = (id, data, callBack) => {
+  const quotationAmount = parseFloat(data.quotation_amount).toFixed(2); //Note this is impt to format it to decimal
+  const status = "quotation sent";
+  pool.query(
+    `
+    UPDATE SERVICE_REQUEST
+    SET quotation_amount=?, status = ?
+    WHERE service_request_id = ?
+    `,
+    [quotationAmount, status, id],
+    (error, results, fields) => {
+      if (error) {
+        callBack(error);
+      } else {
+        callBack(null, results);
+      }
+    }
+  );
+};
