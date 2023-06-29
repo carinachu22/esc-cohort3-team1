@@ -85,3 +85,80 @@ export const controllerCreateTenant = (req, res) => {
     });
   });
 };
+
+
+export const controllerGetTickets = (req, res) => {
+  getTickets((err, results) => {
+    if (err) {
+      console.log(err);
+      return;
+    } else {
+      return res.json({
+        success: "1",
+        data: results,
+      });
+    }
+  });
+};
+export const controllerGetTicketById = (req, res) => {
+  const id = req.params.id;
+  getTicketById(id, (err, results) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+    if (!results) {
+      return res.json({
+        success: 0,
+        message: "Record not found",
+      });
+    } else {
+      return res.json({
+        success: "1",
+        data: results,
+      });
+    }
+  });
+};
+
+export const controllerGetTicketsByStatus = (req, res) => {
+  const status = req.params.status;
+  getTicketsByStatus(status, (err, results) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+    if (!results) {
+      return res.json({
+        success: 0,
+        message: "Record not found",
+      });
+    } else {
+      return res.json({
+        success: "1",
+        data: results,
+      });
+    }
+  });
+};
+
+export const controllerUpdateQuotation = (req, res) => {
+  const id = req.params.id;
+  const body = req.body;
+  updateQuotation(id, body, (err, results) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+    if (!results) {
+      return res.json({
+        success: 0,
+        message: "Failed to update user",
+      });
+    }
+    return res.status(200).json({
+      success: 1,
+      data: "updated successfully!",
+    });
+  });
+};
