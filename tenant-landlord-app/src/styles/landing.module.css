@@ -76,8 +76,8 @@
   }
 
   .cover {
-      width: 20%;
-      height: 55%;
+    width: max(19em, 20%);
+    height: max(26em, 55%);
   }
 }
 
