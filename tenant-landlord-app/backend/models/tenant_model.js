@@ -41,8 +41,8 @@ export const createTicket = (lease_id, data, callBack) => {
   pool.query(
     `
     INSERT INTO service_request
-    (lease_id, name, contact, email, request_type, request_description, submitted_date_time)
-    VALUES (?,?,?,?,?,?,?)
+    (lease_id, name, contact, email, request_type, request_description, submitted_date_time, status)
+    VALUES (?,?,?,?,?,?,?,?)
     `,
     [
       lease_id,
@@ -51,7 +51,8 @@ export const createTicket = (lease_id, data, callBack) => {
       data.email,
       data.request_type,
       data.request_description,
-      data.submitted_date_time
+      data.submitted_date_time,
+      status
     ],
     (error, results, fields) => {
       if (error) {
