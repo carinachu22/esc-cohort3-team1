@@ -1,6 +1,6 @@
 import {
-  controllerLoginTenant
-
+  controllerLoginTenant,
+  controllerCreateTicket
 } from "../controller/tenant_controller.js";
 import express from "express";
 import { checkToken } from "../auth/token_validation.js";
@@ -14,4 +14,5 @@ const router = express.Router();
  */
 
 router.post("/login", controllerLoginTenant);
+router.post("/createTicket", checkToken, controllerCreateTicket);
 export default router;
