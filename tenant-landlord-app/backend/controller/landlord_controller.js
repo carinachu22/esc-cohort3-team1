@@ -2,6 +2,10 @@ import {
   createLandlord,
   getLandlordByEmail,
   createTenant,
+  getTickets,
+  getTicketById,
+  getTicketsByStatus,
+  updateQuotation,
 } from "../models/landlord_model.js";
 import { genSaltSync, hashSync, compareSync } from "bcrypt";
 import jwt from "jsonwebtoken";
