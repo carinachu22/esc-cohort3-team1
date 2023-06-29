@@ -30,7 +30,25 @@ export const getTicketsByTenant = (email, callBack) => {
       if (error) {
         callBack(error);
       } else {
-        callBack(null, results[0]);
+        callBack(null, results);
+      }
+    }
+  );
+};
+
+export const getTicketsByStatus = (email, status, callBack) => {
+  pool.query(
+    `
+    SELECT *
+    FROM service_request
+    WHERE email = ? AND status = ?
+    `,
+    [email, status],
+    (error, results, fields) => {
+      if (error) {
+        callBack(error);
+      } else {
+        callBack(null, results);
       }
     }
   );

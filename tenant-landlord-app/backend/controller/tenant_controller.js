@@ -1,6 +1,7 @@
 import {
   getTenantByUsername,
   getTicketsByTenant,
+  getTicketsByStatus,
   createTicket,
   quotationApproval
 } from "../models/tenant_model.js";
@@ -62,6 +63,25 @@ export const controllerCreateTicket = (req, res) => {
 export const controllerGetTickets = (req, res) => {
   const email = req.body.email;
   getTicketsByTenant(email, (err,results) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).json({
+        success: 0,
+        message: "Database connection error"
+      });
+    } else {
+      return res.json({
+        success: "1",
+        data: results,
+      });
+    }
+  });
+};
+
+export const controllerGetTicketsByStatus = (req, res) => {
+  const email = req.body.email;
+  const status = req.params.status;
+  getTicketsByStatus(email, status, (err,results) => {
     if (err) {
       console.log(err);
       return res.status(500).json({
