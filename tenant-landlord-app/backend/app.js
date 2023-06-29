@@ -16,8 +16,6 @@ app.use(cors());
 
 app.use(express.json());
 
-app.use("/api/landlord", landlordRouter);
-app.use("/api/tenant", tenantRouter);
 app.listen(process.env.APP_PORT, () => {
   console.log(`Server is working on PORT: `, process.env.APP_PORT);
 });
@@ -30,5 +28,5 @@ app.get("/api", (req, res) => {
 });
 
 app.use("/api/landlord", landlordRouter);
-
+app.use("/api/tenant", tenantRouter);
 

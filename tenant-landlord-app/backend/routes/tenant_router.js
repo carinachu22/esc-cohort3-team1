@@ -1,6 +1,7 @@
 import {
   controllerLoginTenant,
   controllerGetTickets,
+  controllerGetTicketsByStatus,
   controllerCreateTicket,
   controllerQuotationApproval
 } from "../controller/tenant_controller.js";
@@ -14,11 +15,13 @@ const router = express.Router();
  * 1. Login into tenant account
  * 2. Create service ticket
  * 3. Approve/Disapprove quotation
- * 4. View service tickets
+ * 4. View tenant's service tickets
+ * 5. View tenant's service tickets by status
  */
 
 router.post("/login", controllerLoginTenant);
 router.post("/createTicket", checkToken, controllerCreateTicket);
 router.patch("/quotationApproval/:id", checkToken, controllerQuotationApproval);
-router.get("/getTickets",checkToken, controllerGetTickets)
+router.get("/getTickets",checkToken, controllerGetTickets);
+router.get("/getTicketsByStatus/:status",checkToken, controllerGetTicketsByStatus);
 export default router;
