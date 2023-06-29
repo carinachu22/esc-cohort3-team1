@@ -35,7 +35,7 @@ const LandlordSignup = () => {
             tokenType: "Bearer",
             authState: {email: values.email}
         });
-        if (response.data.message === "Login successfully"){
+        if (response.data.message === "created successfully"){
             navigateToDashboard();
         }
 
