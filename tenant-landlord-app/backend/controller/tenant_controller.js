@@ -1,6 +1,5 @@
 import {
   getTenantByUsername,
-  getTenantByID,
   createTicket,
   quotationApproval
 } from "../models/tenant_model.js";
@@ -10,7 +9,7 @@ import jwt from "jsonwebtoken";
 
 export const controllerLoginTenant = (req, res) => {
   const body = req.body;
-  getTenantByUsername(body.username, (err, results) => {
+  getTenantByUsername(body.email, (err, results) => {
     if (err) {
       console.log(err);
     }
@@ -43,38 +42,19 @@ export const controllerLoginTenant = (req, res) => {
 
 export const controllerCreateTicket = (req, res) => {
   const body = req.body;
-
-  getTenantByID(body.tenant_user_id, (err, results) => {
+  createTicket(body, (err,results) => {
     if (err) {
       console.log(err);
       return res.status(500).json({
         success: 0,
         message: "Database connection error"
       });
-    } else if (!results) {
-      return res.json({
-        success: 0,
-        message: "Tenant user not found"
+    } else {
+      return res.status(200).json({
+        success:1,
+        data: results
       });
-    } else if (results) {
-      const lease_id = results.lease_id
-
-      createTicket(lease_id, body, (err,results) => {
-        if (err) {
-          console.log(err);
-          return res.status(500).json({
-            success: 0,
-            message: "Database connection error"
-          });
-        } else {
-          return res.status(200).json({
-            success:1,
-            data: results
-          });
-        };
-      })
-
-    }
+    };
   })
 };
 
@@ -83,9 +63,9 @@ export const controllerQuotationApproval = (req, res) => {
   const body = req.body;
   let status;
   if (body.quotation_accepted_by_tenant === 1) {
-    status = "quotation approved"
+    status = "ticket_quotation_approved"
   } else if (body.quotation_accepted_by_tenant === 0) {
-    status = "quotation rejected"
+    status = "ticket_quotation_rejected"
   }
 
   quotationApproval(id,body,status, (err, results) => {

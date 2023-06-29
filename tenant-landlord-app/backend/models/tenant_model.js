@@ -1,13 +1,13 @@
 import pool from "../config/database.js";
 
-export const getTenantByUsername = (username, callBack) => {
+export const getTenantByUsername = (email, callBack) => {
   pool.query(
     `
     SELECT *
     FROM tenant_user
-    WHERE username = ?
+    WHERE email = ?
     `,
-    [username],
+    [email],
     (error, results, fields) => {
       if (error) {
         callBack(error);
@@ -18,14 +18,14 @@ export const getTenantByUsername = (username, callBack) => {
   );
 };
 
-export const getTenantByID = (id, callBack) => {
+export const getTicketsByTenant = (email, callBack) => {
   pool.query(
     `
     SELECT *
-    FROM tenant_user
-    WHERE tenant_user_id = ?
+    FROM service_request
+    WHERE email = ?
     `,
-    [id],
+    [email],
     (error, results, fields) => {
       if (error) {
         callBack(error);
@@ -36,18 +36,16 @@ export const getTenantByID = (id, callBack) => {
   );
 };
 
-export const createTicket = (lease_id, data, callBack) => {
+export const createTicket = (data, callBack) => {
   const status = "submitted"
   pool.query(
     `
     INSERT INTO service_request
-    (lease_id, name, contact, email, request_type, request_description, submitted_date_time, status)
-    VALUES (?,?,?,?,?,?,?,?)
+    (name, email, request_type, request_description, submitted_date_time, status)
+    VALUES (?,?,?,?,?,?)
     `,
     [
-      lease_id,
       data.name,
-      data.contact,
       data.email,
       data.request_type,
       data.request_description,
@@ -56,6 +54,7 @@ export const createTicket = (lease_id, data, callBack) => {
     ],
     (error, results, fields) => {
       if (error) {
+        console.log(error)
         callBack(error);
       } else {
         callBack(null,results);
@@ -68,12 +67,10 @@ export const quotationApproval = (id, data, status, callBack) => {
   pool.query(
     `
     UPDATE service_request
-    SET quotation_accepted_by_tenant = ?, quotation_acceptance_date = ?, status = ?
+    SET status = ?
     WHERE service_request_id = ?
     `,
     [
-      data.quotation_accepted_by_tenant,
-      data.quotation_acceptance_date,
       status,
       id
     ],
