@@ -6,10 +6,12 @@ import {Link} from 'react-router-dom';
 import {useNavigate} from 'react-router-dom';
 import {useFormik} from "formik";
 import axios, {AxiosError} from "axios";
+import {useSignIn} from "react-auth-kit";
 
 const LandlordLogin = () => {
     const navigate = useNavigate();
     const [error, setError] = useState("");
+    const signIn = useSignIn();
 
     const [passwordShown, setPasswordShown] = useState(false);
 
@@ -24,10 +26,24 @@ const LandlordLogin = () => {
 
         try{
             const response = await axios.post(
-                //api to be added
-                "",
+                "http://localhost:5000/api/landlord/login",
                 values
             )
+            console.log(response);
+            signIn({
+                token: response.data.token,
+                expiresIn: 3600,
+                tokenType: "Bearer",
+                authState: {email: values.email}
+            });
+            if (response.data.message === "Login successfully"){
+                navigateToDashboard();
+            }
+            else if (response.data.message === "Invalid email or password"){
+                
+            }
+
+
         } catch (err){
             if (err && err instanceof AxiosError) {
                 setError(err.response?.data.message);
@@ -38,9 +54,6 @@ const LandlordLogin = () => {
 
             console.log("Error: ", err);
         }
-
-        
-
     }
   
     const navigateToDashboard = () => {
@@ -81,7 +94,7 @@ const LandlordLogin = () => {
                     </span>
                 </div>
 
-                <div className={LoginStyles.login_btn} onClick={navigateToDashboard} isLoading={formik.isSubmitting}>LOGIN</div>
+                <button className={LoginStyles.login_btn} type="submit" isLoading={formik.isSubmitting}>LOGIN</button>
                 <div className={LoginStyles.sign_up}>Don't have an account? <Link to="/pages/landlord_signup" className={LoginStyles.sign_up_link}>Sign up!</Link></div>
                 <Link className={LoginStyles.password_reset}>forget password?</Link>
 
