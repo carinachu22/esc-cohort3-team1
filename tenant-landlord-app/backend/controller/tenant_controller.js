@@ -1,7 +1,8 @@
 import {
   getTenantByUsername,
   getTenantByID,
-  createTicket
+  createTicket,
+  quotationApproval
 } from "../models/tenant_model.js";
 import { compareSync } from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -72,7 +73,35 @@ export const controllerCreateTicket = (req, res) => {
           });
         };
       })
-      
+
     }
   })
 };
+
+export const controllerQuotationApproval = (req, res) => {
+  const id = req.params.id;
+  const body = req.body;
+  let status;
+  if (body.quotation_accepted_by_tenant === 1) {
+    status = "quotation approved"
+  } else if (body.quotation_accepted_by_tenant === 0) {
+    status = "quotation rejected"
+  }
+
+  quotationApproval(id,body,status, (err, results) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+    if (!results) {
+      return res.json({
+        success: 0,
+        message: "Failed to update user"
+      })
+    }
+    return res.status(200).json({
+      success: 1,
+      data: "updated successfully"
+    })
+  })
+}

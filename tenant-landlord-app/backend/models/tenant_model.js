@@ -64,4 +64,25 @@ export const createTicket = (lease_id, data, callBack) => {
   )
 };
 
-
+export const quotationApproval = (id, data, status, callBack) => {
+  pool.query(
+    `
+    UPDATE service_request
+    SET quotation_accepted_by_tenant = ?, quotation_acceptance_date = ?, status = ?
+    WHERE service_request_id = ?
+    `,
+    [
+      data.quotation_accepted_by_tenant,
+      data.quotation_acceptance_date,
+      status,
+      id
+    ],
+    (error, results, fields) => {
+      if (error) {
+        callBack(error);
+      } else {
+        callBack(null,results);
+      }
+    }
+  )
+};
