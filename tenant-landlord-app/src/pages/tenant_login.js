@@ -34,7 +34,7 @@ const TenantLogin = () => {
                         {passwordShown ? "Hide" : "Show"}
                     </span>
                 </div>
-                <div className={LoginStyles.login_btn} onClick={navigateToDashboard}>LOGIN</div>
+                <button className={LoginStyles.login_btn} onClick={navigateToDashboard}>LOGIN</button>
                 <Link className={LoginStyles.password_reset}>forget password?</Link>
             </div>
         </div>
