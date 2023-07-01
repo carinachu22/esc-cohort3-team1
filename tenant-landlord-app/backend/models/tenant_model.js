@@ -59,8 +59,8 @@ export const createTicket = (data, callBack) => {
   pool.query(
     `
     INSERT INTO service_request
-    (name, email, request_type, request_description, submitted_date_time, status)
-    VALUES (?,?,?,?,?,?)
+    (name, email, request_type, request_description, submitted_date_time, status, feedback_rating, feedback_text)
+    VALUES (?,?,?,?,?,?,?,?)
     `,
     [
       data.name,
@@ -68,7 +68,9 @@ export const createTicket = (data, callBack) => {
       data.request_type,
       data.request_description,
       data.submitted_date_time,
-      status
+      status,
+      feedback_rating,
+      feedback_text
     ],
     (error, results, fields) => {
       if (error) {
@@ -91,6 +93,46 @@ export const quotationApproval = (id, data, status, callBack) => {
     [
       status,
       id
+    ],
+    (error, results, fields) => {
+      if (error) {
+        callBack(error);
+      } else {
+        callBack(null,results);
+      }
+    }
+  )
+};
+
+export const addFeedbackRating = (id, data, callBack) => {
+  pool.query (
+    `
+    UPDATE service_request
+    SET feedback_rating = ?
+    WHERE service_request_id = ?
+    `,
+    [
+      data.feedback_rating, id
+    ],
+    (error, results, fields) => {
+      if (error) {
+        callBack(error);
+      } else {
+        callBack(null,results);
+      }
+    }
+  )
+};
+
+export const addFeedbackText = (id, data, callBack) => {
+  pool.query (
+    `
+    UPDATE service_request
+    SET feedback_text = ?
+    WHERE service_request_id = ?
+    `,
+    [
+      data.feedback_text, id
     ],
     (error, results, fields) => {
       if (error) {
