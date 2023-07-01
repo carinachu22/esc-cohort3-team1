@@ -8,12 +8,15 @@ import Row from 'react-bootstrap/Row';
 import Tab from 'react-bootstrap/Tab';
 import Button from 'react-bootstrap/Button'
 
-import * as React from 'react';
+import React, { useEffect, useState } from "react";
+import { useAuthUser, useAuthHeader } from 'react-auth-kit';
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
+import axios, {AxiosError} from "axios";
+
 function Getname(){
-    return "test"
+    return useAuthUser().email
 }
 
 function NavigationBar(){
@@ -23,7 +26,6 @@ function NavigationBar(){
         Welcome, {name}
         </h1><Navbar bg="primary" variant="dark">
                 <Container>
-                    <Navbar.Brand>Navbar</Navbar.Brand>
                     <Nav className="me-auto">
                         <Nav.Link> Homepage </Nav.Link>
                         <Nav.Link href="/pages/CreateTicketPage/"> Create Service Ticket </Nav.Link>
@@ -39,20 +41,7 @@ function NavigationBar(){
         )
 }
 
-function GetServiceTickets() {
-    var count = 10;
-    const tickets = [];
-    /* Actually here would be the API Call to get all the tickets */
-    for (let i=0;i<count;i++){
-        tickets.push(i);
-    }
-    console.log(tickets);
-    const tickets_html = tickets.map(ticket => <ListGroup.Item action href={"#" + ticket}>{ticket}</ListGroup.Item>);
-    console.log(tickets_html);
-    return (
-        <>{tickets_html}</>
-    )
-}
+
 
 function GetServiceTicketsDetails() {
     var count = 10;
@@ -66,6 +55,9 @@ function GetServiceTicketsDetails() {
         <Button href="/pages/FeedbackForm/">
             Give Feedback & Close Ticket
         </Button>
+        <Button>
+            Approve Service Ticket
+        </Button>
         testing {ticket}
     </Tab.Pane>);
     console.log(tickets_html)
@@ -75,6 +67,84 @@ function GetServiceTicketsDetails() {
 }
 
 function Dashboard() {
+
+    const [error, setError] = useState("");
+    const [tickets, setTickets] = useState(null);
+    const [isLoading, setLoading] = useState(true);
+    const token = useAuthHeader();
+    const GetServiceTickets = () => {
+
+        
+        const count = 10;
+        const tickets = [];
+        /* Actually here would be the API Call to get all the tickets */
+    
+        const APIGetTickets = async () => {
+    
+            console.log("getting service tickets from database");
+            console.log(token())
+            setError("");
+    
+            try{
+                const config = {
+                    headers: {
+                      Authorization: `${token()}`
+                    }
+                  };
+
+                const response = await axios.get(
+                    "http://localhost:5000/api/landlord/getTickets",
+                    config
+                )
+                console.log("got response:")
+                console.log(response);
+                return response.data.data;
+    
+            } catch (err){
+                if (err && err instanceof AxiosError) {
+                    setError(err.response);
+                }
+                else if (err && err instanceof Error){
+                    setError(err.message);
+                }
+    
+                console.log("Error: ", err);
+            }
+
+        }
+        const test_tickets = APIGetTickets();
+    
+
+        console.log('test_tickets here')
+        console.log(test_tickets);
+    
+        for (let i=0;i<count;i++){
+            tickets.push(i);
+        }
+        test_tickets.then(function(result){
+            console.log('result',result)
+            if (result != undefined){
+            for (let i=0;i<result.length;i++){
+                tickets.push(i);
+            }
+            }   
+            const tickets_html = tickets.map(ticket => <ListGroup.Item action href={"#" + ticket}>{ticket}</ListGroup.Item>);
+            console.log('html?',tickets_html);
+            setTickets(tickets_html);
+            setLoading(false);
+
+        })
+
+
+    }
+
+    useEffect(() => {
+        GetServiceTickets()},
+        [])
+    
+    if (isLoading){
+        return<div className="App">Loading...</div>;
+    }
     return (
         <>
         {NavigationBar()}
@@ -83,7 +153,8 @@ function Dashboard() {
         <Row>
         <Col sm={4}>
             <ListGroup>
-                {GetServiceTickets()}
+                {console.log('hm?',tickets)}
+                {tickets}
                 <ListGroup.Item action href="#link1">
                 Link 1
                 </ListGroup.Item>
@@ -101,15 +172,6 @@ function Dashboard() {
         </Col>
         </Row>
         </Tab.Container>
-        {/*
-        <ListGroup>
-            <ListGroup.Item>Service Ticket 1</ListGroup.Item>
-            <ListGroup.Item>Service Ticket 1</ListGroup.Item>
-            <ListGroup.Item>Service Ticket 1</ListGroup.Item>
-            <ListGroup.Item>Service Ticket 1</ListGroup.Item>
-            <ListGroup.Item>Service Ticket 1</ListGroup.Item>
-        </ListGroup>
-        */}
         </>
     )
 }
