@@ -1,5 +1,5 @@
 import {
-  getTenantByUsername,
+  getTenantByEmail,
   getTicketsByTenant,
   getTicketsByStatus,
   createTicket,
@@ -11,17 +11,19 @@ import jwt from "jsonwebtoken";
 
 export const controllerLoginTenant = (req, res) => {
   const body = req.body;
-  getTenantByUsername(body.email, (err, results) => {
+  getTenantByEmail(body.email, (err, results) => {
     if (err) {
       console.log(err);
     }
+    console.log(results);
     if (!results) {
       return res.json({
         success: 0,
         data: "Invalid username or password",
       });
     }
-
+    
+    console.log(body.password, results.password);
     const password_check = compareSync(body.password, results.password);
     if (password_check) {
       results.password = undefined;

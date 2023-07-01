@@ -1,6 +1,6 @@
 import pool from "../config/database.js";
 
-export const getTenantByUsername = (email, callBack) => {
+export const getTenantByEmail = (email, callBack) => {
   pool.query(
     `
     SELECT *
