@@ -22,7 +22,9 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import axios, {AxiosError} from "axios";
 
 function Getname(){
-    return useAuthUser().email
+    const user = useAuthUser();
+    console.log("AUTH!", user())
+    return user().email
 }
 
 function NavigationBar(){
@@ -77,6 +79,7 @@ function Dashboard() {
 
     const [error, setError] = useState("");
     const [tickets, setTickets] = useState(null);
+    const [ticketsDetails, setTicketsDetails] = useState(null);
     const [isLoading, setLoading] = useState(true);
     const token = useAuthHeader();
     const authenticated = useIsAuthenticated();
@@ -85,8 +88,8 @@ function Dashboard() {
         const tickets = [];
     
         const APIGetTickets = async () => {
-            console.log("getting service tickets from database");
-            console.log(token())
+            //console.log("getting service tickets from database");
+            //console.log(token())
             setError("");
     
             try{
@@ -121,20 +124,47 @@ function Dashboard() {
 
         console.log('test_tickets here')
         console.log(test_tickets);
-    
+        /*
         for (let i=0;i<count;i++){
             tickets.push(i);
         }
+        */
         test_tickets.then(function(result){
             console.log('result',result)
             if (result != undefined){
-            for (let i=0;i<result.length;i++){
-                tickets.push(i);
-            }
+                for (let i=0;i<result.length;i++){
+                    tickets.push(result[i]);
+                }
             }   
-            const tickets_html = tickets.map(ticket => <ListGroup.Item action href={"#" + ticket}>{ticket}</ListGroup.Item>);
-            console.log('html?',tickets_html);
+            console.log('tickets',tickets)
+            //const tickets_html = tickets.map(ticket => <ListGroup.Item action href={"#" + ticket}>{ticket}</ListGroup.Item>);
+            //console.log('html?',tickets_html);
+            //setTickets(tickets_html);
+            const tickets_html = tickets.map(ticket => 
+                <ListGroup.Item action href={"#" + ticket.service_request_id}>{ticket.service_request_id}</ListGroup.Item>
+            );
+            const tickets_details_html = tickets.map(ticket =>
+                <Tab.Pane eventKey={"#"+ticket.service_request_id}>
+                testing <br></br>
+                Service Request ID: {ticket.service_request_id} <br></br>
+                Lease ID: {ticket.lease_id} <br></br>
+                Name: {ticket.name} <br></br>
+                Request Type: {ticket.request_type} <br></br>
+                Request Description: {ticket.request_description} <br></br>
+                Status: {ticket.status} <br></br>
+                <Button href="/pages/FeedbackForm/">
+                    Give Feedback & Close Ticket
+                </Button>
+                <br></br>
+                <Button>
+                    Approve Service Ticket
+                </Button>
+                </Tab.Pane>
+            )
+            console.log('tickets_html?',tickets_html);
+            console.log('tickets_details_html?',tickets_details_html)
             setTickets(tickets_html);
+            setTicketsDetails(tickets_details_html);
             setLoading(false);
 
         })
@@ -165,19 +195,13 @@ function Dashboard() {
             <ListGroup>
                 {console.log('hm?',tickets)}
                 {tickets}
-                <ListGroup.Item action href="#link1">
-                Link 1
-                </ListGroup.Item>
-                <ListGroup.Item action href="#link2">
-                Link 2
-                </ListGroup.Item>
             </ListGroup>
         </Col>
         <Col sm={8}>
             <Tab.Content>
-                {GetServiceTicketsDetails()}
-                <Tab.Pane eventKey="#link1">Tab pane content 1</Tab.Pane>
-                <Tab.Pane eventKey="#link2">Tab pane content 2</Tab.Pane>
+                {ticketsDetails}
+                {//GetServiceTicketsDetails()}
+                }
             </Tab.Content>
         </Col>
         </Row>
