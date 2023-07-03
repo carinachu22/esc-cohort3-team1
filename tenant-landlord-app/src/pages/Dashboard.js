@@ -116,20 +116,20 @@ function Dashboard() {
             );
             const tickets_details_html = tickets.map(ticket =>
                 <Tab.Pane eventKey={"#"+ticket.service_request_id}>
-                Service Request ID: {ticket.service_request_id} <br></br>
-                Lease ID: {ticket.lease_id} <br></br>
-                Name: {ticket.name} <br></br>
-                Request Type: {ticket.request_type} <br></br>
-                Request Description: {ticket.request_description} <br></br>
-                Status: {ticket.status} <br></br>
-                <Button href={"/pages/FeedbackForm/?ticketID=" + ticket.service_request_id}>
-                    Give Feedback & Close Ticket
-                </Button>
-                <br></br>
-                <br></br>
-                <Button>
-                    Approve Service Ticket
-                </Button>
+                    Service Request ID: {ticket.service_request_id} <br></br>
+                    Lease ID: {ticket.lease_id} <br></br>
+                    Name: {ticket.name} <br></br>
+                    Request Type: {ticket.request_type} <br></br>
+                    Request Description: {ticket.request_description} <br></br>
+                    Status: {ticket.status} <br></br>
+                    <Button href={"/pages/FeedbackForm/?ticketID=" + ticket.service_request_id}>
+                        Give Feedback & Close Ticket
+                    </Button>
+                    <br></br>
+                    <br></br>
+                    <Button>
+                        Approve Service Ticket
+                    </Button>
                 </Tab.Pane>
             )
             console.log('tickets_html?',tickets_html);
@@ -137,9 +137,7 @@ function Dashboard() {
             setTickets(tickets_html);
             setTicketsDetails(tickets_details_html);
             setLoading(false);
-
         })
-
     }
 
     // This is to ensure that the GET request only happens once on page load
@@ -161,20 +159,20 @@ function Dashboard() {
         <>
         {NavigationBar()}
         <Tab.Container id="list-group-tabs-example" defaultActiveKey="0">
-        <br></br>
-        <Row>
-        <Col sm={4}>
-            <ListGroup>
-                {console.log('hm?',tickets)}
-                {tickets}
-            </ListGroup>
-        </Col>
-        <Col sm={8}>
-            <Tab.Content>
-                {ticketsDetails}
-            </Tab.Content>
-        </Col>
-        </Row>
+            <br></br>
+            <Row>
+                <Col sm={4}>
+                    <ListGroup>
+                        {console.log('hm?',tickets)}
+                        {tickets}
+                    </ListGroup>
+                </Col>
+                <Col sm={8}>
+                    <Tab.Content>
+                        {ticketsDetails}
+                    </Tab.Content>
+                </Col>
+            </Row>
         </Tab.Container>
         </>
     )
