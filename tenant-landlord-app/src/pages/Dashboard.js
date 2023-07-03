@@ -33,23 +33,24 @@ function NavigationBar(){
     return(
         <><h1>
         Welcome, {name}
-        </h1><Navbar bg="primary" variant="dark">
-                <Container>
-                    <Nav className="me-auto">
-                        <Nav.Link href="/pages/Dashboard/"> Homepage </Nav.Link>
-                        <Nav.Link href="/pages/CreateTicketPage/"> Create Service Ticket </Nav.Link>
-                        <NavDropdown title="Search for Service Ticket by" id="basic-nav-dropdown">
-                            <NavDropdown.Item href="#action/3.1">Creation Date</NavDropdown.Item>
-                            <NavDropdown.Item href="#action/3.2">Status</NavDropdown.Item>
-                            <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
-                        </NavDropdown>
-                            <Nav.Item>
-                            <Button onClick={() => signOut()}> Sign out </Button>
-                            </Nav.Item>
-                    </Nav>
-                </Container>
-            </Navbar></>
-        )
+        </h1>
+        <Navbar bg="primary" variant="dark">
+            <Container>
+                <Nav className="me-auto">
+                    <Nav.Link href="/pages/Dashboard/"> Homepage </Nav.Link>
+                    <Nav.Link href="/pages/CreateTicketPage/"> Create Service Ticket </Nav.Link>
+                    <NavDropdown title="Search for Service Ticket by" id="basic-nav-dropdown">
+                        <NavDropdown.Item href="#action/3.1">Creation Date</NavDropdown.Item>
+                        <NavDropdown.Item href="#action/3.2">Status</NavDropdown.Item>
+                        <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
+                    </NavDropdown>
+                        <Nav.Item>
+                        <Button onClick={() => signOut()}> Sign out </Button>
+                        </Nav.Item>
+                </Nav>
+            </Container>
+        </Navbar></>
+    )
 }
 
 
@@ -75,7 +76,7 @@ function Dashboard() {
                     headers: {
                       Authorization: `${token()}`
                     }
-                  };
+                };
 
                 const response = await axios.get(
                     "http://localhost:5000/api/landlord/getTickets",
@@ -148,7 +149,6 @@ function Dashboard() {
 
         })
 
-
     }
 
     // This is to ensure that the GET request only happens once on page load
@@ -181,8 +181,6 @@ function Dashboard() {
         <Col sm={8}>
             <Tab.Content>
                 {ticketsDetails}
-                {//GetServiceTicketsDetails()}
-                }
             </Tab.Content>
         </Col>
         </Row>
