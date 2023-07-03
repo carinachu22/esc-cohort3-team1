@@ -86,6 +86,7 @@ function FeedbackForm() {
             rows={4}
             variant="outlined"
             fullWidth
+            name="comment"
             value={formik.values.comment}
             onChange={formik.handleChange} // store user comment 
           />
