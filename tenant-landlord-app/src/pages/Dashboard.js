@@ -22,18 +22,13 @@ import "bootstrap/dist/css/bootstrap.min.css";
 // Import axios for http requests
 import axios, {AxiosError} from "axios";
 
-function Getname(){
-    const user = useAuthUser();
-    console.log("AUTH!", user())
-    return user().email
-}
-
 function NavigationBar(){
     const signOut = useSignOut();
-    var name = Getname()
+    const userDetails = useAuthUser();
+    var email = userDetails.email;
     return(
         <><h1>
-        Welcome, {name}
+        Welcome, {email}
         </h1>
         <Navbar bg="primary" variant="dark">
             <Container>
