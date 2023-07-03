@@ -160,6 +160,8 @@ function Dashboard() {
         return <Navigate to="/"></Navigate>
     }
     console.log("Authenticated.")
+    // Warning from react comes from the below block
+    // This is because the number of hooks called before and after loading is different
     if (isLoading){
         return<div className="App">Loading...</div>;
     }
