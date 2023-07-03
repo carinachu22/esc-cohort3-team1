@@ -17,7 +17,11 @@ function FeedbackForm() {
     const [searchParams, setSearchParams] = useSearchParams();
     const ticketID = searchParams.get("ticketID");
     const onSubmit = values => {
-        //event.preventDefault();  // prevent submission of default form
+        console.log("ONSUBMIT VALUES", values)
+        if (values.comment == "" || values.rating == -1){
+            return;
+        }
+        //values.preventDefault();  // prevent submission of default form
         /*alert(`Feedback: ${comment} Rating: ${rating}`); // popup after submission */
         APICloseTicket(values);
         navigate('/pages/dashboard');
