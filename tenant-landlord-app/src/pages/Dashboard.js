@@ -1,3 +1,4 @@
+// Import components
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import Container from 'react-bootstrap/Container';
@@ -8,11 +9,16 @@ import Row from 'react-bootstrap/Row';
 import Tab from 'react-bootstrap/Tab';
 import Button from 'react-bootstrap/Button'
 
-import React, { useEffect, useState } from "react";
-import { useAuthUser, useAuthHeader } from 'react-auth-kit';
+import { Navigate } from 'react-router-dom';
 
+// Import react and hooks
+import React, { useEffect, useState } from "react";
+import { useAuthUser, useAuthHeader, useSignOut, useIsAuthenticated } from 'react-auth-kit';
+
+// Import bootstrap for automatic styling
 import "bootstrap/dist/css/bootstrap.min.css";
 
+// Import axios for http requests
 import axios, {AxiosError} from "axios";
 
 function Getname(){
@@ -20,6 +26,7 @@ function Getname(){
 }
 
 function NavigationBar(){
+    const signOut = useSignOut();
     var name = Getname()
     return(
         <><h1>
@@ -34,14 +41,14 @@ function NavigationBar(){
                             <NavDropdown.Item href="#action/3.2">Status</NavDropdown.Item>
                             <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
                         </NavDropdown>
-                        <Nav.Link href="/"> Sign out</Nav.Link>
+                            <Nav.Item>
+                            <Button onClick={() => signOut()}> Sign out </Button>
+                            </Nav.Item>
                     </Nav>
                 </Container>
             </Navbar></>
         )
 }
-
-
 
 function GetServiceTicketsDetails() {
     var count = 10;
@@ -72,15 +79,12 @@ function Dashboard() {
     const [tickets, setTickets] = useState(null);
     const [isLoading, setLoading] = useState(true);
     const token = useAuthHeader();
+    const authenticated = useIsAuthenticated();
     const GetServiceTickets = () => {
-
-        
         const count = 10;
         const tickets = [];
-        /* Actually here would be the API Call to get all the tickets */
     
         const APIGetTickets = async () => {
-    
             console.log("getting service tickets from database");
             console.log(token())
             setError("");
@@ -138,10 +142,16 @@ function Dashboard() {
 
     }
 
+    // This is to ensure that the GET request only happens once on page load
+    // This will update the tickets state
     useEffect(() => {
         GetServiceTickets()},
         [])
-    
+    if (!authenticated()){
+        console.log("Not authenticated, redirecting.")
+        return <Navigate to="/"></Navigate>
+    }
+    console.log("Authenticated.")
     if (isLoading){
         return<div className="App">Loading...</div>;
     }
