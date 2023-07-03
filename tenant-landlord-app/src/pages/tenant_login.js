@@ -34,7 +34,7 @@ const TenantLogin = () => {
                 token: response.data.token,
                 expiresIn: 60,
                 tokenType: "Bearer",
-                authState: {email: values.email}
+                authState: {email: values.email, type: "tenant"}
             });
             if (response.data.message === "Login successfully"){
                 navigateToDashboard();

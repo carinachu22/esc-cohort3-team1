@@ -57,11 +57,12 @@ function Dashboard() {
     const [isLoading, setLoading] = useState(true);
     const token = useAuthHeader();
     const authenticated = useIsAuthenticated();
-    const GetServiceTickets = () => {
+    const userDetails = useAuthUser();
+    const GetServiceTickets = (type) => {
         //const count = 10;
         const tickets = [];
     
-        const APIGetTickets = async () => {
+        const APIGetTicketsLandlord = async () => {
             //console.log("getting service tickets from database");
             //console.log(token())
             setError("");
@@ -88,7 +89,46 @@ function Dashboard() {
                 console.log("Error: ", err);
             }
         }
-        const test_tickets = APIGetTickets();
+        const APIGetTicketsTenant = async () => {
+            //console.log("getting service tickets from database");
+            //console.log(token())
+            setError("");
+            try{
+                const config = {
+                    headers: {
+                      Authorization: `${token()}`
+                    }
+                };
+
+                const values = {
+                    params: {
+                        email: userDetails().email
+                    }
+                }
+
+                const response = await axios.get(
+                    "http://localhost:5000/api/tenant/getTickets",
+                    config,
+                    values
+                )
+                console.log("got response:")
+                console.log(response);
+                return response.data.data;
+            } catch (err){
+                if (err && err instanceof AxiosError) {
+                    setError(err.response);
+                }
+                else if (err && err instanceof Error){
+                    setError(err.message);
+                }
+                console.log("Error: ", err);
+            }
+        }
+        console.log("TYPE", type)
+        const test_tickets = APIGetTicketsLandlord();
+        if (type == "tenant"){
+            const test_tickets = APIGetTicketsTenant();
+        }
         console.log('test_tickets here')
         console.log(test_tickets);
         test_tickets.then(function(result){
@@ -138,7 +178,7 @@ function Dashboard() {
     // This is to ensure that the GET request only happens once on page load
     // This will update the tickets state
     useEffect(() => {
-        GetServiceTickets()},
+        GetServiceTickets(userDetails().type)},
         [])
     if (!authenticated()){
         console.log("Not authenticated, redirecting.")
