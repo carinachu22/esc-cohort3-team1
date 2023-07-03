@@ -56,7 +56,6 @@ function NavigationBar(){
 
 
 function Dashboard() {
-
     const [error, setError] = useState("");
     const [tickets, setTickets] = useState(null);
     const [ticketsDetails, setTicketsDetails] = useState(null);
@@ -71,14 +70,12 @@ function Dashboard() {
             //console.log("getting service tickets from database");
             //console.log(token())
             setError("");
-    
             try{
                 const config = {
                     headers: {
                       Authorization: `${token()}`
                     }
                 };
-
                 const response = await axios.get(
                     "http://localhost:5000/api/landlord/getTickets",
                     config
@@ -86,7 +83,6 @@ function Dashboard() {
                 console.log("got response:")
                 console.log(response);
                 return response.data.data;
-    
             } catch (err){
                 if (err && err instanceof AxiosError) {
                     setError(err.response);
@@ -94,21 +90,12 @@ function Dashboard() {
                 else if (err && err instanceof Error){
                     setError(err.message);
                 }
-    
                 console.log("Error: ", err);
             }
-
         }
         const test_tickets = APIGetTickets();
-    
-
         console.log('test_tickets here')
         console.log(test_tickets);
-        /*
-        for (let i=0;i<count;i++){
-            tickets.push(i);
-        }
-        */
         test_tickets.then(function(result){
             console.log('result',result)
             if (result !== undefined){
@@ -117,9 +104,6 @@ function Dashboard() {
                 }
             }   
             console.log('tickets',tickets)
-            //const tickets_html = tickets.map(ticket => <ListGroup.Item action href={"#" + ticket}>{ticket}</ListGroup.Item>);
-            //console.log('html?',tickets_html);
-            //setTickets(tickets_html);
             const tickets_html = tickets.map(ticket => 
                 <ListGroup.Item className={styles['ticketList']} action href={"#" + ticket.service_request_id}>
                     <div className={styles['ticketID']}>
@@ -132,7 +116,6 @@ function Dashboard() {
             );
             const tickets_details_html = tickets.map(ticket =>
                 <Tab.Pane eventKey={"#"+ticket.service_request_id}>
-                testing <br></br>
                 Service Request ID: {ticket.service_request_id} <br></br>
                 Lease ID: {ticket.lease_id} <br></br>
                 Name: {ticket.name} <br></br>
