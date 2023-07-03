@@ -130,9 +130,10 @@ function Dashboard() {
                 Request Type: {ticket.request_type} <br></br>
                 Request Description: {ticket.request_description} <br></br>
                 Status: {ticket.status} <br></br>
-                <Button href="/pages/FeedbackForm/">
+                <Button href={"/pages/FeedbackForm/?ticketID=" + ticket.service_request_id}>
                     Give Feedback & Close Ticket
                 </Button>
+                <br></br>
                 <br></br>
                 <Button>
                     Approve Service Ticket
