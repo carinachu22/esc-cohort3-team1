@@ -34,7 +34,7 @@ function NavigationBar(){
         </h1><Navbar bg="primary" variant="dark">
                 <Container>
                     <Nav className="me-auto">
-                        <Nav.Link> Homepage </Nav.Link>
+                        <Nav.Link href="/pages/Dashboard/"> Homepage </Nav.Link>
                         <Nav.Link href="/pages/CreateTicketPage/"> Create Service Ticket </Nav.Link>
                         <NavDropdown title="Search for Service Ticket by" id="basic-nav-dropdown">
                             <NavDropdown.Item href="#action/3.1">Creation Date</NavDropdown.Item>
