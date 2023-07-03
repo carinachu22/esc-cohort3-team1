@@ -1,21 +1,29 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import axios from 'axios';
 
 function CreateTicketPage() {
   const navigate = useNavigate();
-  const [tenantComment, setTenantComment] = useState('');
 
-  const handleCommentChange = (event) => {
-    setTenantComment(event.target.value);
-  };
+  const handleCreateTicket = async (values) => {
+    try {
+      const response = await axios.post(
+        'http://localhost:5000/api/tenant/createTicket ', // Replace with your API endpoint
+        { request_description: values.tenantComment, location: values.location, request_type: values.category }
+      );
 
-  const handleCreateTicket = () => {
-    console.log(tenantComment);
-    navigate('/pages/Dashboard'); // Navigate to the Dashboard form page
+      console.log(response.data);
+
+      // You can perform further actions based on the response
+      navigate('/pages/Dashboard'); // Navigate to the Dashboard form page
+    } catch (err) {
+      console.error('Error creating ticket:', err);
+    }
   };
 
   return (
@@ -34,121 +42,133 @@ function CreateTicketPage() {
         Create A Service Ticket
       </Typography>
 
-      {/* Comment Boxes */}
-      <Box
-        display="flex"
-        flexDirection="row"
-        justifyContent="center"
-        alignItems="center"
-        marginBottom="2em"
+      <Formik
+        initialValues={{ request_description: '', location: '', request_type: '' }} 
+        onSubmit={handleCreateTicket}
       >
-        {/* Comment Box 1 */}
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'flex-start',
-            width: '30em',
-            padding: '2em',
-            marginRight: '2em',
-          }}
-        >
-          <Typography variant="h5" gutterBottom> 
-            Location
-          </Typography>
-          <TextField
-            multiline
-            rows={1}
-            variant="outlined"
-            fullWidth
-            InputProps={{ style: { width: '100%' } }}
-            sx={{
-              marginBottom: '2em',
-              '& .MuiOutlinedInput-root': {
-                border: '2px solid gray',
-                backgroundColor: 'rgb(229, 226, 226)',
-                borderRadius: '0.25em',
-                paddingLeft: '0.5em',
-              },
-            }}
-          />
-          <Typography variant="h5" gutterBottom>
-            Category Of Request
-          </Typography>
-          <TextField
-            multiline
-            rows={1}
-            variant="outlined"
-            fullWidth
-            InputProps={{ style: { width: '100%' } }}
-            sx={{
-              marginBottom: '1em',
-              '& .MuiOutlinedInput-root': {
-                border: '2px solid gray',
-                backgroundColor: 'rgb(229, 226, 226)',
-                borderRadius: '0.25em',
-                paddingLeft: '0.5em',
-              },
-            }}
-          />
-        </Box>
+        <Form>
+          {/* Comment Boxes */}
+          <Box
+            display="flex"
+            flexDirection="row"
+            justifyContent="center"
+            alignItems="center"
+            marginBottom="2em"
+          >
+            {/* Comment Box 1 */}
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'flex-start',
+                width: '30em',
+                padding: '2em',
+                marginRight: '2em',
+              }}
+            >
+              <Typography variant="h5" gutterBottom>
+                Location
+              </Typography>
+              <Field
+                as={TextField}
+                multiline
+                rows={1}
+                variant="outlined"
+                fullWidth
+                name="location"
+                InputProps={{ style: { width: '100%' } }}
+                sx={{
+                  marginBottom: '2em',
+                  '& .MuiOutlinedInput-root': {
+                    border: '2px solid gray',
+                    backgroundColor: 'rgb(229, 226, 226)',
+                    borderRadius: '0.25em',
+                    paddingLeft: '0.5em',
+                  },
+                }}
+              />
 
-        {/* Comment Box 3 */}
-        <Box
-          display="flex"
-          flexDirection="column"
-          alignItems="flex-start"
-          width="35em"
-          padding="1em"
-          marginLeft="2em"
-        >
-          <Typography variant="h5" gutterBottom>
-            Description
-          </Typography>
-          <TextField
-            label="Your Comment"
-            multiline
-            rows={8}
-            variant="outlined"
-            fullWidth
-            value={tenantComment}
-            onChange={handleCommentChange}
-            sx={{
-              '& .MuiOutlinedInput-root': {
-                border: '2px solid gray',
-                backgroundColor: 'rgb(229, 226, 226)',
-                borderRadius: '0.25em',
-                paddingLeft: '0.5em',
-                marginTop: '0em',
-              },
-            }}
-          />
-        </Box>
-      </Box>
+              <Typography variant="h5" gutterBottom>
+                Category Of Request
+              </Typography>
+              <Field
+                as={TextField}
+                multiline
+                rows={1}
+                variant="outlined"
+                fullWidth
+                name="category"
+                InputProps={{ style: { width: '100%' } }}
+                sx={{
+                  marginBottom: '1em',
+                  '& .MuiOutlinedInput-root': {
+                    border: '2px solid gray',
+                    backgroundColor: 'rgb(229, 226, 226)',
+                    borderRadius: '0.25em',
+                    paddingLeft: '0.5em',
+                  },
+                }}
+              />
+            </Box>
 
-      {/* Submit Ticket Button */}
-      <Box marginBottom="2em">
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleCreateTicket}
-          style={{
-            width: '15em',
-            height: '3em',
-            backgroundColor: 'gray',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            transition: '0.5s',
-            marginTop: '3em',
-            borderRadius: '0.25em',
-            cursor: 'pointer',
-            color: 'white',
-          }}
-        >
-          Submit
-        </Button>
-      </Box>
+            {/* Comment Box 3 */}
+            <Box
+              display="flex"
+              flexDirection="column"
+              alignItems="flex-start"
+              width="35em"
+              padding="1em"
+              marginLeft="2em"
+            >
+              <Typography variant="h5" gutterBottom>
+                Description
+              </Typography>
+              <Field
+                as={TextField}
+                label="Your Comment"
+                multiline
+                rows={8}
+                variant="outlined"
+                fullWidth
+                name="tenantComment"
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    border: '2px solid gray',
+                    backgroundColor: 'rgb(229, 226, 226)',
+                    borderRadius: '0.25em',
+                    paddingLeft: '0.5em',
+                    marginTop: '0em',
+                  },
+                }}
+              />
+            </Box>
+          </Box>
+
+          {/* Submit Ticket Button */}
+          <Box marginBottom="2em">
+            <Button
+              variant="contained"
+              color="primary"
+              type="submit"
+              style={{
+                width: '15em',
+                height: '3em',
+                backgroundColor: 'gray',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                transition: '0.5s',
+                marginTop: '3em',
+                borderRadius: '0.25em',
+                cursor: 'pointer',
+                color: 'white',
+              }}
+            >
+              Submit
+            </Button>
+          </Box>
+        </Form>
+      </Formik>
     </Box>
   );
 }
