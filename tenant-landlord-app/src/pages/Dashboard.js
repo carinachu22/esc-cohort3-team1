@@ -52,28 +52,6 @@ function NavigationBar(){
         )
 }
 
-function GetServiceTicketsDetails() {
-    var count = 10;
-    const tickets = [];
-    for (let i=0;i<count;i++){
-        tickets.push(i);
-    }
-    console.log(tickets)
-    const tickets_html = tickets.map(ticket => 
-    <Tab.Pane eventKey={"#"+ticket}>
-        <Button href="/pages/FeedbackForm/">
-            Give Feedback & Close Ticket
-        </Button>
-        <Button>
-            Approve Service Ticket
-        </Button>
-        testing {ticket}
-    </Tab.Pane>);
-    console.log(tickets_html)
-    return (
-        <>{tickets_html}</>
-    )
-}
 
 function Dashboard() {
 
@@ -84,7 +62,7 @@ function Dashboard() {
     const token = useAuthHeader();
     const authenticated = useIsAuthenticated();
     const GetServiceTickets = () => {
-        const count = 10;
+        //const count = 10;
         const tickets = [];
     
         const APIGetTickets = async () => {
@@ -131,7 +109,7 @@ function Dashboard() {
         */
         test_tickets.then(function(result){
             console.log('result',result)
-            if (result != undefined){
+            if (result !== undefined){
                 for (let i=0;i<result.length;i++){
                     tickets.push(result[i]);
                 }
