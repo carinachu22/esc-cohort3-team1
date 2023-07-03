@@ -38,7 +38,6 @@ export const controllerLoginLandlord = (req, res) => {
     if (err) {
       console.log(err);
     }
-    
     if (!results) {
       return res.json({
         success: 0,
@@ -59,6 +58,7 @@ export const controllerLoginLandlord = (req, res) => {
         token: jsontoken,
       });
     } else {
+      console.log(results);
       res.json({
         success: 0,
         data: "Invalid email or password",
