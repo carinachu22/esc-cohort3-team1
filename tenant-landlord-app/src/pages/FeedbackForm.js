@@ -12,8 +12,6 @@ import axios, {AxiosError} from "axios";
 
 function FeedbackForm() {
     const [error, setError] = useState("");
-    const [comment, setComment] = useState("");
-    const [rating, setRating] = useState(0);
     const token = useAuthHeader();
     const navigate = useNavigate();
     const [searchParams, setSearchParams] = useSearchParams();
