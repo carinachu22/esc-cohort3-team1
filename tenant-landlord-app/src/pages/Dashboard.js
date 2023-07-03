@@ -10,6 +10,7 @@ import Tab from 'react-bootstrap/Tab';
 import Button from 'react-bootstrap/Button'
 
 import { Navigate } from 'react-router-dom';
+import styles from "../styles/dashboard.module.css";
 
 // Import react and hooks
 import React, { useEffect, useState } from "react";
@@ -120,7 +121,14 @@ function Dashboard() {
             //console.log('html?',tickets_html);
             //setTickets(tickets_html);
             const tickets_html = tickets.map(ticket => 
-                <ListGroup.Item action href={"#" + ticket.service_request_id}>{ticket.service_request_id}</ListGroup.Item>
+                <ListGroup.Item className={styles['ticketList']} action href={"#" + ticket.service_request_id}>
+                    <div className={styles['ticketID']}>
+                        {ticket.service_request_id}
+                    </div>
+                    <div className={styles['ticketstatus']}>
+                        {ticket.status}
+                    </div>
+                </ListGroup.Item>
             );
             const tickets_details_html = tickets.map(ticket =>
                 <Tab.Pane eventKey={"#"+ticket.service_request_id}>
