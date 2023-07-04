@@ -153,10 +153,12 @@ function Dashboard() {
                 <Tab.Pane eventKey={"#"+ticket.service_request_id}>
                     Service Request ID: {ticket.service_request_id} <br></br>
                     Lease ID: {ticket.lease_id} <br></br>
+                    Submitted Date & Time: {ticket.submitted_date_time} <br></br>
                     Name: {ticket.name} <br></br>
                     Request Type: {ticket.request_type} <br></br>
                     Request Description: {ticket.request_description} <br></br>
                     Status: {ticket.status} <br></br>
+                    Completed Date & Time: {ticket.completed_date_time} <br></br>
                     Feedback Comment: {ticket.feedback_text} <br></br>
                     Feedback Rating: {ticket.feedback_rating} <br></br>
                     <Button href={"/pages/FeedbackForm/?ticketID=" + ticket.service_request_id}>
