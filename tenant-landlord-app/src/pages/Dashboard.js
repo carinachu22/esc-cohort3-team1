@@ -32,7 +32,7 @@ Functionalities:
 function NavigationBar(){
     const signOut = useSignOut();
     const userDetails = useAuthUser();
-    var email = userDetails.email;
+    var email = userDetails().email;
     return(
         <><h1>
         Welcome, {email}
