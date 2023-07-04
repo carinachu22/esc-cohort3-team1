@@ -28,10 +28,10 @@ function FeedbackForm() {
     };
 
   
-    const APICloseTicket = async (values) => {
+    const APICloseTicket = async (data) => {
     
     console.log(token())
-    console.log("VALUES",values)
+    console.log("VALUES",data)
     setError("");
 
     try{
@@ -40,15 +40,38 @@ function FeedbackForm() {
               Authorization: `${token()}`
             }
           };
+
+        const values = {
+            status: "close",
+            feedback_text: data.comment,
+            feedback_rating: data.rating
+        };
+
         // NOTE: Backticks (`) are used here so ticketID can be evaluated
-        const response = await axios.post(
-            `http://localhost:5000/api/tenant/closeTicket/${ticketID}`,
-            config,
-            values
+        const response1 = await axios.patch(
+            `http://localhost:5000/api/tenant/addFeedbackText/${ticketID}`,
+            values,
+            config
         )
-        console.log("got response:")
-        console.log(response);
-        return response;
+        console.log("got response of adding feedback text:")
+        console.log(response1);
+
+        const response2 = await axios.patch(
+            `http://localhost:5000/api/tenant/addFeedbackRating/${ticketID}`,
+            values,
+            config
+        )
+        console.log("got response of adding feedback rating:")
+        console.log(response2);
+
+        const response3 = await axios.patch(
+            `http://localhost:5000/api/tenant/closeTicketStatus/${ticketID}`,
+            values,
+            config
+        )
+        console.log("got response of closing ticket:")
+        console.log(response3);
+        //return response;
 
     } catch (err){
         if (err && err instanceof AxiosError) {
@@ -74,7 +97,6 @@ function FeedbackForm() {
   return (
     
     <Box display="flex" flexDirection="column" justifyContent="center" minHeight="100vh">
-        {console.log(ticketID)};
       <form onSubmit={formik.handleSubmit}>
         <Box mb={2} sx={{ width: '50%', margin: '0 auto' }}>
           <Typography variant="h4" component="h1" align="center" gutterBottom>
