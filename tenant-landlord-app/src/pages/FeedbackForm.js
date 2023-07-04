@@ -23,8 +23,9 @@ function FeedbackForm() {
         }
         //values.preventDefault();  // prevent submission of default form
         /*alert(`Feedback: ${comment} Rating: ${rating}`); // popup after submission */
-        APICloseTicket(values);
-        navigate('/pages/dashboard');
+        const closeTicketPromise = APICloseTicket(values);
+        closeTicketPromise.then(() => navigate('/pages/dashboard'));
+        
     };
 
   
