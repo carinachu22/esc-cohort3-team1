@@ -13,13 +13,13 @@ function CreateTicketPage() {
   const handleCreateTicket = async (values) => {
     try {
       const response = await axios.post(
-        'http://localhost:5000/api/tenant/createTicket ', // Replace with your API endpoint
+        'http://localhost:5000/api/tenant/createTicket ', 
         { request_description: values.tenantComment, location: values.location, request_type: values.category }
       );
 
       console.log(response.data);
 
-      // You can perform further actions based on the response
+     
       navigate('/pages/Dashboard'); // Navigate to the Dashboard form page
     } catch (err) {
       console.error('Error creating ticket:', err);
