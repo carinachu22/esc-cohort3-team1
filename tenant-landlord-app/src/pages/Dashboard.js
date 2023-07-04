@@ -74,7 +74,11 @@ function Dashboard() {
     const userDetails = useAuthUser();
 
     // Initialise function for 1. Fetch all service tickets dependent on user type (tenant or landlord)
-    const GetServiceTickets = (type) => {
+    const GetServiceTickets = (userDetails) => {
+        if (userDetails() == undefined){
+            return;
+        }
+        const type = userDetails().type;
         const tickets = [];
     
         // Initialse function for fetching ALL service tickets if landlord is logged in
@@ -212,7 +216,7 @@ function Dashboard() {
     // This is to ensure that the GET request only happens once on page load
     // This will update the tickets state
     useEffect(() => {
-        GetServiceTickets(userDetails().type)},
+        GetServiceTickets(userDetails)},
         [])
 
     // Check if still autenticated based on react auth kit
