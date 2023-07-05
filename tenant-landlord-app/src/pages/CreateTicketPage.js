@@ -12,6 +12,7 @@ import axios, {AxiosError} from "axios";
 function CreateTicketPage() {
   const navigate = useNavigate();
   const token = useAuthHeader();
+  const userDetails = useAuthUser();
   const [error, setError] = useState("");
   const [tenantComment, setTenantComment] = useState('');
   const [ticketType, setTicketType] = useState('');
@@ -39,7 +40,7 @@ function CreateTicketPage() {
 
         const values = {
           name: "asdf",
-          email: "asdf",
+          email: userDetails().email,
           request_type: ticketType,
           request_description: tenantComment,
           submitted_date_time: "1000-01-01 00:00:00",
