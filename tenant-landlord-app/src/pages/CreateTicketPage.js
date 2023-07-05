@@ -12,6 +12,7 @@ import axios, {AxiosError} from "axios";
 function CreateTicketPage() {
   const navigate = useNavigate();
   const token = useAuthHeader();
+  const userDetails = useAuthUser();
   const [error, setError] = useState("");
   const [tenantComment, setTenantComment] = useState('');
   const [ticketType, setTicketType] = useState('');
@@ -36,13 +37,26 @@ function CreateTicketPage() {
               Authorization: `${token()}`
             }
           };
-
+        var currentdate = new Date(); 
+        /*
+        console.log('DATE',currentdate.getFullYear().toString() + '-' +
+         (currentdate.getMonth()+1).toString() + '-' + 
+         currentdate.getDate().toString() + ' ' + 
+         currentdate.getHours().toString() + ':' + 
+         ('0'+ currentdate.getMinutes()).slice(-2) + ':' + currentdate.getSeconds().toString())
+         */
+        //console.log(currentdate.toLocaleString())
         const values = {
-          name: "asdf",
-          email: "asdf",
+          name: "--",
+          email: userDetails().email,
           request_type: ticketType,
           request_description: tenantComment,
-          submitted_date_time: "1000-01-01 00:00:00",
+          submitted_date_time: ('DATE',currentdate.getFullYear().toString() + '-' +
+          (currentdate.getMonth()+1).toString() + '-' + 
+          currentdate.getDate().toString() + ' ' + 
+          currentdate.getHours().toString() + ':' + 
+          ('0'+ currentdate.getMinutes()).slice(-2) + ':' + currentdate.getSeconds().toString()),
+          //submitted_date_time: "1000-01-01 00:00:00",
           status: "SUBMITTED",
           feedback_text: "",
           feedback_rating: "-1"

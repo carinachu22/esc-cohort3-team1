@@ -22,13 +22,13 @@ import "bootstrap/dist/css/bootstrap.min.css";
 // Import axios for http requests
 import axios, {AxiosError} from "axios";
 
-/* 
+/**
 Functional component to display the navigation bar
 Functionalities:
 1. Show welcome text
 2. Display links to other pages (Homepage, Create Ticket, Filter Ticket)
 3. Sign Out
-*/ 
+**/ 
 function NavigationBar(){
     const signOut = useSignOut();
     const userDetails = useAuthUser();
@@ -56,13 +56,13 @@ function NavigationBar(){
     )
 }
 
-/*
+/**
 Functional component to display the content of the dashboard
 Functionalities:
 1. Fetch all service tickets dependent on user type (tenant or landlord)
 2. Display all service tickets ID and status in a list on the left
 3. Display selected service ticket details on the right when clicked 
-*/
+**/
 function Dashboard() {
     // Initialise states and hooks
     const [error, setError] = useState("");
