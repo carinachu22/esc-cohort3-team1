@@ -39,7 +39,7 @@ function CreateTicketPage() {
           };
 
         const values = {
-          name: "asdf",
+          name: "--",
           email: userDetails().email,
           request_type: ticketType,
           request_description: tenantComment,
