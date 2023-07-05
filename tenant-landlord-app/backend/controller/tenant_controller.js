@@ -177,7 +177,7 @@ export const controllerCloseTicketStatus = (req, res) => {
   if (body.status == "close") {
      status = "ticket_close"
    } else {
-    status = "ticket_quotation_approved"
+    status = "close_attempt_failed"
    }
   
   closeTicketStatus (id, status, (err,results) => {
