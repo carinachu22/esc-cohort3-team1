@@ -187,6 +187,7 @@ function Dashboard() {
                     Lease ID: {ticket.lease_id} <br></br>
                     Submitted Date & Time: {ticket.submitted_date_time} <br></br>
                     Name: {ticket.name} <br></br>
+                    Email: {ticket.email} <br></br>
                     Request Type: {ticket.request_type} <br></br>
                     Request Description: {ticket.request_description} <br></br>
                     Status: {ticket.status} <br></br>
