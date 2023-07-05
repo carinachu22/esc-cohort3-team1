@@ -1,0 +1,14 @@
+.ticketList{
+    display: flex;
+}
+
+.ticketID{
+    display: inline-flex;
+    flex-direction: row;
+}
+
+.ticketstatus{
+    display: inline-flex;
+    flex-direction: row;
+    margin-left: auto;
+}

@@ -71,8 +71,8 @@ export const createTicket = (data, callBack) => {
       data.request_description,
       data.submitted_date_time,
       status,
-      feedback_rating,
-      feedback_text
+      data.feedback_rating,
+      data.feedback_text
     ],
     (error, results, fields) => {
       if (error) {
