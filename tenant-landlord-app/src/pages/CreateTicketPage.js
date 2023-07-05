@@ -37,13 +37,26 @@ function CreateTicketPage() {
               Authorization: `${token()}`
             }
           };
-
+        var currentdate = new Date(); 
+        /*
+        console.log('DATE',currentdate.getFullYear().toString() + '-' +
+         (currentdate.getMonth()+1).toString() + '-' + 
+         currentdate.getDate().toString() + ' ' + 
+         currentdate.getHours().toString() + ':' + 
+         ('0'+ currentdate.getMinutes()).slice(-2) + ':' + currentdate.getSeconds().toString())
+         */
+        //console.log(currentdate.toLocaleString())
         const values = {
           name: "--",
           email: userDetails().email,
           request_type: ticketType,
           request_description: tenantComment,
-          submitted_date_time: "1000-01-01 00:00:00",
+          submitted_date_time: ('DATE',currentdate.getFullYear().toString() + '-' +
+          (currentdate.getMonth()+1).toString() + '-' + 
+          currentdate.getDate().toString() + ' ' + 
+          currentdate.getHours().toString() + ':' + 
+          ('0'+ currentdate.getMinutes()).slice(-2) + ':' + currentdate.getSeconds().toString()),
+          //submitted_date_time: "1000-01-01 00:00:00",
           status: "SUBMITTED",
           feedback_text: "",
           feedback_rating: "-1"
