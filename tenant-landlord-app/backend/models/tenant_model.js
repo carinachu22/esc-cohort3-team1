@@ -55,7 +55,9 @@ export const getTicketsByStatus = (email, status, callBack) => {
 };
 
 export const createTicket = (data, callBack) => {
-  const status = "submitted"
+  const status = "submitted";
+  const feedback_rating = null;
+  const feedback_text = null;
   pool.query(
     `
     INSERT INTO service_request
