@@ -4,22 +4,101 @@ import Button from '@mui/material/Button';
 import Rating from '@mui/material/Rating';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
+
+import { useAuthUser, useAuthHeader } from 'react-auth-kit';
+import {useFormik} from "formik";
+import axios, {AxiosError} from "axios";
 
 function FeedbackForm() {
-  const [comment, setComment] = useState("");
-  const [rating, setRating] = useState(0);
+    const [error, setError] = useState("");
+    const token = useAuthHeader();
+    const navigate = useNavigate();
+    const [searchParams, setSearchParams] = useSearchParams();
+    const ticketID = searchParams.get("ticketID");
+    const onSubmit = values => {
+        console.log("ONSUBMIT VALUES", values)
+        if (values.comment == "" || values.rating == -1){
+            return;
+        }
+        //values.preventDefault();  // prevent submission of default form
+        /*alert(`Feedback: ${comment} Rating: ${rating}`); // popup after submission */
+        const closeTicketPromise = APICloseTicket(values);
+        closeTicketPromise.then(() => navigate('/pages/dashboard'));
+        
+    };
 
-  const navigate = useNavigate()
-  const handleSubmit = event => {
-    event.preventDefault();  // prevent submission of default form
-    /*alert(`Feedback: ${comment} Rating: ${rating}`); // popup after submission */
-    navigate('/pages/dashboard');
-  };
+  
+    const APICloseTicket = async (data) => {
+    
+    console.log(token())
+    console.log("VALUES",data)
+    setError("");
+
+    try{
+        const config = {
+            headers: {
+              Authorization: `${token()}`
+            }
+          };
+
+        const values = {
+            status: "close",
+            feedback_text: data.comment,
+            feedback_rating: data.rating
+        };
+
+        // NOTE: Backticks (`) are used here so ticketID can be evaluated
+        const response1 = await axios.patch(
+            `http://localhost:5000/api/tenant/addFeedbackText/${ticketID}`,
+            values,
+            config
+        )
+        console.log("got response of adding feedback text:")
+        console.log(response1);
+
+        const response2 = await axios.patch(
+            `http://localhost:5000/api/tenant/addFeedbackRating/${ticketID}`,
+            values,
+            config
+        )
+        console.log("got response of adding feedback rating:")
+        console.log(response2);
+
+        const response3 = await axios.patch(
+            `http://localhost:5000/api/tenant/closeTicketStatus/${ticketID}`,
+            values,
+            config
+        )
+        console.log("got response of closing ticket:")
+        console.log(response3);
+        //return response;
+
+    } catch (err){
+        if (err && err instanceof AxiosError) {
+            setError(err.response);
+        }
+        else if (err && err instanceof Error){
+            setError(err.message);
+        }
+
+        console.log("Error: ", err);
+    }
+
+    }
+
+    const formik = useFormik({
+        initialValues: {
+            comment: "",
+            rating: -1
+        },
+        onSubmit: event => onSubmit(event, formik.values.comment, formik.values.rating),
+    });
 
   return (
+    
     <Box display="flex" flexDirection="column" justifyContent="center" minHeight="100vh">
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={formik.handleSubmit}>
         <Box mb={2} sx={{ width: '50%', margin: '0 auto' }}>
           <Typography variant="h4" component="h1" align="center" gutterBottom>
             Please leave your feedback
@@ -30,16 +109,17 @@ function FeedbackForm() {
             rows={4}
             variant="outlined"
             fullWidth
-            value={comment}
-            onChange={e => setComment(e.target.value)} // store user comment 
+            name="comment"
+            value={formik.values.comment}
+            onChange={formik.handleChange} // store user comment 
           />
         </Box>
         <Box display="flex" justifyContent="center" mt={2} mb={2}>
           <Rating
             name="rating"
             size="large"
-            value={rating}
-            onChange={(event, newValue) => {setRating(newValue);}} // store user rating
+            value={Number(formik.values.rating)}
+            onChange={formik.handleChange} // store user rating
           />
         </Box>
         <Box display="flex" justifyContent="center" m={1} p={1}>

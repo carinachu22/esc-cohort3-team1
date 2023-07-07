@@ -32,9 +32,9 @@ const LandlordLogin = () => {
             console.log(response);
             signIn({
                 token: response.data.token,
-                expiresIn: 3600,
+                expiresIn: 60,
                 tokenType: "Bearer",
-                authState: {email: values.email}
+                authState: {email: values.email, type: "landlord"}
             });
             if (response.data.message === "Login successfully"){
                 navigateToDashboard();
