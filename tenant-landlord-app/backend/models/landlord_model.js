@@ -138,6 +138,8 @@ export const getTicketsByStatus = (status, callBack) => {
     }
   );
 };
+
+
 export const updateQuotation = (id, data, callBack) => {
   const quotationAmount = parseFloat(data.quotation_amount).toFixed(2); //Note this is impt to format it to decimal
   const status = "quotation sent";
