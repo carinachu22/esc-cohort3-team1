@@ -157,7 +157,7 @@ export const controllerQuotationApproval = (req, res) => {
 
 /**
  * Add Feedback Rating
- * @param {*} req service_request_id, feedback_rating(int)
+ * @param {*} req service_request_id, feedback_rating(int, between 1-5)
  * @param {*} res 
  */
 export const controllerAddFeedbackRating = (req, res) => {
