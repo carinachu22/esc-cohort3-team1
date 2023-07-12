@@ -18,6 +18,11 @@ export const getTenantByEmail = (email, callBack) => {
   );
 };
 
+/**
+ * Get Tickets
+ * @param {*} email 
+ * @param {*} callBack 
+ */
 export const getTicketsByTenant = (email, callBack) => {
   pool.query(
     `
@@ -36,6 +41,12 @@ export const getTicketsByTenant = (email, callBack) => {
   );
 };
 
+/**
+ * Get Tickets by Status
+ * @param {*} email 
+ * @param {*} status 
+ * @param {*} callBack 
+ */
 export const getTicketsByStatus = (email, status, callBack) => {
   pool.query(
     `
@@ -54,6 +65,11 @@ export const getTicketsByStatus = (email, status, callBack) => {
   );
 };
 
+/**
+ * Ticket Creation
+ * @param {*} data name, email, request_type, request_description, submitted_date_time(Date Type)
+ * @param {*} callBack 
+ */
 export const createTicket = (data, callBack) => {
   const status = "submitted";
   const feedback_rating = null;
@@ -71,8 +87,8 @@ export const createTicket = (data, callBack) => {
       data.request_description,
       data.submitted_date_time,
       status,
-      data.feedback_rating,
-      data.feedback_text
+      feedback_rating,
+      feedback_text
     ],
     (error, results, fields) => {
       if (error) {
@@ -85,6 +101,13 @@ export const createTicket = (data, callBack) => {
   )
 };
 
+/**
+ * Tenant can approve quotation from landlord
+ * @param {int} id service_ticket_id
+ * @param {*} data 
+ * @param {string} status updated status
+ * @param {*} callBack 
+ */
 export const quotationApproval = (id, data, status, callBack) => {
   pool.query(
     `
@@ -106,6 +129,12 @@ export const quotationApproval = (id, data, status, callBack) => {
   )
 };
 
+/**
+ * Adds feedback rating to feedback_rating
+ * @param {int} id service_ticket_id
+ * @param {string} data feedback_rating
+ * @param {*} callBack 
+ */
 export const addFeedbackRating = (id, data, callBack) => {
   pool.query (
     `
@@ -126,6 +155,12 @@ export const addFeedbackRating = (id, data, callBack) => {
   )
 };
 
+/**
+ * Adds feedback text to feedback_text
+ * @param {int} id service_ticket_id
+ * @param {string} data feedback_text
+ * @param {*} callBack 
+ */
 export const addFeedbackText = (id, data, callBack) => {
   pool.query (
     `
@@ -146,6 +181,12 @@ export const addFeedbackText = (id, data, callBack) => {
   )
 };
 
+/**
+ * Change ticket's status to close
+ * @param {int} id service_request_id
+ * @param {string} data status to close
+ * @param {*} callBack 
+ */
 export const closeTicketStatus = (id, data, callBack) => {
   pool.query (
     `
