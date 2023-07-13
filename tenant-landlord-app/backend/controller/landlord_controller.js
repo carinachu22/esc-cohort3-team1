@@ -87,8 +87,18 @@ export const controllerForgotPasswordLandlord = (req, res) => {
     const secret = process.env.JWT_SECRET + results.password;
     const jsontoken = jwt.sign({email: results.email, id: results.landlord_user_id}, secret, {expiresIn: 300});
     const link = `http://localhost:5000/api/landlord/reset-password/${results.landlord_user_id}/${jsontoken}`;
+
+    ////// NODEMAILER FEATURE ///////
+    ///// nodemailer feature starts from here //////
     var transporter = nodemailer.createTransport({
       service: 'gmail',
+      //sender email and password
+      // you can obtain the password in the following steps:
+      // 1. Sign in to gmail
+      // 2. go to "manage google account"
+      // 3. go to "Security"
+      // 4. click on "2-step verification"
+      // 5. go to "App passwords" and add a password to a "custom name" app
       auth: {
         user: process.env.AUTH_USER,
         pass: process.env.AUTH_PASSWORD
@@ -96,8 +106,8 @@ export const controllerForgotPasswordLandlord = (req, res) => {
     });
     
     var mailOptions = {
-      from: 'wangxingrui2134@gmail.com',
-      to: 'wangxingrui2134@gmail.com',
+      from: process.env.AUTH_USER,
+      to: results.email,
       subject: 'Password Reset',
       text: link
     };
@@ -110,6 +120,7 @@ export const controllerForgotPasswordLandlord = (req, res) => {
       }
     }); 
   });
+  ///// nodemailer feature ends here /////
 };
 
 export const controllerResetPasswordPageLandlord = async (req, res) => {

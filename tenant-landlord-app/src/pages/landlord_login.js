@@ -166,8 +166,12 @@ const LandlordLogin = () => {
                             </Button>
                             {formik.errors.hasError ? <Box color="red.500" id="errorMessage" marginBottom="-6" >Invalid email or password</Box>: null}
                         </FormControl>
-                        
+
                         <Box fontSize="lg" textColor="blue.700" marginTop={10}>
+                            <Link to="/pages/landlord_signup">Don't have an account?</Link>
+                        </Box>
+                        
+                        <Box fontSize="lg" textColor="blue.700" marginTop={2}>
                             <Link to="/pages/ForgotPasswordPage">Forgot password?</Link>
                         </Box>
                         
