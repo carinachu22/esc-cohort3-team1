@@ -1,13 +1,10 @@
 import React, { useState } from "react";
-import LoginStyles from "../styles/login_form_landlord.module.css";
-import PasswordStyles from "../styles/usePasswordToggle.module.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {Link} from 'react-router-dom';
 import {useNavigate} from 'react-router-dom';
 import {setIn, useFormik} from "formik";
 import axios, {AxiosError} from "axios";
 import {useSignIn} from "react-auth-kit";
-import LoginForm from "../components/login_form";
 import {
     Box,
     Button,
@@ -26,18 +23,18 @@ import {
     FormErrorMessage,
 } from "@chakra-ui/react";
 
-const LandlordLogin = () => {
-    const navigate = useNavigate();
+
+const LoginForm = () => {
+    const [passwordShown, setPasswordShown] = useState(false);
     const [error, setError] = useState("");
     const signIn = useSignIn();
+    const navigate = useNavigate();
 
     const validate = values => {
         let errors = {};
         
         if (!values.email){
             errors.email = "Required";
-        } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)){
-            errors.email = "Invalid email";
         }
 
         if(!values.password){
@@ -47,17 +44,23 @@ const LandlordLogin = () => {
         return errors;
     }
 
-
-    const [passwordShown, setPasswordShown] = useState(false);
+    const navigateToDashboard = () => {
+        navigate('/pages/Dashboard');
+    };
 
     const togglePassword = () => {
         //passwordShown = true if handler is invoked  
         setPasswordShown(!passwordShown)
     }
-
-    const navigateToDashboard = () => {
-        navigate('/pages/Dashboard');
-    };
+    const formik = useFormik({
+        initialValues: {
+            email: "",
+            password: "",
+            // rememberMe: false
+        },
+        onSubmit,
+        validate
+    });
 
     const onSubmit = async (values) => {
         console.log("Values: ", values);
@@ -81,7 +84,7 @@ const LandlordLogin = () => {
                 navigateToDashboard();
             }
             else if (response.data.message === "Invalid email or password"){
-                formik.errors.hasError = true;
+
             }
 
 
@@ -96,23 +99,10 @@ const LandlordLogin = () => {
             console.log("Error: ", err);
         }
     }
-  
-
-
-    const formik = useFormik({
-        initialValues: {
-            email: "",
-            password: "",
-            hasError: false
-        },
-        onSubmit,
-        validate
-    });
 
 
 
 
-    /////// code below uses Chakra styling ////////
     return (
         <Flex align="center" justify="center" h="100vh" w="100%">
             <Box w="22em" h="30em" p={8} rounded="md" position="relative" borderRadius="1em" boxShadow="0 0.188em 1.550em rgb(156, 156, 156)">
@@ -151,7 +141,7 @@ const LandlordLogin = () => {
                             </InputGroup>
                             {formik.errors.password ? <Box color="red.500"  marginBottom="-6">{formik.errors.password}</Box>: null}                          
                         </FormControl>
-                        <FormControl marginTop="6" >
+                        <FormControl marginTop="6">
                             <Button 
                                 id="loginButton"
                                 type="submit" 
@@ -160,15 +150,14 @@ const LandlordLogin = () => {
                                 width="full" 
                                 textColor="white" 
                                 variant="unstyled"
-                                onClick={formik.onSubmit}
                                 > 
                                 LOGIN
                             </Button>
-                            {formik.errors.hasError ? <Box color="red.500" id="errorMessage" marginBottom="-6" >Invalid email or password</Box>: null}
+                            <Box color="red.500" id="errorMessage" visibility="hidden" marginBottom="-6">Invalid email or password!</Box>
                         </FormControl>
-                        
-                        <Box fontSize="lg" textColor="blue.700" marginTop={10}>
-                            <Link to="/pages/ForgotPasswordPage">Forgot password?</Link>
+
+                        <Box fontSize="lg" textColor="blue.700" marginTop={6}>
+                            <Link >forget password?</Link>
                         </Box>
                         
                     </VStack>
@@ -176,42 +165,6 @@ const LandlordLogin = () => {
             </Box>
         </Flex>
     )
-
-
-    /////////// CODE BELOW USES CSS STLYING ////////////
-    // return (
-    //     <div className={LoginStyles.page}>
-    //         <form className={LoginStyles.cover} onSubmit={formik.handleSubmit}>
-    //             <h1 className={LoginStyles.header}>Welcome!</h1>
-    //             <input 
-    //                 name="email"
-    //                 type="email" 
-    //                 placeholder="EMAIL" 
-    //                 value={formik.values.email}
-    //                 className={LoginStyles.input}
-    //                 onChange={formik.handleChange}
-    //             />
-    //             <div className={PasswordStyles.passwordToggle}>
-    //                 <input
-    //                     name="password" 
-    //                     type={passwordShown ? "text" : "password"} 
-    //                     placeholder="PASSWORD"
-    //                     className={PasswordStyles.passwordInput}
-    //                     value={formik.values.password}
-    //                     onChange={formik.handleChange}
-    //                 />
-    //                 <span onClick={togglePassword}>
-    //                     {passwordShown ? "Hide" : "Show"}
-    //                 </span>
-    //             </div>
-
-    //             <button className={LoginStyles.login_btn} type="submit" isLoading={formik.isSubmitting}>LOGIN</button>
-    //             <div className={LoginStyles.sign_up}>Don't have an account? <Link to="/pages/landlord_signup" className={LoginStyles.sign_up_link}>Sign up!</Link></div>
-    //             <Link className={LoginStyles.password_reset}>forget password?</Link>
-
-    //         </form>
-    //     </div>
-    // )
 }
 
-export default LandlordLogin
+export default LoginForm

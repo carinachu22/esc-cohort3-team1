@@ -6,9 +6,13 @@ import {
   getTicketById,
   getTicketsByStatus,
   updateQuotation,
+  getLandlordById,
+  updateLandlordPassword,
 } from "../models/landlord_model.js";
 import { genSaltSync, hashSync, compareSync } from "bcrypt";
 import jwt from "jsonwebtoken";
+import nodemailer from "nodemailer";
+
 
 export const controllerCreateLandlord = (req, res) => {
   const body = req.body;
@@ -41,7 +45,7 @@ export const controllerLoginLandlord = (req, res) => {
     if (!results) {
       return res.json({
         success: 0,
-        data: "Invalid email or password",
+        message: "Invalid email or password",
       });
     }
     console.log(body.password, results.password);
@@ -61,10 +65,123 @@ export const controllerLoginLandlord = (req, res) => {
       console.log(results);
       res.json({
         success: 0,
-        data: "Invalid email or password",
+        message: "Invalid email or password",
       });
     }
   });
+};
+
+export const controllerForgotPasswordLandlord = (req, res) => {
+  const body = req.body;
+  console.log(body.email);
+  getLandlordByEmail(body.email, (err, results) => {
+    if (err) {
+      console.log(err);
+    }
+    if (!results) {
+      return res.json({
+        success: 0,
+        message: "User does not exist!",
+      });
+    }
+    const secret = process.env.JWT_SECRET + results.password;
+    const jsontoken = jwt.sign({email: results.email, id: results.landlord_user_id}, secret, {expiresIn: 300});
+    const link = `http://localhost:5000/api/landlord/reset-password/${results.landlord_user_id}/${jsontoken}`;
+    var transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.AUTH_USER,
+        pass: process.env.AUTH_PASSWORD
+      }
+    });
+    
+    var mailOptions = {
+      from: 'wangxingrui2134@gmail.com',
+      to: 'wangxingrui2134@gmail.com',
+      subject: 'Password Reset',
+      text: link
+    };
+    
+    transporter.sendMail(mailOptions, function(error, info){
+      if (error) {
+        console.log(error);
+      } else {
+        console.log('Email sent: ' + info.response);
+      }
+    }); 
+  });
+};
+
+export const controllerResetPasswordPageLandlord = async (req, res) => {
+  const {id, jsontoken} = req.params;
+  console.log(req.params);
+  getLandlordById(id, (err, results) => {
+    console.log(results);
+    if (err) {
+      console.log(err);
+    }
+    if (!results) {
+      return res.json({
+        success: 0,
+        message: "User does not exist!",
+      });
+    }
+    const secret = process.env.JWT_SECRET + results.password;
+    try {
+      const verify = jwt.verify(jsontoken, secret);
+      return res.render("ResetPasswordPage", {email: verify.email, status: "not verified"});
+      
+    } catch (error){
+      console.log(error);
+      res.send("Not Verified!");
+    }
+  })
+
+};
+
+export const controllerResetPasswordLandlord = async (req, res) => {
+  const {id, jsontoken} = req.params;
+  console.log({id, jsontoken});
+  var {password, confirmPassword} = req.body;
+  console.log({password, confirmPassword});
+  const salt = genSaltSync(10);
+  password = hashSync(password, salt);
+
+  getLandlordById(id, (err, results) => {
+    console.log(results);
+    if (err) {
+      console.log(err);
+    }
+    if (!results) {
+      return res.json({
+        success: 0,
+        message: "User does not exist!",
+      });
+    }
+    const secret = process.env.JWT_SECRET + results.password;
+    try {
+      const verify = jwt.verify(jsontoken, secret);
+      updateLandlordPassword({password, id}, (err, results) => {
+        console.log({password, id})
+        if (err) {
+          console.log(err);
+          return res.status(500).json({
+            success: 0,
+            message: "Database connection error",
+          });
+        }
+      })
+      res.render("ResetPasswordPage", {email: verify.email, status: "verified"});
+    } catch (error){
+      console.log(error);
+    }
+  })
+
+
+
+  
+
+
 };
 
 export const controllerCreateTenant = (req, res) => {
