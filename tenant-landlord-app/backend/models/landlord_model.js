@@ -49,13 +49,7 @@ export const getLandlordByEmail = (email, callBack) => {
   );
 };
 
-<<<<<<< HEAD
-/**
- * update details of landlord
- * @param {*} data email, password(unhashed), ticket_type, landlord_user_id
- * @param {*} callBack 
- */
-=======
+
 export const getLandlordById = (id, callBack) => {
   pool.query(
     `
@@ -95,8 +89,11 @@ export const updateLandlordPassword = ({password, id}, callBack) => {
   );
 }
 
-//update details of landlord
->>>>>>> origin/frontend_integration
+/**
+ * update details of landlord
+ * @param {*} data email, password(unhashed), ticket_type, landlord_user_id
+ * @param {*} callBack 
+ */
 export const updateLandlord = (data, callBack) => {
   pool.query(
     'UPDATE landlord_user SET email=?, password=?, ticket_type=? WHERE landlord_user_id=?',
