@@ -81,13 +81,13 @@ export const controllerLoginLandlord = (req, res) => {
   });
 };
 
-<<<<<<< HEAD
+//<<<<<<< HEAD
 /**
  * Create Tenant
  * @param {*} req tenant email, password(unhashed)
  * @param {*} res 
  */
-=======
+//========
 export const controllerForgotPasswordLandlord = (req, res) => {
   const body = req.body;
   console.log(body.email);
@@ -212,7 +212,7 @@ export const controllerResetPasswordLandlord = async (req, res) => {
 
 };
 
->>>>>>> origin/frontend_integration
+//>>>>>>> origin/frontend_integration
 export const controllerCreateTenant = (req, res) => {
   const body = req.body;
   console.log(body);
