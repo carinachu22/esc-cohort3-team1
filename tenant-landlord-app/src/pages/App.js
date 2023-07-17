@@ -9,8 +9,10 @@ import CloseTicketPage from './CloseTicketPage';
 import FeedbackForm from './FeedbackForm';
 import CreateTicketPage from './CreateTicketPage'; 
 import ViewTicketPage from './ViewTicketPage';
+import TicketList from './TicketList';
 
 import {Routes, Route} from 'react-router-dom';
+
 
 function App() {
   return (
@@ -22,6 +24,7 @@ function App() {
           <Route path="/pages/landlord_login/*" element={<LandlordLogin />} />
           <Route path="/pages/landlord_signup/*" element={<LandlordSignup />} />
           <Route path='/pages/Dashboard/*' element={<Dashboard/>} />
+          <Route path='/pages/TicketList/*' element={<TicketList/>} />
           <Route path='/pages/CloseTicketPage/*' element={<CloseTicketPage/>} />
           <Route path='/pages/FeedbackForm/*' element={<FeedbackForm/>} />
           <Route path='/pages/CreateTicketPage/*' element={<CreateTicketPage/>} />
