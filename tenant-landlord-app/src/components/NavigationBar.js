@@ -20,8 +20,8 @@ function CreateTicket({accountType}){
         <Box style={{  
             margin: 'auto'
             }}>
-            <Link href="/pages/AccountManagement" color='white'>
-                Account Management
+            <Link href="/pages/CreateTicketPage/" color='white'>
+                Create Service Ticket
             </Link>
         </Box>
     )
@@ -35,8 +35,8 @@ function AccountManagement({accountType}){
         <Box style={{  
             margin: 'auto'
             }}>   
-            <Link href="/pages/CreateTicketPage/" color='white'>
-                Create Service Ticket
+            <Link href="/pages/AccountManagement" color='white'>
+                Account Management
             </Link>
         </Box>
     )
