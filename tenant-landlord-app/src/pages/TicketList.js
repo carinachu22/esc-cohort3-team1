@@ -134,12 +134,12 @@ export default function TicketList() {
                         Completed Date & Time: {ticket.completed_date_time} <br></br>
                         Feedback Comment: {ticket.feedback_text} <br></br>
                         Feedback Rating: {ticket.feedback_rating} <br></br>
-                        <Button href={"/pages/FeedbackForm/?ticketID=" + ticket.service_request_id}>
+                        <Button href={"/pages/FeedbackForm/?ticketID=" + ticket.service_request_id} bgColor='blue.500' color='white'>
                             Give Feedback & Close Ticket
                         </Button>
                         <br></br>
                         <br></br>
-                        <Button>
+                        <Button bgColor='blue.500' color='white'>
                             Approve Service Ticket
                         </Button>
                     </AccordionPanel>
