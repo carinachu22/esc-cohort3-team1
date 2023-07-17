@@ -54,9 +54,7 @@ export default function TicketList() {
                 const config = {
                     headers: {
                       Authorization: `${token()}`
-                    }
-                }
-                const values = {
+                    },
                     params: {
                         email: userDetails().email
                     }
@@ -69,8 +67,7 @@ export default function TicketList() {
                 } else if (type == 'tenant'){ 
                     response = await axios.get(
                         "http://localhost:5000/api/tenant/getTickets",
-                        config,
-                        values
+                        config
                     )
                 }
                 console.log("got response:")
