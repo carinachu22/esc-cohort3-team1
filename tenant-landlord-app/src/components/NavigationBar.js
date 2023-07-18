@@ -10,7 +10,7 @@ import {
   
 import * as React from 'react'; 
 import { useAuthUser, useSignOut } from 'react-auth-kit';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 function CreateTicket({accountType}){
     if (accountType == 'landlord'){
@@ -43,6 +43,7 @@ function AccountManagement({accountType}){
 }
 
 export default function NavigationBar(){
+    const navigate = useNavigate();
     const signOut = useSignOut();
     const userDetails = useAuthUser();
     if (userDetails() == null){
@@ -80,7 +81,7 @@ export default function NavigationBar(){
             <Box style={{  
                 margin: 'auto'
                 }}>
-                <Button onClick={() => signOut()} href='/' bgColor='blue.600' color='white' _hover={{bg: 'blue.800'}}>
+                <Button onClick={() => "signOut();navigate('/')"} bgColor='blue.600' color='white' _hover={{bg: 'blue.800'}}>
                     Sign Out
                 </Button>
             </Box>
