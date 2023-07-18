@@ -132,10 +132,10 @@ export const quotationApproval = (id, data, status, callBack) => {
 /**
  * Adds feedback rating to feedback_rating
  * @param {int} id service_ticket_id
- * @param {string} data feedback_rating
+ * @param {int} data feedback_rating
  * @param {*} callBack 
  */
-export const addFeedbackRating = (id, data, callBack) => {
+export const addFeedbackRating = (id, feedback_rating, callBack) => {
   pool.query (
     `
     UPDATE service_request
@@ -143,7 +143,7 @@ export const addFeedbackRating = (id, data, callBack) => {
     WHERE service_request_id = ?
     `,
     [
-      data.feedback_rating, id
+      feedback_rating, id
     ],
     (error, results, fields) => {
       if (error) {

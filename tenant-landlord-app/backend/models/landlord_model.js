@@ -42,7 +42,6 @@ export const getLandlordByEmail = (email, callBack) => {
       if (error) {
         callBack(error);
       } else {
-        // console.log(results);
         callBack(null, results[0]);
       }
     }
