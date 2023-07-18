@@ -108,10 +108,6 @@ const QuotationUpload = () => {
 
     ///// code below uses Chakra styling ////////
     return (
-        <>
-        <div>
-        {pdfUrl && <iframe src={pdfUrl} width="100%" height="600px" />}
-        </div>
         <Flex align="center" justify="center" h="100vh" w="100%">
         <Helmet>
             <meta charSet="utf-8"/>
@@ -157,9 +153,11 @@ const QuotationUpload = () => {
                 > 
                 Get Quotation
             </Button>
+            <Box>
+                {pdfUrl && <iframe src={pdfUrl} width="100%" height="600px" />}
+            </Box>
         </Box>
     </Flex>
-    </>
     )
 }
 

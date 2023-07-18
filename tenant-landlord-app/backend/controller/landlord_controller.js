@@ -306,8 +306,8 @@ export const controllerUpdateQuotation = (req, res) => {
  */
 export const controllerUploadQuotation = (req, res) => {
   console.log('???????')
-  // res.header("Access-Control-Allow-Origin", "*");
-  // res.header("Access-Control-Allow-Headers", "content-type");
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "content-type");
   const files = req.file;
 
   console.log(files);
@@ -357,7 +357,6 @@ export const controllerGetQuotation = (req, res) => {
       });
     } else {
       var filepath = results.quotation_path;
-      // filepath = "C:" + filepath;
       console.log(filepath);
       fs.readFile(filepath, (err, data) => {
         if (err) {
@@ -373,21 +372,7 @@ export const controllerGetQuotation = (req, res) => {
         res.send(data);
       });
 
-      // getQuotation(filepath, 'utf-8', (err, results) => {
-      //   if (err) {
-      //     console.log(err);
-      //     return;
-      //   }
-      //   if (!results) {
-      //     return res.json({
-      //       results
-      //     });
-      //   } 
-      //   console.log(results);
-      //   return res.json({
-      //     results
-      //   })
-      // })
+
       if (err){
         return console.log(err);
       }
