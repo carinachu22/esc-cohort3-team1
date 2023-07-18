@@ -2,9 +2,12 @@ import React, { useState, useRef } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios, {AxiosError} from "axios";
 import {Helmet} from "react-helmet";
-import { Document, Page, pdfjs } from 'react-pdf';
-
-
+import { Worker, Viewer } from '@react-pdf-viewer/core'
+import { PDFViewer, View } from '@react-pdf/renderer'
+import ReactPDF from '@react-pdf/renderer';
+import { useEffect } from "react";
+import { Document, Page } from 'react-pdf';
+import { Base64 } from 'js-base64';
 
 import {
     Box,
@@ -22,6 +25,9 @@ import {
 const QuotationUpload = () => {
     //requires javascript to be within document.addEventListener("DOMContentLoaded", e => {}) 
     //to ensure html elements get loaded before javascript logic
+    const [text,setText] = useState('')
+    const [pdfUrl,setPdfUrl] = useState('')
+
     document.addEventListener("DOMContentLoaded", e => {
         
         console.log(e)
@@ -62,8 +68,6 @@ const QuotationUpload = () => {
 
 
 
-
-
     const retrieveFile = () => {
         axios
         .get(
@@ -89,65 +93,73 @@ const QuotationUpload = () => {
     }
 
 
-
-
+    useEffect(() => {
+        fetch("http://localhost:5000/api/landlord/getQuotation/") // Replace with the actual backend URL serving the PDF
+          .then((response) => response.blob())
+          .then((data) => {
+            const pdfBlobUrl = URL.createObjectURL(data);
+            setPdfUrl(pdfBlobUrl);
+          })
+          .catch((error) => {
+            console.error(error);
+            // Handle error
+          });
+      }, []);
 
     ///// code below uses Chakra styling ////////
     return (
+        <>
+        <div>
+        {pdfUrl && <iframe src={pdfUrl} width="100%" height="600px" />}
+        </div>
         <Flex align="center" justify="center" h="100vh" w="100%">
-            <Helmet>
-                <meta charSet="utf-8"/>
-                <meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval' http://www.google.com"/>
-                <meta name="viewport" content="'width=device-width, initial-scale=1.0"/>
-            </Helmet>
-            <Box w="22em" h="30em" p={8} rounded="md" position="relative" borderRadius="1em" boxShadow="0 0.188em 1.550em rgb(156, 156, 156)">
-                <form action="/uploadQuotation/" id="form" method="POST" encType="multipart/form-data">
-                    <VStack align="flex-start" alignItems="center">
-                        <Heading marginTop="4">Quotation Upload</Heading>
-                        <FormControl marginTop="6">
-                            <Input
-                                id="files" 
-                                name="files"
-                                type="file" 
-                                variant="filled"
-                                placeholder="Upload Quotation"
-                                accept=".pdf"
-                            />
-                        </FormControl>
-                        <FormControl marginTop="6" >
-                            <Button 
-                                id="UploadButton"
-                                type="submit" 
-                                backgroundColor="rgb(192, 17, 55)" 
-                                width="full" 
-                                textColor="white" 
-                                variant="unstyled"
-                                > 
-                                Upload Quotation
-                            </Button>
-                        </FormControl>
-                        
-                    </VStack>
-                </form>
-                <Button 
-                    id="GetButton"
-                    type="submit"
-                    backgroundColor="rgb(192, 17, 55)" 
-                    width="full" 
-                    textColor="white" 
-                    variant="unstyled"
-                    onClick={retrieveFile}
-                    > 
-                    Get Quotation
-                </Button>
-                <Document file={"http://localhost:3000/uploads/1689667861898-combinepdf-1.pdf"}>
-                    <Page pageNumber={1} />
-                </Document>
-
-
-
-            </Box>
-        </Flex>
+        <Helmet>
+            <meta charSet="utf-8"/>
+            {/* <meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval' http://www.google.com"/> */}
+            <meta name="viewport" content="'width=device-width, initial-scale=1.0"/>
+        </Helmet>
+        <Box w="22em" h="30em" p={8} rounded="md" position="relative" borderRadius="1em" boxShadow="0 0.188em 1.550em rgb(156, 156, 156)">
+            <form action="/uploadQuotation/" id="form" method="POST" encType="multipart/form-data">
+                <VStack align="flex-start" alignItems="center">
+                    <Heading marginTop="4">Quotation Upload</Heading>
+                    <FormControl marginTop="6">
+                        <Input
+                            id="files" 
+                            name="files"
+                            type="file" 
+                            variant="filled"
+                            placeholder="Upload Quotation"
+                            accept=".pdf"
+                        />
+                    </FormControl>
+                    <FormControl marginTop="6" >
+                        <Button 
+                            id="UploadButton"
+                            type="submit" 
+                            backgroundColor="rgb(192, 17, 55)" 
+                            width="full" 
+                            textColor="white" 
+                            variant="unstyled"
+                            > 
+                            Upload Quotation
+                        </Button>
+                    </FormControl>
+                </VStack>
+            </form>
+            <Button 
+                id="GetButton"
+                type="submit"
+                backgroundColor="rgb(192, 17, 55)" 
+                width="full" 
+                textColor="white" 
+                variant="unstyled"
+                onClick={retrieveFile}
+                > 
+                Get Quotation
+            </Button>
+        </Box>
+    </Flex>
+    </>
     )
 }
 
