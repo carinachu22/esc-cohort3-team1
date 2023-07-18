@@ -305,6 +305,7 @@ export const controllerUpdateQuotation = (req, res) => {
  * @param {formData} req 
  */
 export const controllerUploadQuotation = (req, res) => {
+  console.log('???????')
   // res.header("Access-Control-Allow-Origin", "*");
   // res.header("Access-Control-Allow-Headers", "content-type");
   const files = req.file;
@@ -319,6 +320,7 @@ export const controllerUploadQuotation = (req, res) => {
 
   // get quotation's path in file system and store it in mysql database
   uploadQuotation({filepath, id}, (err, results) => {
+    console.log('uploadQuotation results', results)
     if (err) {
       console.log(err);
       return;
@@ -329,6 +331,10 @@ export const controllerUploadQuotation = (req, res) => {
         message: "Failed to upload file",
       });
     }
+    return res.status(200).json({
+      success: 1,
+      data: "updated successfully!",
+    });
 
   })
 
@@ -353,17 +359,19 @@ export const controllerGetQuotation = (req, res) => {
       var filepath = results.quotation_path;
       // filepath = "C:" + filepath;
       console.log(filepath);
-    
-
-      fs.readFile(filepath, "utf-8", function(err, data){
-        if (!err) {
-          res.json({
-            data
-          })
-        } else {
-          console.log(err);
-      }
-      })
+      fs.readFile(filepath, (err, data) => {
+        if (err) {
+          console.log('error')
+          console.error(err);
+          res.status(500).send("Internal Server Error");
+          return;
+        }
+        // Set headers for the response
+        res.setHeader("Content-Type", "application/pdf");
+        res.setHeader("Content-Disposition", "attachment; filename=file.pdf");
+        // Send the PDF file data as the response
+        res.send(data);
+      });
 
       // getQuotation(filepath, 'utf-8', (err, results) => {
       //   if (err) {
