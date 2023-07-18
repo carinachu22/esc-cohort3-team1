@@ -135,9 +135,8 @@ export default function TicketList() {
                             Give Feedback & Close Ticket
                         </Button>
                         <br></br>
-                        <br></br>
-                        <Button bgColor='blue.500' color='white'>
-                            Approve Service Ticket
+                        <Button onClick={() => navigate('/pages/ViewTicketPage/' + ticket.service_request_id)} bgColor='blue.500' color='white' _hover={{bg: 'blue.800'}}>
+                            View Details & Actions
                         </Button>
                     </AccordionPanel>
                 </AccordionItem>
