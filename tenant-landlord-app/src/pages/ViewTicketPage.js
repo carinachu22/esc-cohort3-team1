@@ -1,22 +1,102 @@
-import React, { useState } from 'react';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
+import React, { useState, useEffect } from 'react';
+import { Box, Heading, Textarea, Button, Input, Flex } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
+import { useAuthUser, useAuthHeader } from 'react-auth-kit';
+import { useFormik } from 'formik';
+import axios, { AxiosError } from 'axios';
 
-function ViewTicketPage() {
+function CreateTicketPage() {
   const navigate = useNavigate();
+  const token = useAuthHeader();
+  const userDetails = useAuthUser();
+  const [error, setError] = useState('');
   const [tenantComment, setTenantComment] = useState('');
+  const [ticketType, setTicketType] = useState('');
+  const [additionalHeading, setAdditionalHeading] = useState('');
+  const stats = 'nill';
 
   const handleCommentChange = (event) => {
     setTenantComment(event.target.value);
   };
 
-  const handleCreateTicket = () => {
-    console.log(tenantComment);
-    navigate('/Dashboard'); // Navigate to the Dashboard form page
+  const handleTicketTypeChange = (event) => {
+    setTicketType(event.target.value);
   };
+
+  const handleAdditionalHeadingChange = (event) => {
+    setAdditionalHeading(event.target.value);
+  };
+
+  const handleCreateTicket = async () => {
+    console.log(tenantComment);
+    console.log(token());
+    setError('');
+
+    try {
+      const config = {
+        headers: {
+          Authorization: `${token()}`,
+        },
+      };
+      const currentdate = new Date();
+      const values = {
+        name: '--',
+        email: userDetails().email,
+        request_type: ticketType,
+        request_description: tenantComment,
+        additional_heading: additionalHeading,
+        submitted_date_time:
+          currentdate.getFullYear().toString() +
+          '-' +
+          (currentdate.getMonth() + 1).toString() +
+          '-' +
+          currentdate.getDate().toString() +
+          ' ' +
+          currentdate.getHours().toString() +
+          ':' +
+          ('0' + currentdate.getMinutes()).slice(-2) +
+          ':' +
+          currentdate.getSeconds().toString(),
+        status: 'SUBMITTED',
+        feedback_text: '',
+        feedback_rating: '-1',
+      };
+
+      const response1 = await axios.post(
+        'http://localhost:5000/api/tenant/createTicket',
+        values,
+        config
+      );
+      console.log('got response of creating ticket:');
+      console.log(response1);
+
+      navigate('/pages/Dashboard'); // Navigate to the Dashboard form page
+    } catch (err) {
+      if (err && err instanceof AxiosError) {
+        setError(err.response);
+      } else if (err && err instanceof Error) {
+        setError(err.message);
+      }
+
+      console.log('Error: ', err);
+    }
+  };
+
+  const formik = useFormik({
+    initialValues: {
+      location: '',
+      category: '',
+      tenantComment: '',
+      additionalHeading: '',
+    },
+    onSubmit: handleCreateTicket,
+  });
+
+  useEffect(() => {
+    if (stats === 'completed') {
+      navigate('/pages/FeedbackForm');
+    }
+  }, [stats, navigate]);
 
   return (
     <Box
@@ -24,133 +104,114 @@ function ViewTicketPage() {
       flexDirection="column"
       alignItems="center"
       minHeight="100vh"
-      style={{
-        fontFamily: "'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif",
-        marginTop: '25vh', // Adjust the marginTop value as per your preference
-      }}
+      fontFamily="'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif"
+      marginTop="5vh"
     >
       {/* Title */}
-      <Typography variant="h4" gutterBottom style={{ marginBottom: '2em' }}>
-        Create A Service Ticket
-      </Typography>
+      <Heading as="h4" size="2xl" marginBottom="2em">
+        Your Service Ticket
+      </Heading>
 
       {/* Comment Boxes */}
-      <Box
-        display="flex"
-        flexDirection="row"
-        justifyContent="center"
-        alignItems="center"
-        marginBottom="2em"
-      >
+      <Box display="flex" flexDirection="row" justifyContent="center" alignItems="center" marginBottom="2em">
         {/* Comment Box 1 */}
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'flex-start',
-            width: '30em',
-            padding: '2em',
-            marginRight: '2em',
-          }}
-        >
-          <Typography variant="h5" gutterBottom> 
+        <Box flex="1" marginRight="2em">
+          <Heading as="h5" size="lg" marginBottom="1em">
             Location
-          </Typography>
-          <TextField
-            multiline
-            rows={1}
-            variant="outlined"
-            fullWidth
-            InputProps={{ style: { width: '100%' } }}
-            sx={{
-              marginBottom: '2em',
-              '& .MuiOutlinedInput-root': {
-                border: '2px solid gray',
-                backgroundColor: 'rgb(229, 226, 226)',
-                borderRadius: '0.25em',
-                paddingLeft: '0.5em',
-              },
-            }}
+          </Heading>
+          <Textarea
+            name="location"
+            placeholder="Enter location"
+            value={formik.values.location}
+            onChange={formik.handleChange}
+            marginBottom="2em"
           />
-          <Typography variant="h5" gutterBottom>
+          <Heading as="h5" size="lg" marginBottom="1em">
             Category Of Request
-          </Typography>
-          <TextField
-            multiline
-            rows={1}
-            variant="outlined"
-            fullWidth
-            InputProps={{ style: { width: '100%' } }}
-            sx={{
-              marginBottom: '1em',
-              '& .MuiOutlinedInput-root': {
-                border: '2px solid gray',
-                backgroundColor: 'rgb(229, 226, 226)',
-                borderRadius: '0.25em',
-                paddingLeft: '0.5em',
-              },
-            }}
+          </Heading>
+          <Textarea
+            name="category"
+            placeholder="Enter category"
+            value={formik.values.category}
+            onChange={formik.handleChange}
+            marginBottom="1em"
+          />
+          <Heading as="h5" size="lg"  marginBottom="1em">
+            Status
+          </Heading>
+          <Textarea
+            name="category"
+            placeholder="Enter category"
+            value={formik.values.status}
+            onChange={formik.handleChange}
+            marginBottom="1em"
           />
         </Box>
 
         {/* Comment Box 3 */}
-        <Box
-          display="flex"
-          flexDirection="column"
-          alignItems="flex-start"
-          width="35em"
-          padding="1em"
-          marginLeft="2em"
-        >
-          <Typography variant="h5" gutterBottom>
+        <Box flex="1" marginLeft="2em">
+          <Heading as="h5" size="lg" marginBottom="1em">
             Description
-          </Typography>
-          <TextField
-            label="Your Comment"
-            multiline
+          </Heading>
+          <Textarea
+            name="tenantComment"
+            placeholder="Enter your comment"
+            value={formik.values.tenantComment}
+            onChange={formik.handleChange}
+            marginBottom="1em"
             rows={8}
-            variant="outlined"
-            fullWidth
-            value={tenantComment}
-            onChange={handleCommentChange}
-            sx={{
-              '& .MuiOutlinedInput-root': {
-                border: '2px solid gray',
-                backgroundColor: 'rgb(229, 226, 226)',
-                borderRadius: '0.25em',
-                paddingLeft: '0.5em',
-                marginTop: '0em',
-              },
-            }}
+          />
+          <Heading as="h5" size="lg" marginBottom="1em">
+            Time Submitted
+          </Heading>
+          <Input
+            name="Submitted time"
+            value={formik.values.submitted_date_time}
+            isReadOnly
+            marginBottom="2em"
           />
         </Box>
       </Box>
 
       {/* Submit Ticket Button */}
-      <Box marginBottom="2em">
+      <Flex justifyContent="center">
         <Button
-          variant="contained"
-          color="primary"
-          onClick={handleCreateTicket}
-          style={{
-            width: '15em',
-            height: '3em',
-            backgroundColor: 'gray',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            transition: '0.5s',
-            marginTop: '3em',
-            borderRadius: '0.25em',
-            cursor: 'pointer',
-            color: 'white',
-          }}
+          variant="solid"
+          colorScheme="blue"
+          onClick={formik.handleSubmit}
+          width="13em"
+          height="3em"
+          marginTop="3em"
+          borderRadius="0.25em"
         >
-          Recall Ticket
+          Add Quotation
         </Button>
-      </Box>
+        <Button
+          variant="solid"
+          colorScheme="blue"
+          width="13em"
+          height="3em"
+          marginTop="3em"
+          marginLeft="2.3em"
+          marginBottom="5vh"
+          borderRadius="0.25em"
+        >
+          Start Work
+        </Button>
+        <Button
+          variant="solid"
+          colorScheme="blue"
+          width="13em"
+          height="3em"
+          marginTop="3em"
+          marginLeft="2.3em"
+          borderRadius="0.25em"
+        >
+          End Work
+        </Button>
+      </Flex>
     </Box>
   );
 }
 
-export default ViewTicketPage;
+export default CreateTicketPage;
