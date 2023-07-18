@@ -10,8 +10,10 @@ import FeedbackForm from './FeedbackForm';
 import CreateTicketPage from './CreateTicketPage'; 
 import ViewTicketPage from './ViewTicketPage';
 import TicketList from './TicketList';
+import AccountManagement from './AccountManagement';
 
 import {Routes, Route} from 'react-router-dom';
+
 
 
 function App() {
@@ -29,6 +31,7 @@ function App() {
           <Route path='/pages/FeedbackForm/*' element={<FeedbackForm/>} />
           <Route path='/pages/CreateTicketPage/*' element={<CreateTicketPage/>} />
           <Route path='/pages/ViewTicketPage/*' element={<ViewTicketPage/>} />
+          <Route path='/pages/AccountManagement/*' element={<AccountManagement/>} />
         </Routes>
       </div>
       
