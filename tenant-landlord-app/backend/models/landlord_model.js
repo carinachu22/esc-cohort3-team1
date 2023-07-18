@@ -177,6 +177,7 @@ export const getTicketsByStatus = (status, callBack) => {
     }
   );
 };
+
 export const updateQuotation = (id, data, callBack) => {
   const quotationAmount = parseFloat(data.quotation_amount).toFixed(2); //Note this is impt to format it to decimal
   const status = "quotation sent";
@@ -196,3 +197,67 @@ export const updateQuotation = (id, data, callBack) => {
     }
   );
 };
+
+//upload quotation's path in the file system
+export const uploadQuotation = ({filepath, id}, callBack) => {
+  pool.query(
+    `
+    UPDATE service_request
+    SET quotation_path = ?
+    WHERE service_request_id = ?
+    `,
+    [
+      filepath,
+      id
+    ],
+    (error, results, fields) => {
+      if (error) {
+        callBack(error);
+      } else {
+        callBack(null, results[0]);
+      }
+    }
+  );
+}
+
+
+//get the quotation path of a specific service request 
+export const getQuotationPath = (id, callBack) => {
+  pool.query(
+    `
+    SELECT quotation_path
+    FROM service_request
+    WHERE service_request_id = ?
+    `,
+    [
+      id
+    ],
+    (error, results, fields) => {
+      if (error) {
+        callBack(error);
+      } else {
+        callBack(null, results[0]);
+      }
+    }
+  );
+}
+
+export const getQuotation = (filepath, callBack) => {
+  pool.query(
+    `
+    SELECT 
+    LOAD_FILE(?)
+    `,
+    [
+      filepath
+    ],
+    (error, results, fields) => {
+      if (error) {
+        callBack(error);
+      } else {
+        callBack(null, results[0]);
+      }
+    }
+  );
+}
+

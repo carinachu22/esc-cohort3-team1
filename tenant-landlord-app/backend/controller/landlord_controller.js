@@ -8,10 +8,18 @@ import {
   updateQuotation,
   getLandlordById,
   updateLandlordPassword,
+  uploadQuotation,
+  getQuotation,
+  getQuotationPath
+
 } from "../models/landlord_model.js";
 import { genSaltSync, hashSync, compareSync } from "bcrypt";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
+import path from "path";
+import fs from "fs";
+import formidable from 'formidable';
+import { send } from "process";
 
 
 export const controllerCreateLandlord = (req, res) => {
@@ -289,5 +297,92 @@ export const controllerUpdateQuotation = (req, res) => {
       success: 1,
       data: "updated successfully!",
     });
+  });
+};
+
+/**
+ * store quotation in file system and its path in mysql database
+ * @param {formData} req 
+ */
+export const controllerUploadQuotation = (req, res) => {
+  // res.header("Access-Control-Allow-Origin", "*");
+  // res.header("Access-Control-Allow-Headers", "content-type");
+  const files = req.file;
+
+  console.log(files);
+  
+
+  const id = 1;
+
+  const filepath = files.path;
+  console.log(filepath);
+
+  // get quotation's path in file system and store it in mysql database
+  uploadQuotation({filepath, id}, (err, results) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+    if (!results) {
+      return res.json({
+        success: 0,
+        message: "Failed to upload file",
+      });
+    }
+
+  })
+
+
+}
+
+export const controllerGetQuotation = (req, res) => {
+  // hard-coded id, remove this in final version
+
+  const id = 1;
+  getQuotationPath(id, (err, results) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+    if (!results) {
+      return res.json({
+        success: 0,
+        message: "service ticket not found",
+      });
+    } else {
+      var filepath = results.quotation_path;
+      // filepath = "C:" + filepath;
+      console.log(filepath);
+    
+
+      fs.readFile(filepath, "utf-8", function(err, data){
+        if (!err) {
+          res.json({
+            data
+          })
+        } else {
+          console.log(err);
+      }
+      })
+
+      // getQuotation(filepath, 'utf-8', (err, results) => {
+      //   if (err) {
+      //     console.log(err);
+      //     return;
+      //   }
+      //   if (!results) {
+      //     return res.json({
+      //       results
+      //     });
+      //   } 
+      //   console.log(results);
+      //   return res.json({
+      //     results
+      //   })
+      // })
+      if (err){
+        return console.log(err);
+      }
+    }
   });
 };
