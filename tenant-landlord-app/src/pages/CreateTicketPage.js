@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
+import { Box, Text, Button, Textarea, FormControl, FormLabel, Input } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 
 import { useAuthUser, useAuthHeader } from 'react-auth-kit';
-import {useFormik} from "formik";
 import axios, {AxiosError} from "axios";
+
+
 
 function CreateTicketPage() {
   const navigate = useNavigate();
@@ -94,15 +92,13 @@ function CreateTicketPage() {
       flexDirection="column"
       alignItems="center"
       minHeight="100vh"
-      style={{
-        fontFamily: "'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif",
-        marginTop: '25vh', // Adjust the marginTop value as per your preference
-      }}
+      fontFamily="'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif"
+      marginTop="25vh"
     >
       {/* Title */}
-      <Typography variant="h4" gutterBottom style={{ marginBottom: '2em' }}>
+      <Text fontSize="2xl" marginBottom="2em">
         Create A Service Ticket
-      </Typography>
+      </Text>
 
       {/* Comment Boxes */}
       <Box
@@ -114,55 +110,39 @@ function CreateTicketPage() {
       >
         {/* Comment Box 1 */}
         <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'flex-start',
-            width: '30em',
-            padding: '2em',
-            marginRight: '2em',
-          }}
+          display="flex"
+          flexDirection="column"
+          alignItems="flex-start"
+          width="30em"
+          padding="2em"
+          marginRight="2em"
         >
-          <Typography variant="h5" gutterBottom> 
+          <Text fontSize="lg" marginBottom="1em"> 
             Location
-          </Typography>
-          <TextField
-            multiline
-            rows={1}
-            variant="outlined"
-            fullWidth
-            InputProps={{ style: { width: '100%' } }}
-            sx={{
-              marginBottom: '2em',
-              '& .MuiOutlinedInput-root': {
-                border: '2px solid gray',
-                backgroundColor: 'rgb(229, 226, 226)',
-                borderRadius: '0.25em',
-                paddingLeft: '0.5em',
-              },
-            }}
-          />
-          <Typography variant="h5" gutterBottom>
+          </Text>
+          <FormControl>
+            <Textarea
+              rows={1}
+              size="lg"
+              variant="filled"
+              width="100%"
+              marginBottom="2em"
+            />
+          </FormControl>
+          <Text fontSize="lg" marginBottom="1em">
             Category Of Request
-          </Typography>
-          <TextField
-            multiline
-            rows={1}
-            variant="outlined"
-            fullWidth
-            value={ticketType}
-            onChange={handleTicketTypeChange}
-            InputProps={{ style: { width: '100%' } }}
-            sx={{
-              marginBottom: '1em',
-              '& .MuiOutlinedInput-root': {
-                border: '2px solid gray',
-                backgroundColor: 'rgb(229, 226, 226)',
-                borderRadius: '0.25em',
-                paddingLeft: '0.5em',
-              },
-            }}
-          />
+          </Text>
+          <FormControl>
+            <Textarea
+              rows={1}
+              size="lg"
+              variant="filled"
+              width="100%"
+              marginBottom="1em"
+              value={ticketType}
+              onChange={handleTicketTypeChange}
+            />
+          </FormControl>
         </Box>
 
         {/* Comment Box 3 */}
@@ -174,49 +154,39 @@ function CreateTicketPage() {
           padding="1em"
           marginLeft="2em"
         >
-          <Typography variant="h5" gutterBottom>
+          <Text fontSize="lg" marginBottom="1em">
             Description
-          </Typography>
-          <TextField
-            label="Your Comment"
-            multiline
-            rows={8}
-            variant="outlined"
-            fullWidth
-            value={tenantComment}
-            onChange={handleCommentChange}
-            sx={{
-              '& .MuiOutlinedInput-root': {
-                border: '2px solid gray',
-                backgroundColor: 'rgb(229, 226, 226)',
-                borderRadius: '0.25em',
-                paddingLeft: '0.5em',
-                marginTop: '0em',
-              },
-            }}
-          />
+          </Text>
+          <FormControl>
+            <Textarea
+              label="Your Comment"
+              rows={8}
+              size="lg"
+              variant="filled"
+              width="100%"
+              value={tenantComment}
+              onChange={handleCommentChange}
+              marginTop="0em"
+            />
+          </FormControl>
         </Box>
       </Box>
 
       {/* Submit Ticket Button */}
       <Box marginBottom="2em">
         <Button
-          variant="contained"
-          color="primary"
+          size="lg"
           onClick={handleCreateTicket}
-          style={{
-            width: '15em',
-            height: '3em',
-            backgroundColor: 'gray',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            transition: '0.5s',
-            marginTop: '3em',
-            borderRadius: '0.25em',
-            cursor: 'pointer',
-            color: 'white',
-          }}
+          width="15em"
+          height="3em"
+          backgroundColor="gray"
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          marginTop="3em"
+          borderRadius="0.25em"
+          cursor="pointer"
+          color="white"
         >
           Submit
         </Button>

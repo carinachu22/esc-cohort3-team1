@@ -1,10 +1,6 @@
 import React, { useState } from 'react';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
+import { Box, Heading, Text, Textarea, Button } from "@chakra-ui/react";
 import { useNavigate } from 'react-router-dom';
-
 
 function CloseTicketPage() {
   const navigate = useNavigate();
@@ -17,7 +13,6 @@ function CloseTicketPage() {
   const handleCloseTicket = () => {
     console.log(tenantComment);
     navigate('/FeedbackForm');     // Navigate to the feedback form page
-
   };
 
   const handleRejectTicket = () => {
@@ -25,31 +20,22 @@ function CloseTicketPage() {
   };
 
   return (
-    <Box display="flex" flexDirection="column" justifyContent="center" minHeight="100vh">
-      <Box sx={{ width: '75%', margin: '0 auto', mt: 4 }}>
-        <Typography variant="h3" component="h1" gutterBottom>
-          ticket name
-        </Typography>
-        <Typography variant="h5" gutterBottom>
-          Ticket Description
-        </Typography>
-        <Typography variant="h5" gutterBottom>
-          Owner's Comments
-        </Typography>
-        <TextField
-          label="Your Comment"
-          multiline
-          rows={4}
-          variant="outlined"
-          fullWidth
+    <Box display="flex" flexDirection="column" justifyContent="center" minHeight="100vh" alignItems="center">
+      <Box w="75%" mt={4}>
+        <Heading as="h1" size="xl" mb={4}>ticket name</Heading>
+        <Heading as="h2" size="lg" mb={2}>Ticket Description</Heading>
+        <Heading as="h2" size="lg" mb={2}>Owner's Comments</Heading>
+        <Textarea
+          placeholder="Your Comment"
+          size="sm"
+          mb={4}
           value={tenantComment}
           onChange={handleCommentChange}
-          sx={{ mb: 2 }}
         />
-        <Button variant="contained" color="success" onClick={handleCloseTicket} sx={{ mr: 2 }}>
+        <Button colorScheme="green" onClick={handleCloseTicket} mr={2}>
           Close Ticket
         </Button>
-        <Button variant="contained" color="error" onClick={handleRejectTicket}>
+        <Button colorScheme="red" onClick={handleRejectTicket}>
           Reject Closing
         </Button>
       </Box>
