@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { Box, Heading, Text, Textarea, Button } from '@chakra-ui/react';
+import { Box, Text, Button, Heading, Textarea, FormControl, FormLabel, Input } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthUser, useAuthHeader } from 'react-auth-kit';
 import { useFormik } from 'formik';
-import axios, { AxiosError } from 'axios';
+import axios, {AxiosError} from "axios";
+
+
 
 function CreateTicketPage() {
   const navigate = useNavigate();
@@ -105,6 +107,7 @@ function CreateTicketPage() {
         Create A Service Ticket
       </Heading>
 
+
       {/* Comment Boxes */}
       <Box display="flex" flexDirection="row" justifyContent="center" alignItems="center" marginBottom="2em">
         {/* Comment Box 1 */}
@@ -145,6 +148,7 @@ function CreateTicketPage() {
             rows={8}
           />
           
+
         </Box>
       </Box>
 

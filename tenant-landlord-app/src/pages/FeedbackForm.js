@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Box, Button, Heading, Textarea, Stack, Icon } from '@chakra-ui/react';
+import { Box, Button, Text, Textarea, useToast, IconButton, Heading, Stack, Icon } from '@chakra-ui/react';
+import { StarIcon } from '@chakra-ui/icons';
 import { IoIosStarOutline, IoIosStar } from 'react-icons/io';
 import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuthUser, useAuthHeader } from 'react-auth-kit';
@@ -60,6 +61,7 @@ function FeedbackForm() {
       );
       console.log('got response of adding feedback rating:');
       console.log(response2);
+
 
       const response3 = await axios.patch(
         `http://localhost:5000/api/tenant/closeTicketStatus/${ticketID}`,
