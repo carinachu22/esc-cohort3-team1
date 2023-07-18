@@ -1,4 +1,4 @@
-import { Navigate } from 'react-router-dom';
+import { useNavigate, Navigate } from 'react-router-dom';
 import styles from "../styles/dashboard.module.css";
 
 // Import React and hooks
@@ -30,6 +30,7 @@ Functionalities:
 **/
 export default function TicketList() {
     // Initialise states and hooks
+    const navigate = useNavigate();
     const [error, setError] = useState("");
     const [tickets, setTickets] = useState(null);
     const [isLoading, setLoading] = useState(true);
