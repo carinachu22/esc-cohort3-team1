@@ -20,6 +20,9 @@ const router = express.Router();
  * 3. Approve/Disapprove quotation
  * 4. View tenant's service tickets
  * 5. View tenant's service tickets by status
+ * 6. Add Feedback Rating
+ * 7. Add Feedback Text
+ * 8. Change Ticket Status to close
  */
 
 router.post("/login", controllerLoginTenant);

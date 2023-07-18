@@ -16,11 +16,16 @@ root.render(
     cookieDomain={window.location.hostname}
     cookieSecure={false}
     >
-    <BrowserRouter>
-      <React.StrictMode>
-        <App />
-      </React.StrictMode>
-    </BrowserRouter>
+      <ChakraProvider>
+        <BrowserRouter>
+          <React.StrictMode>
+            
+              <App />
+          </React.StrictMode>
+        </BrowserRouter>
+      </ChakraProvider>
+  
+
   </AuthProvider>
   </ChakraProvider>
 
