@@ -157,13 +157,14 @@ export const controllerQuotationApproval = (req, res) => {
 
 /**
  * Add Feedback Rating
- * @param {*} req service_request_id, feedback_rating(int, between 1-5)
+ * @param {int} req feedback_rating(int, between 1-5)
  * @param {*} res 
  */
 export const controllerAddFeedbackRating = (req, res) => {
   const id = req.params.id;
-  const body = req.body; // input is int
-  addFeedbackRating(id, body, (err, results) => {
+  const feedback_rating = req.feedback_rating; 
+  console.log(body)
+  addFeedbackRating(id, feedback_rating, (err, results) => {
     if (err) {
       console.log(err);
       return;
@@ -181,7 +182,7 @@ export const controllerAddFeedbackRating = (req, res) => {
 
 /**
  * Add Feedback Text
- * @param {*} req service_request_id, feedback_test
+ * @param {*} req feedback_test
  * @param {*} res 
  */
  export const controllerAddFeedbackText = (req, res) => {
@@ -205,7 +206,7 @@ export const controllerAddFeedbackRating = (req, res) => {
 
 /**
  * Update Close Ticket Status
- * @param {*} req service_request_id, status == "close"
+ * @param {*} req  status == "close"
  * @param {*} res 
  */
 export const controllerCloseTicketStatus = (req, res) => {

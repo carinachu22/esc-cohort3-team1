@@ -36,3 +36,4 @@ app.get("/api", (req, res) => {
 app.use("/api/landlord", landlordRouter);
 app.use("/api/tenant", tenantRouter);
 
+export default app;
