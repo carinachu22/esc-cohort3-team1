@@ -14,27 +14,49 @@ import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 
 
+/**
+ * Create landlord account
+ * @param {*} req email, password(unhashed), ticket_type
+ * @param {*} res 
+ */
 export const controllerCreateLandlord = (req, res) => {
   const body = req.body;
-  console.log(body);
-  const salt = genSaltSync(10);
-  body.password = hashSync(body.password, salt);
-  createLandlord(body, (err, results) => {
-    if (err) {
-      console.log(err);
-      return res.status(500).json({
-        success: 0,
-        message: "Database connection error",
+  const email = body.email;
+  getLandlordByEmail(body.email, (err, result) => {
+    if (!result) {
+      console.log(body);
+      const salt = genSaltSync(10);
+      body.password = hashSync(body.password, salt);
+      createLandlord(body, (err, results) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).json({
+            success: 0,
+            message: "Database connection error",
+          });
+        }
+        return res.status(200).json({
+          success: 1,
+          message: "created successfully",
+          data: results,
+        });
       });
     }
-    return res.status(200).json({
-      success: 1,
-      message: "created successfully",
-      data: results,
-    });
-  });
+    else {
+      return res.status(500).json({
+      success: 0,
+      message: "duplicate email",
+
+    });}
+  })
+
 };
 
+/**
+ * Login for landlord
+ * @param {*} req landlord email
+ * @param {*} res 
+ */
 export const controllerLoginLandlord = (req, res) => {
   const body = req.body;
   console.log(body.email);
@@ -70,6 +92,8 @@ export const controllerLoginLandlord = (req, res) => {
     }
   });
 };
+
+
 
 export const controllerForgotPasswordLandlord = (req, res) => {
   const body = req.body;
@@ -195,6 +219,11 @@ export const controllerResetPasswordLandlord = async (req, res) => {
 
 };
 
+/**
+ * Create Tenant
+ * @param {*} req tenant email, password(unhashed)
+ * @param {*} res 
+ */
 export const controllerCreateTenant = (req, res) => {
   const body = req.body;
   console.log(body);
@@ -215,7 +244,12 @@ export const controllerCreateTenant = (req, res) => {
   });
 };
 
-
+/**
+ * Gets tickets
+ * @param {*} req 
+ * @param {*} res 
+ * @returns Tickets
+ */
 export const controllerGetTickets = (req, res) => {
   getTickets((err, results) => {
     if (err) {
@@ -229,6 +263,12 @@ export const controllerGetTickets = (req, res) => {
     }
   });
 };
+
+/**
+ * Gets ticket by service_request_id
+ * @param {*} req service_request_id
+ * @param {*} res 
+ */
 export const controllerGetTicketById = (req, res) => {
   const id = req.params.id;
   getTicketById(id, (err, results) => {
@@ -250,6 +290,11 @@ export const controllerGetTicketById = (req, res) => {
   });
 };
 
+/**
+ * Get Tickets by status
+ * @param {*} req status
+ * @param {*} res 
+ */
 export const controllerGetTicketsByStatus = (req, res) => {
   const status = req.params.status;
   getTicketsByStatus(status, (err, results) => {
@@ -271,6 +316,11 @@ export const controllerGetTicketsByStatus = (req, res) => {
   });
 };
 
+/**
+ * Landlord updates quotation
+ * @param {*} req service_request_id, quotation_amount(float, 2dp), status
+ * @param {*} res 
+ */
 export const controllerUpdateQuotation = (req, res) => {
   const id = req.params.id;
   const body = req.body;
