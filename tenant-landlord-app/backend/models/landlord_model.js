@@ -214,7 +214,7 @@ export const uploadQuotation = ({filepath, id}, callBack) => {
       if (error) {
         callBack(error);
       } else {
-        callBack(null, results[0]);
+        callBack(null, results);
       }
     }
   );
