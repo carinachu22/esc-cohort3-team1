@@ -10,6 +10,8 @@ import FeedbackForm from './FeedbackForm';
 import CreateTicketPage from './CreateTicketPage'; 
 import ViewTicketPage from './ViewTicketPage';
 import QuotationPage from './QuotationPage';
+import ForgotPasswordPage from './ForgotPasswordPage';
+
 
 import {Routes, Route} from 'react-router-dom';
 import { ChakraProvider } from "@chakra-ui/react";
@@ -24,6 +26,7 @@ function App() {
             <Route path="/" element={<Landing />} />
             <Route path="/pages/tenant_login/*" element={<TenantLogin />} />
             <Route path="/pages/landlord_login/*" element={<LandlordLogin />} />
+            <Route path='/pages/ForgotPasswordPage' element={<ForgotPasswordPage/>} />
             <Route path="/pages/landlord_signup/*" element={<LandlordSignup />} />
             <Route path='/pages/Dashboard/*' element={<Dashboard/>} />
             <Route path='/pages/CloseTicketPage/*' element={<CloseTicketPage/>} />

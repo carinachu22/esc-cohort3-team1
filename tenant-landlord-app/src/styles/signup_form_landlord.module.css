@@ -38,7 +38,8 @@
 /* styling for input boxes */
 .input {
     border: none;
-    background-color: rgb(229, 226, 226);
+    outline: none;
+    background: rgb(229, 226, 226);
     height: 3em;
     width: 80%;
     border-radius: 0.25em;

@@ -5,6 +5,7 @@ import App from './pages/App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
 import {AuthProvider} from "react-auth-kit";
+import { ChakraProvider } from '@chakra-ui/react';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -14,11 +15,16 @@ root.render(
     cookieDomain={window.location.hostname}
     cookieSecure={false}
     >
-    <BrowserRouter>
-      <React.StrictMode>
-        <App />
-      </React.StrictMode>
-    </BrowserRouter>
+      <ChakraProvider>
+        <BrowserRouter>
+          <React.StrictMode>
+            
+              <App />
+          </React.StrictMode>
+        </BrowserRouter>
+      </ChakraProvider>
+  
+
   </AuthProvider>
 
 );

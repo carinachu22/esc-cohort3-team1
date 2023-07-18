@@ -3,6 +3,7 @@ import express from "express";
 import landlordRouter from "./routes/landlord_router.js";
 import tenantRouter from "./routes/tenant_router.js";
 import cors from "cors";
+
 // import { genSaltSync, hashSync, compareSync } from "bcrypt";   //remove this
 //dotenv.config();
 
@@ -14,7 +15,12 @@ import cors from "cors";
 const app = express();
 app.use(cors());
 
+
 app.use(express.json());
+app.set("view engine", "ejs");
+app.use(express.urlencoded({extended:false}));
+
+
 
 app.listen(process.env.APP_PORT, () => {
   console.log(`Server is working on PORT: `, process.env.APP_PORT);
