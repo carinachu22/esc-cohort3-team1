@@ -80,7 +80,7 @@ export default function NavigationBar(){
             <Box style={{  
                 margin: 'auto'
                 }}>
-                <Button onClick={() => signOut()} bgColor='blue.600' color='white' _hover={{bg: 'blue.800'}}>
+                <Button onClick={() => signOut()} href='/' bgColor='blue.600' color='white' _hover={{bg: 'blue.800'}}>
                     Sign Out
                 </Button>
             </Box>
