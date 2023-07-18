@@ -10,7 +10,8 @@ import FeedbackForm from './FeedbackForm';
 import CreateTicketPage from './CreateTicketPage'; 
 import ViewTicketPage from './ViewTicketPage';
 import ForgotPasswordPage from './ForgotPasswordPage';
-
+import TicketList from './TicketList';
+import AccountManagement from './AccountManagement';
 
 import {Routes, Route} from 'react-router-dom';
 
