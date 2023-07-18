@@ -122,19 +122,10 @@ export default function TicketList() {
                     </AccordionButton>
                     <AccordionPanel>
                         Service Request ID: {ticket.service_request_id} <br></br>
-                        Lease ID: {ticket.lease_id} <br></br>
-                        Submitted Date & Time: {ticket.submitted_date_time} <br></br>
-                        Name: {ticket.name} <br></br>
                         Email: {ticket.email} <br></br>
                         Request Type: {ticket.request_type} <br></br>
                         Request Description: {ticket.request_description} <br></br>
                         Status: {ticket.status} <br></br>
-                        Completed Date & Time: {ticket.completed_date_time} <br></br>
-                        Feedback Comment: {ticket.feedback_text} <br></br>
-                        Feedback Rating: {ticket.feedback_rating} <br></br>
-                        <Button href={"/pages/FeedbackForm/?ticketID=" + ticket.service_request_id} bgColor='blue.500' color='white'>
-                            Give Feedback & Close Ticket
-                        </Button>
                         <br></br>
                         <Button onClick={() => navigate('/pages/ViewTicketPage/' + ticket.service_request_id)} bgColor='blue.500' color='white' _hover={{bg: 'blue.800'}}>
                             View Details & Actions
