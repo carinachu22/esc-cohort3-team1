@@ -21,7 +21,7 @@ import { Accordion, AccordionButton, AccordionItem, AccordionPanel, TableContain
     Th,
     Td,
     TableCaption,
-Box, AccordionIcon, HStack } from '@chakra-ui/react';
+Box, AccordionIcon, HStack, Card } from '@chakra-ui/react';
 
 /**
 Functional component to display service ticket list
@@ -111,11 +111,8 @@ export default function Dashboard() {
                 }
                 setTickets(temp_tickets)
             }   
-            //console.log('tickets',tickets)
-
 
             // Update states to be accessed in return
-            //setTickets(tickets_html);
             setLoading(false);
         })
     }
@@ -150,9 +147,11 @@ export default function Dashboard() {
         <h1>
             Welcome, {userDetails().email}
         </h1>
+        <Card>
         You have {tickets.length} tickets <br></br>
         You have {needAction} tickets requiring your attention. <br></br>
         You have {waitAction} tickets pending your tenant's/landlord's attention.
+        </Card>
         </>
     )
 }
