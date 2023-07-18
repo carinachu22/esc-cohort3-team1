@@ -12,6 +12,11 @@ import { compareSync } from "bcrypt";
 import jwt from "jsonwebtoken";
 
 
+/**
+ * Login Tenant
+ * @param {*} req email, password(unhashed)
+ * @param {*} res 
+ */
 export const controllerLoginTenant = (req, res) => {
   const body = req.body;
   getTenantByEmail(body.email, (err, results) => {
@@ -47,6 +52,11 @@ export const controllerLoginTenant = (req, res) => {
   });
 };
 
+/**
+ * Create Ticket
+ * @param {*} req name, email, request_type, request_description, submitted_date_time(Date Type)
+ * @param {*} res 
+ */
 export const controllerCreateTicket = (req, res) => {
   const body = req.body;
   createTicket(body, (err,results) => {
@@ -65,6 +75,11 @@ export const controllerCreateTicket = (req, res) => {
   })
 };
 
+/**
+ * Get Tickets
+ * @param {*} req tenant email
+ * @param {*} res 
+ */
 export const controllerGetTickets = (req, res) => {
   const email = req.body.email;
   getTicketsByTenant(email, (err,results) => {
@@ -83,6 +98,11 @@ export const controllerGetTickets = (req, res) => {
   });
 };
 
+/**
+ * Get Tickets By Status
+ * @param {*} req tenant email, status
+ * @param {*} res 
+ */
 export const controllerGetTicketsByStatus = (req, res) => {
   const email = req.body.email;
   const status = req.params.status;
@@ -102,6 +122,11 @@ export const controllerGetTicketsByStatus = (req, res) => {
   });
 };
 
+/**
+ * Get Quotation Approved
+ * @param {*} req service_ticket_id, quotation_accepted_by_tenant == 0/1
+ * @param {*} res 
+ */
 export const controllerQuotationApproval = (req, res) => {
   const id = req.params.id;
   const body = req.body;
@@ -130,7 +155,11 @@ export const controllerQuotationApproval = (req, res) => {
   })
 }
 
-
+/**
+ * Add Feedback Rating
+ * @param {*} req service_request_id, feedback_rating(int, between 1-5)
+ * @param {*} res 
+ */
 export const controllerAddFeedbackRating = (req, res) => {
   const id = req.params.id;
   const body = req.body; // input is int
@@ -150,10 +179,14 @@ export const controllerAddFeedbackRating = (req, res) => {
   })
 }
 
-
+/**
+ * Add Feedback Text
+ * @param {*} req service_request_id, feedback_test
+ * @param {*} res 
+ */
  export const controllerAddFeedbackText = (req, res) => {
   const id = req.params.id;
-  const  body = req.body; // "feedback_test"
+  const  body = req.body; 
   addFeedbackText (id, body, (err, results) => {
     if (err) {
       console.log(err);
@@ -170,6 +203,11 @@ export const controllerAddFeedbackRating = (req, res) => {
   })
 }
 
+/**
+ * Update Close Ticket Status
+ * @param {*} req service_request_id, status == "close"
+ * @param {*} res 
+ */
 export const controllerCloseTicketStatus = (req, res) => {
   const id = req.params.id;
   const body = req.body;
@@ -177,7 +215,7 @@ export const controllerCloseTicketStatus = (req, res) => {
   if (body.status == "close") {
      status = "ticket_close"
    } else {
-    status = "ticket_quotation_approved"
+    status = "close_attempt_failed"
    }
   
   closeTicketStatus (id, status, (err,results) => {

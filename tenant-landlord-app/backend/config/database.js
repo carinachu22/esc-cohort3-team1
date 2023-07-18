@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 
+
 import { createPool } from "mysql2"; //this is just to import a method
 dotenv.config();
 const pool = createPool({
@@ -11,7 +12,9 @@ const pool = createPool({
   connectionLimit: 10,
 });
 
-// Test the database connection
+/**
+ * Test the database connection
+ */
 pool.getConnection((err, connection) => {
   if (err) {
     console.error("Error connecting to the database:", err);
@@ -31,6 +34,12 @@ pool.getConnection((err, connection) => {
   }
 });
 
+/**
+ * Allows us to reuse the connect by keeping the connection in the pool \
+ * -------- \
+ * Functions of pool: \
+ * pool.query
+ */
 export default pool; //this allow us to reuse the connect by keeping the connection in the pool
 /**
  * Functions of pool:

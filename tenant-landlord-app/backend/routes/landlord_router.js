@@ -1,13 +1,14 @@
 import {
   controllerCreateLandlord,
   controllerLoginLandlord,
+  controllerCreateTenant,
   controllerGetTickets,
   controllerGetTicketById,
   controllerGetTicketsByStatus,
   controllerUpdateQuotation,
   controllerResetPasswordLandlord,
   controllerResetPasswordPageLandlord,
-  controllerForgotPasswordLandlord
+  controllerForgotPasswordLandlord,
 } from "../controller/landlord_controller.js";
 import express from "express";
 import { checkToken } from "../auth/token_validation.js";
@@ -26,7 +27,7 @@ router.post("/create", controllerCreateLandlord);
 router.post("/login", controllerLoginLandlord);
 router.post("/forgot-password", controllerForgotPasswordLandlord);
 router.post("/reset-password/:id/:jsontoken", controllerResetPasswordLandlord);
-
+router.post("./createTenant", controllerCreateTenant);
 router.get("/reset-password/:id/:jsontoken", controllerResetPasswordPageLandlord);
 router.get("/getTickets", checkToken, controllerGetTickets);
 router.get("/getTicketById/:id", checkToken, controllerGetTicketById);
