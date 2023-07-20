@@ -4,7 +4,7 @@ import { Box, Button, useToast, Heading } from '@chakra-ui/react';
 import { ArrowBackIcon } from '@chakra-ui/icons';
 import { useNavigate } from 'react-router-dom';
 
-import NavigationBar from './NavigationBar';
+import NavigationBar from '../components/NavigationBar';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
@@ -37,7 +37,7 @@ function QuotationPage() {
 
     return (
         <>
-        <NavigationBar />
+        {NavigationBar()}
         <Box p={10} bg="#EDF2F7" borderRadius="md" boxShadow="lg" mr = "10%" ml="10%">
             <Heading mb={5} textAlign="center">Job Quote for Ticket: {ticketName}</Heading>
             <Box display="flex" flexDirection="column" justifyContent="center" minHeight="50vh">
