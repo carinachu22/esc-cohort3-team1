@@ -81,7 +81,7 @@ export default function NavigationBar(){
             <Box style={{  
                 margin: 'auto'
                 }}>
-                <Button onClick={() => "signOut();navigate('/')"} bgColor='blue.600' color='white' _hover={{bg: 'blue.800'}}>
+                <Button onClick={() => {signOut();navigate('/')}} bgColor='blue.600' color='white' _hover={{bg: 'blue.800'}}>
                     Sign Out
                 </Button>
             </Box>
