@@ -13,6 +13,8 @@ import QuotationPage from './QuotationPage';
 import ForgotPasswordPage from './ForgotPasswordPage';
 import TicketList from './TicketList';
 import AccountManagement from './AccountManagement';
+import QuotationUpload from './QuotationUploadPage';
+
 
 import {Routes, Route} from 'react-router-dom';
 import { ChakraProvider } from "@chakra-ui/react";
@@ -32,6 +34,7 @@ function App() {
             <Route path="/" element={<Landing />} />
             <Route path="/pages/tenant_login/*" element={<TenantLogin />} />
             <Route path="/pages/landlord_login/*" element={<LandlordLogin />} />
+            <Route path="/pages/QuotationUploadPage/*" element={<QuotationUpload />} />
             <Route path='/pages/ForgotPasswordPage' element={<ForgotPasswordPage/>} />
             <Route path="/pages/landlord_signup/*" element={<LandlordSignup />} />
             <Route path='/pages/Dashboard/*' element={<Dashboard/>} />

@@ -1,10 +1,5 @@
 import pool from "../config/database.js";
 
-/**
- * Create landlord account
- * @param {*} data email, password(unhashed), ticket_type
- * @param {*} callBack 
- */
 export const createLandlord = (data, callBack) => {
   pool.query(
     `
@@ -25,11 +20,7 @@ export const createLandlord = (data, callBack) => {
   );
 };
 
-/**
- * Get landlord with email
- * @param {*} email 
- * @param {*} callBack 
- */
+
 export const getLandlordByEmail = (email, callBack) => {
   pool.query(
     `
@@ -48,7 +39,6 @@ export const getLandlordByEmail = (email, callBack) => {
     }
   );
 };
-
 
 export const getLandlordById = (id, callBack) => {
   pool.query(
@@ -89,11 +79,7 @@ export const updateLandlordPassword = ({password, id}, callBack) => {
   );
 }
 
-/**
- * update details of landlord
- * @param {*} data email, password(unhashed), ticket_type, landlord_user_id
- * @param {*} callBack 
- */
+//update details of landlord
 export const updateLandlord = (data, callBack) => {
   pool.query(
     'UPDATE landlord_user SET email=?, password=?, ticket_type=? WHERE landlord_user_id=?',
@@ -112,11 +98,6 @@ export const updateLandlord = (data, callBack) => {
   );
 }
 
-/**
- * Delete landlord account
- * @param {*} data landlord email
- * @param {*} callBack 
- */
 export const deleteLandlord = (data, callBack) => {
   pool.query(
     'DELETE FROM landlord_user where email=?',
@@ -130,11 +111,6 @@ export const deleteLandlord = (data, callBack) => {
   );
 }
 
-/**
- * Create new tenant account
- * @param {*} data tenant email, password(unhashed)
- * @param {*} callBack 
- */
 export const createTenant = (data, callBack) => {
   pool.query(
     `
@@ -154,10 +130,7 @@ export const createTenant = (data, callBack) => {
   );
 };
 
-/**
- * Get Tickets
- * @param {*} callBack 
- */
+
 export const getTickets = (callBack) => {
   pool.query(
     `
@@ -171,11 +144,6 @@ export const getTickets = (callBack) => {
   );
 };
 
-/**
- * Gets tickets by service_request_id
- * @param {*} id service_request_id
- * @param {*} callBack 
- */
 export const getTicketById = (id, callBack) => {
   pool.query(
     `
@@ -193,11 +161,6 @@ export const getTicketById = (id, callBack) => {
   );
 };
 
-/**
- * Get tickets by status
- * @param {*} status 
- * @param {*} callBack 
- */
 export const getTicketsByStatus = (status, callBack) => {
   pool.query(
     `
@@ -215,12 +178,6 @@ export const getTicketsByStatus = (status, callBack) => {
   );
 };
 
-/**
- * Update quotation
- * @param {*} id service_request_id
- * @param {*} data quotation amount(float to 2dp), status(string)
- * @param {*} callBack 
- */
 export const updateQuotation = (id, data, callBack) => {
   const quotationAmount = parseFloat(data.quotation_amount).toFixed(2); //Note this is impt to format it to decimal
   const status = "quotation sent";
@@ -240,3 +197,67 @@ export const updateQuotation = (id, data, callBack) => {
     }
   );
 };
+
+//upload quotation's path in the file system
+export const uploadQuotation = ({filepath, id}, callBack) => {
+  pool.query(
+    `
+    UPDATE service_request
+    SET quotation_path = ?
+    WHERE service_request_id = ?
+    `,
+    [
+      filepath,
+      id
+    ],
+    (error, results, fields) => {
+      if (error) {
+        callBack(error);
+      } else {
+        callBack(null, results);
+      }
+    }
+  );
+}
+
+
+//get the quotation path of a specific service request 
+export const getQuotationPath = (id, callBack) => {
+  pool.query(
+    `
+    SELECT quotation_path
+    FROM service_request
+    WHERE service_request_id = ?
+    `,
+    [
+      id
+    ],
+    (error, results, fields) => {
+      if (error) {
+        callBack(error);
+      } else {
+        callBack(null, results[0]);
+      }
+    }
+  );
+}
+
+export const getQuotation = (filepath, callBack) => {
+  pool.query(
+    `
+    SELECT 
+    LOAD_FILE(?)
+    `,
+    [
+      filepath
+    ],
+    (error, results, fields) => {
+      if (error) {
+        callBack(error);
+      } else {
+        callBack(null, results[0]);
+      }
+    }
+  );
+}
+
