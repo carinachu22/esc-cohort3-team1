@@ -2,7 +2,7 @@ import { useNavigate, Navigate } from 'react-router-dom';
 import styles from "../styles/dashboard.module.css";
 
 // Import React and hooks
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useAuthUser, useAuthHeader, useSignOut, useIsAuthenticated } from 'react-auth-kit';
 
 // Import bootstrap for automatic styling
@@ -20,6 +20,7 @@ import { Accordion, AccordionButton, AccordionItem, AccordionPanel, TableContain
     Td,
     TableCaption,
 Box, AccordionIcon, HStack, Button } from '@chakra-ui/react';
+import { SelectedTicketContext } from './App';
 
 /**
 Functional component to display service ticket list
@@ -37,6 +38,7 @@ export default function TicketList() {
     const token = useAuthHeader();
     const authenticated = useIsAuthenticated();
     const userDetails = useAuthUser();
+    const {selectedTicket, setSelectedTicket} = useContext(SelectedTicketContext);
 
     // Initialise function for 1. Fetch all service tickets dependent on user type (tenant or landlord)
     const GetServiceTickets = (userDetails) => {
@@ -127,7 +129,7 @@ export default function TicketList() {
                         Request Description: {ticket.request_description} <br></br>
                         Status: {ticket.status} <br></br>
                         <br></br>
-                        <Button onClick={() => navigate('/pages/ViewTicketPage/' + ticket.service_request_id)} bgColor='blue.500' color='white' _hover={{bg: 'blue.800'}}>
+                        <Button onClick={() => {navigate('/pages/ViewTicketPage/');setSelectedTicket(ticket.service_request_id)}} bgColor='blue.500' color='white' _hover={{bg: 'blue.800'}}>
                             View Details & Actions
                         </Button>
                     </AccordionPanel>
