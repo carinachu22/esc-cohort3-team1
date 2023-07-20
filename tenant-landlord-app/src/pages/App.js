@@ -16,12 +16,15 @@ import AccountManagement from './AccountManagement';
 
 import {Routes, Route} from 'react-router-dom';
 import { ChakraProvider } from "@chakra-ui/react";
+import { useState } from 'react';
 
 
-
+export const SelectedTicketContext = React.createContext(0);
 
 function App() {
+  const [selectedTicket, setSelectedTicket] = useState(0);
   return (
+    <SelectedTicketContext.Provider value={{ selectedTicket: selectedTicket, setSelectedTicket: setSelectedTicket }}>
     <ChakraProvider>
       <div className="App">
         <div className='App-cover'>
@@ -43,6 +46,7 @@ function App() {
         </div>
       </div>
     </ChakraProvider>
+    </SelectedTicketContext.Provider>
   );
 }
 
