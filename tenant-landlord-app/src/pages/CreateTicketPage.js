@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Box, Text, Button, Heading, Textarea, FormControl, FormLabel, Input } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthUser, useAuthHeader } from 'react-auth-kit';
-import { useFormik } from 'formik';
+import { Formik, Form,useFormik } from 'formik';
 import axios, {AxiosError} from "axios";
 
 
@@ -88,12 +88,20 @@ function CreateTicketPage() {
       location: '',
       category: '',
       tenantComment: '',
-      additionalHeading: '',
     },
     onSubmit: handleCreateTicket,
   });
 
   return (
+    <Formik
+    initialValues={{
+      location: '',
+      category: '',
+      tenantComment: '',
+    }}
+    onSubmit={handleCreateTicket}
+  >
+    <Form>
     <Box
       display="flex"
       flexDirection="column"
@@ -128,8 +136,8 @@ function CreateTicketPage() {
           <Textarea
             name="category"
             placeholder="Enter category"
-            value={formik.values.category}
-            onChange={formik.handleChange}
+            value={ticketType}
+            onChange={handleTicketTypeChange}
             marginBottom="1em"
           />
         </Box>
@@ -142,8 +150,8 @@ function CreateTicketPage() {
           <Textarea
             name="tenantComment"
             placeholder="Enter your comment"
-            value={formik.values.tenantComment}
-            onChange={formik.handleChange}
+            value={tenantComment}
+            onChange={handleCommentChange}
             marginBottom="1em"
             rows={8}
           />
@@ -167,6 +175,8 @@ function CreateTicketPage() {
         </Button>
       </Box>
     </Box>
+    </Form>
+    </Formik>
   );
 }
 
