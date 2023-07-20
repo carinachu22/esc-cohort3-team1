@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Box, Heading, Textarea, Button, Input, Flex } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthUser, useAuthHeader } from 'react-auth-kit';
 import { useFormik } from 'formik';
 import axios, { AxiosError } from 'axios';
+
+import { SelectedTicketContext } from './App';
 
 function CreateTicketPage() {
   const navigate = useNavigate();
@@ -13,6 +15,7 @@ function CreateTicketPage() {
   const [tenantComment, setTenantComment] = useState('');
   const [ticketType, setTicketType] = useState('');
   const [additionalHeading, setAdditionalHeading] = useState('');
+  const {selectedTicket, setSelectedTicket} = useContext(SelectedTicketContext);
   const stats = 'nill';
 
   const handleCommentChange = (event) => {
@@ -107,6 +110,7 @@ function CreateTicketPage() {
       fontFamily="'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif"
       marginTop="5vh"
     >
+      {console.log(selectedTicket)}
       {/* Title */}
       <Heading as="h4" size="2xl" marginBottom="2em">
         Your Service Ticket
