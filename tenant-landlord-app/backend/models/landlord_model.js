@@ -1,5 +1,10 @@
 import pool from "../config/database.js";
 
+/**
+ * Create landlord account
+ * @param {*} data email, password(unhashed), ticket_type
+ * @param {*} callBack 
+ */
 export const createLandlord = (data, callBack) => {
   pool.query(
     `
@@ -20,7 +25,11 @@ export const createLandlord = (data, callBack) => {
   );
 };
 
-
+/**
+ * Get landlord with email
+ * @param {*} email 
+ * @param {*} callBack 
+ */
 export const getLandlordByEmail = (email, callBack) => {
   pool.query(
     `
@@ -205,6 +214,12 @@ export const getTicketsByStatus = (status, callBack) => {
   );
 };
 
+/**
+ * Update quotation
+ * @param {*} id service_request_id
+ * @param {*} data quotation amount(float to 2dp), status(string)
+ * @param {*} callBack 
+ */
 export const updateQuotation = (id, data, callBack) => {
   const quotationAmount = parseFloat(data.quotation_amount).toFixed(2); //Note this is impt to format it to decimal
   const status = "quotation sent";
