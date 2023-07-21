@@ -203,8 +203,8 @@ export const uploadQuotation = ({filepath, id}, callBack) => {
   pool.query(
     `
     UPDATE service_request
-    SET quotation_path = ?
-    SET status = ?
+    SET quotation_path = ?,
+    status = ?
     WHERE service_request_id = ?
     `,
     [
@@ -264,6 +264,27 @@ export const getQuotation = (filepath, callBack) => {
 }
 
 export const ticketApproval = (id, data, status, callBack) => {
+  pool.query(
+    `
+    UPDATE service_request
+    SET status = ?
+    WHERE service_request_id = ?
+    `,
+    [
+      status,
+      id
+    ],
+    (error, results, fields) => {
+      if (error) {
+        callBack(error);
+      } else {
+        callBack(null,results);
+      }
+    }
+  )
+};
+
+export const ticketWork = (id, data, status, callBack) => {
   pool.query(
     `
     UPDATE service_request
