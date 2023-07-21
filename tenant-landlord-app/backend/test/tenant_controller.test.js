@@ -6,7 +6,7 @@
 import { controllerAddFeedbackRating } from "../controller/tenant_controller";
 import { addFeedbackRating } from '../models/tenant_model';
 import router from "../routes/tenant_router";
-var http = require('http');
+//var http = require('http');
 
 // const requestWithSupertest = supertest(controllerAddFeedbackRating)
 
