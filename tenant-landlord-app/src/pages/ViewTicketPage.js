@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Box, Heading, Textarea, Button, Input, Flex } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
-import { useAuthUser, useAuthHeader } from 'react-auth-kit';
+import { useAuthUser, useAuthHeader, useIsAuthenticated } from 'react-auth-kit';
 import { useFormik } from 'formik';
 import axios, { AxiosError } from 'axios';
 
 import { SelectedTicketContext } from '../components/SelectedTicketContext';
 import NavigationBar from '../components/NavigationBar';
+import CheckTicket from '../components/CheckTicket';
 
 export default function ViewTicketPage() {
   const navigate = useNavigate();
@@ -17,6 +18,7 @@ export default function ViewTicketPage() {
   const [ticketType, setTicketType] = useState('');
   const [status, setstatus] = useState('');
   const {selectedTicket, setSelectedTicket} = useContext(SelectedTicketContext);
+  const authenticated = useIsAuthenticated();
 
   console.log('selectedTicket:', selectedTicket);
   const GetServiceTickets = (userDetails) => {
@@ -83,7 +85,7 @@ export default function ViewTicketPage() {
         console.log('tickets[0].request_description',tickets[0].request_description)
         var tenantComment = tickets[0].request_description;
         var category = tickets[0].request_type;
-        var status = tickets[0].status;
+        setstatus(tickets[0].status)
         var timesubmitted = tickets[0].submitted_date_time;
         // console.log('tenantComment', tenantComment);
         // console .log('category', category);
@@ -111,41 +113,9 @@ export default function ViewTicketPage() {
     onSubmit: {},
   });
 
-  const checkUser = () => {
-    if (userDetails().type === 'landlord') {
-    return (
-      <>
-      <Button
-      variant="solid"
-      colorScheme="blue"
-      width="13em"
-      height="3em"
-      marginTop="3em"
-      marginLeft="2.3em"
-      marginBottom="5vh"
-      borderRadius="0.25em"
-      >
-      Start Work
-      </Button>
-      <Button
-        variant="solid"
-        colorScheme="blue"
-        width="13em"
-        height="3em"
-        marginTop="3em"
-        marginLeft="2.3em"
-        borderRadius="0.25em"
-      >
-        End Work
-      </Button>
-      </>
-    )
-    } else {
-      return
-    }
-  }
   
   useEffect(() => {
+
     GetServiceTickets(userDetails);
     if (status === 'completed') {
       navigate('/pages/FeedbackForm');
@@ -232,22 +202,10 @@ export default function ViewTicketPage() {
 
       {/* Submit Ticket Button */}
       <Flex justifyContent="center">
-        <Button
-          variant="solid"
-          colorScheme="blue"
-          onClick={() => {if (userDetails().type == 'landlord'){
-            navigate('/pages/QuotationUploadPage')}
-          else{
-            navigate('/pages/QuotationPage')
-          }}}
-          width="13em"
-          height="3em"
-          marginTop="3em"
-          borderRadius="0.25em"
-        >
-          View/Add Quotation
-        </Button>
-        {checkUser()}
+
+        {CheckTicket(selectedTicket.id, status, userDetails)
+      }
+
 
       </Flex>
     </Box>
