@@ -103,7 +103,7 @@ export default function TicketList() {
 
             // Convert every ticket fetched to HTML to be shown on the left
             const tickets_html = tickets.map(ticket => 
-                <>
+                <div key={ticket.service_request_id}>
                 <AccordionItem>
                     <AccordionButton>
                         <HStack spacing='24px'>
@@ -134,7 +134,7 @@ export default function TicketList() {
                         </Button>
                     </AccordionPanel>
                 </AccordionItem>
-                </>
+                </div>
             );
 
 
