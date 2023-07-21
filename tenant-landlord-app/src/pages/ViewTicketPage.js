@@ -19,18 +19,6 @@ export default function ViewTicketPage() {
   const {selectedTicket, setSelectedTicket} = useContext(SelectedTicketContext);
 
   console.log('selectedTicket:', selectedTicket);
-  const handleCommentChange = (event) => {
-    setTenantComment(event.target.value);
-  };
-
-  const handleTicketTypeChange = (event) => {
-    setTicketType(event.target.value);
-  };
-
-  const handlestatusChange = (event) => {
-    setstatus(event.target.value);
-  };
-
   const GetServiceTickets = (userDetails) => {
     if (userDetails() == undefined){
         return;
@@ -112,60 +100,6 @@ export default function ViewTicketPage() {
     })
 }
 
-  const handleCreateTicket = async () => {
-    console.log(tenantComment);
-    console.log(token());
-    setError('');
-
-    try {
-      const config = {
-        headers: {
-          Authorization: `${token()}`,
-        },
-      };
-      const currentdate = new Date();
-      const values = {
-        name: '--',
-        email: userDetails().email,
-        request_type: ticketType,
-        request_description: tenantComment,
-        submitted_date_time:
-          currentdate.getFullYear().toString() +
-          '-' +
-          (currentdate.getMonth() + 1).toString() +
-          '-' +
-          currentdate.getDate().toString() +
-          ' ' +
-          currentdate.getHours().toString() +
-          ':' +
-          ('0' + currentdate.getMinutes()).slice(-2) +
-          ':' +
-          currentdate.getSeconds().toString(),
-        status: 'SUBMITTED',
-        feedback_text: '',
-        feedback_rating: '-1',
-      };
-
-      const response1 = await axios.post(
-        'http://localhost:5000/api/tenant/createTicket',
-        values,
-        config
-      );
-      console.log('got response of creating ticket:');
-      console.log(response1);
-
-      navigate('/pages/Dashboard'); // Navigate to the Dashboard form page
-    } catch (err) {
-      if (err && err instanceof AxiosError) {
-        setError(err.response);
-      } else if (err && err instanceof Error) {
-        setError(err.message);
-      }
-
-      console.log('Error: ', err);
-    }
-  };
-
   const formik = useFormik({
     initialValues: {
       location: '',
@@ -174,11 +108,11 @@ export default function ViewTicketPage() {
       status: '',
       timesubmitted: '',
     },
-    onSubmit: handleCreateTicket,
+    onSubmit: {},
   });
   
   useEffect(() => {
-    GetServiceTickets(userDetails)
+    GetServiceTickets(userDetails);
     if (status === 'completed') {
       navigate('/pages/FeedbackForm');
     }
@@ -208,7 +142,7 @@ export default function ViewTicketPage() {
           <Heading as="h5" size="lg" marginBottom="1em">
             Location
           </Heading>
-          <Textarea
+          <Textarea isDisabled
             name="location"
             placeholder="Enter location"
             value={formik.values.location}
@@ -218,7 +152,7 @@ export default function ViewTicketPage() {
           <Heading as="h5" size="lg" marginBottom="1em">
             Category Of Request
           </Heading>
-          <Textarea
+          <Textarea isDisabled
             name="category"
             placeholder="Enter category"
             value={formik.values.category}
@@ -228,7 +162,7 @@ export default function ViewTicketPage() {
           <Heading as="h5" size="lg"  marginBottom="1em">
             Status
           </Heading>
-          <Textarea
+          <Textarea isDisabled
             name="category"
             placeholder="Enter category"
             value={formik.values.status}
@@ -242,7 +176,7 @@ export default function ViewTicketPage() {
           <Heading as="h5" size="lg" marginBottom="1em">
             Description
           </Heading>
-          <Textarea
+          <Textarea isDisabled
             name="tenantComment"
             placeholder="Enter your comment"
             value={formik.values.tenantComment}
