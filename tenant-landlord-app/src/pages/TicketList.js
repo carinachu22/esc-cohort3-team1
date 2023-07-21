@@ -20,7 +20,7 @@ import { Accordion, AccordionButton, AccordionItem, AccordionPanel, TableContain
     Td,
     TableCaption,
 Box, AccordionIcon, HStack, Button } from '@chakra-ui/react';
-import { SelectedTicketContext } from './App';
+import { SelectedTicketContext } from '../components/SelectedTicketContext';
 
 /**
 Functional component to display service ticket list
@@ -129,7 +129,7 @@ export default function TicketList() {
                         Request Description: {ticket.request_description} <br></br>
                         Status: {ticket.status} <br></br>
                         <br></br>
-                        <Button onClick={() => {navigate('/pages/ViewTicketPage/');setSelectedTicket(ticket.service_request_id)}} bgColor='blue.500' color='white' _hover={{bg: 'blue.800'}}>
+                        <Button onClick={() => {navigate('/pages/ViewTicketPage/');setSelectedTicket({['id']:ticket.service_request_id})}} bgColor='blue.500' color='white' _hover={{bg: 'blue.800'}}>
                             View Details & Actions
                         </Button>
                     </AccordionPanel>

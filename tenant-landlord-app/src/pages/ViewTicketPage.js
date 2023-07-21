@@ -5,7 +5,7 @@ import { useAuthUser, useAuthHeader } from 'react-auth-kit';
 import { useFormik } from 'formik';
 import axios, { AxiosError } from 'axios';
 
-import { SelectedTicketContext } from './App';
+import { SelectedTicketContext } from '../components/SelectedTicketContext';
 
 export default function ViewTicketPage() {
   const navigate = useNavigate();
@@ -53,13 +53,13 @@ export default function ViewTicketPage() {
             }
             if (type == 'landlord'){
                 response = await axios.get(
-                  `http://localhost:5000/api/landlord/getTicketById/${selectedTicket}`,
+                  `http://localhost:5000/api/landlord/getTicketById/${selectedTicket.id}`,
                     // console.log(`http://localhost:5000/api/landlord/getTicketById/${selectedTicket}`),
                     config
                 )
             } else if (type == 'tenant'){ 
                 response = await axios.get(
-                  `http://localhost:5000/api/landlord/getTicketById/${selectedTicket}`,
+                  `http://localhost:5000/api/landlord/getTicketById/${selectedTicket.id}`,
                     config
                 )
             }
