@@ -7,7 +7,7 @@ import axios, { AxiosError } from 'axios';
 
 import { SelectedTicketContext } from './App';
 
-function CreateTicketPage() {
+export default function ViewTicketPage() {
   const navigate = useNavigate();
   const token = useAuthHeader();
   const userDetails = useAuthUser();
@@ -300,4 +300,3 @@ function CreateTicketPage() {
   );
 }
 
-export default CreateTicketPage;
