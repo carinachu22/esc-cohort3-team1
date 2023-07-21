@@ -71,7 +71,7 @@ export const getTicketsByStatus = (email, status, callBack) => {
  * @param {*} callBack 
  */
 export const createTicket = (data, callBack) => {
-  const status = "submitted";
+  const status = "tenant_ticket_created";
   const feedback_rating = null;
   const feedback_text = null;
   pool.query(
