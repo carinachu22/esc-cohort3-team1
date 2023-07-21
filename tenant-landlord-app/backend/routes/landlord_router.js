@@ -52,7 +52,7 @@ router.post("/create", controllerCreateLandlord);
 router.post("/login", controllerLoginLandlord);
 router.post("/forgot-password", controllerForgotPasswordLandlord);
 router.post("/reset-password/:id/:jsontoken", controllerResetPasswordLandlord);
-router.post("./createTenant", controllerCreateTenant);
+router.post("/createTenant", controllerCreateTenant);
 router.post("/uploadQuotation/:id", upload.single('files'), controllerUploadQuotation)
 
 router.get("/reset-password/:id/:jsontoken", controllerResetPasswordPageLandlord);
