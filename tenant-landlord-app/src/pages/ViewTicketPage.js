@@ -131,7 +131,7 @@ export default function ViewTicketPage() {
     >
       {console.log(selectedTicket)}
       {/* Title */}
-      <Heading as="h4" size="2xl" marginBottom="2em">
+      <Heading as="h4" size="2xl" marginBottom="1em">
         Your Service Ticket
       </Heading>
 
