@@ -66,7 +66,7 @@ export default function ViewTicketPage() {
         }
     }
 
-
+  
     // Initialise promise
     const ticket = APIGetTickets(type)
     // Wait for promise to be fulfilled (fetching tickets from database)
@@ -110,6 +110,40 @@ export default function ViewTicketPage() {
     },
     onSubmit: {},
   });
+
+  const checkUser = () => {
+    if (userDetails().type === 'landlord') {
+    return (
+      <>
+      <Button
+      variant="solid"
+      colorScheme="blue"
+      width="13em"
+      height="3em"
+      marginTop="3em"
+      marginLeft="2.3em"
+      marginBottom="5vh"
+      borderRadius="0.25em"
+      >
+      Start Work
+      </Button>
+      <Button
+        variant="solid"
+        colorScheme="blue"
+        width="13em"
+        height="3em"
+        marginTop="3em"
+        marginLeft="2.3em"
+        borderRadius="0.25em"
+      >
+        End Work
+      </Button>
+      </>
+    )
+    } else {
+      return
+    }
+  }
   
   useEffect(() => {
     GetServiceTickets(userDetails);
@@ -213,29 +247,8 @@ export default function ViewTicketPage() {
         >
           View/Add Quotation
         </Button>
-        <Button
-          variant="solid"
-          colorScheme="blue"
-          width="13em"
-          height="3em"
-          marginTop="3em"
-          marginLeft="2.3em"
-          marginBottom="5vh"
-          borderRadius="0.25em"
-        >
-          Start Work
-        </Button>
-        <Button
-          variant="solid"
-          colorScheme="blue"
-          width="13em"
-          height="3em"
-          marginTop="3em"
-          marginLeft="2.3em"
-          borderRadius="0.25em"
-        >
-          End Work
-        </Button>
+        {checkUser()}
+
       </Flex>
     </Box>
     </>
