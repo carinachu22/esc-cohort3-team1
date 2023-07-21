@@ -107,16 +107,16 @@ export default function TicketList() {
                 <AccordionItem>
                     <AccordionButton>
                         <HStack spacing='24px'>
-                        <Box textAlign='left' mr='310'>
+                        <Box textAlign='left' width="310px">
                         {ticket.service_request_id}
                         </Box>
-                        <Box textAlign='left' mr='530'>
+                        <Box textAlign='left' width='630px'>
                         {ticket.email}
                         </Box>
-                        <Box textAlign='left' mr='380'>
+                        <Box textAlign='left' width='380px'>
                         {ticket.request_type}
                         </Box>
-                        <Box textAlign='left' mr='320'>
+                        <Box textAlign='left' width='320px'>
                         {ticket.status}
                         </Box>
                         </HStack>
