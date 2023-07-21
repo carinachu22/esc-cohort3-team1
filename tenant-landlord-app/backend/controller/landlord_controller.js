@@ -11,7 +11,8 @@ import {
   uploadQuotation,
   getQuotation,
   getQuotationPath,
-  ticketApproval
+  ticketApproval,
+  ticketWork
 
 } from "../models/landlord_model.js";
 import { genSaltSync, hashSync, compareSync } from "bcrypt";
@@ -445,6 +446,34 @@ export const controllerTicketApproval = (req, res) => {
   }
 
   ticketApproval(id,body,status, (err, results) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+    if (!results) {
+      return res.json({
+        success: 0,
+        message: "Failed to update user"
+      })
+    }
+    return res.status(200).json({
+      success: 1,
+      data: "updated successfully"
+    })
+  })
+}
+
+export const controllerTicketWork = (req, res) => {
+  const id = req.params.id;
+  const body = req.body;
+  let status;
+  if (body.ticket_work_status === 1) {
+    status = "landlord_started_work"
+  } else if (body.ticket_work_status === 0) {
+    status = "landlord_completed_work"
+  }
+
+  ticketWork(id,body,status, (err, results) => {
     if (err) {
       console.log(err);
       return;

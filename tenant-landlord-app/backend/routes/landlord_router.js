@@ -10,7 +10,8 @@ import {
   controllerForgotPasswordLandlord,
   controllerUploadQuotation,
   controllerGetQuotation,
-  controllerTicketApproval
+  controllerTicketApproval,
+  controllerTicketWork
 } from "../controller/landlord_controller.js";
 import express from "express";
 import { checkToken } from "../auth/token_validation.js";
@@ -62,5 +63,6 @@ router.get(
 router.get("/getQuotation/", controllerGetQuotation);
 router.patch("/updateQuotation/:id", checkToken, controllerUpdateQuotation);
 router.patch("/ticketApproval/:id", checkToken, controllerTicketApproval);
+router.patch("/ticketWork/:id", checkToken, controllerTicketWork);
 
 export default router;
