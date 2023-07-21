@@ -19,7 +19,18 @@ import { Accordion, AccordionButton, AccordionItem, AccordionPanel, TableContain
     Th,
     Td,
     TableCaption,
-Box, AccordionIcon, HStack, Button } from '@chakra-ui/react';
+Box, AccordionIcon, HStack, Button,
+    Step,
+    StepDescription,
+    StepIcon,
+    StepIndicator,
+    StepNumber,
+    StepSeparator,
+    StepStatus,
+    StepTitle,
+    Stepper,
+    useSteps,
+  } from '@chakra-ui/react';
 import { SelectedTicketContext } from '../components/SelectedTicketContext';
 
 /**
@@ -122,6 +133,13 @@ export default function TicketList() {
             }   
             //console.log('tickets',tickets)
 
+            const steps = [
+                { title: 'Created'},
+                { title: 'Quotation Approved'},
+                { title: 'Work Completed'},
+                { title: 'Closed'}
+              ]
+
             // Convert every ticket fetched to HTML to be shown on the left
             const tickets_html = tickets.map(ticket => 
                 <div key={ticket.service_request_id}>
@@ -144,11 +162,36 @@ export default function TicketList() {
                         <AccordionIcon />
                     </AccordionButton>
                     <AccordionPanel>
+                        <HStack spacing='28vw'>
+                        <Box>
                         Service Request ID: {ticket.service_request_id} <br></br>
                         Email: {ticket.email} <br></br>
                         Request Type: {ticket.request_type} <br></br>
                         Request Description: {ticket.request_description} <br></br>
                         Status: {convertStatus(ticket.status)} <br></br>
+                        </Box>
+                        <Box width='50vw'>
+                            <Stepper index={1}>
+                                {steps.map((step, index) => (
+                                    <Step key={index}>
+                                    <StepIndicator>
+                                        <StepStatus
+                                        complete={<StepIcon />}
+                                        incomplete={<StepNumber />}
+                                        active={<StepNumber />}
+                                        />
+                                    </StepIndicator>
+
+                                    <Box flexShrink='0'>
+                                        <StepTitle width='6vw'>{step.title}</StepTitle>
+                                    </Box>
+
+                                    <StepSeparator />
+                                    </Step>
+                                ))}
+                                </Stepper>
+                        </Box>
+                        </HStack>
                         <br></br>
                         <Button onClick={() => {navigate('/pages/ViewTicketPage/');setSelectedTicket({['id']:ticket.service_request_id})}} bgColor='blue.500' color='white' _hover={{bg: 'blue.800'}}>
                             View Details & Actions
