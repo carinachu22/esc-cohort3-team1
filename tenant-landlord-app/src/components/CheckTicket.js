@@ -12,6 +12,23 @@ export default function CheckTicket(id, status, userDetails){
     if (userDetails() === null){
         navigate('/')
     }
+    if (status === 'landlord_completed_work'){
+      if (userDetails().type === 'tenant'){
+        return(
+          <Button
+          variant="solid"
+          colorScheme="blue"
+          onClick={() => navigate('/pages/FeedbackForm')}
+          width="13em"
+          height="3em"
+          marginTop="3em"
+          borderRadius="0.25em"
+          >
+          Close Ticket & Give Feedback
+          </Button>
+        )
+      }
+    }
     if (status === 'tenant_ticket_created'){
         if (userDetails().type === 'landlord'){
             return (
@@ -70,6 +87,7 @@ export default function CheckTicket(id, status, userDetails){
         }
     }
     return(
+      <>
     <Button
     variant="solid"
     colorScheme="blue"
@@ -84,10 +102,9 @@ export default function CheckTicket(id, status, userDetails){
     borderRadius="0.25em"
   >
     View/Add Quotation
-  </Button>)
-    if (userDetails().type === 'landlord') {
-      return(
-      <>
+  </Button>
+
+      
       <Button
       variant="solid"
       colorScheme="blue"
@@ -97,6 +114,19 @@ export default function CheckTicket(id, status, userDetails){
       marginLeft="2.3em"
       marginBottom="5vh"
       borderRadius="0.25em"
+      onClick = {() => {console.log('starting work');
+      axios.patch(
+      `http://localhost:5000/api/landlord/ticketWork/${id}`,
+      {
+          ticket_work_status: 1
+      },
+      {
+          headers: {
+            Authorization: `${token()}`
+          }
+      }
+      );navigate('/pages/TicketList')}
+      }
       >
       Start Work
       </Button>
@@ -108,11 +138,23 @@ export default function CheckTicket(id, status, userDetails){
         marginTop="3em"
         marginLeft="2.3em"
         borderRadius="0.25em"
+        onClick = {() => {console.log('ending work');
+        axios.patch(
+        `http://localhost:5000/api/landlord/ticketWork/${id}`,
+        {
+            ticket_work_status: 0
+        },
+        {
+            headers: {
+              Authorization: `${token()}`
+            }
+        }
+        );navigate('/pages/TicketList')}
+        }
       >
         End Work
       </Button>
       </>
-      )
-    
+      
+    )
     } 
-  }
