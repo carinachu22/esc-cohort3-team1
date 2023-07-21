@@ -6,6 +6,8 @@ import { useNavigate } from 'react-router-dom';
 
 import NavigationBar from '../components/NavigationBar';
 import { SelectedTicketContext } from '../components/SelectedTicketContext';
+import axios from 'axios';
+import { useAuthHeader } from 'react-auth-kit';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
@@ -15,8 +17,17 @@ function QuotationPage() {
     const [pdfUrl,setPdfUrl] = useState('')
     const navigate = useNavigate();
     const toast = useToast();
+    const token = useAuthHeader();
 
     const handleApprove = () => {
+        const config = {
+            headers: {
+              Authorization: `${token()}`
+            }
+        }
+        const values = {
+            quotation_accepted_by_tenant: 1
+        }
         toast({
         title: "Quotation approved.",
         description: "You have approved the quotation.",
@@ -25,9 +36,23 @@ function QuotationPage() {
         isClosable: true,
         position: "top",
         });
+        axios.patch(
+            `http://localhost:5000/api/tenant/quotationApproval/${selectedTicket.id}`,
+            values,
+            config
+        )
+        navigate('/pages/ViewTicketPage')
     };
 
     const handleReject = () => {
+        const config = {
+            headers: {
+              Authorization: `${token()}`
+            }
+        }
+        const values = {
+            quotation_accepted_by_tenant: 0
+        }
         toast({
         title: "Quotation rejected.",
         description: "You have rejected the quotation.",
@@ -36,6 +61,12 @@ function QuotationPage() {
         isClosable: true,
         position: "top",
         });
+        axios.patch(
+            `http://localhost:5000/api/tenant/quotationApproval/${selectedTicket.id}`,
+            values,
+            config
+        )
+        navigate('/pages/ViewTicketPage')
     };
 
     useEffect(() => {
