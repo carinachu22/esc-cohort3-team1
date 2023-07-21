@@ -105,18 +105,18 @@ export default function TicketList() {
             const tickets_html = tickets.map(ticket => 
                 <div key={ticket.service_request_id}>
                 <AccordionItem>
-                    <AccordionButton>
-                        <HStack spacing='24px'>
-                        <Box textAlign='left' width="310px">
+                    <AccordionButton justifyContent="space-between">
+                        <HStack spacing='24px' width="100%">
+                        <Box textAlign='left' width="16vw">
                         {ticket.service_request_id}
                         </Box>
-                        <Box textAlign='left' width='630px'>
+                        <Box textAlign='left' width='34vw'>
                         {ticket.email}
                         </Box>
-                        <Box textAlign='left' width='380px'>
+                        <Box textAlign='left' width='20vw'>
                         {ticket.request_type}
                         </Box>
-                        <Box textAlign='left' width='320px'>
+                        <Box textAlign='left' width='18vw'>
                         {ticket.status}
                         </Box>
                         </HStack>
