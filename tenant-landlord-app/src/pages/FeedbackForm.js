@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Box, Button, Text, Textarea, useToast, IconButton, Heading, Stack, Icon } from '@chakra-ui/react';
 import { StarIcon } from '@chakra-ui/icons';
 import { IoIosStarOutline, IoIosStar } from 'react-icons/io';
@@ -7,12 +7,14 @@ import { useAuthUser, useAuthHeader } from 'react-auth-kit';
 import { useFormik } from 'formik';
 import axios, { AxiosError } from 'axios';
 
+import { SelectedTicketContext } from '../components/SelectedTicketContext';
+
 function FeedbackForm() {
   const [error, setError] = useState('');
+  const {selectedTicket, setSelectedTicket} = useContext(SelectedTicketContext);
   const token = useAuthHeader();
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const ticketID = searchParams.get('ticketID');
+  const ticketID = selectedTicket.id;
   const [rating, setRating] = useState(-1);
 
   const handleRatingChange = (newRating) => {
