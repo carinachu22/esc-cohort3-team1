@@ -356,14 +356,12 @@ export const controllerUpdateQuotation = (req, res) => {
  */
 export const controllerUploadQuotation = (req, res) => {
   console.log('???????')
+  const id = req.params.id;
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "content-type");
   const files = req.file;
 
   console.log(files);
-  
-
-  const id = 1;
 
   const filepath = files.path;
   console.log(filepath);
@@ -393,8 +391,8 @@ export const controllerUploadQuotation = (req, res) => {
 
 export const controllerGetQuotation = (req, res) => {
   // hard-coded id, remove this in final version
-
-  const id = 1;
+  const id = req.query.id;
+  console.log('id in controller', id)
   getQuotationPath(id, (err, results) => {
     if (err) {
       console.log(err);
@@ -408,6 +406,11 @@ export const controllerGetQuotation = (req, res) => {
     } else {
       var filepath = results.quotation_path;
       console.log(filepath);
+      if (filepath == null){
+        res.send("No quotation uploaded yet!")
+        return
+
+      }
       fs.readFile(filepath, (err, data) => {
         if (err) {
           console.log('error')
