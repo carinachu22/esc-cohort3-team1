@@ -81,7 +81,7 @@ export const controllerCreateTicket = (req, res) => {
  * @param {*} res 
  */
 export const controllerGetTickets = (req, res) => {
-  const email = req.body.email;
+  const email = req.query.email;
   getTicketsByTenant(email, (err,results) => {
     if (err) {
       console.log(err);

@@ -57,9 +57,7 @@ export default function Dashboard() {
                 const config = {
                     headers: {
                       Authorization: `${token()}`
-                    }
-                }
-                const values = {
+                    },
                     params: {
                         email: userDetails().email
                     }
@@ -72,8 +70,7 @@ export default function Dashboard() {
                 } else if (type == 'tenant'){ 
                     response = await axios.get(
                         "http://localhost:5000/api/tenant/getTickets",
-                        config,
-                        values
+                        config
                     )
                 }
                 console.log("got response:")
