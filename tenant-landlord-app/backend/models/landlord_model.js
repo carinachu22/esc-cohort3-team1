@@ -204,10 +204,12 @@ export const uploadQuotation = ({filepath, id}, callBack) => {
     `
     UPDATE service_request
     SET quotation_path = ?
+    SET status = ?
     WHERE service_request_id = ?
     `,
     [
       filepath,
+      "landlord_quotation_sent",
       id
     ],
     (error, results, fields) => {
