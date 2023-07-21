@@ -213,7 +213,7 @@ export const controllerCloseTicketStatus = (req, res) => {
   const body = req.body;
   let status;
   if (body.status == "close") {
-     status = "ticket_close"
+     status = "landlord_ticket_closed"
    } else {
     status = "close_attempt_failed"
    }
