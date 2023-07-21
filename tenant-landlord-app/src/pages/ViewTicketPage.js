@@ -6,12 +6,12 @@ import { useFormik } from 'formik';
 import axios, { AxiosError } from 'axios';
 
 import { SelectedTicketContext } from '../components/SelectedTicketContext';
+import NavigationBar from '../components/NavigationBar';
 
 export default function ViewTicketPage() {
   const navigate = useNavigate();
   const token = useAuthHeader();
   const userDetails = useAuthUser();
-  const type = userDetails().type;
   const [error, setError] = useState('');
   const [tenantComment, setTenantComment] = useState('');
   const [ticketType, setTicketType] = useState('');
@@ -185,6 +185,8 @@ export default function ViewTicketPage() {
   }, [status, navigate]);
 
   return (
+    <>
+    {NavigationBar()}
     <Box
       display="flex"
       flexDirection="column"
@@ -302,6 +304,7 @@ export default function ViewTicketPage() {
         </Button>
       </Flex>
     </Box>
+    </>
   );
 }
 

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuthUser, useAuthHeader } from 'react-auth-kit';
 import { Formik, Form,useFormik } from 'formik';
 import axios, {AxiosError} from "axios";
+import NavigationBar from '../components/NavigationBar';
 
 
 
@@ -93,6 +94,8 @@ function CreateTicketPage() {
   });
 
   return (
+    <>
+    {NavigationBar()}
     <Formik
     initialValues={{
       location: '',
@@ -177,6 +180,7 @@ function CreateTicketPage() {
     </Box>
     </Form>
     </Formik>
+    </>
   );
 }
 
