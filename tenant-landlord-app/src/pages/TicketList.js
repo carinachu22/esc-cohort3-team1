@@ -87,7 +87,28 @@ export default function TicketList() {
             }
         }
 
-
+        const convertStatus = (status) => {
+            console.log('status?',status)
+            if (status === 'tenant_ticket_created'){
+                return 'Created'
+            } else if (status === 'landlord_ticket_rejected'){
+                return 'Rejected By Landlord'
+            } else if (status === 'landlord_ticket_approved'){
+                return 'Approved By Landlord'
+            } else if (status === 'landlord_quotation_sent'){
+                return 'Quotation Sent By Landlord'
+            } else if (status === 'ticket_quotation_approved'){
+                return 'Quotation Approved By Tenant'
+            } else if (status === 'ticket_quotation_rejected'){
+                return 'Quotation Rejected By Tenant'
+            } else if (status === 'landlord_started_work'){
+                return 'Work Started By Landlord'
+            } else if (status === 'landlord_completed_work'){
+                return 'Work Completed By Landlord'
+            } else if (status === 'landlord_ticket_closed'){
+                return "Closed"
+            }
+        }
         // Initialise promise
         const test_tickets = APIGetTickets(type)
         // Wait for promise to be fulfilled (fetching tickets from database)
