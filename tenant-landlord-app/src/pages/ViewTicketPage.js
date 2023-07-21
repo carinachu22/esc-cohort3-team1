@@ -11,6 +11,7 @@ export default function ViewTicketPage() {
   const navigate = useNavigate();
   const token = useAuthHeader();
   const userDetails = useAuthUser();
+  const type = userDetails().type;
   const [error, setError] = useState('');
   const [tenantComment, setTenantComment] = useState('');
   const [ticketType, setTicketType] = useState('');
@@ -264,13 +265,17 @@ export default function ViewTicketPage() {
         <Button
           variant="solid"
           colorScheme="blue"
-          onClick={formik.handleSubmit}
+          onClick={() => {if (type == 'landlord'){
+            navigate('/pages/QuotationUploadPage')}
+          else{
+            navigate('/pages/QuotationPage')
+          }}}
           width="13em"
           height="3em"
           marginTop="3em"
           borderRadius="0.25em"
         >
-          Add Quotation
+          View/Add Quotation
         </Button>
         <Button
           variant="solid"
