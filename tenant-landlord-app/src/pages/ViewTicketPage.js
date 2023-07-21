@@ -14,10 +14,10 @@ function CreateTicketPage() {
   const [error, setError] = useState('');
   const [tenantComment, setTenantComment] = useState('');
   const [ticketType, setTicketType] = useState('');
-  const [additionalHeading, setAdditionalHeading] = useState('');
+  const [status, setstatus] = useState('');
   const {selectedTicket, setSelectedTicket} = useContext(SelectedTicketContext);
-  const stats = 'nill';
 
+  console.log('selectedTicket:', selectedTicket);
   const handleCommentChange = (event) => {
     setTenantComment(event.target.value);
   };
@@ -26,9 +26,90 @@ function CreateTicketPage() {
     setTicketType(event.target.value);
   };
 
-  const handleAdditionalHeadingChange = (event) => {
-    setAdditionalHeading(event.target.value);
+  const handlestatusChange = (event) => {
+    setstatus(event.target.value);
   };
+
+  const GetServiceTickets = (userDetails) => {
+    if (userDetails() == undefined){
+        return;
+    }
+    const type = userDetails().type;
+    const tickets = [];
+    let response;
+
+    // Initialse function for fetching ALL service tickets if landlord is logged in
+    const APIGetTickets = async (type) => {
+        setError("");
+        //console.log('type',type)
+        try{
+            const config = {
+                headers: {
+                  Authorization: `${token()}`
+                },
+                params: {
+                    email: userDetails().email
+                }
+            }
+            if (type == 'landlord'){
+                response = await axios.get(
+                  `http://localhost:5000/api/landlord/getTicketById/${selectedTicket}`,
+                    // console.log(`http://localhost:5000/api/landlord/getTicketById/${selectedTicket}`),
+                    config
+                )
+            } else if (type == 'tenant'){ 
+                response = await axios.get(
+                  `http://localhost:5000/api/landlord/getTicketById/${selectedTicket}`,
+                    config
+                )
+            }
+            console.log("got response:")
+            console.log(response);
+            return response.data.data;
+        } catch (err){
+            if (err && err instanceof AxiosError) {
+                setError(err.response);
+            }
+            else if (err && err instanceof Error){
+                setError(err.message);
+            }
+            console.log("Error: ", err);
+        }
+    }
+
+
+    // Initialise promise
+    const ticket = APIGetTickets(type)
+    // Wait for promise to be fulfilled (fetching tickets from database)
+    ticket.then(function(result){
+        //console.log('result',result)
+        // Naive data validation
+        // console.log('result',result)
+        // console.log(result !== undefined)
+        if (result !== undefined){
+            tickets.push(result);
+        }   
+        console.log('tickets',tickets)
+        console.log('tickets[0]',tickets[0])
+        console.log('tickets[0].request_description',tickets[0].request_description)
+        var tenantComment = tickets[0].request_description;
+        var category = tickets[0].request_type;
+        var status = tickets[0].status;
+        var timesubmitted = tickets[0].submitted_date_time;
+        // console.log('tenantComment', tenantComment);
+        // console .log('category', category);
+        // console.log('status', status);
+        // console.log('timesubmitted', timesubmitted);
+        formik.setValues({
+          // location: response.data.data.location, // Replace 'location' with the appropriate field names from your response
+          category: category,
+          tenantComment: tenantComment,
+          status: status,
+          timesubmitted: timesubmitted,
+        });
+        // console.log('formik', formik.values);
+    })
+}
 
   const handleCreateTicket = async () => {
     console.log(tenantComment);
@@ -47,7 +128,6 @@ function CreateTicketPage() {
         email: userDetails().email,
         request_type: ticketType,
         request_description: tenantComment,
-        additional_heading: additionalHeading,
         submitted_date_time:
           currentdate.getFullYear().toString() +
           '-' +
@@ -90,16 +170,18 @@ function CreateTicketPage() {
       location: '',
       category: '',
       tenantComment: '',
-      additionalHeading: '',
+      status: '',
+      timesubmitted: '',
     },
     onSubmit: handleCreateTicket,
   });
-
+  
   useEffect(() => {
-    if (stats === 'completed') {
+    GetServiceTickets(userDetails)
+    if (status === 'completed') {
       navigate('/pages/FeedbackForm');
     }
-  }, [stats, navigate]);
+  }, [status, navigate]);
 
   return (
     <Box
@@ -170,7 +252,7 @@ function CreateTicketPage() {
           </Heading>
           <Input
             name="Submitted time"
-            value={formik.values.submitted_date_time}
+            value={formik.values.timesubmitted}
             isReadOnly
             marginBottom="2em"
           />
