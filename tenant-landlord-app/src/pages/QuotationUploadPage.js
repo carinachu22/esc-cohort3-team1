@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useContext } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios, {AxiosError} from "axios";
 import {Helmet} from "react-helmet";
@@ -8,6 +8,8 @@ import ReactPDF from '@react-pdf/renderer';
 import { useEffect } from "react";
 import { Document, Page } from 'react-pdf';
 import { Base64 } from 'js-base64';
+
+import { useAuthHeader } from "react-auth-kit";
 
 import {
     Box,
@@ -22,11 +24,19 @@ import {
 } from "@chakra-ui/react";
 
 
+import { SelectedTicketContext } from '../components/SelectedTicketContext';
+import { Navigate } from "react-router-dom";
+
+import NavigationBar from "../components/NavigationBar";
+
+
 const QuotationUpload = () => {
     //requires javascript to be within document.addEventListener("DOMContentLoaded", e => {}) 
     //to ensure html elements get loaded before javascript logic
     const [text,setText] = useState('')
     const [pdfUrl,setPdfUrl] = useState('')
+    const {selectedTicket, setSelectedTicket} = useContext(SelectedTicketContext);
+    const token = useAuthHeader();
 
     document.addEventListener("DOMContentLoaded", e => {
         
@@ -69,18 +79,28 @@ const QuotationUpload = () => {
 
 
     const retrieveFile = () => {
-        axios
-        .get(
-            'http://localhost:5000/api/landlord/getQuotation/',
-            {responseType: "blob"}
-            
-        )
-        .then((function (response){
-            var file = response.data;
-            console.log(file);
-            readFile(file);
-        }))
-        .catch(err => console.log(err))
+        console.log(selectedTicket);
+        const config = {
+            headers: {
+                Authorization: `${token()}`
+            },
+            params: {
+                id: selectedTicket.id,
+                responseType: "blob"
+            }
+        }
+        fetch(`http://localhost:5000/api/landlord/getQuotation/?id=${selectedTicket.id}`,
+        ) // Replace with the actual backend URL serving the PDF
+          .then((response) => response.blob())
+          .then((data) => {
+            console.log('data',data)
+            const pdfBlobUrl = URL.createObjectURL(data);
+            setPdfUrl(pdfBlobUrl);
+          })
+          .catch((error) => {
+            console.error(error);
+            // Handle error
+          })
     }
 
     function readFile(input){
@@ -88,26 +108,30 @@ const QuotationUpload = () => {
         fr.readAsDataURL(input);
         fr.addEventListener('load', () => {
             const res = fr.result;
-            console.log(res);
+            //console.log(res);
         })
     }
 
 
-    useEffect(() => {
-        fetch("http://localhost:5000/api/landlord/getQuotation/") // Replace with the actual backend URL serving the PDF
-          .then((response) => response.blob())
-          .then((data) => {
-            const pdfBlobUrl = URL.createObjectURL(data);
-            setPdfUrl(pdfBlobUrl);
-          })
-          .catch((error) => {
-            console.error(error);
-            // Handle error
-          });
-      }, []);
+    // useEffect(() => {
+    //     fetch(`http://localhost:5000/api/landlord/getQuotation/?id=${selectedTicket.id}`,
+    //     ) // Replace with the actual backend URL serving the PDF
+    //       .then((response) => response.blob())
+    //       .then((data) => {
+    //         console.log('data',data)
+    //         const pdfBlobUrl = URL.createObjectURL(data);
+    //         setPdfUrl(pdfBlobUrl);
+    //       })
+    //       .catch((error) => {
+    //         console.error(error);
+    //         // Handle error
+    //       });
+    //   }, []);
 
     ///// code below uses Chakra styling ////////
     return (
+        <>
+        {NavigationBar()}
         <Flex align="center" justify="center" h="100vh" w="100%">
         <Helmet>
             <meta charSet="utf-8"/>
@@ -115,7 +139,7 @@ const QuotationUpload = () => {
             <meta name="viewport" content="'width=device-width, initial-scale=1.0"/>
         </Helmet>
         <Box w="22em" h="30em" p={8} rounded="md" position="relative" borderRadius="1em" boxShadow="0 0.188em 1.550em rgb(156, 156, 156)">
-            <form action="/uploadQuotation/" id="form" method="POST" encType="multipart/form-data">
+            <form target="_blank" action={`http://localhost:5000/api/landlord/uploadQuotation/${selectedTicket.id}`} id="form" method="POST" encType="multipart/form-data">
                 <VStack align="flex-start" alignItems="center">
                     <Heading marginTop="4">Quotation Upload</Heading>
                     <FormControl marginTop="6">
@@ -158,6 +182,7 @@ const QuotationUpload = () => {
             </Box>
         </Box>
     </Flex>
+    </>
     )
 }
 
