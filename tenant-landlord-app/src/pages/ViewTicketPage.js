@@ -267,7 +267,7 @@ export default function ViewTicketPage() {
         <Button
           variant="solid"
           colorScheme="blue"
-          onClick={() => {if (type == 'landlord'){
+          onClick={() => {if (userDetails().type == 'landlord'){
             navigate('/pages/QuotationUploadPage')}
           else{
             navigate('/pages/QuotationPage')
