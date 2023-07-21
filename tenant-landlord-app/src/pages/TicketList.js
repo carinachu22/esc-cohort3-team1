@@ -138,7 +138,7 @@ export default function TicketList() {
                         {ticket.request_type}
                         </Box>
                         <Box textAlign='left' width='18vw'>
-                        {ticket.status}
+                        {convertStatus(ticket.status)}
                         </Box>
                         </HStack>
                         <AccordionIcon />
@@ -148,7 +148,7 @@ export default function TicketList() {
                         Email: {ticket.email} <br></br>
                         Request Type: {ticket.request_type} <br></br>
                         Request Description: {ticket.request_description} <br></br>
-                        Status: {ticket.status} <br></br>
+                        Status: {convertStatus(ticket.status)} <br></br>
                         <br></br>
                         <Button onClick={() => {navigate('/pages/ViewTicketPage/');setSelectedTicket({['id']:ticket.service_request_id})}} bgColor='blue.500' color='white' _hover={{bg: 'blue.800'}}>
                             View Details & Actions
