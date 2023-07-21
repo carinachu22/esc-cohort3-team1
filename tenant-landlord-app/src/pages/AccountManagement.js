@@ -2,6 +2,7 @@
 
 import { Navigate } from 'react-router-dom';
 import styles from "../styles/dashboard.module.css";
+import { useEffect } from 'react';
 
 // Import React and hooks
 import { useAuthUser, useAuthHeader, useSignOut, useIsAuthenticated } from 'react-auth-kit';
@@ -41,6 +42,7 @@ const AccountManagement = () => {
   const navigate = useNavigate();
   const [error, setError] = useState("");
   const signIn = useSignIn();
+  const [tenantAccounts, setTenantAccounts] = useState(null)
 
   const [passwordShown, setPasswordShown] = useState(false);
 
@@ -48,6 +50,30 @@ const AccountManagement = () => {
       //passwordShown = true if handler is invoked  
       setPasswordShown(!passwordShown)
     }
+
+    const APIGetTenantAccounts = async () => {
+    const response = await axios.get(
+        "http://localhost:5000/api/landlord/getTenantAccounts",
+    )
+    //console.log(response)
+    return response
+    }
+
+    const GetTenantAccounts = () => {
+    var temp_accounts = []
+    const accounts = APIGetTenantAccounts()
+    accounts.then((result) => {
+        if (result !== undefined){
+        for (let i=0;i<result.data.data.length;i++){
+            temp_accounts.push(result.data.data[i]);
+        }
+    }
+    
+    const accounts_html =  temp_accounts.map(account => 
+        account.email
+    )
+    setTenantAccounts(accounts_html) 
+    })}
 
   const onSubmit = async (values) => {
     console.log("Values: ", values);
@@ -58,7 +84,7 @@ const AccountManagement = () => {
             "http://localhost:5000/api/landlord/createTenant",
             values
         )
-        console.log(response);
+        //console.log(response);
         signIn({
             token: response.data.token,
             expiresIn: 60,
@@ -95,8 +121,15 @@ const AccountManagement = () => {
     onSubmit,
   });
 
+  useEffect(() => {
+    GetTenantAccounts()},
+    [])
   return (
       <div className={SignupStyles.page}>
+        <li>
+            {tenantAccounts}
+            </li>
+            <br></br>
           <form className={SignupStyles.cover} onSubmit={formik.handleSubmit}>
               <h1 className={SignupStyles.header}>Register</h1>
               <div className={SignupStyles.context}>sign up as a landlord</div>

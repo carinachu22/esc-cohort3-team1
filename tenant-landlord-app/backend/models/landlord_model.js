@@ -304,3 +304,16 @@ export const ticketWork = (id, data, status, callBack) => {
     }
   )
 };
+
+export const getTenantAccounts = (callBack) => {
+  pool.query(
+    `
+    SELECT * FROM TENANT_USER`,
+    (error, results, fields) => {
+      if (error) {
+        callBack(error);
+      }
+      callBack(null, results);
+    }
+  );
+};

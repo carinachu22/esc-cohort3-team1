@@ -11,7 +11,8 @@ import {
   controllerUploadQuotation,
   controllerGetQuotation,
   controllerTicketApproval,
-  controllerTicketWork
+  controllerTicketWork,
+  controllerGetTenantAccounts
 } from "../controller/landlord_controller.js";
 import express from "express";
 import { checkToken } from "../auth/token_validation.js";
@@ -64,5 +65,6 @@ router.get("/getQuotation/", controllerGetQuotation);
 router.patch("/updateQuotation/:id", checkToken, controllerUpdateQuotation);
 router.patch("/ticketApproval/:id", checkToken, controllerTicketApproval);
 router.patch("/ticketWork/:id", checkToken, controllerTicketWork);
+router.get("/getTenantAccounts/", controllerGetTenantAccounts)
 
 export default router;

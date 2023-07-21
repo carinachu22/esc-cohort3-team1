@@ -12,7 +12,8 @@ import {
   getQuotation,
   getQuotationPath,
   ticketApproval,
-  ticketWork
+  ticketWork,
+  getTenantAccounts
 
 } from "../models/landlord_model.js";
 import { genSaltSync, hashSync, compareSync } from "bcrypt";
@@ -490,3 +491,17 @@ export const controllerTicketWork = (req, res) => {
     })
   })
 }
+
+export const controllerGetTenantAccounts = (req, res) => {
+    getTenantAccounts((err, results) => {
+      if (err) {
+        console.log(err);
+        return;
+      } else {
+        return res.json({
+          success: "1",
+          data: results,
+        });
+      }
+    });
+};
