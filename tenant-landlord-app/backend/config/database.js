@@ -34,13 +34,17 @@ pool.getConnection((err, connection) => {
   }
 });
 
+function cleanup() {
+  pool.end();
+}
 /**
  * Allows us to reuse the connect by keeping the connection in the pool \
  * -------- \
  * Functions of pool: \
  * pool.query
  */
-export default pool; //this allow us to reuse the connect by keeping the connection in the pool
+//export default pool; //this allow us to reuse the connect by keeping the connection in the pool
+export default {pool, cleanup}
 /**
  * Functions of pool:
  * pool.query

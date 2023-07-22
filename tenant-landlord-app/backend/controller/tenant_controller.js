@@ -182,13 +182,13 @@ export const controllerAddFeedbackRating = (req, res) => {
 
 /**
  * Add Feedback Text
- * @param {*} req feedback_test
+ * @param {*} req feedback_text
  * @param {*} res 
  */
  export const controllerAddFeedbackText = (req, res) => {
   const id = req.params.id;
-  const  body = req.body; 
-  addFeedbackText (id, body, (err, results) => {
+  const  feedback_text = req.feedback_text; 
+  addFeedbackText (id, feedback_text, (err, results) => {
     if (err) {
       console.log(err);
       return;
@@ -211,15 +211,15 @@ export const controllerAddFeedbackRating = (req, res) => {
  */
 export const controllerCloseTicketStatus = (req, res) => {
   const id = req.params.id;
-  const body = req.body;
-  let status;
-  if (body.status == "close") {
-     status = "ticket_close"
+  const status = req.status;
+  let status_input;
+  if (status == "close") {
+     status_input = "ticket_close"
    } else {
-    status = "close_attempt_failed"
+    status_input = "close_attempt_failed"
    }
   
-  closeTicketStatus (id, status, (err,results) => {
+  closeTicketStatus (id, status_input, (err,results) => {
     if (err) {
       console.log(err);
       return;
