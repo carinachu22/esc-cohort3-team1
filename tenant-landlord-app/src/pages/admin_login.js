@@ -4,8 +4,6 @@ import {Link} from 'react-router-dom';
 import {useNavigate} from 'react-router-dom';
 import {setIn, useFormik} from "formik";
 import axios, {AxiosError} from "axios";
-import {useSignIn} from "react-auth-kit";
-
 import {
     Box,
     Button,
@@ -24,12 +22,10 @@ import {
     FormErrorMessage,
 } from "@chakra-ui/react";
 
-const TenantLogin = () => {
+const AdminLogin = () => {
     const navigate = useNavigate();
     const [error, setError] = useState("");
     const signIn = useSignIn();
-
-    const [passwordShown, setPasswordShown] = useState(false);
 
     const validate = values => {
         let errors = {};
@@ -47,18 +43,26 @@ const TenantLogin = () => {
         return errors;
     }
 
+
+    const [passwordShown, setPasswordShown] = useState(false);
+
     const togglePassword = () => {
         //passwordShown = true if handler is invoked  
         setPasswordShown(!passwordShown)
     }
 
+    const navigateToDashboard = () => {
+        navigate('/pages/Dashboard');
+    };
+
     const onSubmit = async (values) => {
         console.log("Values: ", values);
         setError("");
-    
+
         try{
             const response = await axios.post(
-                "http://localhost:5000/api/tenant/login",
+                //api to be added
+                "http://localhost:5000/api/admin/login",
                 values
             )
             console.log(response);
@@ -66,17 +70,17 @@ const TenantLogin = () => {
                 token: response.data.token,
                 expiresIn: 60,
                 tokenType: "Bearer",
-                authState: {email: values.email, type: "tenant"}
+                authState: {email: values.email, type: "admin"}
             });
             if (response.data.message === "Login successfully"){
+                console.log(response.data.message);
                 navigateToDashboard();
             }
             else if (response.data.message === "Invalid email or password"){
-                
+                formik.errors.hasError = true;
             }
-    
-    
-    
+
+
         } catch (err){
             if (err && err instanceof AxiosError) {
                 setError(err.response?.data.message);
@@ -84,14 +88,12 @@ const TenantLogin = () => {
             else if (err && err instanceof Error){
                 setError(err.message);
             }
-    
+
             console.log("Error: ", err);
         }
     }
   
-    const navigateToDashboard = () => {
-      navigate('/pages/Dashboard');
-    };
+
 
     const formik = useFormik({
         initialValues: {
@@ -156,9 +158,8 @@ const TenantLogin = () => {
                             </Button>
                             {formik.errors.hasError ? <Box color="red.500" id="errorMessage" marginBottom="-6" >Invalid email or password</Box>: null}
                         </FormControl>
-
                         
-                        <Box fontSize="lg" textColor="blue.700" marginTop={10}>
+                        <Box fontSize="lg" textColor="blue.700" marginTop={2}>
                             <Link to="/pages/ForgotPasswordPage">Forgot password?</Link>
                         </Box>
                         
@@ -167,8 +168,6 @@ const TenantLogin = () => {
             </Box>
         </Flex>
     )
-
-
 }
 
-export default TenantLogin
+export default AdminLogin
