@@ -1,0 +1,111 @@
+.container {
+  /* Use flexbox to arrange the form and table in a column */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* Add some spacing between the form and table */
+  margin-top: 20px;
+}
+
+.pageWrapper {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+  place-items: center;
+  height: 100vh; /* Set the height of the container */
+  overflow-y: auto; /* This enables vertical scrolling */
+}
+
+* {
+  margin: 0;
+  box-sizing: border-box;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+.context {
+  font-size: smaller;
+  font-family: 'Courier New', Courier, monospace;
+  margin-top: -10%;
+}
+
+/* styling for page */
+.page {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* styling for container */
+.cover {
+  background-color: white;
+  width: 30em;
+  height: 35em;
+  position: relative;
+  border-radius: 1em;
+  box-shadow: 0 0.188em 1.550em rgb(156, 156, 156);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+}
+
+/* styling for input boxes */
+.input {
+  border: none;
+  outline: none;
+  background: rgb(229, 226, 226);
+  height: 3em;
+  width: 80%;
+  border-radius: 0.25em;
+  text-align: left;
+  align-items: center;
+  padding-left: 0.5em;
+}
+
+/* styling for login button */
+.next_btn {
+  width: 60%;
+  height: 2.5em;
+  background-color: rgb(192, 17, 55);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 0.5s;
+  border-radius: 0.25em;
+  cursor: pointer;
+  color: white;
+  margin-bottom: 5%;
+  margin-top: 5%;
+}
+
+.text {
+  position: relative;
+  bottom: -2em;
+}
+
+/* -------------------- TABLET OPTIMIZATION -------------------- */
+@media only screen and (min-device-width: 37em) {
+  .page {
+    font-size: 1em;
+  }
+
+  .cover {
+    width: 60%;
+    height: 70%;
+  }
+}
+
+/* -------------------- DESKTOP OPTIMIZATION -------------------- */
+@media only screen and (min-device-width: 64em) {
+  .page {
+    font-size: 1.25em;
+  }
+
+  .cover {
+    width: max(19em, 20%);
+    height: max(26em, 60%);
+  }
+}
