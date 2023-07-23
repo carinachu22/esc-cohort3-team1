@@ -207,7 +207,7 @@ export default function ViewTicketPage() {
       {/* Submit Ticket Button */}
 
     </Box>
-    <Box className='bottom container' justifyContent="center">
+    <Box className='bottom container' justifyContent="center" display="flex">
     {CheckTicket(ticket, userDetails)}
     </Box>
     </>
