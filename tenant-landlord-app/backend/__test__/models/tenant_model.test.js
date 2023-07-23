@@ -1,5 +1,5 @@
 import {cleanup, pool} from '../../config/database.js';
-import { addFeedbackRating } from '../../models/tenant_model.js';
+import { addFeedbackRating, getTenantByEmail } from '../../models/tenant_model.js';
 
 
 async function setup() {
@@ -7,7 +7,7 @@ async function setup() {
         // TODO backup the existing data to a temp table?
         //        CREATE TEMPORARY TABLE test_service_request_backup 
         await pool.promise().query(`
-        SELECT * FROM service_request LIMIT 0;
+            SELECT * FROM service_request LIMIT 0;
         `);
         await pool.promise().query(`
             DELETE FROM service_request;`
@@ -15,6 +15,10 @@ async function setup() {
         await pool.promise().query(`
             INSERT INTO service_request (service_request_id, public_id, name, email, request_type, request_description, submitted_date_time, quotation_amount, status, feedback_rating, feedback_text)
             VALUES ('1', '01-01-01 00:00:00', 'sam', 'sam@gmail.com', 'aircon', 'aircon warm', '2023-01-01 00:00:00', '123', 'submitted', null, 'good');
+        `);
+        await pool.promise().query(`
+            INSERT INTO tenant_user
+            VALUES (1,'sam@gmail.com','asdf');
         `);
     
     } catch (error) {
@@ -31,17 +35,55 @@ async function teardown() {
         await pool.promise().query(`
             TRUNCATE service_request;
             `);
+            await pool.promise().query(`
+            TRUNCATE tenant_user;
+            `);
         cleanup();
     } catch (error) {
         console.error("teardown failed. " + error);
         throw error;
     }
 }
+beforeAll(async () => {
+    await setup();
+});
+
+afterAll(async () => {
+    await teardown();
+});
+
+describe("Testing getTenantByEmail() in tenant model", () => {
+
+    test ("Test calling getTenantByEmail() on a valid email",(done) => {
+        getTenantByEmail('sam@gmail.com', (err, results) => {
+            if (err){
+                console.log("ERROR",err)
+            }
+            console.log(JSON.parse(JSON.stringify(results)))
+            const rowsLength = results.length
+            console.log(rowsLength)
+            expect(rowsLength).toBe(1);
+            console.log('done?')
+            done();
+        })
+    });
+    test ("Test calling getTenantByEmail() on an invalid email",(done) => {
+        getTenantByEmail('random@gmail.com', (err, results) => {
+            if (err){
+                console.log("ERROR",err)
+            }
+            console.log(JSON.parse(JSON.stringify(results)))
+            const rowsLength = results.length
+            console.log(rowsLength)
+            expect(rowsLength).toBe(0);
+            done();
+        })
+    });
+
+
+})
 
 describe("Testing addFeedbackRating() in tenant model", () => {
-    beforeAll(async () => {
-        await setup();
-    });
     test ("Test calling addFeedBackRating() on an invalid service ticket ID",(done) => {
         addFeedbackRating(2, 4, (err, results) => {
             if (err){
@@ -76,9 +118,6 @@ describe("Testing addFeedbackRating() in tenant model", () => {
                 done.fail(new Error("Expected error but got success")); // Fail the test since error was expected
               }
         })
-    });
-    afterAll(async () => {
-        await teardown();
     });
 
 })
