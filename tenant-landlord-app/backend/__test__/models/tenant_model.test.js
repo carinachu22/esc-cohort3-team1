@@ -13,8 +13,8 @@ async function setup() {
             DELETE FROM service_request;`
         );
         await pool.promise().query(`
-            INSERT INTO service_request (service_request_id, public_id, name, email, request_type, request_description, submitted_date_time, quotation_amount, status, feedback_rating, feedback_text)
-            VALUES ('1', '01-01-01 00:00:00', 'sam', 'sam@gmail.com', 'aircon', 'aircon warm', '2023-01-01 00:00:00', '123', 'submitted', null, 'good');
+            INSERT INTO service_request (service_request_id, public_id, name, email, request_type, request_description, submitted_date_time, status, feedback_rating, feedback_text)
+            VALUES ('1', '01-01-01 00:00:00', 'sam', 'sam@gmail.com', 'aircon', 'aircon warm', '2023-01-01 00:00:00', 'submitted', null, 'good');
         `);
         await pool.promise().query(`
             INSERT INTO tenant_user
@@ -68,7 +68,7 @@ describe("Testing getTenantByEmail() in tenant model", () => {
         })
     });
     test ("Test calling getTenantByEmail() on an invalid email",(done) => {
-        getTenantByEmail('random@gmail.com', (err, results) => {
+        getTenantByEmail('wrong@gmail.com', (err, results) => {
             if (err){
                 console.log("ERROR",err)
             }
@@ -101,7 +101,7 @@ describe("Testing addFeedbackRating() in tenant model", () => {
             if (err){
                 console.log("ERROR",err)
             }
-            //console.log(JSON.parse(JSON.stringify(results)))
+            console.log(JSON.parse(JSON.stringify(results)))
             const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
             expect(rowsChanged).toBe(1);
             done();
