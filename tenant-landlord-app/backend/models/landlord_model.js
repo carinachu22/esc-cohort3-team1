@@ -49,7 +49,6 @@ export const getLandlordByEmail = (email, callBack) => {
   );
 };
 
-
 export const getLandlordById = (id, callBack) => {
   pool.query(
     `
@@ -237,6 +236,126 @@ export const updateQuotation = (id, data, callBack) => {
       } else {
         callBack(null, results);
       }
+    }
+  );
+};
+
+//upload quotation's path in the file system
+export const uploadQuotation = ({filepath, id}, callBack) => {
+  pool.query(
+    `
+    UPDATE service_request
+    SET quotation_path = ?,
+    status = ?
+    WHERE service_request_id = ?
+    `,
+    [
+      filepath,
+      "landlord_quotation_sent",
+      id
+    ],
+    (error, results, fields) => {
+      if (error) {
+        callBack(error);
+      } else {
+        callBack(null, results);
+      }
+    }
+  );
+}
+
+
+//get the quotation path of a specific service request 
+export const getQuotationPath = (id, callBack) => {
+  pool.query(
+    `
+    SELECT quotation_path
+    FROM service_request
+    WHERE service_request_id = ?
+    `,
+    [
+      id
+    ],
+    (error, results, fields) => {
+      if (error) {
+        callBack(error);
+      } else {
+        callBack(null, results[0]);
+      }
+    }
+  );
+}
+
+export const getQuotation = (filepath, callBack) => {
+  pool.query(
+    `
+    SELECT 
+    LOAD_FILE(?)
+    `,
+    [
+      filepath
+    ],
+    (error, results, fields) => {
+      if (error) {
+        callBack(error);
+      } else {
+        callBack(null, results[0]);
+      }
+    }
+  );
+}
+
+export const ticketApproval = (id, data, status, callBack) => {
+  pool.query(
+    `
+    UPDATE service_request
+    SET status = ?
+    WHERE service_request_id = ?
+    `,
+    [
+      status,
+      id
+    ],
+    (error, results, fields) => {
+      if (error) {
+        callBack(error);
+      } else {
+        callBack(null,results);
+      }
+    }
+  )
+};
+
+export const ticketWork = (id, data, status, callBack) => {
+  pool.query(
+    `
+    UPDATE service_request
+    SET status = ?
+    WHERE service_request_id = ?
+    `,
+    [
+      status,
+      id
+    ],
+    (error, results, fields) => {
+      if (error) {
+        callBack(error);
+      } else {
+        callBack(null,results);
+      }
+    }
+  )
+};
+
+export const getTenantAccounts = (callBack) => {
+  pool.query(
+    `
+    SELECT * FROM TENANT_USER`,
+    (error, results, fields) => {
+      if (error) {
+        callBack(error);
+      }
+      callBack(null, results);
     }
   );
 };

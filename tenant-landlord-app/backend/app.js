@@ -3,6 +3,11 @@ import express from "express";
 import landlordRouter from "./routes/landlord_router.js";
 import tenantRouter from "./routes/tenant_router.js";
 import cors from "cors";
+// import fileUpload from "express-fileupload";
+
+
+
+
 
 // import { genSaltSync, hashSync, compareSync } from "bcrypt";   //remove this
 //dotenv.config();
@@ -13,12 +18,27 @@ import cors from "cors";
 // console.log(password)
 
 const app = express();
+
 app.use(cors());
 
 
+// for parsing application/json
 app.use(express.json());
+
+
 app.set("view engine", "ejs");
-app.use(express.urlencoded({extended:false}));
+
+app.use(express.urlencoded({extended:true}));
+
+// for parsing multipart/form-data
+// app.use(upload.array());
+app.use(express.static('public'));
+
+
+
+
+
+
 
 
 

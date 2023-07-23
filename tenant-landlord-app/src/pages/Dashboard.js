@@ -21,7 +21,7 @@ import { Accordion, AccordionButton, AccordionItem, AccordionPanel, TableContain
     Th,
     Td,
     TableCaption,
-Box, AccordionIcon, HStack, Card } from '@chakra-ui/react';
+Box, AccordionIcon, HStack, Card, CardBody, Spacer, Flex } from '@chakra-ui/react';
 
 /**
 Functional component to display service ticket list
@@ -40,6 +40,10 @@ export default function Dashboard() {
     const token = useAuthHeader();
     const authenticated = useIsAuthenticated();
     const userDetails = useAuthUser();
+    const tenant_need_action = ['landlord_completed_work','landlord_quotation_sent'];
+    const tenant_wait_action = ['tenant_ticket_created', 'ticket_quotation_approved','landlord_started_work']
+    const landlord_need_action = ['tenant_ticket_created', 'landlord_quotation_required', 'ticket_quotation_approved']
+    const landlord_wait_action = ['landlord_started_work']
 
     // Initialise function for 1. Fetch all service tickets dependent on user type (tenant or landlord)
     const GetServiceTickets = (userDetails) => {
@@ -57,9 +61,7 @@ export default function Dashboard() {
                 const config = {
                     headers: {
                       Authorization: `${token()}`
-                    }
-                }
-                const values = {
+                    },
                     params: {
                         email: userDetails().email
                     }
@@ -72,8 +74,7 @@ export default function Dashboard() {
                 } else if (type == 'tenant'){ 
                     response = await axios.get(
                         "http://localhost:5000/api/tenant/getTickets",
-                        config,
-                        values
+                        config
                     )
                 }
                 console.log("got response:")
@@ -101,12 +102,20 @@ export default function Dashboard() {
             if (result !== undefined){
                 for (let i=0;i<result.length;i++){
                     temp_tickets.push(result[i]);
-                    // Placeholder for now
-                    if (result[i].status == 'pending'){
-                        setNeedAction(needAction+1);
-                    if (result[i].status == 'waiting'){
-                        setWaitAction(waitAction+1);
-                    }
+                    if (userDetails().type == 'tenant'){
+                        if (tenant_need_action.includes(result[i].status)){
+                            setNeedAction(needAction+1);
+                        }
+                        else if (tenant_wait_action.includes(result[i].status)){
+                            setWaitAction(waitAction+1);
+                        }
+                    } else if (userDetails().type == 'landlord'){
+                        if (landlord_need_action.includes(result[i].status)){
+                            setNeedAction(needAction+1);
+                        }
+                        else if (landlord_wait_action.includes(result[i].status)){
+                            setWaitAction(waitAction+1);
+                        }
                     }
                 }
                 setTickets(temp_tickets)
@@ -147,11 +156,27 @@ export default function Dashboard() {
         <h1>
             Welcome, {userDetails().email}
         </h1>
-        <Card>
-        You have {tickets.length} tickets <br></br>
-        You have {needAction} tickets requiring your attention. <br></br>
-        You have {waitAction} tickets pending your tenant's/landlord's attention.
+        <Flex>
+            <Spacer/>
+        <Card width='300px'>
+            <CardBody>
+                You have {tickets.length} tickets <br></br>
+            </CardBody>
         </Card>
+        <Spacer/>
+        <Card width='300px'>
+        <CardBody>
+        You have {needAction} tickets requiring your attention. <br></br>
+        </CardBody>
+        </Card>
+        <Spacer/>
+        <Card width='300px'>
+        <CardBody>
+        You have {waitAction} tickets pending your tenant's/landlord's attention.
+        </CardBody>
+        </Card>
+        <Spacer/>
+        </Flex>
         </>
     )
 }

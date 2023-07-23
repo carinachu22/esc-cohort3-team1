@@ -81,7 +81,7 @@ export const controllerCreateTicket = (req, res) => {
  * @param {*} res 
  */
 export const controllerGetTickets = (req, res) => {
-  const email = req.body.email;
+  const email = req.query.email;
   getTicketsByTenant(email, (err,results) => {
     if (err) {
       console.log(err);
@@ -213,7 +213,7 @@ export const controllerCloseTicketStatus = (req, res) => {
   const body = req.body;
   let status;
   if (body.status == "close") {
-     status = "ticket_close"
+     status = "landlord_ticket_closed"
    } else {
     status = "close_attempt_failed"
    }
