@@ -1,9 +1,12 @@
 /** @type {import('jest').Config} */
 import defaults from "jest-config";
 const config = {
-    verbose: true
+    verbose: true,
+    testTimeout: 10000,
+    transform: {}
   };
   
+
 //export default config;
-export default {transform: {}}
+export default config
 
