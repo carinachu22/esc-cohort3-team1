@@ -100,7 +100,7 @@ export default function TicketList() {
 
         const checkStep = (status) => {
             const step_1 = ['tenant_ticket_created','landlord_quotation_sent', 'ticket_quotation_rejected', 'landlord_ticket_approved']
-            const step_2 = ['landlord_quotation_approved', 'landlord_started_work']
+            const step_2 = ['ticket_quotation_approved', 'landlord_started_work']
             const step_3 = ['landlord_completed_work']
             const step_4 = ['landlord_ticket_closed','landlord_ticket_rejected']
             if (step_1.includes(status)){
