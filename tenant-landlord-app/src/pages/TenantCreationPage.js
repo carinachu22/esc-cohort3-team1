@@ -5,6 +5,7 @@ import {useNavigate} from 'react-router-dom';
 import {setIn, useFormik} from "formik";
 import axios, {AxiosError} from "axios";
 import {useSignIn} from "react-auth-kit";
+import NavigationBar from '../components/NavigationBar';
 
 import {
     Box,
@@ -18,13 +19,9 @@ import {
     InputRightElement,
     VStack,
     Heading,
-    Center,
-    Text,
-    FormHelperText,
-    FormErrorMessage,
 } from "@chakra-ui/react";
 
-const LandlordLogin = () => {
+const TenantCreationPage = () => {
     const navigate = useNavigate();
     const [error, setError] = useState("");
     const signIn = useSignIn();
@@ -53,8 +50,8 @@ const LandlordLogin = () => {
         setPasswordShown(!passwordShown)
     }
 
-    const navigateToDashboard = () => {
-        navigate('/pages/Dashboard');
+    const navigateToAccountManagement = () => {
+        navigate('/pages/AccountManagement');
     };
 
     const onSubmit = async (values) => {
@@ -64,22 +61,12 @@ const LandlordLogin = () => {
         try{
             const response = await axios.post(
                 //api to be added
-                "http://localhost:5000/api/landlord/login",
+                "http://localhost:5000/api/landlord/createTenant",
                 values
             )
             console.log(response);
-            signIn({
-                token: response.data.token,
-                expiresIn: 60,
-                tokenType: "Bearer",
-                authState: {email: values.email, type: "landlord"}
-            });
-            if (response.data.message === "Login successfully"){
-                console.log(response.data.message);
-                navigateToDashboard();
-            }
-            else if (response.data.message === "Invalid email or password"){
-                formik.errors.hasError = true;
+            if (response.data.message === "created successfully"){
+                navigateToAccountManagement();
             }
 
 
@@ -112,11 +99,13 @@ const LandlordLogin = () => {
 
     /////// code below uses Chakra styling ////////
     return (
+        <>
+        {NavigationBar()}
         <Flex align="center" justify="center" h="100vh" w="100%">
             <Box w="22em" h="30em" p={8} rounded="md" position="relative" borderRadius="1em" boxShadow="0 0.188em 1.550em rgb(156, 156, 156)">
                 <form onSubmit={formik.handleSubmit}>
                     <VStack align="flex-start" alignItems="center">
-                        <Heading marginTop="4">Welcome!</Heading>
+                        <Heading marginTop="4" >Create Tenant</Heading>
                         <FormControl marginTop="6">
                             <Input
                                 id="email" 
@@ -160,24 +149,18 @@ const LandlordLogin = () => {
                                 variant="unstyled"
                                 onClick={formik.onSubmit}
                                 > 
-                                LOGIN
+                                CREATE
                             </Button>
                             {formik.errors.hasError ? <Box color="red.500" id="errorMessage" marginBottom="-6" >Invalid email or password</Box>: null}
                         </FormControl>
-                        <Box fontSize="lg" textColor="blue.700" marginTop={10}>
-                            <Link to="/pages/landlord_signup">Don't have an account?</Link>
-                        </Box>
-                        
-                        <Box fontSize="lg" textColor="blue.700" marginTop={2}>
-                            <Link to="/pages/ForgotPasswordPage">Forgot password?</Link>
-                        </Box>
                         
                     </VStack>
                 </form>
             </Box>
         </Flex>
+        </>
     )
 
 }
 
-export default LandlordLogin
+export default TenantCreationPage

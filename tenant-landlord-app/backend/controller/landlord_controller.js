@@ -250,6 +250,7 @@ export const controllerCreateTenant = (req, res) => {
     }
     return res.status(200).json({
       success: 1,
+      message: "created successfully",
       data: results,
     });
   });

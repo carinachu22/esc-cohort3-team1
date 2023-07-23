@@ -12,15 +12,26 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 // Import axios for http requests
 import NavigationBar from '../components/NavigationBar';
-import { Accordion, AccordionButton, AccordionItem, AccordionPanel, TableContainer, Table,
+import { Accordion, 
+    AccordionButton, 
+    AccordionItem, 
+    AccordionPanel, 
+    TableContainer, 
+    Table,
     Thead,
     Tbody,
     Tfoot,
     Tr,
     Th,
     Td,
-    TableCaption,
-Box, AccordionIcon, HStack, Flex } from '@chakra-ui/react';
+    Button,
+    Box, 
+    AccordionIcon, 
+    HStack,
+    Flex, 
+    Icon } from '@chakra-ui/react';
+
+import { DeleteIcon } from '@chakra-ui/icons'
 
 /**
 Functional component to display service ticket list
@@ -39,28 +50,27 @@ import {useFormik} from "formik";
 import axios, {AxiosError} from "axios";
 import {useSignIn} from "react-auth-kit";
 
+
 const AccountManagement = () => {
   const navigate = useNavigate();
   const [error, setError] = useState("");
   const signIn = useSignIn();
   const [tenantAccounts, setTenantAccounts] = useState(null)
 
-  const [passwordShown, setPasswordShown] = useState(false);
+  const navigateToTenantCreationPage = () => {
+    navigate('/pages/TenantCreationPage');
+  }
 
-  const togglePassword = () => {
-      //passwordShown = true if handler is invoked  
-      setPasswordShown(!passwordShown)
-    }
 
-    const APIGetTenantAccounts = async () => {
+  const APIGetTenantAccounts = async () => {
     const response = await axios.get(
         "http://localhost:5000/api/landlord/getTenantAccounts",
     )
     //console.log(response)
     return response
-    }
+  }
 
-    const GetTenantAccounts = () => {
+  const GetTenantAccounts = () => {
     var temp_accounts = []
     const accounts = APIGetTenantAccounts()
     accounts.then((result) => {
@@ -70,127 +80,80 @@ const AccountManagement = () => {
         }
     }
     console.log(temp_accounts)
-    // account.email
-    const accounts_table = (
-        <TableContainer>
-          <Table variant='simple'>
-            <Tbody>
-              {temp_accounts.map((account) => (
-                <Tr key={account.tenant_user_id}>
-                  <Td>{account.tenant_user_id}</Td>
-                  <Td>{account.email}</Td>
-                </Tr>
-              ))}
-            </Tbody>
-          </Table>
-        </TableContainer>
-      );
+
+    // Convert every tenant fetched to HTML to be shown on the left
+    const tenant_html = temp_accounts.map(account => 
+      <div key={account.tenant_user_id}>
+      <AccordionItem>
+          <AccordionButton justifyContent="space-between">
+              <HStack width="100%">
+              <Box textAlign='left' width="15vw" marginStart="2">
+              {account.tenant_user_id}
+              </Box>
+              <Box textAlign='left' width='34vw'>
+              {account.email}
+              </Box>
+              <Box textAlign='left' width='34vw'>
+              {"Date Created"}
+              </Box>
+              </HStack>
+              <AccordionIcon width='2vw'/>
+          </AccordionButton>
+          <AccordionPanel>
+              <HStack spacing='24vw'>
+              <Box>
+              Tenant ID: {account.tenant_user_id} <br></br>
+              Email: {account.email} <br></br>
+              </Box>
+              </HStack>
+              <br></br>
+          </AccordionPanel>
+      </AccordionItem>
+      </div>
+    );
     
-    setTenantAccounts(accounts_table) 
-    })}
-
-  const onSubmit = async (values) => {
-    console.log("Values: ", values);
-    setError("");
-
-    try{
-        const response = await axios.post(
-            "http://localhost:5000/api/landlord/createTenant",
-            values
-        )
-        //console.log(response);
-        signIn({
-            token: response.data.token,
-            expiresIn: 60,
-            tokenType: "Bearer",
-            authState: {email: values.email}
-        });
-        if (response.data.message === "created successfully"){
-            navigateToDashboard();
-        }
-
-
-
-    } catch (err){
-        if (err && err instanceof AxiosError) {
-            setError(err.response?.data.message);
-        }
-        else if (err && err instanceof Error){
-            setError(err.message);
-        }
-
-        console.log("Error: ", err);
-    }
-    window.location.reload();
-  }
-
-  const navigateToDashboard = () => {
-    navigate('/pages/Dashboard');
-  };
-
-  const formik = useFormik({
-    initialValues: {
-        email: "",
-        password: "",
-    },
-    onSubmit,
-  });
+    setTenantAccounts(tenant_html) 
+  })}
 
   useEffect(() => {
     GetTenantAccounts()},
     [])
-  return (
-    <div className={TableStyles.pageWrapper}>
-      <div className={TableStyles.page}>
-        <form className={TableStyles.cover} onSubmit={formik.handleSubmit}>
-          <h1 className={TableStyles.header}>Register</h1>
-          <div className={TableStyles.context}>sign up as a landlord</div>
-          <input
-            name="email"
-            type="email"
-            className={TableStyles.input}
-            placeholder="EMAIL"
-            value={formik.values.email}
-            onChange={formik.handleChange}
-          />
-          <div className={TableStyles.passwordToggle}>
-            <input
-              name="password"
-              type={passwordShown ? "text" : "password"}
-              placeholder="PASSWORD"
-              className={TableStyles.passwordInput}
-              value={formik.values.password}
-              onChange={formik.handleChange}
-            />
-            <span onClick={togglePassword}>
-              {passwordShown ? "Hide" : "Show"}
-            </span>
-          </div>
-          <button
-            className={TableStyles.next_btn}
-            type="submit"
-            isLoading={formik.isSubmitting}
-          >
-            FINISH
-          </button>
-        </form>
-      </div>
 
-      <div className={TableStyles.container}>
-        <h2>Your Tenants</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Requester</th>
-            </tr>
-          </thead>
-          <tbody>
-            {tenantAccounts}
-          </tbody>
-        </table>
-      </div>
-    </div>
+    
+  return (
+    <>
+    {NavigationBar()}
+    <Button
+      onClick={navigateToTenantCreationPage}
+      backgroundColor="teal.400" 
+      variant="unstyled"
+      padding={2}
+      position="fixed"
+      right="6"
+      marginTop="2"
+      textColor="white"
+    >
+    Create New Tenant
+    </Button>
+    <TableContainer marginTop="20" margin={20} border="1px" borderColor="gray.300" >
+        <Table variant='simple'>
+        <Thead margin={0}>
+            <Tr>
+                <Th width="16vw" textAlign='left' paddingRight={0} > ID </Th>
+                <Th width='30vw' textAlign='left' paddingRight={0} paddingLeft={0}> Tenant </Th>
+                <Th width='33vw' textAlign='left' paddingRight={0} paddingLeft={0}>Date Created</Th>
+                <Th width='2vw' alignItems="center" paddingRight={0} paddingLeft={0}><DeleteIcon/></Th>
+                
+
+            </Tr>
+        </Thead>
+        </Table>
+        <Accordion allowToggle >
+          {tenantAccounts}
+        </Accordion>
+    </TableContainer>
+
+    </>
   );
 };
 export default AccountManagement
