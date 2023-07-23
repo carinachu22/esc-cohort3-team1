@@ -17,7 +17,7 @@ async function setup() {
         `);
         await pool.promise().query(`
             INSERT INTO landlord_user 
-            VALUES ('1','firstlandlord@gmail.com','password');
+            VALUES ('1','firstlandlord@gmail.com','password', '1');
         `);
     
     } catch (error) {

@@ -1,5 +1,11 @@
 import {pool} from "../config/database.js";
 
+
+/**
+ * Get tenant with email
+ * @param {*} email 
+ * @param {*} callBack 
+ */
 export const getTenantByEmail = (email, callBack) => {
   pool.query(
     `

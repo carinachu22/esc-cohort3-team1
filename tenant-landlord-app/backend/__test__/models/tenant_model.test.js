@@ -13,8 +13,8 @@ async function setup() {
             DELETE FROM service_request;`
         );
         await pool.promise().query(`
-            INSERT INTO service_request (service_request_id, public_id, name, email, request_type, request_description, submitted_date_time, quotation_amount, status, feedback_rating, feedback_text)
-            VALUES ('1', '01-01-01 00:00:00', 'sam', 'sam@gmail.com', 'aircon', 'aircon warm', '2023-01-01 00:00:00', '123', 'tenant_ticket_created', null, 'good');
+            INSERT INTO service_request (service_request_id, public_id, name, email, request_type, request_description, submitted_date_time, status, feedback_rating, feedback_text)
+            VALUES ('1', '01-01-01 00:00:00', 'sam', 'sam@gmail.com', 'aircon', 'aircon warm', '2023-01-01 00:00:00', 'tenant_ticket_created', null, 'good');
         `);
         await pool.promise().query(`
             INSERT INTO tenant_user
