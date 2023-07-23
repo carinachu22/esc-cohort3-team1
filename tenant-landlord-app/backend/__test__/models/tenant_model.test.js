@@ -1,27 +1,30 @@
-import { pool, cleanup } from '../../config/database.js';
+import {cleanup, pool} from '../../config/database.js';
 import { addFeedbackRating } from '../../models/tenant_model.js';
-import request from 'supertest';
-import app from '../../app.js';
 
 
 async function setup() {
     try {
         // TODO backup the existing data to a temp table?
-        await pool.query(`
-        CREATE TEMPORARY TABLE sys.service_request_backup 
-        SELECT * FROM sys.service_request LIMIT 0;
+        //        CREATE TEMPORARY TABLE test_service_request_backup 
+        await pool.promise().query(`
+
+        SELECT * FROM test_service_request LIMIT 0;
         `);
-        await pool.query(`
-            DELETE FROM feedback_rating;`
+        await pool.promise().query(`
+            DELETE FROM test_service_request;`
         );
-        await pool.query(`
-            INSERT INTO  (feedback_rating) 
-            VALUES ('1', '01-01-01 00:00:00', 'sam', 'sam@gmail.com', 'aircon', 'aircon warm', '2023-01-01 00:00:00', '3', 'submitted', null, 'good' ),
+        await pool.promise().query(`
+            INSERT INTO test_service_request (service_request_id, public_id, name, email, request_type, request_description, submitted_date_time, quotation_amount, status, feedback_rating, feedback_text)
+            VALUES ('1', '01-01-01 00:00:00', 'sam', 'sam@gmail.com', 'aircon', 'aircon warm', '2023-01-01 00:00:00', '123', 'submitted', null, 'good');
         `);
+
+        //console.log("HELLO")
+    
     } catch (error) {
         console.error("setup failed. " + error);
         throw error;
     }
+    //console.log("HAS THIS ENDED?")
 }
 
 
@@ -29,14 +32,17 @@ async function teardown() {
     // TODO restore the table from the backup;
     
     try {
-        await pool.query(`
-            TRUNCATE sys.service_request
-            INSERT INTO sys.service_request SELECT * FROM sys.service_request_backup;
-        `);
-        await pool.query(` 
-            DELETE FROM feedback_rating;`
-        );
-        await cleanup();
+        await pool.promise().query(`
+            TRUNCATE test_service_request;
+            `);
+        // await pool.promise().query(`
+        //     INSERT INTO test_service_request SELECT * FROM test_service_request;
+        // `);
+        
+        // await pool.promise().query(` 
+        //     DELETE FROM test_service_request;`
+        // );
+        cleanup();
     } catch (error) {
         console.error("teardown failed. " + error);
         throw error;
@@ -47,15 +53,26 @@ describe("models.tenant_model.addFeedbackRating()", () => {
     beforeAll(async () => {
         await setup();
     });
-    test ("testing tenant_model.addFeedbackRating()", () => {
+    test ("testing tenant_model.addFeedbackRating()",(done) => {
         // const expected = [('1', '01-01-01 00:00:00', 'sam', 'sam@gmail.com', 'aircon', 'aircon warm', 2023-01-01 00:00:00', '3', 'submitted', null, 'good' )];
-        const result_promise = addFeedbackRating(1, 3);
-;
         const expected =  ['1','01-01-01 00:00:00', 'sam', 'sam@gmail.com', 'aircon', 'aircon warm', '2023-01-01 00:00:00', '3', 'submitted', '3', 'good' ];
-
-        result_promise.then((result) => {
-            expect(result).toEqual(expected);
+        addFeedbackRating(1, 3, (err, results) => {
+            if (err){
+                console.log("ERROR",err)
+            }
+            console.log(JSON.parse(JSON.stringify(results)))
+            const status = JSON.parse(JSON.stringify(results)).serverStatus
+            console.log(status)
+            expect(status).toBe(2);
+            console.log('DONE?')
+            done();
+            console.log('???')
         })
+        
+
+        // result_promise.then((result) => {
+        //     expect(result).toEqual(expected);
+        // })
 
         // const res = await request(app).patch('/api/tenant/addFeedbackRating/1');
         // const expected = [ new Message('3'), 
