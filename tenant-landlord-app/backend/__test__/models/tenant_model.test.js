@@ -47,9 +47,9 @@ describe("Testing addFeedbackRating() in tenant model", () => {
             if (err){
                 console.log("ERROR",err)
             }
-            console.log(JSON.parse(JSON.stringify(results)))
+            //console.log(JSON.parse(JSON.stringify(results)))
             const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
-            console.log(rowsChanged)
+            //console.log(rowsChanged)
             expect(rowsChanged).toBe(0);
             done();
         })
@@ -59,10 +59,22 @@ describe("Testing addFeedbackRating() in tenant model", () => {
             if (err){
                 console.log("ERROR",err)
             }
-            console.log(JSON.parse(JSON.stringify(results)))
+            //console.log(JSON.parse(JSON.stringify(results)))
             const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
             expect(rowsChanged).toBe(1);
             done();
+        })
+    });
+    test ("Test calling addFeedBackRating() on a valid service ticket ID with invalid value",(done) => {
+        addFeedbackRating(1, 6, (err, results) => {
+            if (err) {
+                // Error is reported through the callback
+                expect(err).toBeTruthy(); // Use any appropriate assertion to check the error
+                done(); // Call done() to indicate that the test is complete
+              } else {
+                // No error occurred, you can add further assertions for success case here if needed
+                done.fail(new Error("Expected error but got success")); // Fail the test since error was expected
+              }
         })
     });
     afterAll(async () => {
