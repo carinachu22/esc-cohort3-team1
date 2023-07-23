@@ -162,7 +162,7 @@ export default function TicketList() {
                         <AccordionIcon />
                     </AccordionButton>
                     <AccordionPanel>
-                        <HStack spacing='28vw'>
+                        <HStack spacing='24vw'>
                         <Box>
                         Service Request ID: {ticket.service_request_id} <br></br>
                         Email: {ticket.email} <br></br>
