@@ -7,9 +7,10 @@ import { StarIcon } from '@chakra-ui/icons';
 import { IoIosStarOutline, IoIosStar } from 'react-icons/io';
 
 export default function CheckTicket(ticket, userDetails){
-    const id = ticket.id
+    const id = ticket.service_request_id
     const status = ticket.status
-    console.log(id)
+    console.log('ticket?',ticket)
+    console.log('id?',id)
     console.log(status)
     console.log('testing check ticket',userDetails())
     const navigate = useNavigate();
@@ -46,6 +47,7 @@ export default function CheckTicket(ticket, userDetails){
                     height="3em"
                     marginTop="3em"
                     marginLeft="2.3em"
+                    marginRight="2.3em"
                     marginBottom="5vh"
                     borderRadius="0.25em"
                     onClick = {() => {console.log('approving');
@@ -79,6 +81,7 @@ export default function CheckTicket(ticket, userDetails){
                         height="3em"
                         marginTop="3em"
                         marginLeft="2.3em"
+                        marginRight="2.3em"
                         borderRadius="0.25em"
                         onClick = {() => {console.log('rejecting');
                             axios.patch(
