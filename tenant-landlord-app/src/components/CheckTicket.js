@@ -144,13 +144,6 @@ export default function CheckTicket(ticket, userDetails){
               {starIcons}
             </Stack>
           </Box>
-          <Box display="flex" justifyContent="center" m={1} p={1}>
-            <Button type="submit" 
-            size="lg"
-            colorScheme="blue" >
-              Submit
-            </Button>
-          </Box>
       </Box>
       )
     }
