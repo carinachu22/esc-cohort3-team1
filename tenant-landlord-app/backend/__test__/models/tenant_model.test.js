@@ -54,19 +54,17 @@ describe("models.tenant_model.addFeedbackRating()", () => {
         await setup();
     });
     test ("testing tenant_model.addFeedbackRating()",(done) => {
-        // const expected = [('1', '01-01-01 00:00:00', 'sam', 'sam@gmail.com', 'aircon', 'aircon warm', 2023-01-01 00:00:00', '3', 'submitted', null, 'good' )];
-        const expected =  ['1','01-01-01 00:00:00', 'sam', 'sam@gmail.com', 'aircon', 'aircon warm', '2023-01-01 00:00:00', '3', 'submitted', '3', 'good' ];
         addFeedbackRating(1, 3, (err, results) => {
             if (err){
                 console.log("ERROR",err)
             }
-            console.log(JSON.parse(JSON.stringify(results)))
+            //console.log(JSON.parse(JSON.stringify(results)))
             const status = JSON.parse(JSON.stringify(results)).serverStatus
-            console.log(status)
+            //console.log(status)
             expect(status).toBe(2);
-            console.log('DONE?')
+            //console.log('DONE?')
             done();
-            console.log('???')
+            //console.log('???')
         })
         
 
