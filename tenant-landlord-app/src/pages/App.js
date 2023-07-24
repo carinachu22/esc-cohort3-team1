@@ -1,7 +1,6 @@
 import Landing from '../components/landing_form/landing';
 import React from 'react';
-import LandlordLogin from './landlord_login';
-import TenantLogin from './tenant_login';
+import LoginPage from './LoginPage';
 import LandlordSignup from './landlord_signup';
 import Dashboard from './Dashboard';
 import CloseTicketPage from './CloseTicketPage';
@@ -15,7 +14,6 @@ import AccountManagement from './AccountManagement';
 import QuotationUpload from './QuotationUploadPage';
 import TenantCreationPage from './TenantCreationPage';
 import LeaseCreationPage from './LeaseCreationPage';
-import AdminLogin from './Admin_login';
 
 
 import {Routes, Route} from 'react-router-dom';
@@ -33,9 +31,7 @@ function App() {
         <div className='App-cover'>
           <Routes>
             <Route path="/" element={<Landing />} />
-            <Route path="/pages/tenant_login/*" element={<TenantLogin />} />
-            <Route path="/pages/landlord_login/*" element={<LandlordLogin />} />
-            <Route path="/pages/Admin_login/*" element={<AdminLogin />} />
+            <Route path="/pages/LoginPage/*" element={<LoginPage />} />
             <Route path="/pages/QuotationUploadPage/*" element={<QuotationUpload />} />
             <Route path="/pages/TenantCreationPage/*" element={<TenantCreationPage />} />
             <Route path="/pages/LeaseCreationPage/*" element={<LeaseCreationPage />} />

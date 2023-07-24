@@ -23,18 +23,19 @@ import {
 const Landing = () => {
 
     const navigate = useNavigate();
+    
   
-    const navigateToLandlordLogin = () => {
-      navigate('/pages/landlord_login');
+    const navigateToLandlordLogin = (role) => {
+      navigate('/pages/LoginPage', { state: { role } });
       
     };
   
-    const navigateToTenantLogin = () => {
-      navigate ('/pages/tenant_login');
+    const navigateToTenantLogin = (role) => {
+      navigate ('/pages/LoginPage', { state: { role } });
     };
 
-    const navigateToAdminLogin = () => {
-      navigate ('/pages/admin_login');
+    const navigateToAdminLogin = (role) => {
+      navigate ('/pages/LoginPage', { state: { role } });
     };
 
 
@@ -44,7 +45,7 @@ const Landing = () => {
             <VStack alignItems="center" >
               <Heading marginTop="10">Service Portal</Heading>
               <Button 
-                onClick={navigateToTenantLogin} 
+                onClick={() => navigateToTenantLogin('tenant')} 
                 w="80%" 
                 h="4em" 
                 background="rgb(192, 17, 55)" 
@@ -55,7 +56,7 @@ const Landing = () => {
               TENANT LOGIN
               </Button>
               <Button 
-                onClick={navigateToLandlordLogin} 
+                onClick={() => navigateToLandlordLogin('landlord')} 
                 w="80%" 
                 h="4em" 
                 background="rgb(192, 17, 55)" 
@@ -66,13 +67,14 @@ const Landing = () => {
               LANDLORD LOGIN
               </Button>
               <Button 
-                onClick={navigateToAdminLogin} 
+                onClick={() => navigateToAdminLogin('admin')} 
                 w="80%" 
                 h="4em" 
                 background="rgb(192, 17, 55)" 
                 textColor="white" 
                 variant="unstyled"
                 marginTop="10"
+                value="admin"
               >
               ADMIN LOGIN
               </Button>

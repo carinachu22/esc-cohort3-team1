@@ -2,20 +2,10 @@
 import express from "express";
 import landlordRouter from "./routes/landlord_router.js";
 import tenantRouter from "./routes/tenant_router.js";
+import adminRouter from "./routes/admin_router.js";
 import cors from "cors";
-// import fileUpload from "express-fileupload";
 
 
-
-
-
-// import { genSaltSync, hashSync, compareSync } from "bcrypt";   //remove this
-//dotenv.config();
-
-//remove these lines
-// const salt = genSaltSync(10);
-// const password = hashSync("123", salt);
-// console.log(password)
 
 const app = express();
 
@@ -55,4 +45,5 @@ app.get("/api", (req, res) => {
 
 app.use("/api/landlord", landlordRouter);
 app.use("/api/tenant", tenantRouter);
+app.use("/api/tenant", adminRouter);
 

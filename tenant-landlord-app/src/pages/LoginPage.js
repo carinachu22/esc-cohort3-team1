@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {Link} from 'react-router-dom';
-import {useNavigate} from 'react-router-dom';
+import {useNavigate, useLocation} from 'react-router-dom';
 import {setIn, useFormik} from "formik";
 import axios, {AxiosError} from "axios";
 import {useSignIn} from "react-auth-kit";
@@ -24,10 +24,14 @@ import {
     FormErrorMessage,
 } from "@chakra-ui/react";
 
-const LandlordLogin = () => {
+const LoginPage = () => {
     const navigate = useNavigate();
     const [error, setError] = useState("");
     const signIn = useSignIn();
+
+    const location = useLocation();
+    const { role } = location.state;
+    console.log(role);
 
     const validate = values => {
         let errors = {};
@@ -57,30 +61,77 @@ const LandlordLogin = () => {
         navigate('/pages/Dashboard');
     };
 
+    const navigateToForgotPasswordPage = (role) => {
+        navigate ('/pages/ForgotPasswordPage', { state: { role } });
+      };
+
     const onSubmit = async (values) => {
         console.log("Values: ", values);
         setError("");
 
+
         try{
-            const response = await axios.post(
-                //api to be added
-                "http://localhost:5000/api/landlord/login",
-                values
-            )
-            console.log(response);
-            signIn({
-                token: response.data.token,
-                expiresIn: 60,
-                tokenType: "Bearer",
-                authState: {email: values.email, type: "landlord"}
-            });
-            if (response.data.message === "Login successfully"){
-                console.log(response.data.message);
-                navigateToDashboard();
+            if(role === "landlord"){
+                const response = await axios.post(
+                    //api to be added
+                    "http://localhost:5000/api/landlord/login",
+                    values
+                )
+                signIn({
+                    token: response.data.token,
+                    expiresIn: 60,
+                    tokenType: "Bearer",
+                    authState: {email: values.email, type: "landlord"}
+                });
+                if (response.data.message === "Login successfully"){
+                    console.log(response.data.message);
+                    navigateToDashboard();
+                }
+                else if (response.data.message === "Invalid email or password"){
+                    formik.errors.hasError = true;
+                }
             }
-            else if (response.data.message === "Invalid email or password"){
-                formik.errors.hasError = true;
+            else if (role === "tenant"){
+                const response = await axios.post(
+                    //api to be added
+                    "http://localhost:5000/api/tenant/login",
+                    values
+                )
+                signIn({
+                    token: response.data.token,
+                    expiresIn: 60,
+                    tokenType: "Bearer",
+                    authState: {email: values.email, type: "tenant"}
+                });
+                if (response.data.message === "Login successfully"){
+                    console.log(response.data.message);
+                    navigateToDashboard();
+                }
+                else if (response.data.message === "Invalid email or password"){
+                    formik.errors.hasError = true;
+                }
             }
+            else if (role === "admin"){
+                const response = await axios.post(
+                    //api to be added
+                    "http://localhost:5000/api/admin/login",
+                    values
+                )
+                signIn({
+                    token: response.data.token,
+                    expiresIn: 60,
+                    tokenType: "Bearer",
+                    authState: {email: values.email, type: "admin"}
+                });
+                if (response.data.message === "Login successfully"){
+                    console.log(response.data.message);
+                    navigateToDashboard();
+                }
+                else if (response.data.message === "Invalid email or password"){
+                    formik.errors.hasError = true;
+                }
+            }
+
 
 
         } catch (err){
@@ -116,7 +167,7 @@ const LandlordLogin = () => {
             <Box w="22em" h="30em" p={8} rounded="md" position="relative" borderRadius="1em" boxShadow="0 0.188em 1.550em rgb(156, 156, 156)">
                 <form onSubmit={formik.handleSubmit}>
                     <VStack align="flex-start" alignItems="center">
-                        <Heading marginTop="4">Welcome!</Heading>
+                        <Heading marginTop="4" fontSize="32">Welcome {role}!</Heading>
                         <FormControl marginTop="6">
                             <Input
                                 id="email" 
@@ -164,12 +215,9 @@ const LandlordLogin = () => {
                             </Button>
                             {formik.errors.hasError ? <Box color="red.500" id="errorMessage" marginBottom="-6" >Invalid email or password</Box>: null}
                         </FormControl>
-                        <Box fontSize="lg" textColor="blue.700" marginTop={10}>
-                            <Link to="/pages/landlord_signup">Don't have an account?</Link>
-                        </Box>
-                        
-                        <Box fontSize="lg" textColor="blue.700" marginTop={2}>
-                            <Link to="/pages/ForgotPasswordPage">Forgot password?</Link>
+                        <Box fontSize="lg" textColor="blue.700" marginTop={8} >
+
+                            <Link to={"/pages/ForgotPasswordPage"} state={{state: {role}}}>Forgot password?</Link>
                         </Box>
                         
                     </VStack>
@@ -180,4 +228,4 @@ const LandlordLogin = () => {
 
 }
 
-export default LandlordLogin
+export default LoginPage

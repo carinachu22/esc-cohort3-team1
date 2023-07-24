@@ -1,31 +1,25 @@
 import React, { useState, Component } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import {Link} from 'react-router-dom';
-import {useNavigate} from 'react-router-dom';
 import {setIn, useFormik} from "formik";
 import axios, {AxiosError} from "axios";
-import {useSignIn} from "react-auth-kit";
-import LoginForm from "../components/login_form";
+import { useLocation } from "react-router-dom";
+
 import {
     Box,
     Button,
-    Checkbox,
     Flex,
     FormControl,
-    FormLabel,
     Input,
-    InputGroup,
-    InputRightElement,
     VStack,
     Heading,
-    Center,
-    Text,
-    FormHelperText,
-    FormErrorMessage,
 } from "@chakra-ui/react";
 
 const ForgotPasswordPage = () => {
     const [error, setError] = useState("");
+
+    const location = useLocation();
+    const { role } = location.state.state;
+    console.log(role);
 
     const validate = values => {
         let errors = {};
@@ -44,20 +38,40 @@ const ForgotPasswordPage = () => {
     const onSubmit = async (values) => {
         console.log("Values: ", values);
         setError("");
-
         try{
-            const response = await axios.post(
-                //api to be added
-                "http://localhost:5000/api/landlord/forgot-password",
-                values
-            )
-            console.log(response);
-
-            if (response.data.message === "User does not exist!"){
-                console.log(response.data.message);
-                formik.errors.hasError = true;
+            if(role === "landlord"){
+                const response = await axios.post(
+                    //api to be added
+                    "http://localhost:5000/api/landlord/forgot-password",
+                    values
+                )
+                if (response.data.message === "User does not exist!"){
+                    console.log(response.data.message);
+                    formik.errors.hasError = true;
+                }
             }
-
+            if(role === "tenant"){
+                const response = await axios.post(
+                    //api to be added
+                    "http://localhost:5000/api/tenant/forgot-password",
+                    values
+                )
+                if (response.data.message === "User does not exist!"){
+                    console.log(response.data.message);
+                    formik.errors.hasError = true;
+                }
+            }
+            if(role === "admin"){
+                const response = await axios.post(
+                    //api to be added
+                    "http://localhost:5000/api/admin/forgot-password",
+                    values
+                )
+                if (response.data.message === "User does not exist!"){
+                    console.log(response.data.message);
+                    formik.errors.hasError = true;
+                }
+            }
 
         } catch (err){
             if (err && err instanceof AxiosError) {
