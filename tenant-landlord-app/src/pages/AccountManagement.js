@@ -143,8 +143,6 @@ const AccountManagement = () => {
                 <Th width='30vw' textAlign='left' paddingRight={0} paddingLeft={0}> Tenant </Th>
                 <Th width='33vw' textAlign='left' paddingRight={0} paddingLeft={0}>Date Created</Th>
                 <Th width='2vw' alignItems="center" paddingRight={0} paddingLeft={0}><DeleteIcon/></Th>
-                
-
             </Tr>
         </Thead>
         </Table>
