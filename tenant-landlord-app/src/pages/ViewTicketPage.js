@@ -18,6 +18,7 @@ export default function ViewTicketPage() {
   const [ticketType, setTicketType] = useState('');
   const [status, setstatus] = useState('');
   const {selectedTicket, setSelectedTicket} = useContext(SelectedTicketContext);
+  const [ticket, setTicket] = useState('');
   const authenticated = useIsAuthenticated();
 
   console.log('selectedTicket:', selectedTicket);
@@ -87,6 +88,7 @@ export default function ViewTicketPage() {
         var category = tickets[0].request_type;
         setstatus(tickets[0].status)
         var timesubmitted = tickets[0].submitted_date_time;
+        setTicket(tickets[0])
         // console.log('tenantComment', tenantComment);
         // console .log('category', category);
         // console.log('status', status);
@@ -125,11 +127,13 @@ export default function ViewTicketPage() {
   return (
     <>
     {NavigationBar()}
+
     <Box
+      className='main container'
       display="flex"
       flexDirection="column"
       alignItems="center"
-      minHeight="100vh"
+      minHeight="50vh"
       fontFamily="'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif"
       marginTop="5vh"
     >
@@ -201,13 +205,10 @@ export default function ViewTicketPage() {
       </Box>
 
       {/* Submit Ticket Button */}
-      <Flex justifyContent="center">
 
-        {CheckTicket(selectedTicket.id, status, userDetails)
-      }
-
-
-      </Flex>
+    </Box>
+    <Box className='bottom container' justifyContent="center" display="flex">
+    {CheckTicket(ticket, userDetails)}
     </Box>
     </>
   );

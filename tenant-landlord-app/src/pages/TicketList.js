@@ -98,6 +98,25 @@ export default function TicketList() {
             }
         }
 
+        const checkStep = (status) => {
+            const step_1 = ['tenant_ticket_created','landlord_quotation_sent', 'ticket_quotation_rejected', 'landlord_ticket_approved']
+            const step_2 = ['ticket_quotation_approved', 'landlord_started_work']
+            const step_3 = ['landlord_completed_work']
+            const step_4 = ['landlord_ticket_closed','landlord_ticket_rejected']
+            if (step_1.includes(status)){
+                return 1
+            }
+            else if (step_2.includes(status)){
+                return 2
+            }
+            else if (step_3.includes(status)){
+                return 3
+            }
+            else {
+                return 4
+            }
+        }
+
         const convertStatus = (status) => {
             console.log('status?',status)
             if (status === 'tenant_ticket_created'){
@@ -162,7 +181,7 @@ export default function TicketList() {
                         <AccordionIcon />
                     </AccordionButton>
                     <AccordionPanel>
-                        <HStack spacing='28vw'>
+                        <HStack spacing='24vw'>
                         <Box>
                         Service Request ID: {ticket.service_request_id} <br></br>
                         Email: {ticket.email} <br></br>
@@ -171,7 +190,7 @@ export default function TicketList() {
                         Status: {convertStatus(ticket.status)} <br></br>
                         </Box>
                         <Box width='50vw'>
-                            <Stepper index={1}>
+                            <Stepper index={checkStep(ticket.status)}>
                                 {steps.map((step, index) => (
                                     <Step key={index}>
                                     <StepIndicator>

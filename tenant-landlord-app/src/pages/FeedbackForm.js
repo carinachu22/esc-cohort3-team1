@@ -16,6 +16,7 @@ function FeedbackForm() {
   const navigate = useNavigate();
   const ticketID = selectedTicket.id;
   const [rating, setRating] = useState(-1);
+  const toast = useToast();
 
   const handleRatingChange = (newRating) => {
     setRating(newRating);
@@ -27,7 +28,14 @@ function FeedbackForm() {
     }
 
     const closeTicketPromise = APICloseTicket(values);
-    closeTicketPromise.then(() => navigate('/pages/dashboard'));
+    closeTicketPromise.then(() => {navigate('/pages/dashboard');toast({
+      title: "Feedback Sent",
+      description: "Feedback has been sent.",
+      status: "success",
+      duration: 5000,
+      isClosable: true,
+      position: "top",
+      })});
   };
 
   const APICloseTicket = async (data) => {
