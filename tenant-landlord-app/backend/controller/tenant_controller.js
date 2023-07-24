@@ -1,5 +1,7 @@
 import {
   getTenantByEmail,
+  getTenantById,
+  updateTenantPassword,
   getTicketsByTenant,
   getTicketsByStatus,
   createTicket,
@@ -8,8 +10,9 @@ import {
   addFeedbackText,
   closeTicketStatus
 } from "../models/tenant_model.js";
-import { compareSync } from "bcrypt";
+import { genSaltSync, hashSync, compareSync } from "bcrypt";
 import jwt from "jsonwebtoken";
+import nodemailer from "nodemailer";
 
 
 /**
@@ -50,6 +53,124 @@ export const controllerLoginTenant = (req, res) => {
       });
     }
   });
+};
+
+export const controllerForgotPasswordTenant = (req, res) => {
+  const body = req.body;
+  console.log(body.email);
+  getTenantByEmail(body.email, (err, results) => {
+    if (err) {
+      console.log(err);
+    }
+    if (!results) {
+      return res.json({
+        success: 0,
+        message: "User does not exist!",
+      });
+    }
+    const secret = process.env.JWT_SECRET + results.password;
+    const jsontoken = jwt.sign({email: results.email, id: results.tenant_user_id}, secret, {expiresIn: 300});
+    const link = `http://localhost:5000/api/tenant/reset-password/${results.tenant_user_id}/${jsontoken}`;
+
+    ////// NODEMAILER FEATURE ///////
+    ///// nodemailer feature starts from here //////
+    var transporter = nodemailer.createTransport({
+      service: 'gmail',
+      //sender email and password
+      // you can obtain the password in the following steps:
+      // 1. Sign in to gmail
+      // 2. go to "manage google account"
+      // 3. go to "Security"
+      // 4. click on "2-step verification"
+      // 5. go to "App passwords" and add a password to a "custom name" app
+      auth: {
+        user: process.env.AUTH_USER,
+        pass: process.env.AUTH_PASSWORD
+      }
+    });
+    
+    var mailOptions = {
+      from: process.env.AUTH_USER,
+      to: results.email,
+      subject: 'Password Reset',
+      text: link
+    };
+    
+    transporter.sendMail(mailOptions, function(error, info){
+      if (error) {
+        console.log(error);
+      } else {
+        console.log('Email sent: ' + info.response);
+      }
+    }); 
+      ///// nodemailer feature ends here /////
+  });
+};
+
+export const controllerResetPasswordPageTenant = async (req, res) => {
+  const {id, jsontoken} = req.params;
+  console.log(req.params);
+  getTenantById(id, (err, results) => {
+    console.log(results);
+    if (err) {
+      console.log(err);
+    }
+    if (!results) {
+      return res.json({
+        success: 0,
+        message: "User does not exist!",
+      });
+    }
+    const secret = process.env.JWT_SECRET + results.password;
+    try {
+      const verify = jwt.verify(jsontoken, secret);
+      return res.render("ResetPasswordPage", {email: verify.email, status: "not verified"});
+      
+    } catch (error){
+      console.log(error);
+      res.send("Not Verified!");
+    }
+  })
+
+};
+
+export const controllerResetPasswordTenant = async (req, res) => {
+  const {id, jsontoken} = req.params;
+  console.log({id, jsontoken});
+  var {password, confirmPassword} = req.body;
+  console.log({password, confirmPassword});
+  const salt = genSaltSync(10);
+  password = hashSync(password, salt);
+
+  getTenantById(id, (err, results) => {
+    console.log(results);
+    if (err) {
+      console.log(err);
+    }
+    if (!results) {
+      return res.json({
+        success: 0,
+        message: "User does not exist!",
+      });
+    }
+    const secret = process.env.JWT_SECRET + results.password;
+    try {
+      const verify = jwt.verify(jsontoken, secret);
+      updateTenantPassword({password, id}, (err, results) => {
+        console.log({password, id})
+        if (err) {
+          console.log(err);
+          return res.status(500).json({
+            success: 0,
+            message: "Database connection error",
+          });
+        }
+      })
+      res.render("ResetPasswordPage", {email: verify.email, status: "verified"});
+    } catch (error){
+      console.log(error);
+    }
+  })
 };
 
 /**
