@@ -12,7 +12,7 @@ import {
   controllerResetPasswordTenant
 } from "../controller/tenant_controller.js";
 import express from "express";
-import { checkToken } from "../auth/token_validation.js";
+import { checkTenantToken } from "../auth/tenant_validation.js";
 
 const router = express.Router();
 
@@ -29,16 +29,16 @@ const router = express.Router();
  */
 
 router.post("/login", controllerLoginTenant);
-router.post("/createTicket", checkToken, controllerCreateTicket);
+router.post("/createTicket", checkTenantToken, controllerCreateTicket);
 router.post("/forgot-password", controllerForgotPasswordTenant);
 router.post("/reset-password/:id/:jsontoken", controllerResetPasswordTenant);
 
-router.patch("/quotationApproval/:id", checkToken, controllerQuotationApproval);
+router.patch("/quotationApproval/:id", checkTenantToken, controllerQuotationApproval);
 
 router.get("/reset-password/:id/:jsontoken", controllerResetPasswordPageTenant);
-router.get("/getTickets",checkToken, controllerGetTickets);
-router.get("/getTicketsByStatus/:status",checkToken, controllerGetTicketsByStatus);
-router.patch("/addFeedbackRating/:id", checkToken, controllerAddFeedbackRating);
-router.patch("/addFeedbackText/:id", checkToken, controllerAddFeedbackText);
-router.patch("/closeTicketStatus/:id", checkToken, controllerCloseTicketStatus);
+router.get("/getTickets",checkTenantToken, controllerGetTickets);
+router.get("/getTicketsByStatus/:status",checkTenantToken, controllerGetTicketsByStatus);
+router.patch("/addFeedbackRating/:id", checkTenantToken, controllerAddFeedbackRating);
+router.patch("/addFeedbackText/:id", checkTenantToken, controllerAddFeedbackText);
+router.patch("/closeTicketStatus/:id", checkTenantToken, controllerCloseTicketStatus);
 export default router;

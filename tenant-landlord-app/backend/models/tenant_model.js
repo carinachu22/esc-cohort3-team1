@@ -18,7 +18,7 @@ export const getTenantByEmail = (email, callBack) => {
       if (error) {
         callBack(error);
       } else {
-        callBack(null, results);
+        callBack(null, results[0]);
       }
     }
   );

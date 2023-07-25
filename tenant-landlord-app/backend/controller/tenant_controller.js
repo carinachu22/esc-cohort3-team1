@@ -38,7 +38,7 @@ export const controllerLoginTenant = (req, res) => {
     const password_check = compareSync(body.password, results.password);
     if (password_check) {
       results.password = undefined;
-      const jsontoken = jwt.sign({ result: results }, "qwe1234", {
+      const jsontoken = jwt.sign({ result: results }, "paolom8", {
         expiresIn: "1h",
       });
       return res.json({

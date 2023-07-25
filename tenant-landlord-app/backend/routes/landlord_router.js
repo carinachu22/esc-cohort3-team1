@@ -17,7 +17,7 @@ import {
   controllerDeleteAllTenants
 } from "../controller/landlord_controller.js";
 import express from "express";
-import { checkToken } from "../auth/token_validation.js";
+import { checkLandlordToken } from "../auth/landlord_validation.js";
 import multer from "multer";
 
 
@@ -57,18 +57,18 @@ router.post("/createTenant", controllerCreateTenant);
 router.post("/uploadQuotation/:id", upload.single('files'), controllerUploadQuotation)
 
 router.get("/reset-password/:id/:jsontoken", controllerResetPasswordPageLandlord);
-router.get("/getTickets", checkToken, controllerGetTickets);
-router.get("/getTicketById/:id", checkToken, controllerGetTicketById);
+router.get("/getTickets", checkLandlordToken, controllerGetTickets);
+router.get("/getTicketById/:id", checkLandlordToken, controllerGetTicketById);
 router.get(
   "/getTicketsByStatus/:status",
-  checkToken,
+  checkLandlordToken,
   controllerGetTicketsByStatus
 );
 router.get("/getQuotation/", controllerGetQuotation);
 router.patch("/deleteAllTenants", controllerDeleteAllTenants);
-router.patch("/updateQuotation/:id", checkToken, controllerUpdateQuotation);
-router.patch("/ticketApproval/:id", checkToken, controllerTicketApproval);
-router.patch("/ticketWork/:id", checkToken, controllerTicketWork);
+router.patch("/updateQuotation/:id", checkLandlordToken, controllerUpdateQuotation);
+router.patch("/ticketApproval/:id", checkLandlordToken, controllerTicketApproval);
+router.patch("/ticketWork/:id", checkLandlordToken, controllerTicketWork);
 router.get("/getTenantAccounts/", controllerGetTenantAccounts)
 
 export default router;
