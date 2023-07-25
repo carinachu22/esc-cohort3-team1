@@ -263,7 +263,7 @@ export const controllerQuotationApproval = (req, res) => {
     status = "ticket_quotation_rejected"
   }
 
-  quotationApproval(id,body,status, (err, results) => {
+  quotationApproval(id,status, (err, results) => {
     if (err) {
       console.log(err);
       return;
