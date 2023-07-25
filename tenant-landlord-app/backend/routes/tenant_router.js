@@ -6,7 +6,10 @@ import {
   controllerQuotationApproval,
   controllerAddFeedbackRating,
   controllerAddFeedbackText,
-  controllerCloseTicketStatus
+  controllerCloseTicketStatus,
+  controllerForgotPasswordTenant,
+  controllerResetPasswordPageTenant,
+  controllerResetPasswordTenant
 } from "../controller/tenant_controller.js";
 import express from "express";
 import { checkToken } from "../auth/token_validation.js";
@@ -27,7 +30,12 @@ const router = express.Router();
 
 router.post("/login", controllerLoginTenant);
 router.post("/createTicket", checkToken, controllerCreateTicket);
+router.post("/forgot-password", controllerForgotPasswordTenant);
+router.post("/reset-password/:id/:jsontoken", controllerResetPasswordTenant);
+
 router.patch("/quotationApproval/:id", checkToken, controllerQuotationApproval);
+
+router.get("/reset-password/:id/:jsontoken", controllerResetPasswordPageTenant);
 router.get("/getTickets",checkToken, controllerGetTickets);
 router.get("/getTicketsByStatus/:status",checkToken, controllerGetTicketsByStatus);
 router.patch("/addFeedbackRating/:id", checkToken, controllerAddFeedbackRating);

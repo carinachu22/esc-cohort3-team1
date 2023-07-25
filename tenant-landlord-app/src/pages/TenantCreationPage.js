@@ -1,13 +1,12 @@
 import React, { useState } from "react";
-import LoginStyles from "../styles/login_form_landlord.module.css";
-import PasswordStyles from "../styles/usePasswordToggle.module.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {Link} from 'react-router-dom';
 import {useNavigate} from 'react-router-dom';
 import {setIn, useFormik} from "formik";
 import axios, {AxiosError} from "axios";
 import {useSignIn} from "react-auth-kit";
-import LoginForm from "../components/login_form";
+import NavigationBar from '../components/NavigationBar';
+
 import {
     Box,
     Button,
@@ -20,13 +19,9 @@ import {
     InputRightElement,
     VStack,
     Heading,
-    Center,
-    Text,
-    FormHelperText,
-    FormErrorMessage,
 } from "@chakra-ui/react";
 
-const LandlordLogin = () => {
+const TenantCreationPage = () => {
     const navigate = useNavigate();
     const [error, setError] = useState("");
     const signIn = useSignIn();
@@ -55,8 +50,8 @@ const LandlordLogin = () => {
         setPasswordShown(!passwordShown)
     }
 
-    const navigateToDashboard = () => {
-        navigate('/pages/Dashboard');
+    const navigateToAccountManagement = () => {
+        navigate('/pages/AccountManagement');
     };
 
     const onSubmit = async (values) => {
@@ -66,22 +61,12 @@ const LandlordLogin = () => {
         try{
             const response = await axios.post(
                 //api to be added
-                "http://localhost:5000/api/landlord/login",
+                "http://localhost:5000/api/landlord/createTenant",
                 values
             )
             console.log(response);
-            signIn({
-                token: response.data.token,
-                expiresIn: 60,
-                tokenType: "Bearer",
-                authState: {email: values.email, type: "landlord"}
-            });
-            if (response.data.message === "Login successfully"){
-                console.log(response.data.message);
-                navigateToDashboard();
-            }
-            else if (response.data.message === "Invalid email or password"){
-                formik.errors.hasError = true;
+            if (response.data.message === "created successfully"){
+                navigateToAccountManagement();
             }
 
 
@@ -114,11 +99,13 @@ const LandlordLogin = () => {
 
     /////// code below uses Chakra styling ////////
     return (
+        <>
+        {NavigationBar()}
         <Flex align="center" justify="center" h="100vh" w="100%">
             <Box w="22em" h="30em" p={8} rounded="md" position="relative" borderRadius="1em" boxShadow="0 0.188em 1.550em rgb(156, 156, 156)">
                 <form onSubmit={formik.handleSubmit}>
                     <VStack align="flex-start" alignItems="center">
-                        <Heading marginTop="4">Welcome!</Heading>
+                        <Heading marginTop="4" >Create Tenant</Heading>
                         <FormControl marginTop="6">
                             <Input
                                 id="email" 
@@ -162,59 +149,18 @@ const LandlordLogin = () => {
                                 variant="unstyled"
                                 onClick={formik.onSubmit}
                                 > 
-                                LOGIN
+                                CREATE
                             </Button>
                             {formik.errors.hasError ? <Box color="red.500" id="errorMessage" marginBottom="-6" >Invalid email or password</Box>: null}
                         </FormControl>
-                        <Box fontSize="lg" textColor="blue.700" marginTop={10}>
-                            <Link to="/pages/landlord_signup">Don't have an account?</Link>
-                        </Box>
-                        
-                        <Box fontSize="lg" textColor="blue.700" marginTop={2}>
-                            <Link to="/pages/ForgotPasswordPage">Forgot password?</Link>
-                        </Box>
                         
                     </VStack>
                 </form>
             </Box>
         </Flex>
+        </>
     )
 
-
-    /////////// CODE BELOW USES CSS STLYING ////////////
-    // return (
-    //     <div className={LoginStyles.page}>
-    //         <form className={LoginStyles.cover} onSubmit={formik.handleSubmit}>
-    //             <h1 className={LoginStyles.header}>Welcome!</h1>
-    //             <input 
-    //                 name="email"
-    //                 type="email" 
-    //                 placeholder="EMAIL" 
-    //                 value={formik.values.email}
-    //                 className={LoginStyles.input}
-    //                 onChange={formik.handleChange}
-    //             />
-    //             <div className={PasswordStyles.passwordToggle}>
-    //                 <input
-    //                     name="password" 
-    //                     type={passwordShown ? "text" : "password"} 
-    //                     placeholder="PASSWORD"
-    //                     className={PasswordStyles.passwordInput}
-    //                     value={formik.values.password}
-    //                     onChange={formik.handleChange}
-    //                 />
-    //                 <span onClick={togglePassword}>
-    //                     {passwordShown ? "Hide" : "Show"}
-    //                 </span>
-    //             </div>
-
-    //             <button className={LoginStyles.login_btn} type="submit" isLoading={formik.isSubmitting}>LOGIN</button>
-    //             <div className={LoginStyles.sign_up}>Don't have an account? <Link to="/pages/landlord_signup" className={LoginStyles.sign_up_link}>Sign up!</Link></div>
-    //             <Link className={LoginStyles.password_reset}>forget password?</Link>
-
-    //         </form>
-    //     </div>
-    // )
 }
 
-export default LandlordLogin
+export default TenantCreationPage

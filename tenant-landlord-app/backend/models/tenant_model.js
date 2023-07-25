@@ -24,6 +24,45 @@ export const getTenantByEmail = (email, callBack) => {
   );
 };
 
+export const getTenantById = (id, callBack) => {
+  pool.query(
+    `
+    SELECT *
+    FROM tenant_user
+    WHERE tenant_user_id = ?
+    `,
+    [id],
+    (error, results, fields) => {
+      if (error) {
+        callBack(error);
+      } else {
+        // console.log(results);
+        callBack(null, results[0]);
+      }
+    }
+  );
+};
+
+export const updateTenantPassword = ({password, id}, callBack) => {
+  pool.query(
+    `
+    UPDATE tenant_user 
+    SET password = ? 
+    WHERE tenant_user_id = ?
+    `,
+    [
+      password,
+      id
+    ],
+    (error, results, fields) => {
+      if(error){
+        callBack(error);
+      }
+      return callBack(null, results[0]);
+    }
+  );
+}
+
 /**
  * Get Tickets
  * @param {*} email 
@@ -77,7 +116,7 @@ export const getTicketsByStatus = (email, status, callBack) => {
  * @param {*} callBack 
  */
 export const createTicket = (data, callBack) => {
-  const status = "submitted";
+  const status = "tenant_ticket_created";
   const feedback_rating = null;
   const feedback_text = null;
   pool.query(
