@@ -4,8 +4,8 @@ import { Box, Button, useToast, Heading } from '@chakra-ui/react';
 import { ArrowBackIcon } from '@chakra-ui/icons';
 import { useNavigate } from 'react-router-dom';
 
-import NavigationBar from '../components/NavigationBar';
-import { SelectedTicketContext } from '../components/SelectedTicketContext';
+import NavigationBar from '../components/NavigationBar.js';
+import { SelectedTicketContext } from '../components/SelectedTicketContext.js';
 import axios from 'axios';
 import { useAuthHeader } from 'react-auth-kit';
 

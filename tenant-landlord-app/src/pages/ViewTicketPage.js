@@ -5,9 +5,9 @@ import { useAuthUser, useAuthHeader, useIsAuthenticated } from 'react-auth-kit';
 import { useFormik } from 'formik';
 import axios, { AxiosError } from 'axios';
 
-import { SelectedTicketContext } from '../components/SelectedTicketContext';
-import NavigationBar from '../components/NavigationBar';
-import CheckTicket from '../components/CheckTicket';
+import { SelectedTicketContext } from '../components/SelectedTicketContext.js';
+import NavigationBar from '../components/NavigationBar.js';
+import CheckTicket from '../components/CheckTicket.js';
 
 export default function ViewTicketPage() {
   const navigate = useNavigate();

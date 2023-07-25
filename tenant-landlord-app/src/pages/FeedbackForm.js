@@ -1,13 +1,13 @@
 import React, { useState, useContext } from 'react';
 import { Box, Button, Text, Textarea, useToast, IconButton, Heading, Stack, Icon } from '@chakra-ui/react';
 import { StarIcon } from '@chakra-ui/icons';
-import { IoIosStarOutline, IoIosStar } from 'react-icons/io';
+import { IoIosStarOutline, IoIosStar } from 'react-icons/io/index.esm.js';
 import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuthUser, useAuthHeader } from 'react-auth-kit';
 import { useFormik } from 'formik';
 import axios, { AxiosError } from 'axios';
 
-import { SelectedTicketContext } from '../components/SelectedTicketContext';
+import { SelectedTicketContext } from '../components/SelectedTicketContext.js';
 
 function FeedbackForm() {
   const [error, setError] = useState('');
