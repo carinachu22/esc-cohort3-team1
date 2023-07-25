@@ -270,3 +270,30 @@ describe("Testing closeTicketStatus() in tenant model", () => {
     });
 
 })
+
+describe("Testing quotationApproval() in tenant model", () => {
+    test ("Test calling quotationApproval() on a valid service ticket ID & valid value",(done) => {
+        quotationApproval(1, 'ticket_quotation_approved', (err, results) => {
+            if (err){
+                console.log("ERROR",err)
+            }
+            // console.log(JSON.parse(JSON.stringify(results)))
+            const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
+            expect(rowsChanged).toBe(1);
+            done();
+        })
+    });
+    test ("Test calling quotationApproval() on an invalid service ticket ID & valid value",(done) => {
+        quotationApproval(10, 'ticket_quotation_rejected', (err, results) => {
+            if (err){
+                console.log("ERROR",err)
+            }
+            //console.log(JSON.parse(JSON.stringify(results)))
+            const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
+            //console.log(rowsChanged)
+            expect(rowsChanged).toBe(0);
+            done();
+        })
+    });
+
+})
