@@ -134,6 +134,11 @@ export const controllerResetPasswordPageTenant = async (req, res) => {
 
 };
 
+/**
+ * Reset password of tenant. The tenant is accessed in the database using their id
+ * @param {*} req tenant_user_id
+ * @param {*} res email, password
+ */
 export const controllerResetPasswordTenant = async (req, res) => {
   const {id, jsontoken} = req.params;
   console.log({id, jsontoken});

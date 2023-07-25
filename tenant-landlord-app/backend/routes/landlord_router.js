@@ -13,7 +13,8 @@ import {
   controllerGetQuotation,
   controllerTicketApproval,
   controllerTicketWork,
-  controllerGetTenantAccounts
+  controllerGetTenantAccounts,
+  controllerDeleteAllTenants
 } from "../controller/landlord_controller.js";
 import express from "express";
 import { checkToken } from "../auth/token_validation.js";
@@ -64,6 +65,7 @@ router.get(
   controllerGetTicketsByStatus
 );
 router.get("/getQuotation/", controllerGetQuotation);
+router.patch("/deleteAllTenants", controllerDeleteAllTenants);
 router.patch("/updateQuotation/:id", checkToken, controllerUpdateQuotation);
 router.patch("/ticketApproval/:id", checkToken, controllerTicketApproval);
 router.patch("/ticketWork/:id", checkToken, controllerTicketWork);

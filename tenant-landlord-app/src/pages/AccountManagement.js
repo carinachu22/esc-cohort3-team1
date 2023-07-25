@@ -29,7 +29,20 @@ import { Accordion,
     AccordionIcon, 
     HStack,
     Flex, 
-    Icon } from '@chakra-ui/react';
+    Icon,
+    Popover,
+    PopoverTrigger,
+    PopoverContent,
+    PopoverHeader,
+    PopoverBody,
+    PopoverFooter,
+    PopoverArrow,
+    PopoverCloseButton,
+    PopoverAnchor,
+    ButtonGroup,
+    useDisclosure,
+    IconButton,
+    FocusLock, } from '@chakra-ui/react';
 
 import { DeleteIcon } from '@chakra-ui/icons'
 
@@ -56,10 +69,12 @@ const AccountManagement = () => {
   const [error, setError] = useState("");
   const signIn = useSignIn();
   const [tenantAccounts, setTenantAccounts] = useState(null)
+  const { onOpen, onClose, isOpen } = useDisclosure()
 
   const navigateToTenantCreationPage = () => {
     navigate('/pages/TenantCreationPage');
   }
+
 
 
   const APIGetTenantAccounts = async () => {
@@ -68,6 +83,15 @@ const AccountManagement = () => {
     )
     //console.log(response)
     return response
+  }
+  
+  const APIDeleteAllTenants = async () => {
+    const response = await axios.patch(
+        "http://localhost:5000/api/landlord/deleteAllTenants",
+    )
+    //console.log(response)
+    GetTenantAccounts();
+    onClose();
   }
 
   const GetTenantAccounts = () => {
@@ -97,7 +121,7 @@ const AccountManagement = () => {
               {"Date Created"}
               </Box>
               </HStack>
-              <AccordionIcon width='2vw'/>
+              <AccordionIcon width='2.3vw'/>
           </AccordionButton>
           <AccordionPanel>
               <HStack spacing='24vw'>
@@ -118,6 +142,8 @@ const AccountManagement = () => {
   useEffect(() => {
     GetTenantAccounts()},
     [])
+
+  
 
     
   return (
@@ -142,7 +168,33 @@ const AccountManagement = () => {
                 <Th width="16vw" textAlign='left' paddingRight={0} > ID </Th>
                 <Th width='30vw' textAlign='left' paddingRight={0} paddingLeft={0}> Tenant </Th>
                 <Th width='33vw' textAlign='left' paddingRight={0} paddingLeft={0}>Date Created</Th>
-                <Th width='2vw' alignItems="center" paddingRight={0} paddingLeft={0}><DeleteIcon/></Th>
+                <Th width='2.5vw' alignItems="center" paddingRight={0} paddingLeft={0}>
+                  <Popover
+                    isOpen={isOpen}
+                    onOpen={onOpen}
+                    onClose={onClose}
+                    placement='left'
+                    closeOnBlur={false}
+                  >
+                    <PopoverTrigger >
+                      <IconButton size='sm' icon={<DeleteIcon />} />
+                    </PopoverTrigger>
+                    <PopoverContent>
+                      <PopoverHeader fontWeight='semibold'>Confirmation</PopoverHeader>
+                      <PopoverArrow />
+                      <PopoverCloseButton />
+                      <PopoverBody>
+                        Delete All Users
+                      </PopoverBody>
+                      <PopoverFooter display='flex' justifyContent='flex-end'>
+                        <ButtonGroup size='sm'>
+                          <Button variant='outline' onClick={onClose}>Cancel</Button>
+                          <Button colorScheme='red' onClick={APIDeleteAllTenants} >Confirm</Button>
+                        </ButtonGroup>
+                      </PopoverFooter>
+                    </PopoverContent>
+                  </Popover>
+                </Th>
             </Tr>
         </Thead>
         </Table>
@@ -150,6 +202,7 @@ const AccountManagement = () => {
           {tenantAccounts}
         </Accordion>
     </TableContainer>
+
 
     </>
   );

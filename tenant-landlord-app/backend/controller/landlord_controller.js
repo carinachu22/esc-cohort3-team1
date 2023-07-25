@@ -13,7 +13,8 @@ import {
   getQuotationPath,
   ticketApproval,
   ticketWork,
-  getTenantAccounts
+  getTenantAccounts,
+  deleteAllTenants
 
 } from "../models/landlord_model.js";
 import { genSaltSync, hashSync, compareSync } from "bcrypt";
@@ -26,7 +27,7 @@ import { send } from "process";
 
 
 /**
- * Create landlord account
+ * Create landlord account and store it in mysql database
  * @param {*} req email, password(unhashed), ticket_type
  * @param {*} res 
  */
@@ -65,7 +66,7 @@ export const controllerCreateLandlord = (req, res) => {
 
 /**
  * Login for landlord
- * @param {*} req landlord email
+ * @param {*} req email
  * @param {*} res 
  */
 export const controllerLoginLandlord = (req, res) => {
@@ -185,6 +186,11 @@ export const controllerResetPasswordPageLandlord = async (req, res) => {
 
 };
 
+/**
+ * Reset password of landlord. The landlord is accessed in the database using their id
+ * @param {*} req landlord_user_id
+ * @param {*} res email, password
+ */
 export const controllerResetPasswordLandlord = async (req, res) => {
   const {id, jsontoken} = req.params;
   console.log({id, jsontoken});
@@ -222,12 +228,6 @@ export const controllerResetPasswordLandlord = async (req, res) => {
       console.log(error);
     }
   })
-
-
-
-  
-
-
 };
 
 /**
@@ -252,6 +252,22 @@ export const controllerCreateTenant = (req, res) => {
       success: 1,
       message: "created successfully",
       data: results,
+    });
+  });
+};
+
+export const controllerDeleteAllTenants = (req, res) => {
+  deleteAllTenants((err) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).json({
+        success: 0,
+        message: "Database connection error",
+      });
+    }
+    return res.status(200).json({
+      success: 1,
+      message: "deleted successfully",
     });
   });
 };

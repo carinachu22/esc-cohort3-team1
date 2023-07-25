@@ -130,6 +130,23 @@ export const deleteLandlord = (data, callBack) => {
 }
 
 /**
+ * Delete all tenant accounts
+ * @param {*} data 
+ * @param {*} callBack 
+ */
+export const deleteAllTenants = (callBack) => {
+  pool.query(
+    'DELETE FROM tenant_user ',
+    (error, results, fields) => {
+      if(error){
+        callBack(error);
+      }
+      return callBack(null, results[0]);
+    }
+  );
+}
+
+/**
  * Create new tenant account
  * @param {*} data tenant email, password(unhashed)
  * @param {*} callBack 
