@@ -57,37 +57,39 @@ createLandlord(body, (err, result) => {
  * @param {*} res 
  */
 export const controllerLoginAdmin = (req, res) => {
-    const body = req.body;
-    console.log(body.email);
-    getAdminByEmail(body.email, (err, results) => {
-      if (err) {
-        console.log(err);
-      }
-      if (!results) {
-        return res.json({
-          success: 0,
-          message: "Invalid email or password",
-        });
-      }
-      console.log(body.password, results.password);
-      const password_check = compareSync(body.password, results.password);
-      console.log(password_check);
-      if (password_check) {
-        results.password = undefined;
-        const jsontoken = jwt.sign({ result: results }, "qwe1234", {
-          expiresIn: "1h",
-        });
-        return res.json({
-          success: 1,
-          message: "Login successfully",
-          token: jsontoken,
-        });
-      } else {
-        console.log(results);
-        res.json({
-          success: 0,
-          message: "Invalid email or password",
-        });
-      }
-    });
-  };
+  const body = req.body;
+  console.log(body.email);
+  getAdminByEmail(body.email, (err, results) => {
+    if (err) {
+      console.log(err);
+    }
+    if (!results) {
+      return res.json({
+        success: 0,
+        message: "Invalid email or password",
+      });
+    }
+    console.log(body.password, results.password);
+    const password_check = compareSync(body.password, results.password);
+    console.log(password_check);
+    if (password_check) {
+      results.password = undefined;
+      const jsontoken = jwt.sign({ result: results }, "qwe1234", {
+        expiresIn: "1h",
+      });
+      return res.json({
+        success: 1,
+        message: "Login successfully",
+        token: jsontoken,
+      });
+    } else {
+      console.log(results);
+      res.json({
+        success: 0,
+        message: "Invalid email or password",
+      });
+    }
+  });
+};
+
+

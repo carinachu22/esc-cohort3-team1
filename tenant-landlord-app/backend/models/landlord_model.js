@@ -147,6 +147,24 @@ export const deleteAllTenants = (callBack) => {
 }
 
 /**
+ * Delete all tenant accounts
+ * @param {*} data 
+ * @param {*} callBack 
+ */
+export const deleteTenantByEmail = (data, callBack) => {
+  pool.query(
+    'DELETE FROM tenant_user WHERE email = ?',
+    [data.email],
+    (error, results, fields) => {
+      if(error){
+        callBack(error);
+      }
+      return callBack(null, results[0]);
+    }
+  );
+}
+
+/**
  * Create new tenant account
  * @param {*} data tenant email, password(unhashed)
  * @param {*} callBack 
@@ -376,3 +394,67 @@ export const getTenantAccounts = (callBack) => {
     }
   );
 };
+
+
+//upload quotation's path in the file system
+export const uploadLease = ({filepath, id}, callBack) => {
+  pool.query(
+    `
+    UPDATE lease
+    SET pdf_path = ?
+    WHERE public_lease_id = ?
+    `,
+    [
+      filepath,
+      id
+    ],
+    (error, results, fields) => {
+      if (error) {
+        callBack(error);
+      } else {
+        callBack(null, results);
+      }
+    }
+  );
+}
+
+
+//get the quotation path of a specific service request 
+export const getLeasePath = (id, callBack) => {
+  pool.query(
+    `
+    SELECT pdf_path
+    FROM lease
+    WHERE public_lease_id = ?
+    `,
+    [
+      id
+    ],
+    (error, results, fields) => {
+      if (error) {
+        callBack(error);
+      } else {
+        callBack(null, results[0]);
+      }
+    }
+  );
+}
+
+export const getLease = (filepath, callBack) => {
+  pool.query(
+    `
+    SELECT 
+    LOAD_FILE(?)
+    `,
+    [
+      filepath
+    ],
+    (error, results, fields) => {
+      if (error) {
+        callBack(error);
+      } else {
+        callBack(null, results[0]);
+      }
+    }
+  );
+}

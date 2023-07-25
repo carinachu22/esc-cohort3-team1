@@ -3,6 +3,7 @@
 import { Navigate } from 'react-router-dom';
 import styles from "../styles/dashboard.module.css";
 import { useEffect } from 'react';
+import Popup from 'reactjs-popup';
 
 // Import React and hooks
 import { useAuthUser, useAuthHeader, useSignOut, useIsAuthenticated } from 'react-auth-kit';
@@ -42,7 +43,8 @@ import { Accordion,
     ButtonGroup,
     useDisclosure,
     IconButton,
-    FocusLock, } from '@chakra-ui/react';
+    FocusLock, 
+    useBoolean,} from '@chakra-ui/react';
 
 import { DeleteIcon } from '@chakra-ui/icons'
 
@@ -69,11 +71,15 @@ const AccountManagement = () => {
   const [error, setError] = useState("");
   const signIn = useSignIn();
   const [tenantAccounts, setTenantAccounts] = useState(null)
-  const { onOpen, onClose, isOpen } = useDisclosure()
+  const { onOpen: onOpenHeader, onClose: onCloseHeader, isOpen: isOpenHeader } = useDisclosure();
+  const { onOpen: onOpenRow, onClose: onCloseRow, isOpen: isOpenRow } = useDisclosure();
+
+
 
   const navigateToTenantCreationPage = () => {
     navigate('/pages/TenantCreationPage');
   }
+
 
 
 
@@ -91,7 +97,17 @@ const AccountManagement = () => {
     )
     //console.log(response)
     GetTenantAccounts();
-    onClose();
+    onCloseHeader();
+  }
+
+  const APIDeleteTenantByEmail = async (value) => {
+    const response = await axios.patch(
+        "http://localhost:5000/api/landlord/deleteTenantByEmail",
+        value
+    )
+    //console.log(response)
+    GetTenantAccounts();
+    onCloseRow();
   }
 
   const GetTenantAccounts = () => {
@@ -122,6 +138,13 @@ const AccountManagement = () => {
               </Box>
               </HStack>
               <AccordionIcon width='2.3vw'/>
+              <Box width='2.3vw' >
+                <Popup trigger={<IconButton size='sm' icon={<DeleteIcon />} />} position="right center">
+                    hello
+                </Popup>
+
+              </Box>
+
           </AccordionButton>
           <AccordionPanel>
               <HStack spacing='24vw'>
@@ -139,12 +162,12 @@ const AccountManagement = () => {
     setTenantAccounts(tenant_html) 
   })}
 
+
   useEffect(() => {
     GetTenantAccounts()},
     [])
 
   
-
     
   return (
     <>
@@ -168,15 +191,16 @@ const AccountManagement = () => {
                 <Th width="16vw" textAlign='left' paddingRight={0} > ID </Th>
                 <Th width='30vw' textAlign='left' paddingRight={0} paddingLeft={0}> Tenant </Th>
                 <Th width='33vw' textAlign='left' paddingRight={0} paddingLeft={0}>Date Created</Th>
-                <Th width='2.5vw' alignItems="center" paddingRight={0} paddingLeft={0}>
+                <Th width='2.5vw' alignItems="center" paddingRight={0} paddingLeft={0} >
                   <Popover
-                    isOpen={isOpen}
-                    onOpen={onOpen}
-                    onClose={onClose}
+                    isOpen={isOpenHeader}
+                    onOpen={onOpenHeader}
+                    onClose={onCloseHeader}
                     placement='left'
                     closeOnBlur={false}
+
                   >
-                    <PopoverTrigger >
+                    <PopoverTrigger id="headerDeleteIcon">
                       <IconButton size='sm' icon={<DeleteIcon />} />
                     </PopoverTrigger>
                     <PopoverContent>
@@ -188,7 +212,7 @@ const AccountManagement = () => {
                       </PopoverBody>
                       <PopoverFooter display='flex' justifyContent='flex-end'>
                         <ButtonGroup size='sm'>
-                          <Button variant='outline' onClick={onClose}>Cancel</Button>
+                          <Button variant='outline' onClick={onCloseHeader}>Cancel</Button>
                           <Button colorScheme='red' onClick={APIDeleteAllTenants} >Confirm</Button>
                         </ButtonGroup>
                       </PopoverFooter>

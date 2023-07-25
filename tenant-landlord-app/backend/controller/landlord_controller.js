@@ -14,7 +14,8 @@ import {
   ticketApproval,
   ticketWork,
   getTenantAccounts,
-  deleteAllTenants
+  deleteAllTenants,
+  deleteTenantByEmail
 
 } from "../models/landlord_model.js";
 import { genSaltSync, hashSync, compareSync } from "bcrypt";
@@ -258,6 +259,25 @@ export const controllerCreateTenant = (req, res) => {
 
 export const controllerDeleteAllTenants = (req, res) => {
   deleteAllTenants((err) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).json({
+        success: 0,
+        message: "Database connection error",
+      });
+    }
+    return res.status(200).json({
+      success: 1,
+      message: "deleted successfully",
+    });
+  });
+};
+
+
+export const controllerDeleteTenantByEmail = (req, res) => {
+  const body = req.body;
+  const email = body.email
+  deleteTenantByEmail(email, (err) => {
     if (err) {
       console.log(err);
       return res.status(500).json({
@@ -521,4 +541,88 @@ export const controllerGetTenantAccounts = (req, res) => {
         });
       }
     });
+};
+
+
+/**
+ * store quotation in file system and its path in mysql database
+ * @param {formData} req 
+ */
+export const controllerUploadLease = (req, res) => {
+  console.log('???????')
+  const id = req.params.id;
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "content-type");
+  const files = req.file;
+
+  console.log(files);
+
+  const filepath = files.path;
+  console.log(filepath);
+
+  // get quotation's path in file system and store it in mysql database
+  uploadLease({filepath, id}, (err, results) => {
+    console.log('uploadLease results', results)
+    if (err) {
+      console.log(err);
+      return;
+    }
+    if (!results) {
+      return res.json({
+        success: 0,
+        message: "Failed to upload file",
+      });
+    }
+    return res.status(200).json({
+      success: 1,
+      data: "updated successfully!",
+    });
+
+  })
+
+
+}
+
+export const controllerGetLease = (req, res) => {
+  // hard-coded id, remove this in final version
+  const id = req.query.id;
+  console.log('id in controller', id)
+  getLeasePath(id, (err, results) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+    if (!results) {
+      return res.json({
+        success: 0,
+        message: "service ticket not found",
+      });
+    } else {
+      var filepath = results.pdf_path;
+      console.log(filepath);
+      if (filepath == null){
+        res.send("No quotation uploaded yet!")
+        return
+
+      }
+      fs.readFile(filepath, (err, data) => {
+        if (err) {
+          console.log('error')
+          console.error(err);
+          res.status(500).send("Internal Server Error");
+          return;
+        }
+        // Set headers for the response
+        res.setHeader("Content-Type", "application/pdf");
+        res.setHeader("Content-Disposition", "attachment; filename=file.pdf");
+        // Send the PDF file data as the response
+        res.send(data);
+      });
+
+
+      if (err){
+        return console.log(err);
+      }
+    }
+  });
 };
