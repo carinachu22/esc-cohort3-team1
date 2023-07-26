@@ -457,8 +457,18 @@ export const getLandlordUserId = (email, callBack) => {
 export const getLeaseByLandlord = (id, callBack) => {
   pool.query(
     `
-    SELECT *
-    FROM lease
+    SELECT 
+      l.floor, 
+      l.unit_number, 
+      b.building_name, 
+      b.address, 
+      b.postal_code, 
+      b.public_building_id, 
+      l.public_lease_id
+    FROM lease l
+    JOIN landlord_user land USING (landlord_user_id)
+    JOIN building b
+      ON b.public_building_id = land.public_building_id
     WHERE landlord_user_id = ?
     `,
     [id],
