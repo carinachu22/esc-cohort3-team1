@@ -13,10 +13,10 @@ import {
   getQuotationPath,
   ticketApproval,
   ticketWork,
-  getTenantAccounts,
   deleteAllTenants
 
 } from "../models/landlord_model.js";
+import { getTenantByEmail } from "../models/tenant_model.js";
 import { genSaltSync, hashSync, compareSync } from "bcrypt";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
@@ -243,20 +243,31 @@ export const controllerCreateTenant = (req, res) => {
   console.log(req.body);
   const salt = genSaltSync(10);
   const password_hashed = hashSync(password, salt);
-  createTenant(tenant_email, password_hashed, public_building_id, public_lease_id, (err, results) => {
-    if (err) {
-      console.log(err);
+  getTenantByEmail(tenant_email, (err, results) => {
+    if (!results){
+      createTenant(tenant_email, password_hashed, public_building_id, public_lease_id, (err, results) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).json({
+            success: 0,
+            message: "Database connection error",
+          });
+        }
+        return res.status(200).json({
+          success: 1,
+          message: "created successfully",
+          data: results,
+        });
+      });
+    } else{
       return res.status(500).json({
         success: 0,
-        message: "Database connection error",
-      });
+        message: "Duplicate email entry"
+      })
     }
-    return res.status(200).json({
-      success: 1,
-      message: "created successfully",
-      data: results,
-    });
-  });
+  })
+
+
 };
 
 export const controllerDeleteAllTenants = (req, res) => {
