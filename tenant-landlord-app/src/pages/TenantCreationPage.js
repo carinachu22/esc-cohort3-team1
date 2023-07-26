@@ -5,7 +5,7 @@ import {useNavigate} from 'react-router-dom';
 import {setIn, useFormik} from "formik";
 import axios, {AxiosError} from "axios";
 import {useSignIn} from "react-auth-kit";
-import NavigationBar from '../components/NavigationBar';
+import NavigationBar from '../components/NavigationBar.js';
 
 import {
     Box,

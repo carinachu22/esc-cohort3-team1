@@ -24,10 +24,10 @@ import {
   useToast
 } from "@chakra-ui/react";
 
-import { SelectedTicketContext } from '../components/SelectedTicketContext';
+import { SelectedTicketContext } from '../components/SelectedTicketContext.js';
 import { Navigate, useNavigate } from "react-router-dom";
 
-import NavigationBar from "../components/NavigationBar";
+import NavigationBar from "../components/NavigationBar.js";
 
 const QuotationUpload = () => {
   const [text, setText] = useState('');

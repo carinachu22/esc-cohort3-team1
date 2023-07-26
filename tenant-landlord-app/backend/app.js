@@ -47,3 +47,4 @@ app.use("/api/landlord", landlordRouter);
 app.use("/api/tenant", tenantRouter);
 app.use("/api/tenant", adminRouter);
 
+export default app;

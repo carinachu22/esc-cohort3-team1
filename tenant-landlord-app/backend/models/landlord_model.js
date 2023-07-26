@@ -1,4 +1,4 @@
-import pool from "../config/database.js";
+import {pool} from "../config/database.js";
 
 /**
  * Create landlord account
@@ -42,7 +42,6 @@ export const getLandlordByEmail = (email, callBack) => {
       if (error) {
         callBack(error);
       } else {
-        // console.log(results);
         callBack(null, results[0]);
       }
     }

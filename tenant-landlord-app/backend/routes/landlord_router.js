@@ -20,7 +20,7 @@ import {
   controllerGetLease
 } from "../controller/landlord_controller.js";
 import express from "express";
-import { checkToken } from "../auth/token_validation.js";
+import { checkLandlordToken } from "../auth/landlord_validation.js";
 import multer from "multer";
 
 
@@ -61,11 +61,11 @@ router.post("/uploadQuotation/:id", upload.single('files'), controllerUploadQuot
 router.post("/uploadLease/:id", upload.single('files'), controllerUploadLease);
 
 router.get("/reset-password/:id/:jsontoken", controllerResetPasswordPageLandlord);
-router.get("/getTickets", checkToken, controllerGetTickets);
-router.get("/getTicketById/:id", checkToken, controllerGetTicketById);
+router.get("/getTickets", checkLandlordToken, controllerGetTickets);
+router.get("/getTicketById/:id", checkLandlordToken, controllerGetTicketById);
 router.get(
   "/getTicketsByStatus/:status",
-  checkToken,
+  checkLandlordToken,
   controllerGetTicketsByStatus
 );
 router.get("/getQuotation/", controllerGetQuotation);

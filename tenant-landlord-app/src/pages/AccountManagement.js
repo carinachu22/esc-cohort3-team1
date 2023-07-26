@@ -12,7 +12,7 @@ import { useAuthUser, useAuthHeader, useSignOut, useIsAuthenticated } from 'reac
 import "bootstrap/dist/css/bootstrap.min.css";
 
 // Import axios for http requests
-import NavigationBar from '../components/NavigationBar';
+import NavigationBar from '../components/NavigationBar.js';
 import { Accordion, 
     AccordionButton, 
     AccordionItem, 

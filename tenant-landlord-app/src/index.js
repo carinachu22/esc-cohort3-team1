@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './pages/App';
-import reportWebVitals from './reportWebVitals';
+import App from './pages/App.js';
+import reportWebVitals from './reportWebVitals.js';
 import { BrowserRouter } from 'react-router-dom';
 import {AuthProvider} from "react-auth-kit";
 import { ChakraProvider } from '@chakra-ui/react';

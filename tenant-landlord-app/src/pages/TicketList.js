@@ -10,7 +10,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 // Import axios for http requests
 import axios, {AxiosError} from "axios";
-import NavigationBar from '../components/NavigationBar';
+import NavigationBar from '../components/NavigationBar.js';
 import { Accordion, AccordionButton, AccordionItem, AccordionPanel, TableContainer, Table,
     Thead,
     Tbody,
@@ -31,7 +31,7 @@ Box, AccordionIcon, HStack, Button,
     Stepper,
     useSteps,
   } from '@chakra-ui/react';
-import { SelectedTicketContext } from '../components/SelectedTicketContext';
+import { SelectedTicketContext } from '../components/SelectedTicketContext.js';
 
 /**
 Functional component to display service ticket list
