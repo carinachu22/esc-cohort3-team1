@@ -1,26 +1,26 @@
-import Landing from '../components/landing_form/landing';
+import Landing from '../components/landing_form/landing.js';
 import React from 'react';
-import LoginPage from './LoginPage';
-import LandlordSignup from './landlord_signup';
-import Dashboard from './Dashboard';
-import CloseTicketPage from './CloseTicketPage';
-import FeedbackForm from './FeedbackForm';
-import CreateTicketPage from './CreateTicketPage'; 
-import ViewTicketPage from './ViewTicketPage';
-import QuotationPage from './QuotationPage';
-import ForgotPasswordPage from './ForgotPasswordPage';
-import TicketList from './TicketList';
-import AccountManagement from './AccountManagement';
-import QuotationUpload from './QuotationUploadPage';
-import TenantCreationPage from './TenantCreationPage';
-import LeaseCreationPage from './LeaseCreationPage';
+import LoginPage from './LoginPage.js';
+import LandlordSignup from './landlord_signup.js';
+import Dashboard from './Dashboard.js';
+import CloseTicketPage from './CloseTicketPage.js';
+import FeedbackForm from './FeedbackForm.js';
+import CreateTicketPage from './CreateTicketPage.js'; 
+import ViewTicketPage from './ViewTicketPage.js';
+import QuotationPage from './QuotationPage.js';
+import ForgotPasswordPage from './ForgotPasswordPage.js';
+import TicketList from './TicketList.js';
+import AccountManagement from './AccountManagement.js';
+import QuotationUpload from './QuotationUploadPage.js';
+import TenantCreationPage from './TenantCreationPage.js';
+import LeaseCreationPage from './LeaseCreationPage.js';
 
 
 import {Routes, Route} from 'react-router-dom';
 import { ChakraProvider } from "@chakra-ui/react";
 import { useState } from 'react';
 
-import { SelectedTicketProvider } from '../components/SelectedTicketContext';
+import { SelectedTicketProvider } from '../components/SelectedTicketContext.js';
 
 
 function App() {

@@ -31,20 +31,23 @@ export const createLandlord = (data, callBack) => {
  * @param {*} callBack 
  */
 export const getAdminByEmail = (email, callBack) => {
-    pool.query(
-      `
-      SELECT *
-      FROM admin_user
-      WHERE email = ?
-      `,
-      [email],
-      (error, results, fields) => {
-        if (error) {
-          callBack(error);
-        } else {
-          // console.log(results);
-          callBack(null, results[0]);
-        }
+  pool.query(
+    `
+    SELECT *
+    FROM admin_user
+    WHERE email = ?
+    `,
+    [email],
+    (error, results, fields) => {
+      if (error) {
+        callBack(error);
+      } else {
+        // console.log(results);
+        callBack(null, results[0]);
       }
-    );
-  };
+    }
+  );
+};
+
+
+
