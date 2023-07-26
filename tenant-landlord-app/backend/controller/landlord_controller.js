@@ -232,15 +232,18 @@ export const controllerResetPasswordLandlord = async (req, res) => {
 
 /**
  * Create Tenant
- * @param {*} req tenant email, password(unhashed)
+ * @param {*} req tenant email, password(unhashed),  public_building_id (eg. RC), public_lease_id (eg. YYYY-MM-DD 00:00:00)
  * @param {*} res 
  */
 export const controllerCreateTenant = (req, res) => {
-  const body = req.body;
-  console.log(body);
+  const tenant_email = req.body.email;
+  const password = req.body.password;
+  const public_building_id = req.body.public_building_id;
+  const public_lease_id = req.body.public_lease_id
+  console.log(req.body);
   const salt = genSaltSync(10);
-  body.password = hashSync(body.password, salt);
-  createTenant(body, (err, results) => {
+  const password_hashed = hashSync(password, salt);
+  createTenant(tenant_email, password_hashed, public_building_id, public_lease_id, (err, results) => {
     if (err) {
       console.log(err);
       return res.status(500).json({
