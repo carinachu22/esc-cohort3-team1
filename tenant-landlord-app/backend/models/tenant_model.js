@@ -112,7 +112,7 @@ export const getTicketsByStatus = (email, status, callBack) => {
 
 /**
  * Ticket Creation
- * @param {*} data name, email, request_type, request_description, submitted_date_time(Date Type)
+ * @param {*} data public_service_request_id (eg. 2023-01-01 00:00:00), name, email, request_type, request_description, quptation_path, submitted_date_time(Date Type)
  * @param {*} callBack 
  */
 export const createTicket = (data, callBack) => {
@@ -122,14 +122,16 @@ export const createTicket = (data, callBack) => {
   pool.query(
     `
     INSERT INTO service_request
-    (name, email, request_type, request_description, submitted_date_time, status, feedback_rating, feedback_text)
-    VALUES (?,?,?,?,?,?,?,?)
+    (public_service_request_id, name, email, request_type, request_description, quotation_path, submitted_date_time, status, feedback_rating, feedback_text)
+    VALUES (?,?,?,?,?,?,?,?,?,?)
     `,
     [
+      data.public_service_request_id,
       data.name,
       data.email,
       data.request_type,
       data.request_description,
+      data.quotation_path,
       data.submitted_date_time,
       status,
       feedback_rating,
