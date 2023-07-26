@@ -22,7 +22,8 @@ import {
 } from "../models/landlord_model.js";
 import { 
   getTenantByEmail,
-  getTenantUserId
+  getTenantUserId,
+  updateTenantLease
 } from "../models/tenant_model.js";
 import { genSaltSync, hashSync, compareSync } from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -697,6 +698,15 @@ export const controllerCreateLease = (req,res) => {
                 message: "Database connection error"
               });
             } else {
+              updateTenantLease(req.body.tenant_email,req.body.public_lease_id, (err,results) => {
+                if (err) {
+                  console.log(err);
+                  return res.status(500).json({
+                    success: 0,
+                    message: "Database connection error"
+                  })
+                } 
+              });
               return res.status(200).json({
                 success:1,
                 data: results
