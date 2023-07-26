@@ -1,5 +1,5 @@
 import {cleanup, pool} from '../../config/database.js';
-import { addFeedbackRating, getTenantByEmail, getTicketsByTenant, getTicketsByStatus, createTicket } from '../../models/tenant_model.js';
+import { addFeedbackRating, getTenantByEmail, getTicketsByTenant, getTicketsByStatus, createTicket, closeTicketStatus, quotationApproval } from '../../models/tenant_model.js';
 
 
 async function setup() {
