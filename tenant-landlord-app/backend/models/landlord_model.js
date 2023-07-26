@@ -395,3 +395,56 @@ export const getTenantAccounts = (callBack) => {
     }
   );
 };
+
+/**
+ * 
+ * @param {object} data 
+ * @param {*} callBack 
+ */
+export const createLease = (landlordID, tenantID, data, callBack) => {
+  pool.query (
+    `
+    INSERT INTO lease
+    (public_lease_id, tenant_user_id, landlord_user_id, floor, unit_number, pdf_path)
+    VALUES (?,?,?,?,?,?)
+    `,
+    [
+      data.public_lease_id,
+      landlordID,
+      tenantID,
+      data.floor,
+      data.unit_number,
+      data.pdf_path
+    ],
+    (error, results, fields) => {
+      if (error) {
+        callBack(error);
+      } else {
+        callBack(null,results);
+      }
+    }
+  )
+}
+
+/**
+ * 
+ * @param {string} email 
+ * @param {*} callBack 
+ */
+export const getLandlordUserId = (email, callBack) => {
+  pool.query(
+    `
+    SELECT landlord_user_id
+    FROM landlord_user
+    WHERE email = ?
+    `,
+    [email],
+    (error, results, fields) => {
+      if (error) {
+        callBack(error);
+      } else {
+        callBack(null, results[0])
+      };
+    }
+  )
+}

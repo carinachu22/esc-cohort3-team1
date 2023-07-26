@@ -17,7 +17,8 @@ import {
   controllerDeleteAllTenants,
   controllerDeleteTenantByEmail,
   controllerUploadLease,
-  controllerGetLease
+  controllerGetLease,
+  controllerCreateLease
 } from "../controller/landlord_controller.js";
 import express from "express";
 import { checkLandlordToken } from "../auth/landlord_validation.js";
@@ -53,29 +54,31 @@ var upload = multer({ storage: storage })
 
 // Be wary about the singular/plural of "Ticket"
 router.post("/create", controllerCreateLandlord);
+
 router.post("/login", controllerLoginLandlord);
 router.post("/forgot-password", controllerForgotPasswordLandlord);
 router.post("/reset-password/:id/:jsontoken", controllerResetPasswordLandlord);
-router.post("/createTenant", controllerCreateTenant);
-router.post("/uploadQuotation/:id", upload.single('files'), controllerUploadQuotation);
-router.post("/uploadLease/:id", upload.single('files'), controllerUploadLease);
-
 router.get("/reset-password/:id/:jsontoken", controllerResetPasswordPageLandlord);
+
+router.post("/createTenant", controllerCreateTenant);
+router.post("/uploadLease/:id", upload.single('files'), controllerUploadLease);
+router.get("/getLease/", controllerGetLease);
+router.post("/createLease", checkLandlordToken, controllerCreateLease);
+
 router.get("/getTickets", checkLandlordToken, controllerGetTickets);
 router.get("/getTicketById/:id", checkLandlordToken, controllerGetTicketById);
-router.get(
-  "/getTicketsByStatus/:status",
-  checkLandlordToken,
-  controllerGetTicketsByStatus
-);
+router.get("/getTicketsByStatus/:status", checkLandlordToken, controllerGetTicketsByStatus);
+
 router.get("/getQuotation/", controllerGetQuotation);
-router.get("/getLease/", controllerGetLease);
+router.post("/uploadQuotation/:id", upload.single('files'), controllerUploadQuotation);
+router.patch("/updateQuotation/:id", checkLandlordToken, controllerUpdateQuotation);
+
+router.patch("/ticketApproval/:id", checkLandlordToken, controllerTicketApproval);
+router.patch("/ticketWork/:id", checkLandlordToken, controllerTicketWork);
+
 router.get("/getTenantAccounts/", controllerGetTenantAccounts);
 router.patch("/deleteAllTenants", controllerDeleteAllTenants);
 router.patch("/deleteTenantByEmail", controllerDeleteTenantByEmail);
-router.patch("/updateQuotation/:id", checkLandlordToken, controllerUpdateQuotation);
-router.patch("/ticketApproval/:id", checkLandlordToken, controllerTicketApproval);
-router.patch("/ticketWork/:id", checkLandlordToken, controllerTicketWork);
 
 
 export default router;
