@@ -410,8 +410,8 @@ export const createLease = (landlordID, tenantID, data, callBack) => {
     `,
     [
       data.public_lease_id,
-      landlordID,
       tenantID,
+      landlordID,
       data.floor,
       data.unit_number,
       data.pdf_path
