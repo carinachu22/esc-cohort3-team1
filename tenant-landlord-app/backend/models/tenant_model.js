@@ -293,9 +293,12 @@ export const getLeaseByTenant = (id, callBack) => {
       b.address, 
       b.postal_code, 
       b.public_building_id, 
-      l.public_lease_id
+      l.public_lease_id,
+      t.email AS tenant_email,
+      land.email AS landlord_email
     FROM lease l
     JOIN tenant_user t USING (tenant_user_id)
+    JOIN landlord_user land USING (landlord_user_id)
     JOIN building b
       ON b.public_building_id = t.public_building_id
     WHERE tenant_user_id = ?
