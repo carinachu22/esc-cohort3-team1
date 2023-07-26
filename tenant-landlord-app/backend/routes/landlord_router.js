@@ -20,7 +20,8 @@ import {
   controllerGetLease,
   controllerCreateLease,
   controllerGetLeaseByLandlord,
-  controllerDeleteLease
+  controllerDeleteLease,
+  controllerUpdateLease
 } from "../controller/landlord_controller.js";
 import express from "express";
 import { checkLandlordToken } from "../auth/landlord_validation.js";
@@ -69,6 +70,7 @@ router.get("/getLease/", controllerGetLease);
 router.post("/createLease", checkLandlordToken, controllerCreateLease);
 router.get("/getLeaseByLandlord", checkLandlordToken, controllerGetLeaseByLandlord)
 router.patch("/deleteLease", checkLandlordToken, controllerDeleteLease)
+router.patch("/updateLease",checkLandlordToken,controllerUpdateLease)
 
 router.get("/getTickets", checkLandlordToken, controllerGetTickets);
 router.get("/getTicketById/:id", checkLandlordToken, controllerGetTicketById);

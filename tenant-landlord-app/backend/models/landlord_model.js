@@ -494,3 +494,35 @@ export const deleteLease = (lease_id, callBack) => {
     }
   );
 }
+
+export const updateLease = (landlordID, tenantID, data, callBack) => {
+  pool.query (
+    `
+    UPDATE lease
+    SET 
+      public_lease_id = ?,
+      tenant_user_id = ?,
+      landlord_user_id = ?,
+      floor = ?, 
+      unit_number = ?, 
+      pdf_path =?
+    WHERE public_lease_id = ?
+    `,
+    [
+      data.new_public_lease_id,
+      tenantID,
+      landlordID,
+      data.floor,
+      data.unit_number,
+      data.pdf_path,
+      data.old_public_lease_id
+    ],
+    (error, results, fields) => {
+      if (error) {
+        callBack(error);
+      } else {
+        callBack(null,results);
+      }
+    }
+  )
+}
