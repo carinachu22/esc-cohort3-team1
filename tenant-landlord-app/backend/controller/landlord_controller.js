@@ -18,7 +18,8 @@ import {
   deleteTenantByEmail,
   getLandlordUserId,
   createLease,
-  getLeaseByLandlord
+  getLeaseByLandlord,
+  deleteLease
 } from "../models/landlord_model.js";
 import { 
   getTenantByEmail,
@@ -754,5 +755,21 @@ export const controllerGetLeaseByLandlord = (req,res) => {
         };
       })
     }
+  })
+}
+
+export const controllerDeleteLease = (req,res) => {
+  deleteLease(req.body.public_lease_id, (err,results) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).json({
+        success: 0,
+        message: "Database connection error",
+      });
+    }
+    return res.status(200).json({
+      success: 1,
+      message: "deleted successfully",
+    });
   })
 }

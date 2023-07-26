@@ -19,11 +19,13 @@ import {
   controllerUploadLease,
   controllerGetLease,
   controllerCreateLease,
-  controllerGetLeaseByLandlord
+  controllerGetLeaseByLandlord,
+  controllerDeleteLease
 } from "../controller/landlord_controller.js";
 import express from "express";
 import { checkLandlordToken } from "../auth/landlord_validation.js";
 import multer from "multer";
+import { deleteLease } from "../models/landlord_model.js";
 
 
 
@@ -66,6 +68,7 @@ router.post("/uploadLease/:id", upload.single('files'), controllerUploadLease);
 router.get("/getLease/", controllerGetLease);
 router.post("/createLease", checkLandlordToken, controllerCreateLease);
 router.get("/getLeaseByLandlord", checkLandlordToken, controllerGetLeaseByLandlord)
+router.patch("/deleteLease", checkLandlordToken, controllerDeleteLease)
 
 router.get("/getTickets", checkLandlordToken, controllerGetTickets);
 router.get("/getTicketById/:id", checkLandlordToken, controllerGetTicketById);

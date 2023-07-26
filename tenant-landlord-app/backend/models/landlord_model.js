@@ -481,3 +481,16 @@ export const getLeaseByLandlord = (id, callBack) => {
     }
   )
 }
+
+export const deleteLease = (lease_id, callBack) => {
+  pool.query(
+    'DELETE FROM lease where public_lease_id = ?',
+    [lease_id],
+    (error, results, fields) => {
+      if(error){
+        callBack(error);
+      }
+      return callBack(null, results[0]);
+    }
+  );
+}
