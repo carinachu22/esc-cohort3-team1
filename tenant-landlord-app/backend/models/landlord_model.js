@@ -119,7 +119,7 @@ export const updateLandlord = (data, callBack) => {
 export const deleteLandlord = (data, callBack) => {
   pool.query(
     'DELETE FROM landlord_user where email=?',
-    [data.id],
+    [data.email],
     (error, results, fields) => {
       if(error){
         callBack(error);
@@ -148,13 +148,13 @@ export const deleteAllTenants = (callBack) => {
 
 /**
  * Delete all tenant accounts
- * @param {*} data 
+ * @param {*} email 
  * @param {*} callBack 
  */
-export const deleteTenantByEmail = (data, callBack) => {
+export const deleteTenantByEmail = (email, callBack) => {
   pool.query(
     'DELETE FROM tenant_user WHERE email = ?',
-    [data.email],
+    [email],
     (error, results, fields) => {
       if(error){
         callBack(error);
@@ -172,12 +172,13 @@ export const deleteTenantByEmail = (data, callBack) => {
 export const createTenant = (data, callBack) => {
   pool.query(
     `
-    INSERT INTO TENANT_USER(email, password)
-    VALUES (?, ?)
+    INSERT INTO TENANT_USER(email, password, public_building_id)
+    VALUES (?, ?, ?)
     `,
     [
       data.email,
       data.password,
+      data.buildingID
     ],
     (error, results, fields) => {
       if (error) {

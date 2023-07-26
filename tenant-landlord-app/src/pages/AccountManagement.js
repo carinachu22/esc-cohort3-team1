@@ -44,7 +44,8 @@ import { Accordion,
     useDisclosure,
     IconButton,
     FocusLock, 
-    useBoolean,} from '@chakra-ui/react';
+    useBoolean,
+    FormControl} from '@chakra-ui/react';
 
 import { DeleteIcon } from '@chakra-ui/icons'
 
@@ -61,7 +62,7 @@ import TableStyles from "../styles/account_management.module.css";
 import PasswordStyles from "../styles/usePasswordToggle.module.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {useNavigate} from 'react-router-dom';
-import {useFormik} from "formik";
+import {Form, useFormik} from "formik";
 import axios, {AxiosError} from "axios";
 import {useSignIn} from "react-auth-kit";
 
@@ -71,9 +72,8 @@ const AccountManagement = () => {
   const [error, setError] = useState("");
   const signIn = useSignIn();
   const [tenantAccounts, setTenantAccounts] = useState(null)
-  const { onOpen: onOpenHeader, onClose: onCloseHeader, isOpen: isOpenHeader } = useDisclosure();
-  const { onOpen: onOpenRow, onClose: onCloseRow, isOpen: isOpenRow } = useDisclosure();
-
+  const { onOpen: onOpen, onClose: onClose, isOpen: isOpen } = useDisclosure();
+  const [isVisible, setIsVisible] = React.useState(true);
 
 
   const navigateToTenantCreationPage = () => {
@@ -97,17 +97,19 @@ const AccountManagement = () => {
     )
     //console.log(response)
     GetTenantAccounts();
-    onCloseHeader();
+    onClose();
   }
 
-  const APIDeleteTenantByEmail = async (value) => {
+
+  const APIDeleteTenantByEmail = async (email) => {
     const response = await axios.patch(
         "http://localhost:5000/api/landlord/deleteTenantByEmail",
-        value
+        {email, }
     )
-    //console.log(response)
+    console.log(email);
     GetTenantAccounts();
-    onCloseRow();
+    console.log("bye");
+
   }
 
   const GetTenantAccounts = () => {
@@ -134,15 +136,22 @@ const AccountManagement = () => {
               {account.email}
               </Box>
               <Box textAlign='left' width='34vw'>
-              {"Date Created"}
+              {account.public_building_id}
               </Box>
               </HStack>
               <AccordionIcon width='2.3vw'/>
               <Box width='2.3vw' >
-                <Popup trigger={<IconButton size='sm' icon={<DeleteIcon />} />} position="right center">
-                    hello
+                <Popup trigger={<IconButton size='sm' icon={<DeleteIcon />} />} position="left center">
+                  <FormControl>
+                    <Button 
+                      onClick={() => APIDeleteTenantByEmail(account.email)}
+                      
+                      colorScheme='red'
+                      >
+                      confirm?
+                    </Button>
+                  </FormControl>
                 </Popup>
-
               </Box>
 
           </AccordionButton>
@@ -167,8 +176,8 @@ const AccountManagement = () => {
     GetTenantAccounts()},
     [])
 
-  
-    
+
+
   return (
     <>
     {NavigationBar()}
@@ -190,20 +199,19 @@ const AccountManagement = () => {
             <Tr>
                 <Th width="16vw" textAlign='left' paddingRight={0} > ID </Th>
                 <Th width='30vw' textAlign='left' paddingRight={0} paddingLeft={0}> Tenant </Th>
-                <Th width='33vw' textAlign='left' paddingRight={0} paddingLeft={0}>Date Created</Th>
+                <Th width='33vw' textAlign='left' paddingRight={0} paddingLeft={0}>Building ID</Th>
                 <Th width='2.5vw' alignItems="center" paddingRight={0} paddingLeft={0} >
                   <Popover
-                    isOpen={isOpenHeader}
-                    onOpen={onOpenHeader}
-                    onClose={onCloseHeader}
+                    isOpen={isOpen}
+                    onOpen={onOpen}
+                    onClose={onClose}
                     placement='left'
                     closeOnBlur={false}
-
                   >
-                    <PopoverTrigger id="headerDeleteIcon">
+                    <PopoverTrigger >
                       <IconButton size='sm' icon={<DeleteIcon />} />
                     </PopoverTrigger>
-                    <PopoverContent>
+                    <PopoverContent >
                       <PopoverHeader fontWeight='semibold'>Confirmation</PopoverHeader>
                       <PopoverArrow />
                       <PopoverCloseButton />
@@ -212,9 +220,11 @@ const AccountManagement = () => {
                       </PopoverBody>
                       <PopoverFooter display='flex' justifyContent='flex-end'>
                         <ButtonGroup size='sm'>
-                          <Button variant='outline' onClick={onCloseHeader}>Cancel</Button>
+                          <Button variant='outline' onClick={onClose}>Cancel</Button>
                           <Button colorScheme='red' onClick={APIDeleteAllTenants} >Confirm</Button>
                         </ButtonGroup>
+
+
                       </PopoverFooter>
                     </PopoverContent>
                   </Popover>

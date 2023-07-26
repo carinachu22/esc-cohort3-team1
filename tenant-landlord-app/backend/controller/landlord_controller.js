@@ -276,7 +276,9 @@ export const controllerDeleteAllTenants = (req, res) => {
 
 export const controllerDeleteTenantByEmail = (req, res) => {
   const body = req.body;
-  const email = body.email
+  console.log(body);
+  const {email} = body;
+  console.log(email);
   deleteTenantByEmail(email, (err) => {
     if (err) {
       console.log(err);
