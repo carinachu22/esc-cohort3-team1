@@ -197,9 +197,9 @@ const AccountManagement = () => {
         <Table variant='simple'>
         <Thead margin={0}>
             <Tr>
-                <Th width="16vw" textAlign='left' paddingRight={0} > ID </Th>
-                <Th width='30vw' textAlign='left' paddingRight={0} paddingLeft={0}> Tenant </Th>
-                <Th width='33vw' textAlign='left' paddingRight={0} paddingLeft={0}>Building ID</Th>
+                <Th width="15vw" textAlign='left' paddingRight={0} > ID </Th>
+                <Th width='31vw' textAlign='left' paddingRight={0} paddingLeft={0}> Tenant </Th>
+                <Th width='35vw' textAlign='left' paddingRight={0} paddingLeft={0}>Building ID</Th>
                 <Th width='2.5vw' alignItems="center" paddingRight={0} paddingLeft={0} >
                   <Popover
                     isOpen={isOpen}
