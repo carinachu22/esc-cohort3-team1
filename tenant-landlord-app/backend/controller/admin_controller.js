@@ -74,7 +74,7 @@ export const controllerLoginAdmin = (req, res) => {
       console.log(password_check);
       if (password_check) {
         results.password = undefined;
-        const jsontoken = jwt.sign({ result: results }, "qwe1234", {
+        const jsontoken = jwt.sign({ result: results }, "mohawk123", {
           expiresIn: "1h",
         });
         return res.json({

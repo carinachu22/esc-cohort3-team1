@@ -243,3 +243,57 @@ describe("Testing addFeedbackRating() in tenant model", () => {
     });
 
 })
+
+describe("Testing closeTicketStatus() in tenant model", () => {
+    test ("Test calling closeTicketStatus() on a valid service ticket ID & valid value",(done) => {
+        closeTicketStatus(1, 'landlord_ticket_closed', (err, results) => {
+            if (err){
+                console.log("ERROR",err)
+            }
+            //console.log(JSON.parse(JSON.stringify(results)))
+            const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
+            expect(rowsChanged).toBe(1);
+            done();
+        })
+    });
+    test ("Test calling closeTicketStatus() on an invalid service ticket ID & valid value",(done) => {
+        closeTicketStatus(10, 'landlord_ticket_closed', (err, results) => {
+            if (err){
+                console.log("ERROR",err)
+            }
+            //console.log(JSON.parse(JSON.stringify(results)))
+            const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
+            //console.log(rowsChanged)
+            expect(rowsChanged).toBe(0);
+            done();
+        })
+    });
+
+})
+
+describe("Testing quotationApproval() in tenant model", () => {
+    test ("Test calling quotationApproval() on a valid service ticket ID & valid value",(done) => {
+        quotationApproval(1, 'ticket_quotation_approved', (err, results) => {
+            if (err){
+                console.log("ERROR",err)
+            }
+            // console.log(JSON.parse(JSON.stringify(results)))
+            const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
+            expect(rowsChanged).toBe(1);
+            done();
+        })
+    });
+    test ("Test calling quotationApproval() on an invalid service ticket ID & valid value",(done) => {
+        quotationApproval(10, 'ticket_quotation_rejected', (err, results) => {
+            if (err){
+                console.log("ERROR",err)
+            }
+            //console.log(JSON.parse(JSON.stringify(results)))
+            const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
+            //console.log(rowsChanged)
+            expect(rowsChanged).toBe(0);
+            done();
+        })
+    });
+
+})

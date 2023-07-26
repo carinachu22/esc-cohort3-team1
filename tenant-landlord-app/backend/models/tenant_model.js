@@ -18,7 +18,7 @@ export const getTenantByEmail = (email, callBack) => {
       if (error) {
         callBack(error);
       } else {
-        callBack(null, results);
+        callBack(null, results[0]);
       }
     }
   );
@@ -153,7 +153,7 @@ export const createTicket = (data, callBack) => {
  * @param {string} status updated status
  * @param {*} callBack 
  */
-export const quotationApproval = (id, data, status, callBack) => {
+export const quotationApproval = (id, status, callBack) => {
   pool.query(
     `
     UPDATE service_request
