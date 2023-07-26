@@ -8,7 +8,9 @@ import {
   quotationApproval,
   addFeedbackRating,
   addFeedbackText,
-  closeTicketStatus
+  closeTicketStatus,
+  getTenantUserId,
+  getLeaseByTenant
 } from "../models/tenant_model.js";
 import { genSaltSync, hashSync, compareSync } from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -360,3 +362,40 @@ export const controllerCloseTicketStatus = (req, res) => {
   })
 }
 
+/**
+ * 
+ * @param {object} req 
+ * {email}
+ * @param {json} res 
+ */
+export const controllerGetLeaseByTenant = (req,res) => {
+  let tenantID = "";
+  getTenantUserId(req.body.email, (err, results) => {
+    if (err) {
+      console.log(err)
+      return
+    } if (!results) {
+      return res.json({
+        success:0,
+        message: "tenant not registered."
+      })
+    } else {
+      tenantID = results.tenant_user_id;
+      console.log(tenantID)
+      getLeaseByTenant(tenantID, (err, results) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).json({
+            success: 0,
+            message: "Database connection error"
+          });
+        } else {
+          return res.status(200).json({
+            success:1,
+            data: results
+          });
+        };
+      })
+    }
+  })
+}

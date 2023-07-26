@@ -254,3 +254,49 @@ export const closeTicketStatus = (id, data, callBack) => {
     
   )
 }
+
+/**
+ * 
+ * @param {string} email 
+ * @param {*} callBack 
+ */
+export const getTenantUserId = (email, callBack) => {
+  pool.query(
+    `
+    SELECT tenant_user_id
+    FROM tenant_user
+    WHERE email = ?
+    `,
+    [email],
+    (error, results, fields) => {
+      if (error) {
+        callBack(error);
+      } else {
+        callBack(null, results[0]);
+      }
+    }
+  )
+}
+
+/**
+ * 
+ * @param {int} id 
+ * @param {*} callBack 
+ */
+export const getLeaseByTenant = (id, callBack) => {
+  pool.query(
+    `
+    SELECT *
+    FROM lease
+    WHERE tenant_user_id = ?
+    `,
+    [id],
+    (error, results, fields) => {
+      if (error) {
+        callBack(error);
+      } else {
+        callBack(null,results);
+      }
+    }
+  )
+}
