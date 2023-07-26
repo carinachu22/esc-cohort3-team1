@@ -4,6 +4,9 @@ import {
   controllerCreateAdmin,
   controllerDeleteLandlordByEmail,
   controllerCreateBuilding,
+  controllerForgotPasswordAdmin,
+  controllerResetPasswordAdmin,
+  controllerResetPasswordPageAdmin,
 } from "../controller/admin_controller.js";
 import express from "express";
 import { checkAdminToken } from "../auth/admin_validation.js";
@@ -42,10 +45,17 @@ var upload = multer({ storage: storage });
 //ADMIN EXCLUSIVE PRIVILEGES
 router.post("/create", controllerCreateAdmin);
 router.post("/login", controllerLoginAdmin);
+router.post("/forgot-password", controllerForgotPasswordAdmin);
+
+router.post("/reset-password/:id/:jsontoken", controllerResetPasswordAdmin);
+router.get("/reset-password/:id/:jsontoken", controllerResetPasswordPageAdmin);
+
 router.post("/createLandlord", controllerCreateLandlord);
 router.patch("/deleteLandlordByEmail", controllerDeleteLandlordByEmail);
 router.post("/createBuilding", controllerCreateBuilding);
+
 //LANDLORD PRIVILEGES
+
 router.post("/createTenant", controllerCreateTenant);
 router.get("/getTicket/:id", controllerGetTicketById);
 router.get("/getTickets", controllerGetTickets);

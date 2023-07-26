@@ -21,6 +21,25 @@ export const createAdmin = (data, callBack) => {
   );
 };
 
+export const getAdminById = (id, callBack) => {
+  pool.query(
+    `
+    SELECT *
+    FROM admin_user
+    WHERE admin_user_id = ?
+    `,
+    [id],
+    (error, results, fields) => {
+      if (error) {
+        callBack(error);
+      } else {
+        // console.log(results);
+        callBack(null, results[0]);
+      }
+    }
+  );
+};
+
 /**
  * Get admin with email
  * @param {*} email
@@ -41,6 +60,23 @@ export const getAdminByEmail = (email, callBack) => {
         // console.log(results);
         callBack(null, results[0]);
       }
+    }
+  );
+};
+
+export const updateAdminPassword = ({ password, id }, callBack) => {
+  pool.query(
+    `
+    UPDATE admin_user 
+    SET password = ? 
+    WHERE admin_user_id = ?
+    `,
+    [password, id],
+    (error, results, fields) => {
+      if (error) {
+        callBack(error);
+      }
+      return callBack(null, results[0]);
     }
   );
 };
