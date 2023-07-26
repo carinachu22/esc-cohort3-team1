@@ -38,7 +38,7 @@ export const controllerLoginTenant = (req, res) => {
     const password_check = compareSync(body.password, results.password);
     if (password_check) {
       results.password = undefined;
-      const jsontoken = jwt.sign({ result: results }, "qwe1234", {
+      const jsontoken = jwt.sign({ result: results }, "paolom8", {
         expiresIn: "1h",
       });
       return res.json({
@@ -180,7 +180,7 @@ export const controllerResetPasswordTenant = async (req, res) => {
 
 /**
  * Create Ticket
- * @param {*} req name, email, request_type, request_description, submitted_date_time(Date Type)
+ * @param {*} req public_service_request_id (eg. 2023-01-01 00:00:00), name, email, request_type, request_description, quptation_path, submitted_date_time(Date Type)
  * @param {*} res 
  */
 export const controllerCreateTicket = (req, res) => {
@@ -263,7 +263,7 @@ export const controllerQuotationApproval = (req, res) => {
     status = "ticket_quotation_rejected"
   }
 
-  quotationApproval(id,body,status, (err, results) => {
+  quotationApproval(id,status, (err, results) => {
     if (err) {
       console.log(err);
       return;

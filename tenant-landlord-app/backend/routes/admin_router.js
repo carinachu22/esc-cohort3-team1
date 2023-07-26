@@ -3,7 +3,7 @@ import {
     controllerLoginAdmin
   } from "../controller/admin_controller.js";
   import express from "express";
-  import { checkToken } from "../auth/token_validation.js";
+  import { checkAdminToken } from "../auth/admin_validation.js";
   import multer from "multer";
   
   

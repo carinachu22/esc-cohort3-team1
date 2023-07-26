@@ -1,4 +1,4 @@
-import pool from "../config/database.js";
+import {pool} from "../config/database.js";
 
 /**
  * Create landlord account
@@ -42,7 +42,7 @@ export const getLandlordByEmail = (email, callBack) => {
       if (error) {
         callBack(error);
       } else {
-        callBack(null, results);
+        callBack(null, results[0]);
       }
     }
   );
@@ -118,7 +118,7 @@ export const updateLandlord = (data, callBack) => {
 export const deleteLandlord = (data, callBack) => {
   pool.query(
     'DELETE FROM landlord_user where email=?',
-    [data.id],
+    [data.email],
     (error, results, fields) => {
       if(error){
         callBack(error);
@@ -146,19 +146,39 @@ export const deleteAllTenants = (callBack) => {
 }
 
 /**
- * Create new tenant account
- * @param {*} data tenant email, password(unhashed)
+ * Delete all tenant accounts
+ * @param {*} email 
  * @param {*} callBack 
  */
-export const createTenant = (data, callBack) => {
+export const deleteTenantByEmail = (email, callBack) => {
+  pool.query(
+    'DELETE FROM tenant_user WHERE email = ?',
+    [email],
+    (error, results, fields) => {
+      if(error){
+        callBack(error);
+      }
+      return callBack(null, results[0]);
+    }
+  );
+}
+
+/**
+ * Create new tenant account
+ * @param {*} data tenant email, password(unhashed), public_building_id (eg. RC), public_lease_id (eg. YYYY-MM-DD 00:00:00)
+ * @param {*} callBack 
+ */
+export const createTenant = (email, password, public_building_id, public_lease_id, callBack) => {
   pool.query(
     `
-    INSERT INTO TENANT_USER(email, password)
-    VALUES (?, ?)
+    INSERT INTO TENANT_USER(email, password, public_building_id, public_lease_id)
+    VALUES (?, ?, ?, ?)
     `,
     [
-      data.email,
-      data.password,
+      email,
+      password,
+      public_building_id,
+      public_lease_id
     ],
     (error, results, fields) => {
       if (error) {

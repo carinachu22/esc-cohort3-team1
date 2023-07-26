@@ -5,7 +5,7 @@ import {useNavigate} from 'react-router-dom';
 import {setIn, useFormik} from "formik";
 import axios, {AxiosError} from "axios";
 import {useSignIn} from "react-auth-kit";
-import NavigationBar from '../components/NavigationBar';
+import NavigationBar from '../components/NavigationBar.js';
 
 import {
     Box,
@@ -88,6 +88,7 @@ const TenantCreationPage = () => {
         initialValues: {
             email: "",
             password: "",
+            buildingID: "",
             hasError: false
         },
         onSubmit,
@@ -137,6 +138,20 @@ const TenantCreationPage = () => {
                                 </InputRightElement>
                             </InputGroup>
                             {formik.errors.password ? <Box color="red.500"  marginBottom="-6">{formik.errors.password}</Box>: null}                          
+                        </FormControl>
+                        <FormControl marginTop="6">
+                            <InputGroup size='md'>
+                                <Input
+                                    id="buildingID"
+                                    name="buildingID" 
+                                    pr='4.5rem'
+                                    type="text"
+                                    placeholder="Building ID"
+                                    variant="filled"
+                                    value={formik.values.buildingID}
+                                    onChange={formik.handleChange}
+                                />
+                            </InputGroup>                        
                         </FormControl>
                         <FormControl marginTop="6" >
                             <Button 
