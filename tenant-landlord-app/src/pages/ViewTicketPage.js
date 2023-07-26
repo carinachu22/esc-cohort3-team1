@@ -51,7 +51,7 @@ export default function ViewTicketPage() {
                 )
             } else if (type == 'tenant'){ 
                 response = await axios.get(
-                  `http://localhost:5000/api/landlord/getTicketById/${selectedTicket.id}`,
+                  `http://localhost:5000/api/tenant/getTicketById/${selectedTicket.id}`,
                     config
                 )
             }

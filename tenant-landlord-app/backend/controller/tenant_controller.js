@@ -8,7 +8,8 @@ import {
   quotationApproval,
   addFeedbackRating,
   addFeedbackText,
-  closeTicketStatus
+  closeTicketStatus,
+  getTicketById
 } from "../models/tenant_model.js";
 import { genSaltSync, hashSync, compareSync } from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -238,6 +239,27 @@ export const controllerGetTicketsByStatus = (req, res) => {
       return res.status(500).json({
         success: 0,
         message: "Database connection error"
+      });
+    } else {
+      return res.json({
+        success: "1",
+        data: results,
+      });
+    }
+  });
+};
+
+export const controllerGetTicketById = (req, res) => {
+  const id = req.params.id;
+  getTicketById(id, (err, results) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+    if (!results) {
+      return res.json({
+        success: 0,
+        message: "Record not found",
       });
     } else {
       return res.json({

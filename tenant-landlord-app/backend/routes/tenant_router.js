@@ -9,7 +9,8 @@ import {
   controllerCloseTicketStatus,
   controllerForgotPasswordTenant,
   controllerResetPasswordPageTenant,
-  controllerResetPasswordTenant
+  controllerResetPasswordTenant,
+  controllerGetTicketById
 } from "../controller/tenant_controller.js";
 import express from "express";
 import { checkTenantToken } from "../auth/tenant_validation.js";
@@ -37,6 +38,7 @@ router.patch("/quotationApproval/:id", checkTenantToken, controllerQuotationAppr
 
 router.get("/reset-password/:id/:jsontoken", controllerResetPasswordPageTenant);
 router.get("/getTickets",checkTenantToken, controllerGetTickets);
+router.get("/getTicketById/:id", checkTenantToken, controllerGetTicketById);
 router.get("/getTicketsByStatus/:status",checkTenantToken, controllerGetTicketsByStatus);
 router.patch("/addFeedbackRating/:id", checkTenantToken, controllerAddFeedbackRating);
 router.patch("/addFeedbackText/:id", checkTenantToken, controllerAddFeedbackText);
