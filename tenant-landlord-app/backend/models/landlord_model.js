@@ -165,19 +165,20 @@ export const deleteTenantByEmail = (email, callBack) => {
 
 /**
  * Create new tenant account
- * @param {*} data tenant email, password(unhashed)
+ * @param {*} data tenant email, password(unhashed), public_building_id (eg. RC), public_lease_id (eg. YYYY-MM-DD 00:00:00)
  * @param {*} callBack 
  */
-export const createTenant = (data, callBack) => {
+export const createTenant = (email, password, public_building_id, public_lease_id, callBack) => {
   pool.query(
     `
-    INSERT INTO TENANT_USER(email, password, public_building_id)
-    VALUES (?, ?, ?)
+    INSERT INTO TENANT_USER(email, password, public_building_id, public_lease_id)
+    VALUES (?, ?, ?, ?)
     `,
     [
-      data.email,
-      data.password,
-      data.buildingID
+      email,
+      password,
+      public_building_id,
+      public_lease_id
     ],
     (error, results, fields) => {
       if (error) {
@@ -394,67 +395,3 @@ export const getTenantAccounts = (callBack) => {
     }
   );
 };
-
-
-//upload quotation's path in the file system
-export const uploadLease = ({filepath, id}, callBack) => {
-  pool.query(
-    `
-    UPDATE lease
-    SET pdf_path = ?
-    WHERE public_lease_id = ?
-    `,
-    [
-      filepath,
-      id
-    ],
-    (error, results, fields) => {
-      if (error) {
-        callBack(error);
-      } else {
-        callBack(null, results);
-      }
-    }
-  );
-}
-
-
-//get the quotation path of a specific service request 
-export const getLeasePath = (id, callBack) => {
-  pool.query(
-    `
-    SELECT pdf_path
-    FROM lease
-    WHERE public_lease_id = ?
-    `,
-    [
-      id
-    ],
-    (error, results, fields) => {
-      if (error) {
-        callBack(error);
-      } else {
-        callBack(null, results[0]);
-      }
-    }
-  );
-}
-
-export const getLease = (filepath, callBack) => {
-  pool.query(
-    `
-    SELECT 
-    LOAD_FILE(?)
-    `,
-    [
-      filepath
-    ],
-    (error, results, fields) => {
-      if (error) {
-        callBack(error);
-      } else {
-        callBack(null, results[0]);
-      }
-    }
-  );
-}
