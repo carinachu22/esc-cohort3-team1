@@ -381,7 +381,7 @@ export const controllerGetLeaseByTenant = (req,res) => {
       })
     } else {
       tenantID = results.tenant_user_id;
-      console.log(tenantID)
+      // console.log(tenantID)
       getLeaseByTenant(tenantID, (err, results) => {
         if (err) {
           console.log(err);

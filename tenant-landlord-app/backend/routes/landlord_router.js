@@ -18,7 +18,8 @@ import {
   controllerDeleteTenantByEmail,
   controllerUploadLease,
   controllerGetLease,
-  controllerCreateLease
+  controllerCreateLease,
+  controllerGetLeaseByLandlord
 } from "../controller/landlord_controller.js";
 import express from "express";
 import { checkLandlordToken } from "../auth/landlord_validation.js";
@@ -64,6 +65,7 @@ router.post("/createTenant", controllerCreateTenant);
 router.post("/uploadLease/:id", upload.single('files'), controllerUploadLease);
 router.get("/getLease/", controllerGetLease);
 router.post("/createLease", checkLandlordToken, controllerCreateLease);
+router.get("/getLeaseByLandlord", checkLandlordToken, controllerGetLeaseByLandlord)
 
 router.get("/getTickets", checkLandlordToken, controllerGetTickets);
 router.get("/getTicketById/:id", checkLandlordToken, controllerGetTicketById);

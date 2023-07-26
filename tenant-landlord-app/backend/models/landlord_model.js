@@ -448,3 +448,26 @@ export const getLandlordUserId = (email, callBack) => {
     }
   )
 }
+
+/**
+ * 
+ * @param {int} id 
+ * @param {*} callBack 
+ */
+export const getLeaseByLandlord = (id, callBack) => {
+  pool.query(
+    `
+    SELECT *
+    FROM lease
+    WHERE landlord_user_id = ?
+    `,
+    [id],
+    (error, results, fields) => {
+      if (error) {
+        callBack(error);
+      } else {
+        callBack(null,results);
+      }
+    }
+  )
+}

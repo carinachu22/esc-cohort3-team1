@@ -17,7 +17,8 @@ import {
   deleteAllTenants,
   deleteTenantByEmail,
   getLandlordUserId,
-  createLease
+  createLease,
+  getLeaseByLandlord
 } from "../models/landlord_model.js";
 import { 
   getTenantByEmail,
@@ -703,6 +704,44 @@ export const controllerCreateLease = (req,res) => {
             };
           })
         }
+      })
+    }
+  })
+}
+
+/**
+ * 
+ * @param {object} req 
+ * {email}
+ * @param {json} res 
+ */
+export const controllerGetLeaseByLandlord = (req,res) => {
+  let landlordID = "";
+  getLandlordUserId(req.body.email, (err, results) => {
+    if (err) {
+      console.log(err)
+      return
+    } if (!results) {
+      return res.json({
+        success:0,
+        message: "landlord not registered."
+      })
+    } else {
+      landlordID = results.landlord_user_id;
+      // console.log(landlordID)
+      getLeaseByLandlord(landlordID, (err, results) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).json({
+            success: 0,
+            message: "Database connection error"
+          });
+        } else {
+          return res.status(200).json({
+            success:1,
+            data: results
+          });
+        };
       })
     }
   })
