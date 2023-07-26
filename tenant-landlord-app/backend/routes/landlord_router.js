@@ -73,9 +73,9 @@ router.get("/getLease/", controllerGetLease);
 router.get("/getTenantAccounts/", controllerGetTenantAccounts);
 router.patch("/deleteAllTenants", controllerDeleteAllTenants);
 router.patch("/deleteTenantByEmail", controllerDeleteTenantByEmail);
-router.patch("/updateQuotation/:id", checkToken, controllerUpdateQuotation);
-router.patch("/ticketApproval/:id", checkToken, controllerTicketApproval);
-router.patch("/ticketWork/:id", checkToken, controllerTicketWork);
+router.patch("/updateQuotation/:id", checkLandlordToken, controllerUpdateQuotation);
+router.patch("/ticketApproval/:id", checkLandlordToken, controllerTicketApproval);
+router.patch("/ticketWork/:id", checkLandlordToken, controllerTicketWork);
 
 
 export default router;
