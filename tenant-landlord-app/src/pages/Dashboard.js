@@ -23,6 +23,21 @@ import { Accordion, AccordionButton, AccordionItem, AccordionPanel, TableContain
     TableCaption,
 Box, AccordionIcon, HStack, Card, CardBody, Spacer, Flex } from '@chakra-ui/react';
 
+import {
+    chakra,
+    SimpleGrid,
+    Stat,
+    StatLabel,
+    StatNumber,
+    useColorModeValue,
+  } from '@chakra-ui/react'
+  import { ReactNode } from 'react'
+  import { BsPerson } from 'react-icons/bs/index.esm.js'
+  import { FiServer } from 'react-icons/fi/index.esm.js'
+  import { GoLocation } from 'react-icons/go/index.esm.js'
+  import { AiFillInfoCircle, AiFillClockCircle } from "react-icons/ai/index.esm.js";
+  import { BiSolidError } from "react-icons/bi/index.esm.js";
+
 /**
 Functional component to display service ticket list
 Functionalities:
@@ -153,30 +168,48 @@ export default function Dashboard() {
     return (
         <>
         {NavigationBar()}
-        <h1>
-            Welcome, {userDetails().email}
-        </h1>
-        <Flex>
-            <Spacer/>
-        <Card width='300px'>
-            <CardBody>
-                You have {tickets.length} tickets <br></br>
-            </CardBody>
-        </Card>
-        <Spacer/>
-        <Card width='300px'>
-        <CardBody>
-        You have {needAction} tickets requiring your attention. <br></br>
-        </CardBody>
-        </Card>
-        <Spacer/>
-        <Card width='300px'>
-        <CardBody>
-        You have {waitAction} tickets pending your tenant's/landlord's attention.
-        </CardBody>
-        </Card>
-        <Spacer/>
-        </Flex>
+        <Box maxW="7xl" mx={'auto'} pt={5} px={{ base: 2, sm: 12, md: 17 }}>
+        <chakra.h1 textAlign={'center'} fontSize={'4xl'} py={10} fontWeight={'bold'}>
+        Welcome, {userDetails().email}
+        </chakra.h1>
+        <SimpleGrid columns={{ base: 1, md: 3 }} spacing={{ base: 5, lg: 8 }}>
+            {StatsCard('Total Tickets', tickets.length, <AiFillInfoCircle size={'3em'} color='lightblue' />)}
+            {StatsCard('Tickets Requiring Your Attention', needAction, <BiSolidError size={'3em'} color='orange' />)}
+            {StatsCard('Tickets Pending Your Tenant/Landlord Action', waitAction, <AiFillClockCircle size={'3em'} color='grey' />)}
+        </SimpleGrid>
+        </Box>
+  
         </>
     )
+}
+
+
+function StatsCard(title, stat, icon) {
+  //const { title, stat, icon } = props
+  return (
+    <Stat
+      px={{ base: 2, md: 4 }}
+      py={'5'}
+      shadow={'xl'}
+      border={'1px solid'}
+      borderColor={useColorModeValue('gray.800', 'gray.500')}
+      rounded={'lg'}>
+      <Flex justifyContent={'space-between'}>
+        <Box pl={{ base: 2, md: 4 }}>
+          <StatLabel fontWeight={'medium'} isTruncated>
+            {title}
+          </StatLabel>
+          <StatNumber fontSize={'2xl'} fontWeight={'medium'}>
+            {stat}
+          </StatNumber>
+        </Box>
+        <Box
+          my={'auto'}
+          color={useColorModeValue('gray.800', 'gray.200')}
+          alignContent={'center'}>
+          {icon}
+        </Box>
+      </Flex>
+    </Stat>
+  )
 }
