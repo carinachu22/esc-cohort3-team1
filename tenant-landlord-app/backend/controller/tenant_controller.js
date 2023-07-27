@@ -331,8 +331,8 @@ export const controllerAddFeedbackRating = (req, res) => {
 }
 
 /**
- * Update Close Ticket Status
- * @param {*} req public_service_request_id (YYYY-MM-DD 00:00:00), status == "close"
+ * Update Close Ticket Status, params: public_service_request_id (YYYY-MM-DD 00:00:00)
+ * @param {*} req status == "close"
  * @param {*} res 
  */
 export const controllerCloseTicketStatus = (req, res) => {
