@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Text, Button, Heading, Textarea, FormControl, FormLabel, Input } from '@chakra-ui/react';
+import { Box, Text, Button, Heading, Textarea, FormControl, FormLabel, Input, useToast } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthUser, useAuthHeader } from 'react-auth-kit';
 import { Formik, Form,useFormik } from 'formik';
@@ -16,6 +16,7 @@ function CreateTicketPage() {
   const [tenantComment, setTenantComment] = useState('');
   const [ticketType, setTicketType] = useState('');
   const [additionalHeading, setAdditionalHeading] = useState('');
+  const toast = useToast();
 
   const handleCommentChange = (event) => {
     setTenantComment(event.target.value);
@@ -73,6 +74,14 @@ function CreateTicketPage() {
       console.log(response1);
 
       navigate('/pages/Dashboard'); // Navigate to the Dashboard form page
+      toast({
+        title: "Ticket Created",
+        description: "Ticket has been created.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+        });
     } catch (err) {
       if (err && err instanceof AxiosError) {
         setError(err.response);
