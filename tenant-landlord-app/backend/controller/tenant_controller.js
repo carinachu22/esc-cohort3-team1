@@ -28,7 +28,7 @@ export const controllerLoginTenant = (req, res) => {
     if (err) {
       console.log(err);
     }
-    console.log(results);
+    console.log(results[0]);
     if (!results) {
       return res.json({
         success: 0,
@@ -36,11 +36,11 @@ export const controllerLoginTenant = (req, res) => {
       });
     }
     
-    console.log(body.password, results.password);
-    const password_check = compareSync(body.password, results.password);
+    console.log(body.password, results[0].password);
+    const password_check = compareSync(body.password, results[0].password);
     if (password_check) {
-      results.password = undefined;
-      const jsontoken = jwt.sign({ result: results }, "paolom8", {
+      results[0].password = undefined;
+      const jsontoken = jwt.sign({ result: results[0] }, "paolom8", {
         expiresIn: "1h",
       });
       return res.json({
