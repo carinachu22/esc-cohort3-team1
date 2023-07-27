@@ -183,6 +183,8 @@ export const quotationApproval = (id, status, callBack) => {
  * @param {*} callBack 
  */
 export const addFeedbackRating = (id, feedback_rating, callBack) => {
+  console.log("feedback_rating", feedback_rating)
+  console.log("id", id)
   pool.query (
     `
     UPDATE service_request
@@ -192,6 +194,7 @@ export const addFeedbackRating = (id, feedback_rating, callBack) => {
     [
       feedback_rating, id
     ],
+    
     (error, results, fields) => {
       if (error) {
         callBack(error);

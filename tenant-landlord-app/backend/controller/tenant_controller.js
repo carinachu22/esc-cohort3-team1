@@ -282,14 +282,15 @@ export const controllerQuotationApproval = (req, res) => {
 }
 
 /**
- * Add Feedback Rating
- * @param {*} req public_service_request_id (YYYY-MM-DD 00:00:00), feedback_rating(int, between 1-5)
+ * Add Feedback Rating, params: public_service_request_id (YYYY-MM-DD 00:00:00)
+ * @param {*} req feedback_rating(int, between 1-5)
  * @param {*} res 
  */
 export const controllerAddFeedbackRating = (req, res) => {
   const id = req.params.id;
-  const body = req.body; // input is int
-  addFeedbackRating(id, body, (err, results) => {
+  const feedback_rating = req.body.feedback_rating; 
+  console.log("feedback_rating", feedback_rating)
+  addFeedbackRating(id, feedback_rating, (err, results) => {
     if (err) {
       console.log(err);
       return;
