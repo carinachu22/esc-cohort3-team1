@@ -214,7 +214,7 @@ export const getTicketById = (id, callBack) => {
   pool.query(
     `
     SELECT * FROM SERVICE_REQUEST
-    WHERE [public_service_request_id = ?
+    WHERE public_service_request_id = ?
     `,
     [id],
     (error, results, fields) => {
@@ -252,19 +252,19 @@ export const getTicketsByStatus = (status, callBack) => {
 /**
  * Update quotation
  * @param {*} id public_service_request_id (YYYY-MM-DD 00:00:00)
- * @param {*} data quotation amount(float to 2dp), status(string)
+ * @param {*} data  status(string)
  * @param {*} callBack 
  */
 export const updateQuotation = (id, data, callBack) => {
-  const quotationAmount = parseFloat(data.quotation_amount).toFixed(2); //Note this is impt to format it to decimal
   const status = "quotation sent";
+  console.log("id", id)
   pool.query(
     `
     UPDATE SERVICE_REQUEST
-    SET quotation_amount=?, status = ?
+    SET  status = ?
     WHERE public_service_request_id = ?
     `,
-    [quotationAmount, status, id],
+    [status, id],
     (error, results, fields) => {
       if (error) {
         callBack(error);

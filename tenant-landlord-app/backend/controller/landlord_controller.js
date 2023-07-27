@@ -343,8 +343,8 @@ export const controllerGetTickets = (req, res) => {
 };
 
 /**
- * Gets ticket by public_service_request_id
- * @param {*} req public_service_request_id (YYYY-MM-DD 00:00:00)
+ * Gets ticket by public_service_request_id(YYYY-MM-DD 00:00:00)
+ * @param {*} req 
  * @param {*} res 
  */
 export const controllerGetTicketById = (req, res) => {
@@ -395,8 +395,8 @@ export const controllerGetTicketsByStatus = (req, res) => {
 };
 
 /**
- * Landlord updates quotation
- * @param {*} req public_service_request_id (YYYY-MM-DD 00:00:00), quotation_amount(float, 2dp), status
+ * Landlord updates quotation. params: public_service_request_id (YYYY-MM-DD 00:00:00)
+ * @param {*} req  status
  * @param {*} res 
  */
 export const controllerUpdateQuotation = (req, res) => {
