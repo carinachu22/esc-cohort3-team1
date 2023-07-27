@@ -78,8 +78,11 @@ export default function TicketList() {
         else if (step_3.includes(status)){
             return 3
         }
-        else {
+        else if (step_4.includes(status)){
             return 4
+        }
+        else {
+            return 1
         }
     }
 
