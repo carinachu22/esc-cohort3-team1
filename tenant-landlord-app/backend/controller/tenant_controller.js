@@ -307,14 +307,14 @@ export const controllerAddFeedbackRating = (req, res) => {
 }
 
 /**
- * Add Feedback Text
- * @param {*} req public_service_request_id (YYYY-MM-DD 00:00:00), feedback_text
+ * Add Feedback Text, params: public_service_request_id (YYYY-MM-DD 00:00:00)
+ * @param {*} req  feedback_text
  * @param {*} res 
  */
  export const controllerAddFeedbackText = (req, res) => {
   const id = req.params.id;
-  const  body = req.body; 
-  addFeedbackText (id, body, (err, results) => {
+  const feedback_text = req.body.feedback_text; 
+  addFeedbackText (id, feedback_text, (err, results) => {
     if (err) {
       console.log(err);
       return;

@@ -211,7 +211,7 @@ export const addFeedbackRating = (id, feedback_rating, callBack) => {
  * @param {string} data feedback_text
  * @param {*} callBack 
  */
-export const addFeedbackText = (id, data, callBack) => {
+export const addFeedbackText = (id, feedback_text, callBack) => {
   pool.query (
     `
     UPDATE service_request
@@ -219,7 +219,7 @@ export const addFeedbackText = (id, data, callBack) => {
     WHERE public_service_request_id = ?
     `,
     [
-      data.feedback_text, id
+      feedback_text, id
     ],
     (error, results, fields) => {
       if (error) {
