@@ -86,31 +86,32 @@ export const controllerLoginLandlord = (req, res) => {
     if (err) {
       console.log(err);
     }
-    if (!results) {
+    if (results.length === 0) {
       return res.json({
         success: 0,
         message: "Invalid email or password",
-      });
-    }
-    console.log(body.password, results[0].password);
-    const password_check = compareSync(body.password, results[0].password);
-    console.log(password_check);
-    if (password_check) {
-      results[0].password = undefined;
-      const jsontoken = jwt.sign({ result: results[0] }, "qwe1234", {
-        expiresIn: "1h",
-      });
-      return res.json({
-        success: 1,
-        message: "Login successfully",
-        token: jsontoken,
       });
     } else {
-      console.log(results[0]);
-      res.json({
-        success: 0,
-        message: "Invalid email or password",
-      });
+      console.log(body.password, results[0].password);
+      const password_check = compareSync(body.password, results[0].password);
+      console.log(password_check);
+      if (password_check) {
+        results[0].password = undefined;
+        const jsontoken = jwt.sign({ result: results[0] }, "qwe1234", {
+          expiresIn: "1h",
+        });
+        return res.json({
+          success: 1,
+          message: "Login successfully",
+          token: jsontoken,
+        });
+      } else {
+        console.log(results[0]);
+        res.json({
+          success: 0,
+          message: "Invalid email or password",
+        });
+      }
     }
   });
 };
