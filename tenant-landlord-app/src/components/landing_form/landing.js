@@ -1,5 +1,6 @@
 import styles from "../../styles/landing.module.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+import React from "react";
 
 import {useNavigate} from 'react-router-dom';
 import {

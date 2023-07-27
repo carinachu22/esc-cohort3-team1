@@ -32,10 +32,7 @@ var storage = multer.diskStorage({
   }
 })
 var upload = multer({ storage: storage })
-  
-  
-  
-  
+
 /**
  * API CALLS
  * 1. Create landlord account

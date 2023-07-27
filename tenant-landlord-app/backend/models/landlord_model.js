@@ -165,20 +165,19 @@ export const deleteTenantByEmail = (email, callBack) => {
 
 /**
  * Create new tenant account
- * @param {*} data tenant email, password(unhashed), public_building_id (eg. RC), public_lease_id (eg. YYYY-MM-DD 00:00:00)
+ * @param {*} data tenant email, password(unhashed), public_building_id (eg. RC)
  * @param {*} callBack 
  */
-export const createTenant = (email, password, public_building_id, public_lease_id, callBack) => {
+export const createTenant = (email, password, public_building_id, callBack) => {
   pool.query(
     `
-    INSERT INTO TENANT_USER(email, password, public_building_id, public_lease_id)
-    VALUES (?, ?, ?, ?)
+    INSERT INTO TENANT_USER(email, password, public_building_id)
+    VALUES (?, ?, ?)
     `,
     [
       email,
       password,
-      public_building_id,
-      public_lease_id
+      public_building_id
     ],
     (error, results, fields) => {
       if (error) {
