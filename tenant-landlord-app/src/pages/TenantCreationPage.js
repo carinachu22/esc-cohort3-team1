@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { useFormik } from "formik";
 import axios, { AxiosError } from "axios";
-import { useSignIn } from "react-auth-kit";
 import NavigationBar from '../components/NavigationBar.js';
 
 import {
@@ -19,8 +18,6 @@ import {
 
 const TenantCreationPage = () => {
     const navigate = useNavigate();
-    const [error, setError] = useState("");
-    const signIn = useSignIn();
 
     const validate = values => {
         let errors = {};
@@ -52,7 +49,6 @@ const TenantCreationPage = () => {
 
     const onSubmit = async (values) => {
         console.log("Values: ", values);
-        setError("");
 
         try{
             const response = await axios.post(
@@ -64,17 +60,13 @@ const TenantCreationPage = () => {
             if (response.data.message === "created successfully"){
                 navigateToAccountManagement();
             }
-
-
         } catch (err){
             if (err && err instanceof AxiosError) {
-                setError(err.response?.data.message);
+                console.log("Error: ", err);
             }
             else if (err && err instanceof Error){
-                setError(err.message);
+                console.log("Error: ", err);
             }
-
-            console.log("Error: ", err);
         }
     }
   

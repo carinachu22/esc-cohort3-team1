@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 
 // Import React and hooks
-import { useAuthUser, useAuthHeader, useSignOut, useIsAuthenticated } from 'react-auth-kit';
+// import { useAuthUser, useAuthHeader, useSignOut, useIsAuthenticated } from 'react-auth-kit';
 
 
 // Import axios for http requests
@@ -45,13 +45,10 @@ Functionalities:
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
-import { useSignIn } from "react-auth-kit";
 
 
 const AccountManagement = () => {
   const navigate = useNavigate();
-  const [error, setError] = useState("");
-  const signIn = useSignIn();
   const [tenantAccounts, setTenantAccounts] = useState(null)
   const { onOpen, onClose, isOpen } = useDisclosure()
 
@@ -76,6 +73,7 @@ const AccountManagement = () => {
     //console.log(response)
     GetTenantAccounts();
     onClose();
+    return response
   }
 
   const GetTenantAccounts = () => {

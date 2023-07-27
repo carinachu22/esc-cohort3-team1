@@ -12,10 +12,8 @@ function CreateTicketPage() {
   const navigate = useNavigate();
   const token = useAuthHeader();
   const userDetails = useAuthUser();
-  const [error, setError] = useState('');
   const [tenantComment, setTenantComment] = useState('');
   const [ticketType, setTicketType] = useState('');
-  const [additionalHeading, setAdditionalHeading] = useState('');
   const toast = useToast();
 
   const handleCommentChange = (event) => {
@@ -26,14 +24,13 @@ function CreateTicketPage() {
     setTicketType(event.target.value);
   };
 
-  const handleAdditionalHeadingChange = (event) => {
-    setAdditionalHeading(event.target.value);
-  };
+  // const handleAdditionalHeadingChange = (event) => {
+  //   setAdditionalHeading(event.target.value);
+  // };
 
   const handleCreateTicket = async () => {
     console.log(tenantComment);
     console.log(token());
-    setError('');
 
     try {
       const config = {
@@ -47,7 +44,6 @@ function CreateTicketPage() {
         email: userDetails().email,
         request_type: ticketType,
         request_description: tenantComment,
-        additional_heading: additionalHeading,
         submitted_date_time:
           currentdate.getFullYear().toString() +
           '-' +
@@ -84,12 +80,12 @@ function CreateTicketPage() {
         });
     } catch (err) {
       if (err && err instanceof AxiosError) {
-        setError(err.response);
+        console.log('Error: ', err);
       } else if (err && err instanceof Error) {
-        setError(err.message);
+        console.log('Error: ', err);
       }
 
-      console.log('Error: ', err);
+      
     }
   };
 

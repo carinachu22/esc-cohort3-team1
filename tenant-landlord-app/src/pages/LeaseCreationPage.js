@@ -19,9 +19,6 @@ import {
 
 const LeaseCreationPage = () => {
     const navigate = useNavigate();
-    const [error, setError] = useState("");
-    const signIn = useSignIn();
-
     const validate = values => {
         let errors = {};
 
@@ -43,7 +40,6 @@ const LeaseCreationPage = () => {
 
     const onSubmit = async (values) => {
         console.log("Values: ", values);
-        setError("");
 
         try{
             const response = await axios.post(
@@ -59,13 +55,11 @@ const LeaseCreationPage = () => {
 
         } catch (err){
             if (err && err instanceof AxiosError) {
-                setError(err.response?.data.message);
+                console.log("Error: ", err);
             }
             else if (err && err instanceof Error){
-                setError(err.message);
+                console.log("Error: ", err);
             }
-
-            console.log("Error: ", err);
         }
     }
   

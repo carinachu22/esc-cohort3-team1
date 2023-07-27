@@ -17,7 +17,6 @@ import {
 
 const LandlordSignup = () => {
   const navigate = useNavigate();
-  const [error, setError] = useState("");
   const signIn = useSignIn();
 
   const [passwordShown, setPasswordShown] = useState(false);
@@ -43,7 +42,6 @@ const LandlordSignup = () => {
 
   const onSubmit = async (values) => {
     console.log("Values: ", values);
-    setError("");
 
     try{
         const response = await axios.post(
@@ -65,13 +63,11 @@ const LandlordSignup = () => {
 
     } catch (err){
         if (err && err instanceof AxiosError) {
-            setError(err.response?.data.message);
+            console.log("Error: ", err);
         }
         else if (err && err instanceof Error){
-            setError(err.message);
+            console.log("Error: ", err);
         }
-
-        console.log("Error: ", err);
     }
   }
 

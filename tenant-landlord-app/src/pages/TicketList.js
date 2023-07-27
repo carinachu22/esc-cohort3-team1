@@ -44,10 +44,7 @@ Functionalities:
 export default function TicketList() {
     // Initialise states and hooks
     const navigate = useNavigate();
-    const [error, setError] = useState("");
     const [tickets, setTickets] = useState(null);
-    const [ticketsHTML, setTicketsHTML] = useState(null);
-    const [isLoading, setLoading] = useState(true);
     const token = useAuthHeader();
     const authenticated = useIsAuthenticated();
     const userDetails = useAuthUser();
@@ -110,7 +107,7 @@ export default function TicketList() {
 
     // Initialise function for 1. Fetch all service tickets dependent on user type (tenant or landlord)
     const GetServiceTickets = (userDetails) => {
-        if (userDetails() == undefined){
+        if (userDetails() === undefined){
             return;
         }
         const type = userDetails().type;
@@ -119,7 +116,6 @@ export default function TicketList() {
     
         // Initialse function for fetching ALL service tickets if landlord is logged in
         const APIGetTickets = async (type) => {
-            setError("");
             //console.log('type',type)
             try{
                 const config = {
@@ -130,12 +126,12 @@ export default function TicketList() {
                         email: userDetails().email
                     }
                 }
-                if (type == 'landlord'){
+                if (type === 'landlord'){
                     response = await axios.get(
                         "http://localhost:5000/api/landlord/getTickets",
                         config
                     )
-                } else if (type == 'tenant'){ 
+                } else if (type === 'tenant'){ 
                     response = await axios.get(
                         "http://localhost:5000/api/tenant/getTickets",
                         config
@@ -146,12 +142,11 @@ export default function TicketList() {
                 return response.data.data;
             } catch (err){
                 if (err && err instanceof AxiosError) {
-                    setError(err.response);
+                    console.log("Error: ", err);
                 }
                 else if (err && err instanceof Error){
-                    setError(err.message);
+                    console.log("Error: ", err);
                 }
-                console.log("Error: ", err);
             }
         }
 
@@ -224,7 +219,7 @@ export default function TicketList() {
                         </Box>
                         </HStack>
                         <br></br>
-                        <Button onClick={() => {navigate('/pages/ViewTicketPage/');setSelectedTicket({['id']:ticket.service_request_id})}} bgColor='blue.500' color='white' _hover={{bg: 'blue.800'}}>
+                        <Button onClick={() => {navigate('/pages/ViewTicketPage/');setSelectedTicket({"id":ticket.service_request_id})}} bgColor='blue.500' color='white' _hover={{bg: 'blue.800'}}>
                             View Details & Actions
                         </Button>
                     </AccordionPanel>
@@ -232,9 +227,7 @@ export default function TicketList() {
                 </div>
             );
             // Update states to be accessed in return
-            setTicketsHTML(tickets_html);
             setFilteredTickets(tickets_html);
-            setLoading(false);
         })
     }
     const filterTickets = (tickets, status) => {
@@ -313,7 +306,7 @@ export default function TicketList() {
                     </Box>
                     </HStack>
                     <br></br>
-                    <Button onClick={() => {navigate('/pages/ViewTicketPage/');setSelectedTicket({['id']:ticket.service_request_id})}} bgColor='blue.500' color='white' _hover={{bg: 'blue.800'}}>
+                    <Button onClick={() => {navigate('/pages/ViewTicketPage/');setSelectedTicket({"id":ticket.service_request_id})}} bgColor='blue.500' color='white' _hover={{bg: 'blue.800'}}>
                         View Details & Actions
                     </Button>
                 </AccordionPanel>

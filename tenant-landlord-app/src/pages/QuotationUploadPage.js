@@ -22,7 +22,6 @@ import { useNavigate } from "react-router-dom";
 import NavigationBar from "../components/NavigationBar.js";
 
 const QuotationUpload = () => {
-  const [text, setText] = useState('');
   const [pdfUrl, setPdfUrl] = useState('');
   const { selectedTicket, setSelectedTicket } = useContext(SelectedTicketContext);
   const token = useAuthHeader();

@@ -34,9 +34,7 @@ Functionalities:
 **/
 export default function Dashboard() {
     // Initialise states and hooks
-    const [error, setError] = useState("");
     const [tickets, setTickets] = useState([]);
-    const [isLoading, setLoading] = useState(true);
     const [needAction, setNeedAction] = useState(0);
     const [waitAction, setWaitAction] = useState(0);
     const token = useAuthHeader();
@@ -49,7 +47,7 @@ export default function Dashboard() {
 
     // Initialise function for 1. Fetch all service tickets dependent on user type (tenant or landlord)
     const GetServiceTickets = (userDetails) => {
-        if (userDetails() == undefined){
+        if (userDetails() === undefined){
             return;
         }
         const type = userDetails().type;
@@ -57,8 +55,6 @@ export default function Dashboard() {
     
         // Initialse function for fetching ALL service tickets if landlord is logged in
         const APIGetTickets = async (type) => {
-            setError("");
-            //console.log('type',type)
             try{
                 const config = {
                     headers: {
@@ -68,12 +64,12 @@ export default function Dashboard() {
                         email: userDetails().email
                     }
                 }
-                if (type == 'landlord'){
+                if (type === 'landlord'){
                     response = await axios.get(
                         "http://localhost:5000/api/landlord/getTickets",
                         config
                     )
-                } else if (type == 'tenant'){ 
+                } else if (type === 'tenant'){ 
                     response = await axios.get(
                         "http://localhost:5000/api/tenant/getTickets",
                         config
@@ -84,12 +80,11 @@ export default function Dashboard() {
                 return response.data.data;
             } catch (err){
                 if (err && err instanceof AxiosError) {
-                    setError(err.response);
+                    console.log("Error: ", err);
                 }
                 else if (err && err instanceof Error){
-                    setError(err.message);
+                    console.log("Error: ", err);
                 }
-                console.log("Error: ", err);
             }
         }
 
@@ -104,14 +99,14 @@ export default function Dashboard() {
             if (result !== undefined){
                 for (let i=0;i<result.length;i++){
                     temp_tickets.push(result[i]);
-                    if (userDetails().type == 'tenant'){
+                    if (userDetails().type === 'tenant'){
                         if (tenant_need_action.includes(result[i].status)){
                             setNeedAction(needAction+1);
                         }
                         else if (tenant_wait_action.includes(result[i].status)){
                             setWaitAction(waitAction+1);
                         }
-                    } else if (userDetails().type == 'landlord'){
+                    } else if (userDetails().type === 'landlord'){
                         if (landlord_need_action.includes(result[i].status)){
                             setNeedAction(needAction+1);
                         }
@@ -124,7 +119,6 @@ export default function Dashboard() {
             }   
 
             // Update states to be accessed in return
-            setLoading(false);
         })
     }
 

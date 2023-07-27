@@ -9,7 +9,6 @@ import axios, { AxiosError } from 'axios';
 import { SelectedTicketContext } from '../components/SelectedTicketContext.js';
 
 function FeedbackForm() {
-  const [error, setError] = useState('');
   const {selectedTicket, setSelectedTicket} = useContext(SelectedTicketContext);
   const token = useAuthHeader();
   const navigate = useNavigate();
@@ -40,7 +39,6 @@ function FeedbackForm() {
   const APICloseTicket = async (data) => {
     console.log(token());
     console.log('VALUES', data);
-    setError('');
 
     try {
       const config = {
@@ -81,12 +79,10 @@ function FeedbackForm() {
       console.log(response3);
     } catch (err) {
       if (err && err instanceof AxiosError) {
-        setError(err.response);
+        console.log('Error: ', err);
       } else if (err && err instanceof Error) {
-        setError(err.message);
+        console.log('Error: ', err);
       }
-
-      console.log('Error: ', err);
     }
   };
 

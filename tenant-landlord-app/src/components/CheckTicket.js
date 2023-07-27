@@ -6,13 +6,19 @@ import React from "react"
 import { Box, Button, Textarea, useToast, Heading, Stack, Icon } from '@chakra-ui/react';
 import { IoIosStarOutline, IoIosStar } from 'react-icons/io/index.esm.js';
 
+/**
+ * Summary.
+ * Takes in a ticket and user details.
+ * Checks which buttons should be shown based on the two parameters above.
+ * Returns to function caller.
+ * 
+ * @param {*} ticket 
+ * @param {*} userDetails 
+ * @returns 
+ */
 export default function CheckTicket(ticket, userDetails){
     const id = ticket.service_request_id
     const status = ticket.status
-    console.log('ticket?',ticket)
-    console.log('id?',id)
-    console.log(status)
-    console.log('testing check ticket',userDetails())
     const navigate = useNavigate();
     const token = useAuthHeader();
     const toast = useToast();
@@ -152,7 +158,7 @@ export default function CheckTicket(ticket, userDetails){
     <Button
     variant="solid"
     colorScheme="blue"
-    onClick={() => {if (userDetails().type == 'landlord'){
+    onClick={() => {if (userDetails().type === 'landlord'){
       navigate('/pages/QuotationUploadPage')}
     else{
       navigate('/pages/QuotationPage')

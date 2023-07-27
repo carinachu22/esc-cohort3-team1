@@ -1,4 +1,5 @@
 import React, { useReducer, useEffect } from "react";
+import PropTypes from "prop-types"
 
 let reducer = (selectedTicket, newSelectedTicket) => {
   if (newSelectedTicket === null) {
@@ -15,6 +16,10 @@ const initialState = {
 const localState = JSON.parse(localStorage.getItem("selectedticket"));
 
 const SelectedTicketContext = React.createContext();
+
+SelectedTicketProvider.propTypes = {
+  children: PropTypes.object.isRequired
+};
 
 function SelectedTicketProvider(props) {
   const [selectedTicket, setSelectedTicket] = useReducer(reducer, localState || initialState);
