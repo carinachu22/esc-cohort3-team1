@@ -1,10 +1,15 @@
 // Import react-bootstrap components
 
+import { Navigate } from 'react-router-dom';
+import styles from "../styles/dashboard.module.css";
 import { useEffect } from 'react';
+import Popup from 'reactjs-popup';
 
 // Import React and hooks
-// import { useAuthUser, useAuthHeader, useSignOut, useIsAuthenticated } from 'react-auth-kit';
+import { useAuthUser, useAuthHeader, useSignOut, useIsAuthenticated } from 'react-auth-kit';
 
+// Import bootstrap for automatic styling
+import "bootstrap/dist/css/bootstrap.min.css";
 
 // Import axios for http requests
 import NavigationBar from '../components/NavigationBar.js';
@@ -15,12 +20,17 @@ import { Accordion,
     TableContainer, 
     Table,
     Thead,
+    Tbody,
+    Tfoot,
     Tr,
     Th,
+    Td,
     Button,
     Box, 
     AccordionIcon, 
     HStack,
+    Flex, 
+    Icon,
     Popover,
     PopoverTrigger,
     PopoverContent,
@@ -29,9 +39,13 @@ import { Accordion,
     PopoverFooter,
     PopoverArrow,
     PopoverCloseButton,
+    PopoverAnchor,
     ButtonGroup,
     useDisclosure,
-    IconButton, } from '@chakra-ui/react';
+    IconButton,
+    FocusLock, 
+    useBoolean,
+    FormControl} from '@chakra-ui/react';
 
 import { DeleteIcon } from '@chakra-ui/icons'
 
@@ -43,18 +57,29 @@ Functionalities:
 3. Display selected service ticket details on the right when clicked 
 **/
 import React, { useState } from "react";
-import axios from "axios";
-import { useNavigate } from 'react-router-dom';
+// import TableStyles from "../styles/signup_form_landlord.module.css";
+import TableStyles from "../styles/account_management.module.css";
+import PasswordStyles from "../styles/usePasswordToggle.module.css";
+import "bootstrap/dist/css/bootstrap.min.css";
+import {useNavigate} from 'react-router-dom';
+import {Form, useFormik} from "formik";
+import axios, {AxiosError} from "axios";
+import {useSignIn} from "react-auth-kit";
 
 
 const AccountManagement = () => {
   const navigate = useNavigate();
+  const [error, setError] = useState("");
+  const signIn = useSignIn();
   const [tenantAccounts, setTenantAccounts] = useState(null)
-  const { onOpen, onClose, isOpen } = useDisclosure()
+  const { onOpen: onOpen, onClose: onClose, isOpen: isOpen } = useDisclosure();
+  const [isVisible, setIsVisible] = React.useState(true);
+
 
   const navigateToTenantCreationPage = () => {
     navigate('/pages/TenantCreationPage');
   }
+
 
 
 
@@ -73,7 +98,18 @@ const AccountManagement = () => {
     //console.log(response)
     GetTenantAccounts();
     onClose();
-    return response
+  }
+
+
+  const APIDeleteTenantByEmail = async (email) => {
+    const response = await axios.patch(
+        "http://localhost:5000/api/landlord/deleteTenantByEmail",
+        {email, }
+    )
+    console.log(email);
+    GetTenantAccounts();
+    console.log("bye");
+
   }
 
   const GetTenantAccounts = () => {
@@ -100,10 +136,24 @@ const AccountManagement = () => {
               {account.email}
               </Box>
               <Box textAlign='left' width='34vw'>
-              {"Date Created"}
+              {account.public_building_id}
               </Box>
               </HStack>
               <AccordionIcon width='2.3vw'/>
+              <Box width='2.3vw' >
+                <Popup trigger={<IconButton size='sm' icon={<DeleteIcon />} />} position="left center">
+                  <FormControl>
+                    <Button 
+                      onClick={() => APIDeleteTenantByEmail(account.email)}
+                      
+                      colorScheme='red'
+                      >
+                      confirm?
+                    </Button>
+                  </FormControl>
+                </Popup>
+              </Box>
+
           </AccordionButton>
           <AccordionPanel>
               <HStack spacing='24vw'>
@@ -121,13 +171,11 @@ const AccountManagement = () => {
     setTenantAccounts(tenant_html) 
   })}
 
+
   useEffect(() => {
     GetTenantAccounts()},
     [])
 
-  
-
-    
   return (
     <>
     {NavigationBar()}
@@ -147,10 +195,10 @@ const AccountManagement = () => {
         <Table variant='simple'>
         <Thead margin={0}>
             <Tr>
-                <Th width="16vw" textAlign='left' paddingRight={0} > ID </Th>
-                <Th width='30vw' textAlign='left' paddingRight={0} paddingLeft={0}> Tenant </Th>
-                <Th width='33vw' textAlign='left' paddingRight={0} paddingLeft={0}>Date Created</Th>
-                <Th width='2.5vw' alignItems="center" paddingRight={0} paddingLeft={0}>
+                <Th width="15vw" textAlign='left' paddingRight={0} > ID </Th>
+                <Th width='31vw' textAlign='left' paddingRight={0} paddingLeft={0}> Tenant </Th>
+                <Th width='35vw' textAlign='left' paddingRight={0} paddingLeft={0}>Building ID</Th>
+                <Th width='2.5vw' alignItems="center" paddingRight={0} paddingLeft={0} >
                   <Popover
                     isOpen={isOpen}
                     onOpen={onOpen}
@@ -161,7 +209,7 @@ const AccountManagement = () => {
                     <PopoverTrigger >
                       <IconButton size='sm' icon={<DeleteIcon />} />
                     </PopoverTrigger>
-                    <PopoverContent>
+                    <PopoverContent >
                       <PopoverHeader fontWeight='semibold'>Confirmation</PopoverHeader>
                       <PopoverArrow />
                       <PopoverCloseButton />

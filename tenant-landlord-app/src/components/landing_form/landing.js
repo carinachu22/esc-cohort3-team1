@@ -1,13 +1,24 @@
 import styles from "../../styles/landing.module.css";
-import React from 'react'
+import "bootstrap/dist/css/bootstrap.min.css";
+import React from "react";
 
 import {useNavigate} from 'react-router-dom';
 import {
   Box,
   Button,
+  Checkbox,
   Flex,
+  FormControl,
+  FormLabel,
+  Input,
+  InputGroup,
+  InputRightElement,
   VStack,
-  Heading
+  Heading,
+  Center,
+  Text,
+  FormHelperText,
+  FormErrorMessage,
 } from "@chakra-ui/react";
 
 const Landing = () => {

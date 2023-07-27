@@ -86,24 +86,6 @@ export const getTicketsByTenant = (email, callBack) => {
   );
 };
 
-// Temp Fix
-export const getTicketById = (id, callBack) => {
-  pool.query(
-    `
-    SELECT * FROM SERVICE_REQUEST
-    WHERE service_request_id = ?
-    `,
-    [id],
-    (error, results, fields) => {
-      if (error) {
-        callBack(error);
-      } else {
-        callBack(null, results[0]);
-      }
-    }
-  );
-};
-
 /**
  * Get Tickets by Status
  * @param {*} email 
@@ -130,30 +112,30 @@ export const getTicketsByStatus = (email, status, callBack) => {
 
 /**
  * Ticket Creation
- * @param {*} data name, email, request_type, request_description, submitted_date_time(Date Type)
+ * @param {*} data public_service_request_id (eg. 2023-01-01 00:00:00), name, email, request_type, request_description, quptation_path, submitted_date_time(Date Type)
  * @param {*} callBack 
  */
 export const createTicket = (data, callBack) => {
   const status = "tenant_ticket_created";
   const feedback_rating = null;
   const feedback_text = null;
-  const public_service_request_id = data.submitted_date_time;
   pool.query(
     `
     INSERT INTO service_request
-    (name, email, request_type, request_description, submitted_date_time, status, feedback_rating, feedback_text, public_service_request_id)
-    VALUES (?,?,?,?,?,?,?,?,?)
+    (public_service_request_id, name, email, request_type, request_description, quotation_path, submitted_date_time, status, feedback_rating, feedback_text)
+    VALUES (?,?,?,?,?,?,?,?,?,?)
     `,
     [
+      data.public_service_request_id,
       data.name,
       data.email,
       data.request_type,
       data.request_description,
+      data.quotation_path,
       data.submitted_date_time,
       status,
       feedback_rating,
-      feedback_text,
-      public_service_request_id
+      feedback_text
     ],
     (error, results, fields) => {
       if (error) {
@@ -200,7 +182,7 @@ export const quotationApproval = (id, status, callBack) => {
  * @param {int} data feedback_rating
  * @param {*} callBack 
  */
-export const addFeedbackRating = (id, data, callBack) => {
+export const addFeedbackRating = (id, feedback_rating, callBack) => {
   pool.query (
     `
     UPDATE service_request
@@ -208,7 +190,7 @@ export const addFeedbackRating = (id, data, callBack) => {
     WHERE service_request_id = ?
     `,
     [
-      data.feedback_rating, id
+      feedback_rating, id
     ],
     (error, results, fields) => {
       if (error) {
