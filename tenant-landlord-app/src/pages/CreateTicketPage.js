@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Box, Text, Button, Heading, Textarea, FormControl, FormLabel, Input, useToast } from '@chakra-ui/react';
+import { Box, Button, Heading, Textarea, useToast } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthUser, useAuthHeader } from 'react-auth-kit';
 import { Formik, Form,useFormik } from 'formik';
-import axios, {AxiosError} from "axios";
+import axios, { AxiosError } from "axios";
 import NavigationBar from '../components/NavigationBar.js';
 
 

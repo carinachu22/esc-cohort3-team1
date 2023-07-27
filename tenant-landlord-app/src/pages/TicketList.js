@@ -1,9 +1,8 @@
 import { useNavigate, Navigate } from 'react-router-dom';
-import styles from "../styles/dashboard.module.css";
 
 // Import React and hooks
 import React, { useEffect, useState, useContext } from "react";
-import { useAuthUser, useAuthHeader, useSignOut, useIsAuthenticated } from 'react-auth-kit';
+import { useAuthUser, useAuthHeader, useIsAuthenticated } from 'react-auth-kit';
 
 // Import bootstrap for automatic styling
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -13,15 +12,10 @@ import axios, {AxiosError} from "axios";
 import NavigationBar from '../components/NavigationBar.js';
 import { Accordion, AccordionButton, AccordionItem, AccordionPanel, TableContainer, Table,
     Thead,
-    Tbody,
-    Tfoot,
     Tr,
     Th,
-    Td,
-    TableCaption,
 Box, AccordionIcon, HStack, Button,
     Step,
-    StepDescription,
     StepIcon,
     StepIndicator,
     StepNumber,
@@ -29,7 +23,6 @@ Box, AccordionIcon, HStack, Button,
     StepStatus,
     StepTitle,
     Stepper,
-    useSteps,
     Select,
     Input,
     InputGroup,

@@ -1,9 +1,9 @@
 import axios from "axios";
 import { useAuthHeader } from "react-auth-kit";
 import { useNavigate } from "react-router-dom"
+import React from "react"
 
-import { Box, Button, Text, Textarea, useToast, IconButton, Heading, Stack, Icon } from '@chakra-ui/react';
-import { StarIcon } from '@chakra-ui/icons';
+import { Box, Button, Textarea, useToast, Heading, Stack, Icon } from '@chakra-ui/react';
 import { IoIosStarOutline, IoIosStar } from 'react-icons/io/index.esm.js';
 
 export default function CheckTicket(ticket, userDetails){

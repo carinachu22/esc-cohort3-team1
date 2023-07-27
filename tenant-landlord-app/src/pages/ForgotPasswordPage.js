@@ -1,6 +1,5 @@
-import React, { useState, Component } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
-import {setIn, useFormik} from "formik";
+import React, { useState } from "react";
+import { useFormik } from "formik";
 import axios, {AxiosError} from "axios";
 import { useLocation } from "react-router-dom";
 

@@ -1,11 +1,10 @@
 // Import react-bootstrap components
 
 import { Navigate } from 'react-router-dom';
-import styles from "../styles/dashboard.module.css";
 
 // Import React and hooks
 import React, { useEffect, useState } from "react";
-import { useAuthUser, useAuthHeader, useSignOut, useIsAuthenticated } from 'react-auth-kit';
+import { useAuthUser, useAuthHeader, useIsAuthenticated } from 'react-auth-kit';
 
 // Import bootstrap for automatic styling
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -13,15 +12,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 // Import axios for http requests
 import axios, {AxiosError} from "axios";
 import NavigationBar from '../components/NavigationBar.js';
-import { Accordion, AccordionButton, AccordionItem, AccordionPanel, TableContainer, Table,
-    Thead,
-    Tbody,
-    Tfoot,
-    Tr,
-    Th,
-    Td,
-    TableCaption,
-Box, AccordionIcon, HStack, Card, CardBody, Spacer, Flex } from '@chakra-ui/react';
+import { Box, Flex } from '@chakra-ui/react';
 
 import {
     chakra,
@@ -31,12 +22,8 @@ import {
     StatNumber,
     useColorModeValue,
   } from '@chakra-ui/react'
-  import { ReactNode } from 'react'
-  import { BsPerson } from 'react-icons/bs/index.esm.js'
-  import { FiServer } from 'react-icons/fi/index.esm.js'
-  import { GoLocation } from 'react-icons/go/index.esm.js'
-  import { AiFillInfoCircle, AiFillClockCircle } from "react-icons/ai/index.esm.js";
-  import { BiSolidError } from "react-icons/bi/index.esm.js";
+import { AiFillInfoCircle, AiFillClockCircle } from "react-icons/ai/index.esm.js";
+import { BiSolidError } from "react-icons/bi/index.esm.js";
 
 /**
 Functional component to display service ticket list

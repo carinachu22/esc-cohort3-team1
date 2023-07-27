@@ -1,19 +1,15 @@
 import React, { useState } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
-import {Link} from 'react-router-dom';
-import {useNavigate} from 'react-router-dom';
-import {setIn, useFormik} from "formik";
-import axios, {AxiosError} from "axios";
-import {useSignIn} from "react-auth-kit";
+import { useNavigate } from 'react-router-dom';
+import { useFormik } from "formik";
+import axios, { AxiosError } from "axios";
+import { useSignIn } from "react-auth-kit";
 import NavigationBar from '../components/NavigationBar.js';
 
 import {
     Box,
     Button,
-    Checkbox,
     Flex,
     FormControl,
-    FormLabel,
     Input,
     InputGroup,
     InputRightElement,

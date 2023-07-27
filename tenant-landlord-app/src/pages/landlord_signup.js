@@ -1,27 +1,18 @@
 import React, { useState } from "react";
-import SignupStyles from "../styles/signup_form_landlord.module.css";
-import PasswordStyles from "../styles/usePasswordToggle.module.css";
-import "bootstrap/dist/css/bootstrap.min.css";
-import {useNavigate} from 'react-router-dom';
-import {useFormik} from "formik";
-import axios, {AxiosError} from "axios";
-import {useSignIn} from "react-auth-kit";
+import { useNavigate } from 'react-router-dom';
+import { useFormik } from "formik";
+import axios, { AxiosError } from "axios";
+import { useSignIn } from "react-auth-kit";
 import {
   Box,
   Button,
-  Checkbox,
   Flex,
   FormControl,
-  FormLabel,
   Input,
   InputGroup,
   InputRightElement,
   VStack,
-  Heading,
-  Center,
-  Text,
-  FormHelperText,
-  FormErrorMessage,
+  Heading
 } from "@chakra-ui/react";
 
 const LandlordSignup = () => {

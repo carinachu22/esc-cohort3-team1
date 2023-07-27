@@ -1,9 +1,8 @@
 import React, { useState, useContext } from 'react';
-import { Box, Button, Text, Textarea, useToast, IconButton, Heading, Stack, Icon } from '@chakra-ui/react';
-import { StarIcon } from '@chakra-ui/icons';
+import { Box, Button, Textarea, useToast, Heading, Stack, Icon } from '@chakra-ui/react';
 import { IoIosStarOutline, IoIosStar } from 'react-icons/io/index.esm.js';
-import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
-import { useAuthUser, useAuthHeader } from 'react-auth-kit';
+import { useNavigate } from 'react-router-dom';
+import { useAuthHeader }from 'react-auth-kit';
 import { useFormik } from 'formik';
 import axios, { AxiosError } from 'axios';
 
