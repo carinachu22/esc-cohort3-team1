@@ -1,14 +1,10 @@
 // Import react-bootstrap components
 
-import { Navigate } from 'react-router-dom';
-import styles from "../styles/dashboard.module.css";
 import { useEffect } from 'react';
 
 // Import React and hooks
 import { useAuthUser, useAuthHeader, useSignOut, useIsAuthenticated } from 'react-auth-kit';
 
-// Import bootstrap for automatic styling
-import "bootstrap/dist/css/bootstrap.min.css";
 
 // Import axios for http requests
 import NavigationBar from '../components/NavigationBar.js';
@@ -19,17 +15,12 @@ import { Accordion,
     TableContainer, 
     Table,
     Thead,
-    Tbody,
-    Tfoot,
     Tr,
     Th,
-    Td,
     Button,
     Box, 
     AccordionIcon, 
     HStack,
-    Flex, 
-    Icon,
     Popover,
     PopoverTrigger,
     PopoverContent,
@@ -38,11 +29,9 @@ import { Accordion,
     PopoverFooter,
     PopoverArrow,
     PopoverCloseButton,
-    PopoverAnchor,
     ButtonGroup,
     useDisclosure,
-    IconButton,
-    FocusLock, } from '@chakra-ui/react';
+    IconButton, } from '@chakra-ui/react';
 
 import { DeleteIcon } from '@chakra-ui/icons'
 
@@ -54,14 +43,9 @@ Functionalities:
 3. Display selected service ticket details on the right when clicked 
 **/
 import React, { useState } from "react";
-// import TableStyles from "../styles/signup_form_landlord.module.css";
-import TableStyles from "../styles/account_management.module.css";
-import PasswordStyles from "../styles/usePasswordToggle.module.css";
-import "bootstrap/dist/css/bootstrap.min.css";
-import {useNavigate} from 'react-router-dom';
-import {useFormik} from "formik";
-import axios, {AxiosError} from "axios";
-import {useSignIn} from "react-auth-kit";
+import axios from "axios";
+import { useNavigate } from 'react-router-dom';
+import { useSignIn } from "react-auth-kit";
 
 
 const AccountManagement = () => {
