@@ -343,8 +343,8 @@ export const controllerGetTickets = (req, res) => {
 };
 
 /**
- * Gets ticket by service_request_id
- * @param {*} req service_request_id
+ * Gets ticket by public_service_request_id(YYYY-MM-DD 00:00:00)
+ * @param {*} req 
  * @param {*} res 
  */
 export const controllerGetTicketById = (req, res) => {
@@ -369,8 +369,8 @@ export const controllerGetTicketById = (req, res) => {
 };
 
 /**
- * Get Tickets by status
- * @param {*} req status
+ * Get Tickets by status, status in params
+ * @param {*} req 
  * @param {*} res 
  */
 export const controllerGetTicketsByStatus = (req, res) => {
@@ -395,8 +395,8 @@ export const controllerGetTicketsByStatus = (req, res) => {
 };
 
 /**
- * Landlord updates quotation
- * @param {*} req service_request_id, quotation_amount(float, 2dp), status
+ * Landlord updates quotation. params: public_service_request_id (YYYY-MM-DD 00:00:00)
+ * @param {*} req  status
  * @param {*} res 
  */
 export const controllerUpdateQuotation = (req, res) => {
@@ -503,6 +503,11 @@ export const controllerGetQuotation = (req, res) => {
   });
 };
 
+/**
+ * Ticket Approval, public_service_request_id (YYYY-MM-DD 00:00:00) in params
+ * @param {*} req 
+ * @param {*} res 
+ */
 export const controllerTicketApproval = (req, res) => {
   const id = req.params.id;
   const body = req.body;
@@ -531,6 +536,11 @@ export const controllerTicketApproval = (req, res) => {
   })
 }
 
+/**
+ * params: public_service_request_id (YYYY-MM-DD 00:00:00)
+ * @param {*} req 
+ * @param {*} res 
+ */
 export const controllerTicketWork = (req, res) => {
   const id = req.params.id;
   const body = req.body;

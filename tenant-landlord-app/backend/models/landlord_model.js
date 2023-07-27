@@ -206,15 +206,15 @@ export const getTickets = (callBack) => {
 };
 
 /**
- * Gets tickets by service_request_id
- * @param {*} id service_request_id
+ * Gets tickets by public_service_request_id
+ * @param {*} id public_service_request_id (YYYY-MM-DD 00:00:00)
  * @param {*} callBack 
  */
 export const getTicketById = (id, callBack) => {
   pool.query(
     `
     SELECT * FROM SERVICE_REQUEST
-    WHERE service_request_id = ?
+    WHERE public_service_request_id = ?
     `,
     [id],
     (error, results, fields) => {
@@ -251,20 +251,20 @@ export const getTicketsByStatus = (status, callBack) => {
 
 /**
  * Update quotation
- * @param {*} id service_request_id
- * @param {*} data quotation amount(float to 2dp), status(string)
+ * @param {*} id public_service_request_id (YYYY-MM-DD 00:00:00)
+ * @param {*} data  status(string)
  * @param {*} callBack 
  */
 export const updateQuotation = (id, data, callBack) => {
-  const quotationAmount = parseFloat(data.quotation_amount).toFixed(2); //Note this is impt to format it to decimal
   const status = "quotation sent";
+  console.log("id", id)
   pool.query(
     `
     UPDATE SERVICE_REQUEST
-    SET quotation_amount=?, status = ?
-    WHERE service_request_id = ?
+    SET  status = ?
+    WHERE public_service_request_id = ?
     `,
-    [quotationAmount, status, id],
+    [status, id],
     (error, results, fields) => {
       if (error) {
         callBack(error);
@@ -275,14 +275,18 @@ export const updateQuotation = (id, data, callBack) => {
   );
 };
 
-//upload quotation's path in the file system
+/**
+ * upload quotation's path in the file system
+ * @param {*} param0 filepath, public_service_request_id (YYYY-MM-DD 00:00:00)
+ * @param {*} callBack 
+ */
 export const uploadQuotation = ({filepath, id}, callBack) => {
   pool.query(
     `
     UPDATE service_request
     SET quotation_path = ?,
     status = ?
-    WHERE service_request_id = ?
+    WHERE public_service_request_id = ?
     `,
     [
       filepath,
@@ -300,13 +304,17 @@ export const uploadQuotation = ({filepath, id}, callBack) => {
 }
 
 
-//get the quotation path of a specific service request 
+/**
+ * get the quotation path of a specific service request 
+ * @param {*} id public_service_request_id (YYYY-MM-DD 00:00:00)
+ * @param {*} callBack 
+ */
 export const getQuotationPath = (id, callBack) => {
   pool.query(
     `
     SELECT quotation_path
     FROM service_request
-    WHERE service_request_id = ?
+    WHERE public_service_request_id = ?
     `,
     [
       id
@@ -340,12 +348,20 @@ export const getQuotation = (filepath, callBack) => {
   );
 }
 
+
+/**
+ * 
+ * @param {*} id public_service_request_id (YYYY-MM-DD 00:00:00)
+ * @param {*} data 
+ * @param {*} status 
+ * @param {*} callBack 
+ */
 export const ticketApproval = (id, data, status, callBack) => {
   pool.query(
     `
     UPDATE service_request
     SET status = ?
-    WHERE service_request_id = ?
+    WHERE public_service_request_id = ?
     `,
     [
       status,
@@ -361,12 +377,20 @@ export const ticketApproval = (id, data, status, callBack) => {
   )
 };
 
+
+/**
+ * 
+ * @param {*} id public_service_request_id (YYYY-MM-DD 00:00:00)
+ * @param {*} data 
+ * @param {*} status 
+ * @param {*} callBack 
+ */
 export const ticketWork = (id, data, status, callBack) => {
   pool.query(
     `
     UPDATE service_request
     SET status = ?
-    WHERE service_request_id = ?
+    WHERE public_service_request_id = ?
     `,
     [
       status,
@@ -381,6 +405,7 @@ export const ticketWork = (id, data, status, callBack) => {
     }
   )
 };
+
 
 /**
  * get tenant accounts by building id
