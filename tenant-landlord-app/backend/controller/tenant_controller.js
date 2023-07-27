@@ -250,7 +250,7 @@ export const controllerGetTicketsByStatus = (req, res) => {
 
 /**
  * Get Quotation Approved
- * @param {*} req service_ticket_id, quotation_accepted_by_tenant == 0/1
+ * @param {*} req public_service_request_id (YYYY-MM-DD 00:00:00), quotation_accepted_by_tenant == 0/1
  * @param {*} res 
  */
 export const controllerQuotationApproval = (req, res) => {
@@ -283,7 +283,7 @@ export const controllerQuotationApproval = (req, res) => {
 
 /**
  * Add Feedback Rating
- * @param {*} req service_request_id, feedback_rating(int, between 1-5)
+ * @param {*} req public_service_request_id (YYYY-MM-DD 00:00:00), feedback_rating(int, between 1-5)
  * @param {*} res 
  */
 export const controllerAddFeedbackRating = (req, res) => {
@@ -307,7 +307,7 @@ export const controllerAddFeedbackRating = (req, res) => {
 
 /**
  * Add Feedback Text
- * @param {*} req service_request_id, feedback_test
+ * @param {*} req public_service_request_id (YYYY-MM-DD 00:00:00), feedback_text
  * @param {*} res 
  */
  export const controllerAddFeedbackText = (req, res) => {
@@ -331,7 +331,7 @@ export const controllerAddFeedbackRating = (req, res) => {
 
 /**
  * Update Close Ticket Status
- * @param {*} req service_request_id, status == "close"
+ * @param {*} req public_service_request_id (YYYY-MM-DD 00:00:00), status == "close"
  * @param {*} res 
  */
 export const controllerCloseTicketStatus = (req, res) => {

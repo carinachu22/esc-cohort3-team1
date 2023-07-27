@@ -150,7 +150,7 @@ export const createTicket = (data, callBack) => {
 
 /**
  * Tenant can approve quotation from landlord
- * @param {int} id service_ticket_id
+ * @param {int} id public_service_request_id (YYYY-MM-DD 00:00:00)
  * @param {*} data 
  * @param {string} status updated status
  * @param {*} callBack 
@@ -160,7 +160,7 @@ export const quotationApproval = (id, status, callBack) => {
     `
     UPDATE service_request
     SET status = ?
-    WHERE service_request_id = ?
+    WHERE public_service_request_id = ?
     `,
     [
       status,
@@ -178,7 +178,7 @@ export const quotationApproval = (id, status, callBack) => {
 
 /**
  * Adds feedback rating to feedback_rating
- * @param {int} id service_ticket_id
+ * @param {int} id public_service_request_id (YYYY-MM-DD 00:00:00)
  * @param {int} data feedback_rating
  * @param {*} callBack 
  */
@@ -187,7 +187,7 @@ export const addFeedbackRating = (id, feedback_rating, callBack) => {
     `
     UPDATE service_request
     SET feedback_rating = ?
-    WHERE service_request_id = ?
+    WHERE public_service_request_id = ?
     `,
     [
       feedback_rating, id
@@ -204,7 +204,7 @@ export const addFeedbackRating = (id, feedback_rating, callBack) => {
 
 /**
  * Adds feedback text to feedback_text
- * @param {int} id service_ticket_id
+ * @param {int} id public_service_request_id (YYYY-MM-DD 00:00:00)
  * @param {string} data feedback_text
  * @param {*} callBack 
  */
@@ -213,7 +213,7 @@ export const addFeedbackText = (id, data, callBack) => {
     `
     UPDATE service_request
     SET feedback_text = ?
-    WHERE service_request_id = ?
+    WHERE public_service_request_id = ?
     `,
     [
       data.feedback_text, id
@@ -230,7 +230,7 @@ export const addFeedbackText = (id, data, callBack) => {
 
 /**
  * Change ticket's status to close
- * @param {int} id service_request_id
+ * @param {int} id public_service_request_id (YYYY-MM-DD 00:00:00)
  * @param {string} data status to close
  * @param {*} callBack 
  */
@@ -239,7 +239,7 @@ export const closeTicketStatus = (id, data, callBack) => {
     `
     UPDATE service_request
     SET status = ?
-    WHERE service_request_id = ?
+    WHERE public_service_request_id = ?
     `,
     [
       data, id
