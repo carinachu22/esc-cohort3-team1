@@ -382,10 +382,16 @@ export const ticketWork = (id, data, status, callBack) => {
   )
 };
 
+/**
+ * get tenant accounts by building id
+ * @param {*} public_building_id 
+ * @param {*} callBack 
+ */
 export const getTenantAccounts = (callBack) => {
   pool.query(
     `
-    SELECT * FROM TENANT_USER`,
+    SELECT * 
+    FROM TENANT_USER`,
     (error, results, fields) => {
       if (error) {
         callBack(error);
@@ -394,6 +400,8 @@ export const getTenantAccounts = (callBack) => {
     }
   );
 };
+
+
 
 
 //upload quotation's path in the file system
