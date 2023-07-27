@@ -390,7 +390,7 @@ export const ticketWork = (id, data, status, callBack) => {
     `
     UPDATE service_request
     SET status = ?
-    WHERE service_request_id = ?
+    WHERE public_service_request_id = ?
     `,
     [
       status,
