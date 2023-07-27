@@ -1,5 +1,7 @@
 import {pool} from "../config/database.js";
 
+const statuses = ["tenant_ticket_created", "landlord_ticket_rejected", "landlord_ticket_approved", "landlord_quotation_sent", "ticket_quotation_rejected", "ticket_quotation_approved ", "landlord_started_work", "landlord_completed_work", "tenant_feedback_given", "landlord_ticket _closed"]
+
 /**
  * Create landlord account
  * @param {*} data email, password(unhashed), ticket_type
@@ -42,7 +44,7 @@ export const getLandlordByEmail = (email, callBack) => {
       if (error) {
         callBack(error);
       } else {
-        callBack(null, results[0]);
+        callBack(null, results);
       }
     }
   );
@@ -234,20 +236,24 @@ export const getTicketById = (id, callBack) => {
  * @param {*} callBack 
  */
 export const getTicketsByStatus = (status, callBack) => {
-  pool.query(
-    `
-    SELECT * FROM SERVICE_REQUEST
-    WHERE status = ?
-    `,
-    [status],
-    (error, results, fields) => {
-      if (error) {
-        callBack(error);
-      } else {
-        callBack(null, results);
+  if (statuses.includes(status)) {
+    pool.query(
+      `
+      SELECT * FROM SERVICE_REQUEST
+      WHERE status = ?
+      `,
+      [status],
+      (error, results, fields) => {
+        if (error) {
+          callBack(error);
+        } else {
+          callBack(null, results);
+        }
       }
-    }
-  );
+    );
+  } else {
+    callBack("invalid status")
+  }
 };
 
 /**
@@ -258,22 +264,26 @@ export const getTicketsByStatus = (status, callBack) => {
  */
 export const updateQuotation = (id, data, callBack) => {
   const quotationAmount = parseFloat(data.quotation_amount).toFixed(2); //Note this is impt to format it to decimal
-  const status = "quotation sent";
-  pool.query(
-    `
-    UPDATE SERVICE_REQUEST
-    SET quotation_amount=?, status = ?
-    WHERE service_request_id = ?
-    `,
-    [quotationAmount, status, id],
-    (error, results, fields) => {
-      if (error) {
-        callBack(error);
-      } else {
-        callBack(null, results);
+  const status = "landlord_quotation_sent";
+  if (statuses.includes(status)) {
+    pool.query(
+      `
+      UPDATE SERVICE_REQUEST
+      SET quotation_amount=?, status = ?
+      WHERE service_request_id = ?
+      `,
+      [quotationAmount, status, id],
+      (error, results, fields) => {
+        if (error) {
+          callBack(error);
+        } else {
+          callBack(null, results);
+        }
       }
-    }
-  );
+    );
+  } else {
+    callBack("invalid status")
+  }
 };
 
 //upload quotation's path in the file system
@@ -342,45 +352,53 @@ export const getQuotation = (filepath, callBack) => {
 }
 
 export const ticketApproval = (id, data, status, callBack) => {
-  pool.query(
-    `
-    UPDATE service_request
-    SET status = ?
-    WHERE service_request_id = ?
-    `,
-    [
-      status,
-      id
-    ],
-    (error, results, fields) => {
-      if (error) {
-        callBack(error);
-      } else {
-        callBack(null,results);
+  if (statuses.includes(status)) {
+    pool.query(
+      `
+      UPDATE service_request
+      SET status = ?
+      WHERE service_request_id = ?
+      `,
+      [
+        status,
+        id
+      ],
+      (error, results, fields) => {
+        if (error) {
+          callBack(error);
+        } else {
+          callBack(null,results);
+        }
       }
-    }
-  )
+    )
+  } else {
+    callBack("invalid status")
+  }
 };
 
 export const ticketWork = (id, data, status, callBack) => {
-  pool.query(
-    `
-    UPDATE service_request
-    SET status = ?
-    WHERE service_request_id = ?
-    `,
-    [
-      status,
-      id
-    ],
-    (error, results, fields) => {
-      if (error) {
-        callBack(error);
-      } else {
-        callBack(null,results);
+  if (statuses.includes(status)) {
+    pool.query(
+      `
+      UPDATE service_request
+      SET status = ?
+      WHERE service_request_id = ?
+      `,
+      [
+        status,
+        id
+      ],
+      (error, results, fields) => {
+        if (error) {
+          callBack(error);
+        } else {
+          callBack(null,results);
+        }
       }
-    }
-  )
+    )
+  } else {
+    callBack("invalid status")
+  }
 };
 
 export const getTenantAccounts = (callBack) => {
