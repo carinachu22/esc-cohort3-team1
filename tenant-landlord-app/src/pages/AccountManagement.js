@@ -176,8 +176,6 @@ const AccountManagement = () => {
     GetTenantAccounts()},
     [])
 
-
-
   return (
     <>
     {NavigationBar()}
@@ -223,8 +221,6 @@ const AccountManagement = () => {
                           <Button variant='outline' onClick={onClose}>Cancel</Button>
                           <Button colorScheme='red' onClick={APIDeleteAllTenants} >Confirm</Button>
                         </ButtonGroup>
-
-
                       </PopoverFooter>
                     </PopoverContent>
                   </Popover>
