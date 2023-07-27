@@ -465,6 +465,7 @@ export const getLeaseByLandlord = (id, callBack) => {
       b.postal_code, 
       b.public_building_id, 
       l.public_lease_id,
+      l.pdf_path,
       land.email AS landlord_email,
       t.email AS tenant_email
     FROM lease l
