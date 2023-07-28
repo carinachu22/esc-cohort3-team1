@@ -117,7 +117,12 @@ export const controllerLoginLandlord = (req, res) => {
 };
 
 
-
+/**
+ * Verify that the landlord account exist in the database through their email,
+ * then send the link to their email which will direct them to the reset-password page
+ * @param {*} req email
+ * @param {*} res 
+ */
 export const controllerForgotPasswordLandlord = (req, res) => {
   const body = req.body;
   console.log(body.email);
@@ -131,7 +136,9 @@ export const controllerForgotPasswordLandlord = (req, res) => {
         message: "User does not exist!",
       });
     }
+    //creating the secret key for json token
     const secret = process.env.JWT_SECRET + results.password;
+    //creating the signature of json token
     const jsontoken = jwt.sign({email: results.email, id: results.landlord_user_id}, secret, {expiresIn: 300});
     const link = `http://localhost:5000/api/landlord/reset-password/${results.landlord_user_id}/${jsontoken}`;
 
@@ -170,6 +177,11 @@ export const controllerForgotPasswordLandlord = (req, res) => {
   });
 };
 
+/**
+ * Render the reset-password page. Details of landlord is obtained through their id
+ * @param {*} req id and jsontoken
+ * @param {*} res 
+ */
 export const controllerResetPasswordPageLandlord = async (req, res) => {
   const {id, jsontoken} = req.params;
   console.log(req.params);
@@ -184,8 +196,10 @@ export const controllerResetPasswordPageLandlord = async (req, res) => {
         message: "User does not exist!",
       });
     }
+    //obtaining the secret key for jwt
     const secret = process.env.JWT_SECRET + results.password;
     try {
+      //verifying the json token signature
       const verify = jwt.verify(jsontoken, secret);
       return res.render("ResetPasswordPage", {email: verify.email, status: "not verified"});
       
@@ -200,7 +214,7 @@ export const controllerResetPasswordPageLandlord = async (req, res) => {
 /**
  * Reset password of landlord. The landlord is accessed in the database using their id
  * @param {*} req landlord_user_id
- * @param {*} res email, password
+ * @param {*} res 
  */
 export const controllerResetPasswordLandlord = async (req, res) => {
   const {id, jsontoken} = req.params;
@@ -243,20 +257,19 @@ export const controllerResetPasswordLandlord = async (req, res) => {
 
 /**
  * Create Tenant
- * @param {*} req tenant email, password(unhashed),  public_building_id (eg. RC), public_lease_id (eg. YYYY-MM-DD 00:00:00)
+ * @param {*} req tenant email, password(unhashed),  public_building_id (eg. RC)
  * @param {*} res 
  */
 export const controllerCreateTenant = (req, res) => {
   const tenant_email = req.body.email;
   const password = req.body.password;
-  const public_building_id = req.body.public_building_id;
-  const public_lease_id = req.body.public_lease_id
-  console.log(req.body);
+  const public_building_id = req.body.buildingID;
+  console.log(public_building_id);
   const salt = genSaltSync(10);
   const password_hashed = hashSync(password, salt);
   getTenantByEmail(tenant_email, (err, results) => {
     if (!results){
-      createTenant(tenant_email, password_hashed, public_building_id, public_lease_id, (err, results) => {
+      createTenant(tenant_email, password_hashed, public_building_id, (err, results) => {
         if (err) {
           console.log(err);
           return res.status(500).json({
@@ -339,8 +352,8 @@ export const controllerGetTickets = (req, res) => {
 };
 
 /**
- * Gets ticket by service_request_id
- * @param {*} req service_request_id
+ * Gets ticket by public_service_request_id(YYYY-MM-DD 00:00:00)
+ * @param {*} req 
  * @param {*} res 
  */
 export const controllerGetTicketById = (req, res) => {
@@ -365,8 +378,8 @@ export const controllerGetTicketById = (req, res) => {
 };
 
 /**
- * Get Tickets by status
- * @param {*} req status
+ * Get Tickets by status, status in params
+ * @param {*} req 
  * @param {*} res 
  */
 export const controllerGetTicketsByStatus = (req, res) => {
@@ -391,8 +404,8 @@ export const controllerGetTicketsByStatus = (req, res) => {
 };
 
 /**
- * Landlord updates quotation
- * @param {*} req service_request_id, quotation_amount(float, 2dp), status
+ * Landlord updates quotation. params: public_service_request_id (YYYY-MM-DD 00:00:00)
+ * @param {*} req  status
  * @param {*} res 
  */
 export const controllerUpdateQuotation = (req, res) => {
@@ -499,6 +512,11 @@ export const controllerGetQuotation = (req, res) => {
   });
 };
 
+/**
+ * Ticket Approval, public_service_request_id (YYYY-MM-DD 00:00:00) in params
+ * @param {*} req 
+ * @param {*} res 
+ */
 export const controllerTicketApproval = (req, res) => {
   const id = req.params.id;
   const body = req.body;
@@ -527,6 +545,11 @@ export const controllerTicketApproval = (req, res) => {
   })
 }
 
+/**
+ * params: public_service_request_id (YYYY-MM-DD 00:00:00)
+ * @param {*} req 
+ * @param {*} res 
+ */
 export const controllerTicketWork = (req, res) => {
   const id = req.params.id;
   const body = req.body;

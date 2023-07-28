@@ -50,6 +50,11 @@ export const getLandlordByEmail = (email, callBack) => {
   );
 };
 
+/**
+ * 
+ * @param {int} id landlord_user_id
+ * @param {*} callBack 
+ */
 export const getLandlordById = (id, callBack) => {
   pool.query(
     `
@@ -69,6 +74,11 @@ export const getLandlordById = (id, callBack) => {
   );
 };
 
+/**
+ * 
+ * @param {*} param0 {password, id}
+ * @param {*} callBack 
+ */
 export const updateLandlordPassword = ({password, id}, callBack) => {
   pool.query(
     `
@@ -167,20 +177,19 @@ export const deleteTenantByEmail = (email, callBack) => {
 
 /**
  * Create new tenant account
- * @param {*} data tenant email, password(unhashed), public_building_id (eg. RC), public_lease_id (eg. YYYY-MM-DD 00:00:00)
+ * @param {*} data tenant email, password(unhashed), public_building_id (eg. RC)
  * @param {*} callBack 
  */
-export const createTenant = (email, password, public_building_id, public_lease_id, callBack) => {
+export const createTenant = (email, password, public_building_id, callBack) => {
   pool.query(
     `
-    INSERT INTO TENANT_USER(email, password, public_building_id, public_lease_id)
-    VALUES (?, ?, ?, ?)
+    INSERT INTO TENANT_USER(email, password, public_building_id)
+    VALUES (?, ?, ?)
     `,
     [
       email,
       password,
-      public_building_id,
-      public_lease_id
+      public_building_id
     ],
     (error, results, fields) => {
       if (error) {
@@ -209,15 +218,15 @@ export const getTickets = (callBack) => {
 };
 
 /**
- * Gets tickets by service_request_id
- * @param {*} id service_request_id
+ * Gets tickets by public_service_request_id
+ * @param {*} id public_service_request_id (YYYY-MM-DD 00:00:00)
  * @param {*} callBack 
  */
 export const getTicketById = (id, callBack) => {
   pool.query(
     `
     SELECT * FROM SERVICE_REQUEST
-    WHERE service_request_id = ?
+    WHERE public_service_request_id = ?
     `,
     [id],
     (error, results, fields) => {
@@ -258,21 +267,21 @@ export const getTicketsByStatus = (status, callBack) => {
 
 /**
  * Update quotation
- * @param {*} id service_request_id
- * @param {*} data quotation amount(float to 2dp), status(string)
+ * @param {*} id public_service_request_id (YYYY-MM-DD 00:00:00)
+ * @param {*} data  status(string)
  * @param {*} callBack 
  */
 export const updateQuotation = (id, data, callBack) => {
-  const quotationAmount = parseFloat(data.quotation_amount).toFixed(2); //Note this is impt to format it to decimal
   const status = "landlord_quotation_sent";
   if (statuses.includes(status)) {
+    console.log("id", id)
     pool.query(
       `
       UPDATE SERVICE_REQUEST
-      SET quotation_amount=?, status = ?
-      WHERE service_request_id = ?
+      SET  status = ?
+      WHERE public_service_request_id = ?
       `,
-      [quotationAmount, status, id],
+      [status, id],
       (error, results, fields) => {
         if (error) {
           callBack(error);
@@ -286,14 +295,18 @@ export const updateQuotation = (id, data, callBack) => {
   }
 };
 
-//upload quotation's path in the file system
+/**
+ * upload quotation's path in the file system
+ * @param {*} param0 filepath, public_service_request_id (YYYY-MM-DD 00:00:00)
+ * @param {*} callBack 
+ */
 export const uploadQuotation = ({filepath, id}, callBack) => {
   pool.query(
     `
     UPDATE service_request
     SET quotation_path = ?,
     status = ?
-    WHERE service_request_id = ?
+    WHERE public_service_request_id = ?
     `,
     [
       filepath,
@@ -311,13 +324,17 @@ export const uploadQuotation = ({filepath, id}, callBack) => {
 }
 
 
-//get the quotation path of a specific service request 
+/**
+ * get the quotation path of a specific service request 
+ * @param {*} id public_service_request_id (YYYY-MM-DD 00:00:00)
+ * @param {*} callBack 
+ */
 export const getQuotationPath = (id, callBack) => {
   pool.query(
     `
     SELECT quotation_path
     FROM service_request
-    WHERE service_request_id = ?
+    WHERE public_service_request_id = ?
     `,
     [
       id
@@ -332,6 +349,11 @@ export const getQuotationPath = (id, callBack) => {
   );
 }
 
+/**
+ * 
+ * @param {*} filepath 
+ * @param {*} callBack 
+ */
 export const getQuotation = (filepath, callBack) => {
   pool.query(
     `
@@ -351,13 +373,21 @@ export const getQuotation = (filepath, callBack) => {
   );
 }
 
+
+/**
+ * 
+ * @param {*} id public_service_request_id (YYYY-MM-DD 00:00:00)
+ * @param {*} data 
+ * @param {*} status 
+ * @param {*} callBack 
+ */
 export const ticketApproval = (id, data, status, callBack) => {
   if (statuses.includes(status)) {
     pool.query(
       `
       UPDATE service_request
       SET status = ?
-      WHERE service_request_id = ?
+      WHERE public_service_request_id = ?
       `,
       [
         status,
@@ -376,13 +406,21 @@ export const ticketApproval = (id, data, status, callBack) => {
   }
 };
 
+
+/**
+ * 
+ * @param {*} id public_service_request_id (YYYY-MM-DD 00:00:00)
+ * @param {*} data 
+ * @param {*} status 
+ * @param {*} callBack 
+ */
 export const ticketWork = (id, data, status, callBack) => {
   if (statuses.includes(status)) {
     pool.query(
       `
       UPDATE service_request
       SET status = ?
-      WHERE service_request_id = ?
+      WHERE public_service_request_id = ?
       `,
       [
         status,
@@ -401,10 +439,17 @@ export const ticketWork = (id, data, status, callBack) => {
   }
 };
 
+
+/**
+ * get tenant accounts by building id
+ * @param {*} public_building_id 
+ * @param {*} callBack 
+ */
 export const getTenantAccounts = (callBack) => {
   pool.query(
     `
-    SELECT * FROM TENANT_USER`,
+    SELECT * 
+    FROM TENANT_USER`,
     (error, results, fields) => {
       if (error) {
         callBack(error);
@@ -417,6 +462,12 @@ export const getTenantAccounts = (callBack) => {
 /**
  * 
  * @param {object} data 
+ * {
+ *    public_lease_id,
+ *    floor,
+ *    unit_number,
+ *    pdf_path
+    }
  * @param {*} callBack 
  */
 export const createLease = (landlordID, tenantID, data, callBack) => {
@@ -444,9 +495,37 @@ export const createLease = (landlordID, tenantID, data, callBack) => {
   )
 }
 
+
+//upload quotation's path in the file system
 /**
  * 
- * @param {string} email 
+ * @param {*} param0 {filepath, id}
+ * @param {*} callBack 
+ */
+export const uploadLease = ({filepath, id}, callBack) => {
+  pool.query(
+    `
+    UPDATE lease
+    SET pdf_path = ?
+    WHERE public_lease_id = ?
+    `,
+    [
+      filepath,
+      id
+    ],
+    (error, results, fields) => {
+      if (error) {
+        callBack(error);
+      } else {
+        callBack(null,results);
+      }
+    }
+  )
+}
+
+/**
+ * 
+ * @param {string} email email
  * @param {*} callBack 
  */
 export const getLandlordUserId = (email, callBack) => {
@@ -469,7 +548,7 @@ export const getLandlordUserId = (email, callBack) => {
 
 /**
  * 
- * @param {int} id 
+ * @param {int} id landlord_user_id
  * @param {*} callBack 
  */
 export const getLeaseByLandlord = (id, callBack) => {
@@ -504,6 +583,11 @@ export const getLeaseByLandlord = (id, callBack) => {
   )
 }
 
+/**
+ * 
+ * @param {string} lease_id public_lease_id
+ * @param {*} callBack 
+ */
 export const deleteLease = (lease_id, callBack) => {
   pool.query(
     'DELETE FROM lease where public_lease_id = ?',
@@ -517,6 +601,20 @@ export const deleteLease = (lease_id, callBack) => {
   );
 }
 
+/**
+ * 
+ * @param {int} landlordID tenant_user_id
+ * @param {int} tenantID landlord_user_id
+ * @param {object} data 
+ * {
+ *  new_public_lease_id,
+ *  floor,
+ *  unit_number,
+ *  pdf_path,
+ *  old_public_lease_id
+ * }
+ * @param {*} callBack 
+ */
 export const updateLease = (landlordID, tenantID, data, callBack) => {
   pool.query (
     `
@@ -547,4 +645,55 @@ export const updateLease = (landlordID, tenantID, data, callBack) => {
       }
     }
   )
+}
+
+
+//get the quotation path of a specific service request 
+/**
+ * 
+ * @param {string} id public_lease_id
+ * @param {*} callBack 
+ */
+export const getLeasePath = (id, callBack) => {
+  pool.query(
+    `
+    SELECT pdf_path
+    FROM lease
+    WHERE public_lease_id = ?
+    `,
+    [
+      id
+    ],
+    (error, results, fields) => {
+      if (error) {
+        callBack(error);
+      } else {
+        callBack(null,results);
+      }
+    }
+  )
+}
+
+/**
+ * 
+ * @param {*} filepath 
+ * @param {*} callBack 
+ */
+export const getLease = (filepath, callBack) => {
+  pool.query(
+    `
+    SELECT 
+    LOAD_FILE(?)
+    `,
+    [
+      filepath
+    ],
+    (error, results, fields) => {
+      if (error) {
+        callBack(error);
+      } else {
+        callBack(null, results[0]);
+      }
+    }
+  );
 }

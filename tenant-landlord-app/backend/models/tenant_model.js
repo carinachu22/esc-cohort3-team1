@@ -160,6 +160,8 @@ export const createTicket = (data, callBack) => {
 /**
  * Tenant can approve quotation from landlord
  * @param {int} id service_ticket_id
+ * @param {int} id public_service_request_id (YYYY-MM-DD 00:00:00)
+ * @param {*} data 
  * @param {string} status updated status
  * @param {*} callBack 
  */
@@ -169,7 +171,7 @@ export const quotationApproval = (id, status, callBack) => {
     `
     UPDATE service_request
     SET status = ?
-    WHERE service_request_id = ?
+    WHERE public_service_request_id = ?
     `,
     [
       status,
@@ -189,11 +191,13 @@ export const quotationApproval = (id, status, callBack) => {
 
 /**
  * Adds feedback rating to feedback_rating
- * @param {int} id service_ticket_id
+ * @param {int} id public_service_request_id (YYYY-MM-DD 00:00:00)
  * @param {int} data feedback_rating
  * @param {*} callBack 
  */
 export const addFeedbackRating = (id, feedback_rating, callBack) => {
+  console.log("feedback_rating", feedback_rating)
+  console.log("id", id)
   pool.query (
     `
     UPDATE service_request
@@ -203,6 +207,7 @@ export const addFeedbackRating = (id, feedback_rating, callBack) => {
     [
       feedback_rating, "tenant_feedback_given", id
     ],
+    
     (error, results, fields) => {
       if (error) {
         callBack(error);
@@ -215,11 +220,11 @@ export const addFeedbackRating = (id, feedback_rating, callBack) => {
 
 /**
  * Adds feedback text to feedback_text
- * @param {int} id service_ticket_id
+ * @param {int} id public_service_request_id (YYYY-MM-DD 00:00:00)
  * @param {string} data feedback_text
  * @param {*} callBack 
  */
-export const addFeedbackText = (id, data, callBack) => {
+export const addFeedbackText = (id, feedback_text, callBack) => {
   pool.query (
     `
     UPDATE service_request
@@ -241,7 +246,7 @@ export const addFeedbackText = (id, data, callBack) => {
 
 /**
  * Change ticket's status to close
- * @param {int} id service_request_id
+ * @param {int} id public_service_request_id (YYYY-MM-DD 00:00:00)
  * @param {string} data status to close
  * @param {*} callBack 
  */
