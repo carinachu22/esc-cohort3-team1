@@ -1,6 +1,6 @@
 import {pool} from "../config/database.js";
 
-const statuses = ["tenant_ticket_created", "landlord_ticket_rejected", "landlord_ticket_approved", "landlord_quotation_sent", "ticket_quotation_rejected", "ticket_quotation_approved ", "landlord_started_work", "landlord_completed_work", "tenant_feedback_given", "landlord_ticket _closed"]
+const statuses = ["tenant_ticket_created", "landlord_ticket_rejected", "landlord_ticket_approved", "landlord_quotation_sent", "ticket_quotation_rejected", "ticket_quotation_approved", "landlord_started_work", "landlord_completed_work", "tenant_feedback_given", "landlord_ticket_closed"]
 
 /**
  * Create landlord account

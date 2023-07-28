@@ -1,6 +1,6 @@
 import {pool} from "../config/database.js";
 
-const statuses = ["tenant_ticket_created", "landlord_ticket_rejected", "landlord_ticket_approved", "landlord_quotation_sent", "ticket_quotation_rejected", "ticket_quotation_approved ", "landlord_started_work", "landlord_completed_work", "tenant_feedback_given", "landlord_ticket _closed"]
+const statuses = ["tenant_ticket_created", "landlord_ticket_rejected", "landlord_ticket_approved", "landlord_quotation_sent", "ticket_quotation_rejected", "ticket_quotation_approved", "landlord_started_work", "landlord_completed_work", "tenant_feedback_given", "landlord_ticket_closed"]
 
 /**
  * Get tenant with email
@@ -160,7 +160,6 @@ export const createTicket = (data, callBack) => {
 /**
  * Tenant can approve quotation from landlord
  * @param {int} id service_ticket_id
- * @param {*} data 
  * @param {string} status updated status
  * @param {*} callBack 
  */
