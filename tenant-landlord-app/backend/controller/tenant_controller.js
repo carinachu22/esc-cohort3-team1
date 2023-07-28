@@ -8,7 +8,9 @@ import {
   quotationApproval,
   addFeedbackRating,
   addFeedbackText,
-  closeTicketStatus
+  closeTicketStatus,
+  getTenantUserId,
+  getLeaseByTenant
 } from "../models/tenant_model.js";
 import { genSaltSync, hashSync, compareSync } from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -26,7 +28,7 @@ export const controllerLoginTenant = (req, res) => {
     if (err) {
       console.log(err);
     }
-    console.log(results);
+    console.log(results[0]);
     if (!results) {
       return res.json({
         success: 0,
@@ -34,11 +36,11 @@ export const controllerLoginTenant = (req, res) => {
       });
     }
     
-    console.log(body.password, results.password);
-    const password_check = compareSync(body.password, results.password);
+    console.log(body.password, results[0].password);
+    const password_check = compareSync(body.password, results[0].password);
     if (password_check) {
-      results.password = undefined;
-      const jsontoken = jwt.sign({ result: results }, "paolom8", {
+      results[0].password = undefined;
+      const jsontoken = jwt.sign({ result: results[0] }, "paolom8", {
         expiresIn: "1h",
       });
       return res.json({
@@ -361,3 +363,40 @@ export const controllerCloseTicketStatus = (req, res) => {
   })
 }
 
+/**
+ * 
+ * @param {object} req 
+ * {email}
+ * @param {json} res 
+ */
+export const controllerGetLeaseByTenant = (req,res) => {
+  let tenantID = "";
+  getTenantUserId(req.body.email, (err, results) => {
+    if (err) {
+      console.log(err)
+      return
+    } if (!results) {
+      return res.json({
+        success:0,
+        message: "tenant not registered."
+      })
+    } else {
+      tenantID = results.tenant_user_id;
+      // console.log(tenantID)
+      getLeaseByTenant(tenantID, (err, results) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).json({
+            success: 0,
+            message: "Database connection error"
+          });
+        } else {
+          return res.status(200).json({
+            success:1,
+            data: results
+          });
+        };
+      })
+    }
+  })
+}

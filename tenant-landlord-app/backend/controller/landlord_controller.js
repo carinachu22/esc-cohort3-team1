@@ -15,10 +15,18 @@ import {
   ticketWork,
   getTenantAccounts,
   deleteAllTenants,
-  deleteTenantByEmail
-
+  deleteTenantByEmail,
+  getLandlordUserId,
+  createLease,
+  getLeaseByLandlord,
+  deleteLease,
+  updateLease
 } from "../models/landlord_model.js";
-import { getTenantByEmail } from "../models/tenant_model.js";
+import { 
+  getTenantByEmail,
+  getTenantUserId,
+  updateTenantLease
+} from "../models/tenant_model.js";
 import { genSaltSync, hashSync, compareSync } from "bcrypt";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
@@ -78,31 +86,32 @@ export const controllerLoginLandlord = (req, res) => {
     if (err) {
       console.log(err);
     }
-    if (!results) {
+    if (results.length === 0) {
       return res.json({
         success: 0,
         message: "Invalid email or password",
-      });
-    }
-    console.log(body.password, results.password);
-    const password_check = compareSync(body.password, results.password);
-    console.log(password_check);
-    if (password_check) {
-      results.password = undefined;
-      const jsontoken = jwt.sign({ result: results }, "qwe1234", {
-        expiresIn: "1h",
-      });
-      return res.json({
-        success: 1,
-        message: "Login successfully",
-        token: jsontoken,
       });
     } else {
-      console.log(results);
-      res.json({
-        success: 0,
-        message: "Invalid email or password",
-      });
+      console.log(body.password, results[0].password);
+      const password_check = compareSync(body.password, results[0].password);
+      console.log(password_check);
+      if (password_check) {
+        results[0].password = undefined;
+        const jsontoken = jwt.sign({ result: results[0] }, "qwe1234", {
+          expiresIn: "1h",
+        });
+        return res.json({
+          success: 1,
+          message: "Login successfully",
+          token: jsontoken,
+        });
+      } else {
+        console.log(results[0]);
+        res.json({
+          success: 0,
+          message: "Invalid email or password",
+        });
+      }
     }
   });
 };
@@ -666,3 +675,182 @@ export const controllerGetLease = (req, res) => {
     }
   });
 };
+
+/**
+ * 
+ * @param {object} req 
+ * {
+ * landlord_email,
+ * tenant_email,
+ * public_lease_id,
+ * floor,
+ * unit_number,
+ * pdf_path
+ * }
+ * @param {json} res 
+ */
+export const controllerCreateLease = (req,res) => {
+  let landlordID = "";
+  let tenantID = "";
+  getLandlordUserId(req.body.landlord_email, (err,results) => {
+    if (err) {
+      console.log(err);
+      return;
+    } if (!results) {
+      return res.json({
+        success : 0,
+        message: "landlord not registered."
+      })
+    } else {
+      landlordID = results.landlord_user_id;
+      // console.log(landlordID)
+      getTenantUserId(req.body.tenant_email, (err, results) => {
+        if (err) {
+          console.log(err)
+          return
+        } if (!results) {
+          return res.json({
+            success:0,
+            message: "tenant not registered."
+          })
+        } else {
+          tenantID = results.tenant_user_id;
+          // console.log(tenantID)
+          createLease(landlordID, tenantID, req.body, (err, results) => {
+            if (err) {
+              console.log(err);
+              return res.status(500).json({
+                success: 0,
+                message: "Database connection error"
+              });
+            } else {
+              updateTenantLease(req.body.tenant_email,req.body.public_lease_id, (err,results) => {
+                if (err) {
+                  console.log(err);
+                  return res.status(500).json({
+                    success: 0,
+                    message: "Database connection error"
+                  })
+                } 
+              });
+              return res.status(200).json({
+                success:1,
+                data: results
+              });
+            };
+          })
+        }
+      })
+    }
+  })
+}
+
+/**
+ * 
+ * @param {object} req 
+ * {email}
+ * @param {json} res 
+ */
+export const controllerGetLeaseByLandlord = (req,res) => {
+  let landlordID = "";
+  getLandlordUserId(req.body.email, (err, results) => {
+    if (err) {
+      console.log(err)
+      return
+    } if (!results) {
+      return res.json({
+        success:0,
+        message: "landlord not registered."
+      })
+    } else {
+      landlordID = results.landlord_user_id;
+      // console.log(landlordID)
+      getLeaseByLandlord(landlordID, (err, results) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).json({
+            success: 0,
+            message: "Database connection error"
+          });
+        } else {
+          return res.status(200).json({
+            success:1,
+            data: results
+          });
+        };
+      })
+    }
+  })
+}
+
+export const controllerDeleteLease = (req,res) => {
+  deleteLease(req.body.public_lease_id, (err,results) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).json({
+        success: 0,
+        message: "Database connection error",
+      });
+    }
+    return res.status(200).json({
+      success: 1,
+      message: "deleted successfully",
+    });
+  })
+}
+
+export const controllerUpdateLease = (req, res) => {
+  let landlordID = "";
+  let tenantID = "";
+  getLandlordUserId(req.body.landlord_email, (err,results) => {
+    if (err) {
+      console.log(err);
+      return;
+    } if (!results) {
+      return res.json({
+        success : 0,
+        message: "landlord not registered."
+      })
+    } else {
+      landlordID = results.landlord_user_id;
+      // console.log(landlordID)
+      getTenantUserId(req.body.tenant_email, (err, results) => {
+        if (err) {
+          console.log(err)
+          return
+        } if (!results) {
+          return res.json({
+            success:0,
+            message: "tenant not registered."
+          })
+        } else {
+          tenantID = results.tenant_user_id;
+          // console.log(tenantID)
+          updateLease(landlordID, tenantID, req.body, (err, results) => {
+            if (err) {
+              console.log(err);
+              return res.status(500).json({
+                success: 0,
+                message: "Database connection error"
+              });
+            } else {
+              updateTenantLease(req.body.tenant_email,req.body.new_public_lease_id, (err,results) => {
+                if (err) {
+                  console.log(err);
+                  return res.status(500).json({
+                    success: 0,
+                    message: "Database connection error"
+                  })
+                } 
+              });
+              return res.status(200).json({
+                success:1,
+                data: results
+              });
+            };
+          })
+        }
+      })
+    }
+  })
+}
