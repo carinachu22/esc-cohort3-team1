@@ -210,6 +210,32 @@ describe("Testing addFeedbackRating() in tenant model", () => {
 
 })
 
+describe("Testing addFeedbackText() in tenant model", () => {
+    test ("Test calling addFeedbackText() on a valid service ticket ID",(done) => {
+        addFeedbackText(3, "good job", (err, results) => {
+            if (err){
+                console.log("ERROR",err)
+            }
+            // console.log(JSON.parse(JSON.stringify(results)))
+            const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
+            expect(rowsChanged).toBe(1);
+            done();
+        })
+    });
+    test ("Test calling addFeedbackText() on an invalid service ticket ID",(done) => {
+        addFeedbackText(999, "good!", (err, results) => {
+            if (err){
+                console.log("ERROR",err)
+            }
+            //console.log(JSON.parse(JSON.stringify(results)))
+            const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
+            //console.log(rowsChanged)
+            expect(rowsChanged).toBe(0);
+            done();
+        })
+    });
+})
+
 describe("Testing closeTicketStatus() in tenant model", () => {
     test ("Test calling closeTicketStatus() on a valid service ticket ID & valid value",(done) => {
         closeTicketStatus(1, 'landlord_ticket_closed', (err, results) => {
