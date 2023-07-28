@@ -1,4 +1,4 @@
-import {cleanup, pool} from '../config/database';
+import {cleanup, pool} from '../config/database.js';
 
 const hash_password = "$2b$10$BIJTkvtOrkrKhl/juVKCauVhPwqChMNbayD3DazrMBi6H6gsgVlrS"
 
