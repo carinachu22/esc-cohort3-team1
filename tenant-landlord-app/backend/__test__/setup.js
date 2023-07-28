@@ -1,4 +1,4 @@
-import {cleanup, pool} from './database.js';
+import {cleanup, pool} from '../config/database';
 
 const hash_password = "$2b$10$BIJTkvtOrkrKhl/juVKCauVhPwqChMNbayD3DazrMBi6H6gsgVlrS"
 
@@ -32,6 +32,7 @@ export default async function setup() {
             VALUES  ("tenant1@gmail.com","${hash_password}", "RC", NULL),
                     ("tenant2@gmail.com","${hash_password}", "FC", "01-01-01 00:00:00"),
                     ("tenant4@gmail.com","${hash_password}", "FC", "01-01-01 00:00:00"),
+                    ("tenant5@gmail.com","${hash_password}", "RC", "01-01-01 00:00:00"),
                     ("tenant3@gmail.com","${hash_password}", "CWP", "01-01-01 00:00:00");
         `);
 

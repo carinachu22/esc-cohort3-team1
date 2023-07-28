@@ -53,7 +53,7 @@ describe("Testing getTenantByEmail() in tenant model", () => {
 
 describe ("Testing getTicketsByTenant() in tenant model", () => {
     test ("Test calling getTicketsByTenant() on a valid email with no tickets", (done) => {
-        getTicketsByTenant('tenant4@gmail.com', (err, results) => {
+        getTicketsByTenant('tenant5@gmail.com', (err, results) => {
             if(err){
                 console.log("ERROR",err)
             }
@@ -63,19 +63,19 @@ describe ("Testing getTicketsByTenant() in tenant model", () => {
         })
     })
 
-    // test ("Test calling getTicketsByTenant() on a valid email with tickets", (done) => {
-    //     getTicketsByTenant('tenant3@gmail.com', (err, results) => {
-    //         if(err){
-    //             console.log("ERROR",err)
-    //             done();
-    //             return;
-    //         }
-    //         console.log(results)
-    //         const rowsLength = results.length
-    //         expect(rowsLength).toBe(1);
-    //         done()
-    //     })
-    // })
+    test ("Test calling getTicketsByTenant() on a valid email with tickets", (done) => {
+        getTicketsByTenant('tenant3@gmail.com', (err, results) => {
+            if(err){
+                console.log("ERROR",err)
+                done();
+                return;
+            }
+            console.log(results)
+            const rowsLength = results.length
+            expect(rowsLength).toBe(1);
+            done()
+        })
+    })
 
     test ("Test calling getTicketsByTenant() on an invalid email", (done) =>{
         getTicketsByTenant('sgdbsgn@gmail.com', (err, results) => {
@@ -90,17 +90,17 @@ describe ("Testing getTicketsByTenant() in tenant model", () => {
 })
 
 describe ("Testing getTicketsByStatus() in tenant model", () => {
-    // test ("Test calling getTicketsByStatus() on a valid email & valid status", (done) => {
-    //     getTicketsByStatus('tenant1@gmail.com', 'landlord_completed_work', (err, results) => {
-    //         if(err){
-    //             console.log("ERROR",err)
-    //         }
-    //         // console.log(results)
-    //         const rowsLength = results.length
-    //         expect(rowsLength).toBe(1);
-    //         done()
-    //     })
-    // })
+    test ("Test calling getTicketsByStatus() on a valid email & valid status", (done) => {
+        getTicketsByStatus('tenant1@gmail.com', 'landlord_completed_work', (err, results) => {
+            if(err){
+                console.log("ERROR",err)
+            }
+            // console.log(results)
+            const rowsLength = results.length
+            expect(rowsLength).toBe(1);
+            done()
+        })
+    })
 
     test ("Test calling getTicketsByStatus() on a valid email & invalid status", (done) => {
         getTicketsByStatus('tenant1@gmail.com', 'landlord_quotation_sent', (err, results) => {
@@ -138,8 +138,8 @@ describe("Testing createTicket() in tenant model", () => {
         const date = currentdate.getFullYear().toString() + '-' + (currentdate.getMonth() + 1).toString() + '-' + currentdate.getDate().toString() + ' ' + currentdate.getHours().toString() + ':' + ('0' + currentdate.getMinutes()).slice(-2) + ':' + currentdate.getSeconds().toString()
         const data = {
             public_service_request_id:date,
-            name: 'tenant2',
-            email: 'tenant2@gmail.com',
+            name: 'tenant4',
+            email: 'tenant4@gmail.com',
             request_type: 'aircon',
             request_description: 'aircon cold',
             submitted_date_time: date
@@ -148,7 +148,7 @@ describe("Testing createTicket() in tenant model", () => {
             if (err){
                 console.log("ERROR",err)
             }
-            //console.log(JSON.parse(JSON.stringify(results)))
+            // console.log(JSON.parse(JSON.stringify(results)))
             const rowsChanged = JSON.parse(JSON.stringify(results)).affectedRows
             //console.log(rowsChanged)
             expect(rowsChanged).toBe(1);
@@ -158,20 +158,19 @@ describe("Testing createTicket() in tenant model", () => {
 })
 
 describe("Testing addFeedbackRating() in tenant model", () => {
-    //          PROBLEM: rows are not changing
-    // test ("Test calling addFeedBackRating() on a valid service ticket ID & valid value",(done) => {
-    //     addFeedbackRating(2, 3, (err, results) => {
-    //         if (err){
-    //             console.log("ERROR",err)
-    //         }
-    //         // console.log(JSON.parse(JSON.stringify(results)))
-    //         const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
-    //         expect(rowsChanged).toBe(1);
-    //         done();
-    //     })
-    // });
+    test ("Test calling addFeedBackRating() on a valid service ticket ID & valid value",(done) => {
+        addFeedbackRating(3, 4, (err, results) => {
+            if (err){
+                console.log("ERROR",err)
+            }
+            // console.log(JSON.parse(JSON.stringify(results)))
+            const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
+            expect(rowsChanged).toBe(1);
+            done();
+        })
+    });
     test ("Test calling addFeedBackRating() on an invalid service ticket ID & valid value",(done) => {
-        addFeedbackRating(99, 4, (err, results) => {
+        addFeedbackRating(999, 4, (err, results) => {
             if (err){
                 console.log("ERROR",err)
             }
@@ -183,7 +182,7 @@ describe("Testing addFeedbackRating() in tenant model", () => {
         })
     });
     test ("Test calling addFeedBackRating() on a valid service ticket ID & invalid value",(done) => {
-        addFeedbackRating(2, 6, (err, results) => {
+        addFeedbackRating(3, 6, (err, results) => {
             if (err) {
                 // Error is reported through the callback
                 expect(err).toBeTruthy(); // Use any appropriate assertion to check the error
@@ -197,7 +196,7 @@ describe("Testing addFeedbackRating() in tenant model", () => {
     test ("Test calling addFeedBackRating() on an invalid service ticket ID & invalid value",(done) => {
         // INVALID ID SUPERSEDES INVALID VALUE!
         // YOU WILL GET LENGTH 0
-        addFeedbackRating(99, 6, (err, results) => {
+        addFeedbackRating(999, 6, (err, results) => {
             if (err){
                 console.log("ERROR",err)
             }
@@ -211,47 +210,52 @@ describe("Testing addFeedbackRating() in tenant model", () => {
 
 })
 
-// describe("Testing closeTicketStatus() in tenant model", () => {
-//     test ("Test calling closeTicketStatus() on a valid service ticket ID & valid value",(done) => {
-//         closeTicketStatus(1, 'landlord_ticket_closed', (err, results) => {
-//             if (err){
-//                 console.log("ERROR",err)
-//             }
-//             //console.log(JSON.parse(JSON.stringify(results)))
-//             const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
-//             expect(rowsChanged).toBe(1);
-//             done();
-//         })
-//     });
-//     test ("Test calling closeTicketStatus() on an invalid service ticket ID & valid value",(done) => {
-//         closeTicketStatus(3, 'landlord_ticket_closed', (err, results) => {
-//             if (err){
-//                 console.log("ERROR",err)
-//             }
-//             //console.log(JSON.parse(JSON.stringify(results)))
-//             const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
-//             //console.log(rowsChanged)
-//             expect(rowsChanged).toBe(0);
-//             done();
-//         })
-//     });
-
-// })
+describe("Testing closeTicketStatus() in tenant model", () => {
+    test ("Test calling closeTicketStatus() on a valid service ticket ID & valid value",(done) => {
+        closeTicketStatus(1, 'landlord_ticket_closed', (err, results) => {
+            if (err){
+                console.log("ERROR",err)
+            }
+            // console.log(JSON.parse(JSON.stringify(results)))
+            const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
+            expect(rowsChanged).toBe(1);
+            done();
+        })
+    });
+    test ("Test calling closeTicketStatus() on an invalid service ticket ID & valid value",(done) => {
+        closeTicketStatus(999, 'landlord_ticket_closed', (err, results) => {
+            if (err){
+                console.log("ERROR",err)
+            }
+            //console.log(JSON.parse(JSON.stringify(results)))
+            const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
+            //console.log(rowsChanged)
+            expect(rowsChanged).toBe(0);
+            done();
+        })
+    });
+    test ("Test calling closeTicketStatus() on an valid service ticket ID & invalid value",(done) => {
+        closeTicketStatus(2, 'landlord__tickets_close', (err, results) => {
+            expect(err).toBe('invalid status')
+            done()
+        })
+    });
+})
 
 describe("Testing quotationApproval() in tenant model", () => {
-    // test ("Test calling quotationApproval() on a valid service ticket ID & valid value",(done) => {
-    //     quotationApproval(1, 'ticket_quotation_approved', (err, results) => {
-    //         if (err){
-    //             console.log("ERROR",err)
-    //         }
-    //         // console.log(JSON.parse(JSON.stringify(results)))
-    //         const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
-    //         expect(rowsChanged).toBe(1);
-    //         done();
-    //     })
-    // });
+    test ("Test calling quotationApproval() on a valid service ticket ID & valid value",(done) => {
+        quotationApproval(2, 'ticket_quotation_approved', (err, results) => {
+            if (err){
+                console.log("ERROR",err)
+            }
+            console.log(JSON.parse(JSON.stringify(results)))
+            const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
+            expect(rowsChanged).toBe(1);
+            done();
+        })
+    });
     test ("Test calling quotationApproval() on an invalid service ticket ID & valid value",(done) => {
-        quotationApproval(99, 'ticket_quotation_rejected', (err, results) => {
+        quotationApproval(999, 'ticket_quotation_rejected', (err, results) => {
             if (err){
                 console.log("ERROR",err)
             }

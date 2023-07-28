@@ -1,4 +1,4 @@
-import {cleanup, pool} from './database.js';
+import {cleanup, pool} from '../config/database.js';
 
 export default async function teardown() {
     try {
