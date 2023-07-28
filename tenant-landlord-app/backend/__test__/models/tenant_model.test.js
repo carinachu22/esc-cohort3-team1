@@ -148,9 +148,7 @@ describe("Testing createTicket() in tenant model", () => {
             if (err){
                 console.log("ERROR",err)
             }
-            // console.log(JSON.parse(JSON.stringify(results)))
             const rowsChanged = JSON.parse(JSON.stringify(results)).affectedRows
-            //console.log(rowsChanged)
             expect(rowsChanged).toBe(1);
             done();
         })
@@ -163,7 +161,6 @@ describe("Testing addFeedbackRating() in tenant model", () => {
             if (err){
                 console.log("ERROR",err)
             }
-            // console.log(JSON.parse(JSON.stringify(results)))
             const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
             expect(rowsChanged).toBe(1);
             done();
@@ -174,9 +171,7 @@ describe("Testing addFeedbackRating() in tenant model", () => {
             if (err){
                 console.log("ERROR",err)
             }
-            //console.log(JSON.parse(JSON.stringify(results)))
             const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
-            //console.log(rowsChanged)
             expect(rowsChanged).toBe(0);
             done();
         })
@@ -200,9 +195,7 @@ describe("Testing addFeedbackRating() in tenant model", () => {
             if (err){
                 console.log("ERROR",err)
             }
-            //console.log(JSON.parse(JSON.stringify(results)))
             const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
-            //console.log(rowsChanged)
             expect(rowsChanged).toBe(0);
             done();
         })
@@ -216,7 +209,6 @@ describe("Testing addFeedbackText() in tenant model", () => {
             if (err){
                 console.log("ERROR",err)
             }
-            // console.log(JSON.parse(JSON.stringify(results)))
             const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
             expect(rowsChanged).toBe(1);
             done();
@@ -227,9 +219,7 @@ describe("Testing addFeedbackText() in tenant model", () => {
             if (err){
                 console.log("ERROR",err)
             }
-            //console.log(JSON.parse(JSON.stringify(results)))
             const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
-            //console.log(rowsChanged)
             expect(rowsChanged).toBe(0);
             done();
         })
@@ -242,7 +232,6 @@ describe("Testing closeTicketStatus() in tenant model", () => {
             if (err){
                 console.log("ERROR",err)
             }
-            // console.log(JSON.parse(JSON.stringify(results)))
             const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
             expect(rowsChanged).toBe(1);
             done();
@@ -253,9 +242,7 @@ describe("Testing closeTicketStatus() in tenant model", () => {
             if (err){
                 console.log("ERROR",err)
             }
-            //console.log(JSON.parse(JSON.stringify(results)))
             const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
-            //console.log(rowsChanged)
             expect(rowsChanged).toBe(0);
             done();
         })
@@ -274,7 +261,6 @@ describe("Testing quotationApproval() in tenant model", () => {
             if (err){
                 console.log("ERROR",err)
             }
-            console.log(JSON.parse(JSON.stringify(results)))
             const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
             expect(rowsChanged).toBe(1);
             done();
@@ -285,9 +271,7 @@ describe("Testing quotationApproval() in tenant model", () => {
             if (err){
                 console.log("ERROR",err)
             }
-            //console.log(JSON.parse(JSON.stringify(results)))
             const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
-            //console.log(rowsChanged)
             expect(rowsChanged).toBe(0);
             done();
         })
