@@ -81,8 +81,17 @@ const AccountManagement = () => {
   const [tenantAccounts, setTenantAccounts] = useState(null)
   const { onOpen: onOpen, onClose: onClose, isOpen: isOpen } = useDisclosure();
   const { onOpen: onOpenModal, onClose: onCloseModal, isOpen: isOpenModal } = useDisclosure();
+  const token = useAuthHeader();
+  const userDetails = useAuthUser();
 
-
+  const config = {
+    headers: {
+      Authorization: `${token()}`
+    },
+    params: {
+        email: userDetails().email
+    }
+}
   const customTheme = extendTheme({
     styles: {
       global: {
@@ -104,6 +113,7 @@ const AccountManagement = () => {
   const APIGetTenantAccounts = async () => {
     const response = await axios.get(
         "http://localhost:5000/api/landlord/getTenantAccounts",
+        config
     )
     //console.log(response)
     return response
@@ -112,6 +122,7 @@ const AccountManagement = () => {
   const APIDeleteAllTenants = async () => {
     const response = await axios.patch(
         "http://localhost:5000/api/landlord/deleteAllTenants",
+        config
     )
     //console.log(response)
     GetTenantAccounts();
@@ -122,6 +133,7 @@ const AccountManagement = () => {
   const APIDeleteTenantByEmail = async (email) => {
     const response = await axios.patch(
         "http://localhost:5000/api/landlord/deleteTenantByEmail",
+        config,
         {email, }
     )
     console.log(email);
