@@ -39,7 +39,7 @@ export const getTenantById = (id, callBack) => {
         callBack(error);
       } else {
         // console.log(results);
-        callBack(null, results[0]);
+        callBack(null, results);
       }
     }
   );
@@ -60,7 +60,7 @@ export const updateTenantPassword = ({password, id}, callBack) => {
       if(error){
         callBack(error);
       }
-      return callBack(null, results[0]);
+      return callBack(null, results);
     }
   );
 }
@@ -159,8 +159,7 @@ export const createTicket = (data, callBack) => {
 
 /**
  * Tenant can approve quotation from landlord
- * @param {int} id service_ticket_id
- * @param {int} id public_service_request_id (YYYY-MM-DD 00:00:00)
+ * @param {string} id public_service_request_id (YYYY-MM-DD 00:00:00)
  * @param {*} data 
  * @param {string} status updated status
  * @param {*} callBack 
@@ -191,7 +190,7 @@ export const quotationApproval = (id, status, callBack) => {
 
 /**
  * Adds feedback rating to feedback_rating
- * @param {int} id public_service_request_id (YYYY-MM-DD 00:00:00)
+ * @param {string} id public_service_request_id (YYYY-MM-DD 00:00:00)
  * @param {int} data feedback_rating
  * @param {*} callBack 
  */
@@ -202,7 +201,7 @@ export const addFeedbackRating = (id, feedback_rating, callBack) => {
     `
     UPDATE service_request
     SET feedback_rating = ?, status = ?
-    WHERE service_request_id = ?
+    WHERE public_service_request_id = ?
     `,
     [
       feedback_rating, "tenant_feedback_given", id
@@ -220,7 +219,7 @@ export const addFeedbackRating = (id, feedback_rating, callBack) => {
 
 /**
  * Adds feedback text to feedback_text
- * @param {int} id public_service_request_id (YYYY-MM-DD 00:00:00)
+ * @param {string} id public_service_request_id (YYYY-MM-DD 00:00:00)
  * @param {string} data feedback_text
  * @param {*} callBack 
  */
@@ -229,10 +228,10 @@ export const addFeedbackText = (id, feedback_text, callBack) => {
     `
     UPDATE service_request
     SET feedback_text = ?, status = ?
-    WHERE service_request_id = ?
+    WHERE public_service_request_id = ?
     `,
     [
-      data.feedback_text, "tenant_feedback_given", id
+      feedback_text, "tenant_feedback_given", id
     ],
     (error, results, fields) => {
       if (error) {
@@ -246,7 +245,7 @@ export const addFeedbackText = (id, feedback_text, callBack) => {
 
 /**
  * Change ticket's status to close
- * @param {int} id public_service_request_id (YYYY-MM-DD 00:00:00)
+ * @param {string} id public_service_request_id (YYYY-MM-DD 00:00:00)
  * @param {string} data status to close
  * @param {*} callBack 
  */
@@ -256,7 +255,7 @@ export const closeTicketStatus = (id, data, callBack) => {
       `
       UPDATE service_request
       SET status = ?
-      WHERE service_request_id = ?
+      WHERE public_service_request_id = ?
       `,
       [
         data, id
@@ -290,7 +289,7 @@ export const getTenantUserId = (email, callBack) => {
       if (error) {
         callBack(error);
       } else {
-        callBack(null, results[0]);
+        callBack(null, results);
       }
     }
   )
