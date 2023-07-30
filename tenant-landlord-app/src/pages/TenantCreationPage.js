@@ -4,6 +4,9 @@ import { useFormik } from "formik";
 import axios, { AxiosError } from "axios";
 import NavigationBar from '../components/NavigationBar.js';
 
+// Import React and hooks
+import { useAuthUser, useAuthHeader, useSignOut, useIsAuthenticated } from 'react-auth-kit';
+
 import {
     Box,
     Button,
@@ -18,6 +21,18 @@ import {
 
 const TenantCreationPage = () => {
     const navigate = useNavigate();
+    const token = useAuthHeader();
+    const userDetails = useAuthUser();
+
+    
+    const config = {
+        headers: {
+            Authorization: `${token()}`
+        },
+        params: {
+            email: userDetails().email
+        }
+    }
 
     const validate = values => {
         let errors = {};
@@ -54,6 +69,7 @@ const TenantCreationPage = () => {
             const response = await axios.post(
                 //api to be added
                 "http://localhost:5000/api/landlord/createTenant",
+                config,
                 values
             )
             console.log(response);

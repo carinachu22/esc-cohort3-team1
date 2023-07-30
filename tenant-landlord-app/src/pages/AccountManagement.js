@@ -91,7 +91,7 @@ const AccountManagement = () => {
     params: {
         email: userDetails().email
     }
-}
+  }
   const customTheme = extendTheme({
     styles: {
       global: {
@@ -215,7 +215,7 @@ const AccountManagement = () => {
               </Box>
               </HStack>
               <br></br>
-              <Button onClick={() => {navigate('/pages/LeaseCreationPage/')}} bgColor='blue.500' color='white' _hover={{bg: 'blue.800'}}>
+              <Button onClick={() => {navigate('/pages/ViewLeasePage/')}} bgColor='blue.500' color='white' _hover={{bg: 'blue.800'}}>
                   New Lease
               </Button>
           </AccordionPanel>
