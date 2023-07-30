@@ -13,10 +13,10 @@ export default async function setup() {
         );
         await pool.promise().query(`
             INSERT INTO service_request (public_service_request_id, name, email, request_type, request_description, submitted_date_time, status, quotation_path)
-            VALUES  ('01-01-01 00:00:00', 'tenant1', 'tenant1@gmail.com', 'aircon', 'aircon warm', '2023-01-01 00:00:00', 'tenant_ticket_created', NULL),
-                    ('01-01-01 00:00:00', 'tenant4', 'tenant4@gmail.com', 'aircon', 'aircon', '2023-01-01 00:00:00', 'tenant_ticket_created', NULL),
-                    ('01-10-06 23:40:00', 'tenant1', 'tenant1@gmail.com', 'cleanliness', 'not clean', '2023-01-01 00:00:00', 'landlord_completed_work',':Content/Documents/quotation_details/q2'),
-                    ('41-10-60 23:40:02', 'tenant3', 'tenant3@gmail.com', 'horticulture', 'wiltered', '2023-01-01 00:00:00', 'landlord_quotation_sent', ':Content/Documents/quotation_details/q1');
+            VALUES  ('2002-02-02 02:02:02', 'tenant1', 'tenant1@gmail.com', 'aircon', 'aircon warm', '2002-02-02 02:02:02', 'tenant_ticket_created', NULL),
+                    ('2003-03-03 03:03:03', 'tenant4', 'tenant4@gmail.com', 'aircon', 'aircon', '2003-03-03 03:03:03', 'tenant_ticket_created', NULL),
+                    ('2004-04-04 04:04:04', 'tenant1', 'tenant1@gmail.com', 'cleanliness', 'not clean', '2004-04-04 04:04:04', 'landlord_completed_work',':Content/Documents/quotation_details/q2'),
+                    ('2005-05-05 05:05:05', 'tenant3', 'tenant3@gmail.com', 'horticulture', 'wiltered', '2005-05-05 05:05:05', 'landlord_quotation_sent', ':Content/Documents/quotation_details/q1');
         `);
 
         //        CREATE TEMPORARY TABLE tenant_user table
@@ -30,10 +30,10 @@ export default async function setup() {
             INSERT INTO tenant_user
             (email,password,public_building_id,public_lease_id)
             VALUES  ("tenant1@gmail.com","${hash_password}", "RC", NULL),
-                    ("tenant2@gmail.com","${hash_password}", "FC", "01-01-01 00:00:00"),
-                    ("tenant4@gmail.com","${hash_password}", "FC", "01-01-01 00:00:00"),
-                    ("tenant5@gmail.com","${hash_password}", "RC", "01-01-01 00:00:00"),
-                    ("tenant3@gmail.com","${hash_password}", "CWP", "01-01-01 00:00:00");
+                    ("tenant2@gmail.com","${hash_password}", "FC", "2001-01-01 00:00:00"),
+                    ("tenant3@gmail.com","${hash_password}", "CWP", "2001-02-16 12:01:09"),
+                    ("tenant4@gmail.com","${hash_password}", "FC", "2002-03-24 23:01:10"),
+                    ("tenant5@gmail.com","${hash_password}", "CWP", "2002-10-30 10:10:10");
         `);
 
         //        CREATE TEMPORARY TABLE landlord_user table
@@ -90,9 +90,10 @@ export default async function setup() {
             );
             await pool.promise().query(`
                 INSERT INTO lease 
-                VALUES  (1,'2023-02-01 00:00:00',1,1,'09','154',':Content/Documents/lease_details/1'),
-                        (2,'2023-02-03 09:13:09',3,1,'02','894',':Content/Documents/lease_details/2'),
-                        (3,'2023-03-12 12:12:18',3,2,'12','921',':Content/Documents/lease_details/3');
+                VALUES  (1,'2001-01-01 00:00:00',1,1,'09','154',':Content/Documents/lease_details/1'),
+                        (2,'2001-02-16 12:01:09',2,1,'02','894',':Content/Documents/lease_details/2'),
+                        (3,'2002-03-24 23:01:10',3,2,'12','921',':Content/Documents/lease_details/3'),
+                        (4,'2002-10-30 10:10:10',4,3,'10','30',':Content/Documents/lease_details/4');
     
             `);
         
