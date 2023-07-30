@@ -10,6 +10,7 @@ import {
   controllerForgotPasswordTenant,
   controllerResetPasswordPageTenant,
   controllerResetPasswordTenant,
+  controllerGetTicketById,
   controllerGetLeaseByTenant
 } from "../controller/tenant_controller.js";
 import express from "express";
@@ -40,6 +41,7 @@ router.post("/createTicket", checkTenantToken, controllerCreateTicket);
 router.patch("/quotationApproval/:id", checkTenantToken, controllerQuotationApproval);
 
 router.get("/getTickets",checkTenantToken, controllerGetTickets);
+router.get("/getTicketById/:id", checkTenantToken, controllerGetTicketById);
 router.get("/getTicketsByStatus/:status",checkTenantToken, controllerGetTicketsByStatus);
 
 router.patch("/addFeedbackRating/:id", checkTenantToken, controllerAddFeedbackRating);

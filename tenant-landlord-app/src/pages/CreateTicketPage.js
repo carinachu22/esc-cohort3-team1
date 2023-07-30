@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Box, Text, Button, Heading, Textarea, FormControl, FormLabel, Input } from '@chakra-ui/react';
+import { Box, Button, Heading, Textarea, useToast } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthUser, useAuthHeader } from 'react-auth-kit';
 import { Formik, Form,useFormik } from 'formik';
-import axios, {AxiosError} from "axios";
+import axios, { AxiosError } from "axios";
 import NavigationBar from '../components/NavigationBar.js';
 
 
@@ -12,10 +12,9 @@ function CreateTicketPage() {
   const navigate = useNavigate();
   const token = useAuthHeader();
   const userDetails = useAuthUser();
-  const [error, setError] = useState('');
   const [tenantComment, setTenantComment] = useState('');
   const [ticketType, setTicketType] = useState('');
-  const [additionalHeading, setAdditionalHeading] = useState('');
+  const toast = useToast();
 
   const handleCommentChange = (event) => {
     setTenantComment(event.target.value);
@@ -25,14 +24,13 @@ function CreateTicketPage() {
     setTicketType(event.target.value);
   };
 
-  const handleAdditionalHeadingChange = (event) => {
-    setAdditionalHeading(event.target.value);
-  };
+  // const handleAdditionalHeadingChange = (event) => {
+  //   setAdditionalHeading(event.target.value);
+  // };
 
   const handleCreateTicket = async () => {
     console.log(tenantComment);
     console.log(token());
-    setError('');
 
     try {
       const config = {
@@ -46,7 +44,6 @@ function CreateTicketPage() {
         email: userDetails().email,
         request_type: ticketType,
         request_description: tenantComment,
-        additional_heading: additionalHeading,
         submitted_date_time:
           currentdate.getFullYear().toString() +
           '-' +
@@ -73,14 +70,22 @@ function CreateTicketPage() {
       console.log(response1);
 
       navigate('/pages/Dashboard'); // Navigate to the Dashboard form page
+      toast({
+        title: "Ticket Created",
+        description: "Ticket has been created.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+        });
     } catch (err) {
       if (err && err instanceof AxiosError) {
-        setError(err.response);
+        console.log('Error: ', err);
       } else if (err && err instanceof Error) {
-        setError(err.message);
+        console.log('Error: ', err);
       }
 
-      console.log('Error: ', err);
+      
     }
   };
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Heading, Text, Textarea, Button } from "@chakra-ui/react";
+import { Box, Heading, Textarea, Button } from "@chakra-ui/react";
 import { useNavigate } from 'react-router-dom';
 
 function CloseTicketPage() {
@@ -24,7 +24,7 @@ function CloseTicketPage() {
       <Box w="75%" mt={4}>
         <Heading as="h1" size="xl" mb={4}>ticket name</Heading>
         <Heading as="h2" size="lg" mb={2}>Ticket Description</Heading>
-        <Heading as="h2" size="lg" mb={2}>Owner's Comments</Heading>
+        <Heading as="h2" size="lg" mb={2}>Owner`&apos;`s Comments</Heading>
         <Textarea
           placeholder="Your Comment"
           size="sm"

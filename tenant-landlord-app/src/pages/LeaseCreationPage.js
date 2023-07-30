@@ -1,19 +1,15 @@
 import React, { useState } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
-import {Link} from 'react-router-dom';
-import {useNavigate} from 'react-router-dom';
-import {setIn, useFormik} from "formik";
-import axios, {AxiosError} from "axios";
-import {useSignIn} from "react-auth-kit";
+import { useNavigate } from 'react-router-dom';
+import { useFormik } from "formik";
+import axios, { AxiosError } from "axios";
+import { useSignIn } from "react-auth-kit";
 import NavigationBar from '../components/NavigationBar.js';
 
 import {
     Box,
     Button,
-    Checkbox,
     Flex,
     FormControl,
-    FormLabel,
     Input,
     InputGroup,
     InputRightElement,
@@ -23,9 +19,6 @@ import {
 
 const LeaseCreationPage = () => {
     const navigate = useNavigate();
-    const [error, setError] = useState("");
-    const signIn = useSignIn();
-
     const validate = values => {
         let errors = {};
 
@@ -47,7 +40,6 @@ const LeaseCreationPage = () => {
 
     const onSubmit = async (values) => {
         console.log("Values: ", values);
-        setError("");
 
         try{
             const response = await axios.post(
@@ -63,13 +55,11 @@ const LeaseCreationPage = () => {
 
         } catch (err){
             if (err && err instanceof AxiosError) {
-                setError(err.response?.data.message);
+                console.log("Error: ", err);
             }
             else if (err && err instanceof Error){
-                setError(err.message);
+                console.log("Error: ", err);
             }
-
-            console.log("Error: ", err);
         }
     }
   

@@ -16,9 +16,8 @@ import TenantCreationPage from './TenantCreationPage.js';
 import LeaseCreationPage from './LeaseCreationPage.js';
 
 
-import {Routes, Route} from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import { ChakraProvider } from "@chakra-ui/react";
-import { useState } from 'react';
 
 import { SelectedTicketProvider } from '../components/SelectedTicketContext.js';
 

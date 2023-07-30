@@ -9,6 +9,7 @@ import {
   addFeedbackRating,
   addFeedbackText,
   closeTicketStatus,
+  getTicketById,
   getTenantUserId,
   getLeaseByTenant
 } from "../models/tenant_model.js";
@@ -240,6 +241,27 @@ export const controllerGetTicketsByStatus = (req, res) => {
       return res.status(500).json({
         success: 0,
         message: "Database connection error"
+      });
+    } else {
+      return res.json({
+        success: "1",
+        data: results,
+      });
+    }
+  });
+};
+
+export const controllerGetTicketById = (req, res) => {
+  const id = req.params.id;
+  getTicketById(id, (err, results) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+    if (!results) {
+      return res.json({
+        success: 0,
+        message: "Record not found",
       });
     } else {
       return res.json({

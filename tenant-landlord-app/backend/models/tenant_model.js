@@ -88,6 +88,24 @@ export const getTicketsByTenant = (email, callBack) => {
   );
 };
 
+// Temp Fix
+export const getTicketById = (id, callBack) => {
+  pool.query(
+    `
+    SELECT * FROM SERVICE_REQUEST
+    WHERE service_request_id = ?
+    `,
+    [id],
+    (error, results, fields) => {
+      if (error) {
+        callBack(error);
+      } else {
+        callBack(null, results[0]);
+      }
+    }
+  );
+};
+
 /**
  * Get Tickets by Status
  * @param {*} email 

@@ -1,16 +1,14 @@
 import React, { useState, useContext } from 'react';
-import { Box, Button, Text, Textarea, useToast, IconButton, Heading, Stack, Icon } from '@chakra-ui/react';
-import { StarIcon } from '@chakra-ui/icons';
+import { Box, Button, Textarea, useToast, Heading, Stack, Icon } from '@chakra-ui/react';
 import { IoIosStarOutline, IoIosStar } from 'react-icons/io/index.esm.js';
-import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
-import { useAuthUser, useAuthHeader } from 'react-auth-kit';
+import { useNavigate } from 'react-router-dom';
+import { useAuthHeader }from 'react-auth-kit';
 import { useFormik } from 'formik';
 import axios, { AxiosError } from 'axios';
 
 import { SelectedTicketContext } from '../components/SelectedTicketContext.js';
 
 function FeedbackForm() {
-  const [error, setError] = useState('');
   const {selectedTicket, setSelectedTicket} = useContext(SelectedTicketContext);
   const token = useAuthHeader();
   const navigate = useNavigate();
@@ -41,7 +39,6 @@ function FeedbackForm() {
   const APICloseTicket = async (data) => {
     console.log(token());
     console.log('VALUES', data);
-    setError('');
 
     try {
       const config = {
@@ -82,12 +79,10 @@ function FeedbackForm() {
       console.log(response3);
     } catch (err) {
       if (err && err instanceof AxiosError) {
-        setError(err.response);
+        console.log('Error: ', err);
       } else if (err && err instanceof Error) {
-        setError(err.message);
+        console.log('Error: ', err);
       }
-
-      console.log('Error: ', err);
     }
   };
 

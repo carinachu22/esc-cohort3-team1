@@ -1,6 +1,5 @@
-import React, { useState, Component } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
-import {setIn, useFormik} from "formik";
+import React from "react";
+import { useFormik } from "formik";
 import axios, {AxiosError} from "axios";
 import { useLocation } from "react-router-dom";
 
@@ -15,8 +14,6 @@ import {
 } from "@chakra-ui/react";
 
 const ForgotPasswordPage = () => {
-    const [error, setError] = useState("");
-
     const location = useLocation();
     const { role } = location.state.state;
     console.log(role);
@@ -37,7 +34,6 @@ const ForgotPasswordPage = () => {
 
     const onSubmit = async (values) => {
         console.log("Values: ", values);
-        setError("");
         try{
             if(role === "landlord"){
                 const response = await axios.post(
@@ -75,13 +71,11 @@ const ForgotPasswordPage = () => {
 
         } catch (err){
             if (err && err instanceof AxiosError) {
-                setError(err.response?.data.message);
+                console.log("Error: ", err);
             }
             else if (err && err instanceof Error){
-                setError(err.message);
+                console.log("Error: ", err);
             }
-
-            console.log("Error: ", err);
         }
     }
   

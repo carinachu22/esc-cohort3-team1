@@ -1,14 +1,7 @@
-import React, { useState, useRef, useContext } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
+import React, { useState, useContext } from "react";
 import axios from "axios";
 import { Helmet } from "react-helmet";
-import { Worker, Viewer } from '@react-pdf-viewer/core';
-import { PDFViewer, View } from '@react-pdf/renderer';
-import ReactPDF from '@react-pdf/renderer';
-import { useEffect } from "react";
-import { Document, Page } from 'react-pdf';
-import { Base64 } from 'js-base64';
-import { Formik, Form, Field } from 'formik'; // Import Formik components
+import { Formik, Form } from 'formik'; // Import Formik components
 
 import { useAuthHeader } from "react-auth-kit";
 
@@ -17,7 +10,6 @@ import {
   Button,
   Flex,
   FormControl,
-  FormLabel,
   Input,
   VStack,
   Heading,
@@ -25,12 +17,11 @@ import {
 } from "@chakra-ui/react";
 
 import { SelectedTicketContext } from '../components/SelectedTicketContext.js';
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import NavigationBar from "../components/NavigationBar.js";
 
 const QuotationUpload = () => {
-  const [text, setText] = useState('');
   const [pdfUrl, setPdfUrl] = useState('');
   const { selectedTicket, setSelectedTicket } = useContext(SelectedTicketContext);
   const token = useAuthHeader();
