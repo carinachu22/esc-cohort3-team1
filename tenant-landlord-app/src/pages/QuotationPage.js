@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Box, Button, useToast, Heading } from '@chakra-ui/react';
+import { Document, Page, pdfjs } from 'react-pdf';
+import { Box, Button, useToast, Heading, Checkbox } from '@chakra-ui/react';
 import { ArrowBackIcon } from '@chakra-ui/icons';
 import { useNavigate } from 'react-router-dom';
 
@@ -11,8 +12,9 @@ import { useAuthHeader } from 'react-auth-kit';
 
 function QuotationPage() {
     const {selectedTicket, setSelectedTicket} = useContext(SelectedTicketContext);
-    const ticketName = `${selectedTicket.id}`; // placeholder
+    const ticketName = `${selectedTicket.id}`; 
     const [pdfUrl,setPdfUrl] = useState('')
+    const [isCheckboxChecked, setCheckboxChecked] = useState(false); 
     const navigate = useNavigate();
     const toast = useToast();
     const token = useAuthHeader();
@@ -89,12 +91,15 @@ function QuotationPage() {
             <Heading mb={5} textAlign="center">Job Quote for Ticket: {ticketName}</Heading>
             <Box display="flex" flexDirection="column" justifyContent="center" minHeight="50vh">
                 {pdfUrl && <iframe src={pdfUrl} width="100%" height="600px" />}
+            <Checkbox isChecked={isCheckboxChecked} onChange={(e) => setCheckboxChecked(e.target.checked)}>
+                I have read and agree to the terms 
+            </Checkbox>
             <Box display="flex" justifyContent="space-around" m={1} p={1}>
                 <Button leftIcon={<ArrowBackIcon />} colorScheme="teal" variant="outline" onClick={() => navigate(-1)}>
                 Back
                 </Button>
                 <Button colorScheme="red" onClick={handleReject}>Reject</Button>
-                <Button colorScheme="green" onClick={handleApprove}>Approve</Button>
+                <Button colorScheme="green" onClick={handleApprove} isDisabled={!isCheckboxChecked}>Approve</Button>
             </Box>
             </Box>
         </Box>
