@@ -449,7 +449,7 @@ export const getTenantAccounts = (callBack) => {
   pool.query(
     `
     SELECT * 
-    FROM TENANT_USER`,
+    FROM TENANT_USER LEFT JOIN LEASE ON TENANT_USER.tenant_user_id = LEASE.tenant_user_id`,
     (error, results, fields) => {
       if (error) {
         callBack(error);
@@ -581,6 +581,19 @@ export const getLeaseByLandlord = (id, callBack) => {
       }
     }
   )
+}
+
+export const getLeaseDetails = (tenant_user_id, callBack) => {
+  pool.query(
+    'SELECT * FROM lease WHERE tenant_user_id = ?',
+    [tenant_user_id],
+    (error, results, fields) => {
+      if(error){
+        callBack(error);
+      }
+      return callBack(null, results[0]);
+    }
+  );
 }
 
 /**

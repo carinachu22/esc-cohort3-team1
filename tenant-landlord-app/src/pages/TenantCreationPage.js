@@ -88,7 +88,7 @@ const TenantCreationPage = () => {
         initialValues: {
             email: "",
             password: "",
-            buildingID: "",
+            public_building_id: "",
             hasError: false
         },
         onSubmit,
@@ -142,13 +142,13 @@ const TenantCreationPage = () => {
                         <FormControl marginTop="6">
                             <InputGroup size='md'>
                                 <Input
-                                    id="buildingID"
-                                    name="buildingID" 
+                                    id="public_building_id"
+                                    name="public_building_id" 
                                     pr='4.5rem'
                                     type="text"
                                     placeholder="Building ID"
                                     variant="filled"
-                                    value={formik.values.buildingID}
+                                    value={formik.values.public_building_id}
                                     onChange={formik.handleChange}
                                 />
                             </InputGroup>                        

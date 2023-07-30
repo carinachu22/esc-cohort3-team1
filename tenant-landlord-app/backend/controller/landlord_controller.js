@@ -20,7 +20,9 @@ import {
   createLease,
   getLeaseByLandlord,
   deleteLease,
-  updateLease
+  updateLease,
+  getLeaseDetails
+
 } from "../models/landlord_model.js";
 import { 
   getTenantByEmail,
@@ -261,15 +263,17 @@ export const controllerResetPasswordLandlord = async (req, res) => {
  * @param {*} res 
  */
 export const controllerCreateTenant = (req, res) => {
-  const tenant_email = req.body.email;
+  const email = req.body.email;
   const password = req.body.password;
-  const public_building_id = req.body.buildingID;
+  const public_building_id = req.body.public_building_id;
   console.log(public_building_id);
   const salt = genSaltSync(10);
   const password_hashed = hashSync(password, salt);
-  getTenantByEmail(tenant_email, (err, results) => {
-    if (!results){
-      createTenant(tenant_email, password_hashed, public_building_id, (err, results) => {
+  getTenantByEmail(email, (err, results) => {
+    console.log(results);
+    if (results.length == 0){
+      console.log("creating tenant");
+      createTenant(email, password_hashed, public_building_id, (err, results) => {
         if (err) {
           console.log(err);
           return res.status(500).json({
@@ -284,6 +288,8 @@ export const controllerCreateTenant = (req, res) => {
         });
       });
     } else{
+      console.log("tenant creation failed")
+      console.log(results)
       return res.status(500).json({
         success: 0,
         message: "Duplicate email entry"
@@ -852,5 +858,26 @@ export const controllerUpdateLease = (req, res) => {
         }
       })
     }
+  })
+}
+
+export const controllerGetLeaseDetails = (req,res) => {
+  const query = req.query;
+  console.log("req query", req.query);
+  const {tenantUserId} = query;
+  console.log("user id", tenantUserId);
+  getLeaseDetails(tenantUserId, (err,results) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).json({
+        success: 0,
+        message: "Database connection error",
+      });
+    }
+    return res.status(200).json({
+      success: 1,
+      message: "successfully retrieve lease details",
+      data: results
+    });
   })
 }
