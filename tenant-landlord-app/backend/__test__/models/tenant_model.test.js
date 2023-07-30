@@ -26,14 +26,11 @@ afterAll(async () => {
 describe("Testing getTenantByEmail() in tenant model", () => {
     test ("Test calling getTenantByEmail() on a valid email",(done) => {
         getTenantByEmail('tenant1@gmail.com', (err, results) => {
-            // console.log(JSON.parse(JSON.stringify(results)))
             if (err){
                 console.log("ERROR",err)
             }
             const rowsLength = results.length
-            // console.log(rowsLength)
             expect(rowsLength).toBe(1);
-            // console.log('done?')
             done();
         })
     });
@@ -42,10 +39,62 @@ describe("Testing getTenantByEmail() in tenant model", () => {
             if (err){
                 console.log("ERROR",err)
             }
-            //console.log(JSON.parse(JSON.stringify(results)))
             const rowsLength = results.length
-            //console.log(rowsLength)
             expect(rowsLength).toBe(0);
+            done();
+        })
+    });
+})
+
+describe("Testing getTenantById() in tenant model", () => {
+    test ("Test calling getTenantById() on a valid tenant ID",(done) => {
+        getTenantById(1, (err, results) => {
+            if (err){
+                console.log("ERROR",err)
+            }
+            const rowsLength = results.length
+            expect(rowsLength).toBe(1);
+            done();
+        })
+    });
+    test ("Test calling getTenantById() on an invalid tenant ID",(done) => {
+        getTenantById(999, (err, results) => {
+            if (err){
+                console.log("ERROR",err)
+            }
+            const rowsLength = results.length
+            expect(rowsLength).toBe(0);
+            done();
+        })
+    });
+})
+
+describe("Testing updateTenantPassword() in tenant model", () => {
+    test ("Test calling updateTenantPassword() on valid tenant ID",(done) => {
+        const data = {
+            password: "$2b$10$BIJTkvtOrkrKhl/juVKCBuVhPwqChMNbayD3DazrMBi6H6gsgVlrS",
+            id: 1
+        }
+        updateTenantPassword(data, (err, results) => {
+            if (err){
+                console.log("ERROR",err)
+            }
+            const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
+            expect(rowsChanged).toBe(1);
+            done();
+        })
+    });
+    test ("Test calling updateTenantPassword() on an invalid tenant ID",(done) => {
+        const data = {
+            password: "$2b$10$BIJTkvtOrkrKhl/juVKCBuVhPwqChMNbayD3DazrMBi6H6gsgVlrS",
+            id: 999
+        }
+        updateTenantPassword(data, (err, results) => {
+            if (err){
+                console.log("ERROR",err)
+            }
+            const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
+            expect(rowsChanged).toBe(0);
             done();
         })
     });
@@ -95,7 +144,6 @@ describe ("Testing getTicketsByStatus() in tenant model", () => {
             if(err){
                 console.log("ERROR",err)
             }
-            // console.log(results)
             const rowsLength = results.length
             expect(rowsLength).toBe(1);
             done()
@@ -155,9 +203,39 @@ describe("Testing createTicket() in tenant model", () => {
     });
 })
 
+describe("Testing quotationApproval() in tenant model", () => {
+    test ("Test calling quotationApproval() on a valid service ticket ID & valid value",(done) => {
+        quotationApproval("2004-04-04 04:04:04", 'ticket_quotation_approved', (err, results) => {
+            if (err){
+                console.log("ERROR",err)
+            }
+            const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
+            expect(rowsChanged).toBe(1);
+            done();
+        })
+    });
+    test ("Test calling quotationApproval() on an invalid service ticket ID & valid value",(done) => {
+        quotationApproval("9999-99-99 99:99:99", 'ticket_quotation_rejected', (err, results) => {
+            if (err){
+                console.log("ERROR",err)
+            }
+            const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
+            expect(rowsChanged).toBe(0);
+            done();
+        })
+    });
+    test ("Test calling quotationApproval() on status not approved in status library",(done) => {
+        quotationApproval("2005-05-05 05:05:05", 'ticket_quotation_reject', (err, results) => {
+            expect(err).toBe("invalid status");
+            done()
+        })
+    });
+
+})
+
 describe("Testing addFeedbackRating() in tenant model", () => {
     test ("Test calling addFeedBackRating() on a valid service ticket ID & valid value",(done) => {
-        addFeedbackRating(3, 4, (err, results) => {
+        addFeedbackRating("2002-02-02 02:02:02", 4, (err, results) => {
             if (err){
                 console.log("ERROR",err)
             }
@@ -167,7 +245,7 @@ describe("Testing addFeedbackRating() in tenant model", () => {
         })
     });
     test ("Test calling addFeedBackRating() on an invalid service ticket ID & valid value",(done) => {
-        addFeedbackRating(999, 4, (err, results) => {
+        addFeedbackRating("9999-99-99 99:99:99", 4, (err, results) => {
             if (err){
                 console.log("ERROR",err)
             }
@@ -177,7 +255,7 @@ describe("Testing addFeedbackRating() in tenant model", () => {
         })
     });
     test ("Test calling addFeedBackRating() on a valid service ticket ID & invalid value",(done) => {
-        addFeedbackRating(3, 6, (err, results) => {
+        addFeedbackRating("2003-03-03 03:03:03", 6, (err, results) => {
             if (err) {
                 // Error is reported through the callback
                 expect(err).toBeTruthy(); // Use any appropriate assertion to check the error
@@ -191,7 +269,7 @@ describe("Testing addFeedbackRating() in tenant model", () => {
     test ("Test calling addFeedBackRating() on an invalid service ticket ID & invalid value",(done) => {
         // INVALID ID SUPERSEDES INVALID VALUE!
         // YOU WILL GET LENGTH 0
-        addFeedbackRating(999, 6, (err, results) => {
+        addFeedbackRating("0000-00-00 00:00:00", 6, (err, results) => {
             if (err){
                 console.log("ERROR",err)
             }
@@ -205,7 +283,7 @@ describe("Testing addFeedbackRating() in tenant model", () => {
 
 describe("Testing addFeedbackText() in tenant model", () => {
     test ("Test calling addFeedbackText() on a valid service ticket ID",(done) => {
-        addFeedbackText(3, "good job", (err, results) => {
+        addFeedbackText("2003-03-03 03:03:03", "good job", (err, results) => {
             if (err){
                 console.log("ERROR",err)
             }
@@ -215,7 +293,7 @@ describe("Testing addFeedbackText() in tenant model", () => {
         })
     });
     test ("Test calling addFeedbackText() on an invalid service ticket ID",(done) => {
-        addFeedbackText(999, "good!", (err, results) => {
+        addFeedbackText("0000-00-00 00:00:00", "good!", (err, results) => {
             if (err){
                 console.log("ERROR",err)
             }
@@ -228,7 +306,7 @@ describe("Testing addFeedbackText() in tenant model", () => {
 
 describe("Testing closeTicketStatus() in tenant model", () => {
     test ("Test calling closeTicketStatus() on a valid service ticket ID & valid value",(done) => {
-        closeTicketStatus(1, 'landlord_ticket_closed', (err, results) => {
+        closeTicketStatus("2002-02-02 02:02:02", 'landlord_ticket_closed', (err, results) => {
             if (err){
                 console.log("ERROR",err)
             }
@@ -238,7 +316,7 @@ describe("Testing closeTicketStatus() in tenant model", () => {
         })
     });
     test ("Test calling closeTicketStatus() on an invalid service ticket ID & valid value",(done) => {
-        closeTicketStatus(999, 'landlord_ticket_closed', (err, results) => {
+        closeTicketStatus("9999-99-99 99:99:99", 'landlord_ticket_closed', (err, results) => {
             if (err){
                 console.log("ERROR",err)
             }
@@ -248,16 +326,64 @@ describe("Testing closeTicketStatus() in tenant model", () => {
         })
     });
     test ("Test calling closeTicketStatus() on an valid service ticket ID & invalid value",(done) => {
-        closeTicketStatus(2, 'landlord__tickets_close', (err, results) => {
+        closeTicketStatus("2004-04-04 04:04:04", 'landlord__tickets_close', (err, results) => {
             expect(err).toBe('invalid status')
             done()
         })
     });
 })
 
-describe("Testing quotationApproval() in tenant model", () => {
-    test ("Test calling quotationApproval() on a valid service ticket ID & valid value",(done) => {
-        quotationApproval(2, 'ticket_quotation_approved', (err, results) => {
+describe("Testing getTenantUserId() in tenant model", () => {
+    test ("Test calling getTenantUserId() on a valid email",(done) => {
+        getTenantUserId("tenant1@gmail.com", (err, results) => {
+            if (err){
+                console.log("ERROR",err)
+            }
+            const rowsLength = results.length
+            expect(rowsLength).toBe(1);
+            done();
+        })
+    });
+    test ("Test calling getTenantUserId() on an invalid email",(done) => {
+        getTenantUserId("tenant@gmail.com", (err, results) => {
+            if (err){
+                console.log("ERROR",err)
+            }
+            const rowsLength = results.length
+            expect(rowsLength).toBe(0);
+            done();
+        })
+    });
+})
+
+describe("Testing getLeaseByTenant() in tenant model", () => {
+    test ("Test calling getLeaseByTenant() on a valid tenant ID",(done) => {
+        getLeaseByTenant(3, (err, results) => {
+            if (err){
+                console.log("ERROR",err)
+            }
+            const rowsLength = results.length
+            expect(rowsLength).toBe(1);
+            done();
+        })
+    });
+    test ("Test calling getLeaseByTenant() on an invalid tenant ID",(done) => {
+        getLeaseByTenant(999, (err, results) => {
+            if (err){
+                console.log("ERROR",err)
+            }
+            const rowsLength = results.length
+            expect(rowsLength).toBe(0);
+            done();
+        })
+    });
+})
+
+describe("Testing updateTenantLease() in tenant model", () => {
+    test ("Test calling updateTenantLease() on valid tenant email",(done) => {
+        var currentdate = new Date(); 
+        const date = currentdate.getFullYear().toString() + '-' + (currentdate.getMonth() + 1).toString() + '-' + currentdate.getDate().toString() + ' ' + currentdate.getHours().toString() + ':' + ('0' + currentdate.getMinutes()).slice(-2) + ':' + currentdate.getSeconds().toString()
+        updateTenantLease("tenant4@gmail.com",date, (err, results) => {
             if (err){
                 console.log("ERROR",err)
             }
@@ -266,8 +392,10 @@ describe("Testing quotationApproval() in tenant model", () => {
             done();
         })
     });
-    test ("Test calling quotationApproval() on an invalid service ticket ID & valid value",(done) => {
-        quotationApproval(999, 'ticket_quotation_rejected', (err, results) => {
+    test ("Test calling updateTenantLease() on an invalid tenant email",(done) => {
+        var currentdate = new Date(); 
+        const date = currentdate.getFullYear().toString() + '-' + (currentdate.getMonth() + 1).toString() + '-' + currentdate.getDate().toString() + ' ' + currentdate.getHours().toString() + ':' + ('0' + currentdate.getMinutes()).slice(-2) + ':' + currentdate.getSeconds().toString()
+        updateTenantLease("tenant@gmail.com", date, (err, results) => {
             if (err){
                 console.log("ERROR",err)
             }
@@ -276,11 +404,4 @@ describe("Testing quotationApproval() in tenant model", () => {
             done();
         })
     });
-    test ("Test calling quotationApproval() on status not approved in status library",(done) => {
-        quotationApproval(99, 'ticket_quotation_reject', (err, results) => {
-            expect(err).toBe("invalid status");
-            done()
-        })
-    });
-
 })
