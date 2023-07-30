@@ -1,3 +1,5 @@
 .env
+setup.js
+
+# dependencies
 /node_modules
-/test

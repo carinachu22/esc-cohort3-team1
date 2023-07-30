@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 
 import { createPool } from "mysql2"; //this is just to import a method
 dotenv.config();
-const pool = createPool({
+export const pool = createPool({
   port: process.env.DB_PORT,
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -34,13 +34,17 @@ pool.getConnection((err, connection) => {
   }
 });
 
+export function cleanup() {
+  pool.end();
+}
 /**
  * Allows us to reuse the connect by keeping the connection in the pool \
  * -------- \
  * Functions of pool: \
  * pool.query
  */
-export default pool; //this allow us to reuse the connect by keeping the connection in the pool
+//export default pool; //this allow us to reuse the connect by keeping the connection in the pool
+export default {pool, cleanup}
 /**
  * Functions of pool:
  * pool.query

@@ -13,11 +13,20 @@ import {
   controllerGetQuotation,
   controllerTicketApproval,
   controllerTicketWork,
-  controllerGetTenantAccounts
+  controllerGetTenantAccounts,
+  controllerDeleteAllTenants,
+  controllerDeleteTenantByEmail,
+  controllerUploadLease,
+  controllerGetLease,
+  controllerCreateLease,
+  controllerGetLeaseByLandlord,
+  controllerDeleteLease,
+  controllerUpdateLease
 } from "../controller/landlord_controller.js";
 import express from "express";
-import { checkToken } from "../auth/token_validation.js";
+import { checkLandlordToken } from "../auth/landlord_validation.js";
 import multer from "multer";
+import { deleteLease } from "../models/landlord_model.js";
 
 
 
@@ -48,25 +57,36 @@ var upload = multer({ storage: storage })
  */
 
 // Be wary about the singular/plural of "Ticket"
-router.post("/create", controllerCreateLandlord);
+router.post("/create", checkLandlordToken, controllerCreateLandlord);
+
 router.post("/login", controllerLoginLandlord);
 router.post("/forgot-password", controllerForgotPasswordLandlord);
 router.post("/reset-password/:id/:jsontoken", controllerResetPasswordLandlord);
-router.post("/createTenant", controllerCreateTenant);
-router.post("/uploadQuotation/:id", upload.single('files'), controllerUploadQuotation)
-
 router.get("/reset-password/:id/:jsontoken", controllerResetPasswordPageLandlord);
-router.get("/getTickets", checkToken, controllerGetTickets);
-router.get("/getTicketById/:id", checkToken, controllerGetTicketById);
-router.get(
-  "/getTicketsByStatus/:status",
-  checkToken,
-  controllerGetTicketsByStatus
-);
-router.get("/getQuotation/", controllerGetQuotation);
-router.patch("/updateQuotation/:id", checkToken, controllerUpdateQuotation);
-router.patch("/ticketApproval/:id", checkToken, controllerTicketApproval);
-router.patch("/ticketWork/:id", checkToken, controllerTicketWork);
-router.get("/getTenantAccounts/", controllerGetTenantAccounts)
+
+router.post("/createTenant", checkLandlordToken, controllerCreateTenant);
+router.post("/uploadLease/:id", checkLandlordToken, upload.single('files'), controllerUploadLease);
+router.get("/getLease/", checkLandlordToken, controllerGetLease);
+
+router.post("/createLease", checkLandlordToken, controllerCreateLease);
+router.get("/getLeaseByLandlord", checkLandlordToken, controllerGetLeaseByLandlord)
+router.patch("/deleteLease", checkLandlordToken, controllerDeleteLease)
+router.patch("/updateLease",checkLandlordToken,controllerUpdateLease)
+
+router.get("/getTickets", checkLandlordToken, controllerGetTickets);
+router.get("/getTicketById/:id", checkLandlordToken, controllerGetTicketById);
+router.get("/getTicketsByStatus/:status", checkLandlordToken, controllerGetTicketsByStatus);
+
+router.get("/getQuotation/", checkLandlordToken, controllerGetQuotation);
+router.post("/uploadQuotation/:id", checkLandlordToken, upload.single('files'), controllerUploadQuotation);
+router.patch("/updateQuotation/:id", checkLandlordToken, controllerUpdateQuotation);
+
+router.patch("/ticketApproval/:id", checkLandlordToken, controllerTicketApproval);
+router.patch("/ticketWork/:id", checkLandlordToken, controllerTicketWork);
+
+router.get("/getTenantAccounts/", checkLandlordToken, controllerGetTenantAccounts);
+router.patch("/deleteAllTenants", checkLandlordToken, controllerDeleteAllTenants);
+router.patch("/deleteTenantByEmail", checkLandlordToken, controllerDeleteTenantByEmail);
+
 
 export default router;
