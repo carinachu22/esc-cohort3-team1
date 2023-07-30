@@ -8,7 +8,9 @@ import {
   quotationApproval,
   addFeedbackRating,
   addFeedbackText,
-  closeTicketStatus
+  closeTicketStatus,
+  getTenantUserId,
+  getLeaseByTenant
 } from "../models/tenant_model.js";
 import { genSaltSync, hashSync, compareSync } from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -26,7 +28,7 @@ export const controllerLoginTenant = (req, res) => {
     if (err) {
       console.log(err);
     }
-    console.log(results);
+    console.log(results[0]);
     if (!results) {
       return res.json({
         success: 0,
@@ -34,11 +36,11 @@ export const controllerLoginTenant = (req, res) => {
       });
     }
     
-    console.log(body.password, results.password);
-    const password_check = compareSync(body.password, results.password);
+    console.log(body.password, results[0].password);
+    const password_check = compareSync(body.password, results[0].password);
     if (password_check) {
-      results.password = undefined;
-      const jsontoken = jwt.sign({ result: results }, "paolom8", {
+      results[0].password = undefined;
+      const jsontoken = jwt.sign({ result: results[0] }, "paolom8", {
         expiresIn: "1h",
       });
       return res.json({
@@ -250,7 +252,7 @@ export const controllerGetTicketsByStatus = (req, res) => {
 
 /**
  * Get Quotation Approved
- * @param {*} req service_ticket_id, quotation_accepted_by_tenant == 0/1
+ * @param {*} req public_service_request_id (YYYY-MM-DD 00:00:00), quotation_accepted_by_tenant == 0/1
  * @param {*} res 
  */
 export const controllerQuotationApproval = (req, res) => {
@@ -282,14 +284,15 @@ export const controllerQuotationApproval = (req, res) => {
 }
 
 /**
- * Add Feedback Rating
- * @param {*} req service_request_id, feedback_rating(int, between 1-5)
+ * Add Feedback Rating, params: public_service_request_id (YYYY-MM-DD 00:00:00)
+ * @param {*} req feedback_rating(int, between 1-5)
  * @param {*} res 
  */
 export const controllerAddFeedbackRating = (req, res) => {
   const id = req.params.id;
-  const body = req.body; // input is int
-  addFeedbackRating(id, body, (err, results) => {
+  const feedback_rating = req.body.feedback_rating; 
+  console.log("feedback_rating", feedback_rating)
+  addFeedbackRating(id, feedback_rating, (err, results) => {
     if (err) {
       console.log(err);
       return;
@@ -306,14 +309,14 @@ export const controllerAddFeedbackRating = (req, res) => {
 }
 
 /**
- * Add Feedback Text
- * @param {*} req service_request_id, feedback_test
+ * Add Feedback Text, params: public_service_request_id (YYYY-MM-DD 00:00:00)
+ * @param {*} req  feedback_text
  * @param {*} res 
  */
  export const controllerAddFeedbackText = (req, res) => {
   const id = req.params.id;
-  const  body = req.body; 
-  addFeedbackText (id, body, (err, results) => {
+  const feedback_text = req.body.feedback_text; 
+  addFeedbackText (id, feedback_text, (err, results) => {
     if (err) {
       console.log(err);
       return;
@@ -330,8 +333,8 @@ export const controllerAddFeedbackRating = (req, res) => {
 }
 
 /**
- * Update Close Ticket Status
- * @param {*} req service_request_id, status == "close"
+ * Update Close Ticket Status, params: public_service_request_id (YYYY-MM-DD 00:00:00)
+ * @param {*} req status == "close"
  * @param {*} res 
  */
 export const controllerCloseTicketStatus = (req, res) => {
@@ -360,3 +363,40 @@ export const controllerCloseTicketStatus = (req, res) => {
   })
 }
 
+/**
+ * 
+ * @param {object} req 
+ * {email}
+ * @param {json} res 
+ */
+export const controllerGetLeaseByTenant = (req,res) => {
+  let tenantID = "";
+  getTenantUserId(req.body.email, (err, results) => {
+    if (err) {
+      console.log(err)
+      return
+    } if (!results) {
+      return res.json({
+        success:0,
+        message: "tenant not registered."
+      })
+    } else {
+      tenantID = results.tenant_user_id;
+      // console.log(tenantID)
+      getLeaseByTenant(tenantID, (err, results) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).json({
+            success: 0,
+            message: "Database connection error"
+          });
+        } else {
+          return res.status(200).json({
+            success:1,
+            data: results
+          });
+        };
+      })
+    }
+  })
+}
