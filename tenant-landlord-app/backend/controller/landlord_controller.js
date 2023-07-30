@@ -21,7 +21,8 @@ import {
   getLeaseByLandlord,
   deleteLease,
   updateLease,
-  getLeaseDetails
+  getLeaseDetails,
+  getBuildingID
 
 } from "../models/landlord_model.js";
 import { 
@@ -258,35 +259,49 @@ export const controllerResetPasswordLandlord = async (req, res) => {
 };
 
 /**
- * Create Tenant
- * @param {*} req tenant email, password(unhashed),  public_building_id (eg. RC)
+ * Create Tenant Account
+ * @param {*} req tenant's email, password(unhashed), landlord's email
  * @param {*} res 
  */
 export const controllerCreateTenant = (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
-  const public_building_id = req.body.public_building_id;
-  console.log(public_building_id);
+  const landlordEmail = req.body.landlordEmail;
+  console.log("landlordEmail", landlordEmail);
   const salt = genSaltSync(10);
   const password_hashed = hashSync(password, salt);
+  //check if email already exist in database,
+  //only create new tenant account if the email is unique
   getTenantByEmail(email, (err, results) => {
     console.log(results);
     if (results.length == 0){
       console.log("creating tenant");
-      createTenant(email, password_hashed, public_building_id, (err, results) => {
+      //get building id of landlord
+      getBuildingID(landlordEmail, (err, results) => {
         if (err) {
           console.log(err);
-          return res.status(500).json({
-            success: 0,
-            message: "Database connection error",
+          return;
+        } else {
+          const public_building_id = results.public_building_id;
+          console.log(public_building_id)
+          //create tenant account
+          createTenant(email, password_hashed, public_building_id, (err, results) => {
+            if (err) {
+              console.log(err);
+              return res.status(500).json({
+                success: 0,
+                message: "Database connection error",
+              });
+            }
+            return res.status(200).json({
+              success: 1,
+              message: "created successfully",
+              data: results,
+            });
           });
         }
-        return res.status(200).json({
-          success: 1,
-          message: "created successfully",
-          data: results,
-        });
       });
+
     } else{
       console.log("tenant creation failed")
       console.log(results)
@@ -585,18 +600,31 @@ export const controllerTicketWork = (req, res) => {
 }
 
 export const controllerGetTenantAccounts = (req, res) => {
-    getTenantAccounts((err, results) => {
-      if (err) {
-        console.log(err);
-        return;
-      } else {
-        return res.json({
-          success: "1",
-          data: results,
-        });
-      }
-    });
+  const query = req.query;
+  const {landlordEmail} = query;
+  console.log("email", landlordEmail);
+  getBuildingID(landlordEmail, (err, results) => {
+    if (err) {
+      console.log(err);
+      return;
+    } else {
+      const public_building_id = results.public_building_id;
+      console.log(public_building_id)
+      getTenantAccounts(public_building_id, (err, results) => {
+        if (err) {
+          console.log(err);
+          return;
+        } else {
+          return res.json({
+            success: "1",
+            data: results,
+          });
+        }
+      });
+    }
+  });
 };
+
 
 
 /**

@@ -147,7 +147,7 @@ export const deleteLandlord = (data, callBack) => {
  */
 export const deleteAllTenants = (callBack) => {
   pool.query(
-    'DELETE FROM tenant_user ',
+    'DELETE FROM tenant_user',
     (error, results, fields) => {
       if(error){
         callBack(error);
@@ -441,15 +441,17 @@ export const ticketWork = (id, data, status, callBack) => {
 
 
 /**
- * get tenant accounts by building id
+ * get tenant accounts 
  * @param {*} public_building_id 
  * @param {*} callBack 
  */
-export const getTenantAccounts = (callBack) => {
+export const getTenantAccounts = (public_building_id, callBack) => {
   pool.query(
     `
     SELECT * 
-    FROM TENANT_USER LEFT JOIN LEASE ON TENANT_USER.tenant_user_id = LEASE.tenant_user_id`,
+    FROM TENANT_USER LEFT JOIN LEASE ON TENANT_USER.tenant_user_id = LEASE.tenant_user_id
+    WHERE public_building_id=?`,
+    [public_building_id],
     (error, results, fields) => {
       if (error) {
         callBack(error);
@@ -458,6 +460,8 @@ export const getTenantAccounts = (callBack) => {
     }
   );
 };
+
+
 
 /**
  * 
@@ -700,6 +704,26 @@ export const getLease = (filepath, callBack) => {
     `,
     [
       filepath
+    ],
+    (error, results, fields) => {
+      if (error) {
+        callBack(error);
+      } else {
+        callBack(null, results[0]);
+      }
+    }
+  );
+}
+
+export const getBuildingID = (email, callBack) => {
+  pool.query(
+    `
+    SELECT public_building_id
+    FROM landlord_user
+    WHERE email=?
+    `,
+    [
+      email
     ],
     (error, results, fields) => {
       if (error) {

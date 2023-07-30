@@ -84,14 +84,18 @@ const AccountManagement = () => {
   const token = useAuthHeader();
   const userDetails = useAuthUser();
 
+  console.log('user details', userDetails)
+
   const config = {
     headers: {
       Authorization: `${token()}`
     },
     params: {
-        email: userDetails().email
+        email: userDetails().email,
+        public_building_id: userDetails().public_building_id
     }
   }
+
   const customTheme = extendTheme({
     styles: {
       global: {
@@ -118,19 +122,17 @@ const AccountManagement = () => {
     navigate('/pages/TenantCreationPage');
   }
 
-  const APIGetTenantAccounts = async () => {
+  const APIGetTenantAccounts = async (email) => {
     const response = await axios.get(
-        "http://localhost:5000/api/landlord/getTenantAccounts",
-        config
+        "http://localhost:5000/api/landlord/getTenantAccounts?landlordEmail=" + email
     )
-    //console.log(response)
+    console.log("APIGetTenantAccounts", response)
     return response
   }
   
   const APIDeleteAllTenants = async () => {
     const response = await axios.patch(
         "http://localhost:5000/api/landlord/deleteAllTenants",
-        config
     )
     //console.log(response)
     GetTenantAccounts();
@@ -141,7 +143,6 @@ const AccountManagement = () => {
   const APIDeleteTenantByEmail = async (email) => {
     const response = await axios.patch(
         "http://localhost:5000/api/landlord/deleteTenantByEmail",
-        config,
         {email, }
     )
     console.log(email);
@@ -152,7 +153,8 @@ const AccountManagement = () => {
 
   const GetTenantAccounts = async () => {
     var temp_accounts = []
-    const accounts = APIGetTenantAccounts()
+    console.log(config.params.email);
+    const accounts = APIGetTenantAccounts(config.params.email);
     accounts.then((result) => {
         if (result !== undefined){
         for (let i=0;i<result.data.data.length;i++){
@@ -215,7 +217,7 @@ const AccountManagement = () => {
               </Box>
               </HStack>
               <br></br>
-              <Button onClick={() => {navigate('/pages/ViewLeasePage/')}} bgColor='blue.500' color='white' _hover={{bg: 'blue.800'}}>
+              <Button onClick={() => {navigate('/pages/LeaseUploadPage/')}} bgColor='blue.500' color='white' _hover={{bg: 'blue.800'}}>
                   New Lease
               </Button>
           </AccordionPanel>

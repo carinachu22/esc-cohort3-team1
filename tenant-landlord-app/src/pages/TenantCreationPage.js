@@ -24,15 +24,16 @@ const TenantCreationPage = () => {
     const token = useAuthHeader();
     const userDetails = useAuthUser();
 
-    
     const config = {
         headers: {
-            Authorization: `${token()}`
+          Authorization: `${token()}`
         },
         params: {
             email: userDetails().email
         }
-    }
+      }
+
+    
 
     const validate = values => {
         let errors = {};
@@ -62,6 +63,14 @@ const TenantCreationPage = () => {
         navigate('/pages/AccountManagement');
     };
 
+    const APIGetBuildingID = async (email) => {
+        const response = await axios.get(
+            "http://localhost:5000/api/landlord/getTenantAccounts?landlordEmail=" + email
+        )
+        console.log("APIGetBuildingID", response)
+        return response
+    }
+
     const onSubmit = async (values) => {
         console.log("Values: ", values);
 
@@ -69,7 +78,6 @@ const TenantCreationPage = () => {
             const response = await axios.post(
                 //api to be added
                 "http://localhost:5000/api/landlord/createTenant",
-                config,
                 values
             )
             console.log(response);
@@ -92,7 +100,7 @@ const TenantCreationPage = () => {
         initialValues: {
             email: "",
             password: "",
-            public_building_id: "",
+            landlordEmail: config.params.email,
             hasError: false
         },
         onSubmit,
@@ -142,20 +150,6 @@ const TenantCreationPage = () => {
                                 </InputRightElement>
                             </InputGroup>
                             {formik.errors.password ? <Box color="red.500"  marginBottom="-6">{formik.errors.password}</Box>: null}                          
-                        </FormControl>
-                        <FormControl marginTop="6">
-                            <InputGroup size='md'>
-                                <Input
-                                    id="public_building_id"
-                                    name="public_building_id" 
-                                    pr='4.5rem'
-                                    type="text"
-                                    placeholder="Building ID"
-                                    variant="filled"
-                                    value={formik.values.public_building_id}
-                                    onChange={formik.handleChange}
-                                />
-                            </InputGroup>                        
                         </FormControl>
                         <FormControl marginTop="6" >
                             <Button 

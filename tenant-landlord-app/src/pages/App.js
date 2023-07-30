@@ -14,6 +14,7 @@ import AccountManagement from './AccountManagement.js';
 import QuotationUpload from './QuotationUploadPage.js';
 import TenantCreationPage from './TenantCreationPage.js';
 import ViewLeasePage from './ViewLeasePage.js';
+import LeaseUpload from './LeaseUploadPage.js';
 
 
 import { Routes, Route } from 'react-router-dom';
@@ -44,6 +45,7 @@ function App() {
             <Route path='/pages/QuotationPage/*' element={<QuotationPage />} />
             <Route path='/pages/AccountManagement/*' element={<AccountManagement/>} />
             <Route path='/pages/ViewLeasePage/*' element={<ViewLeasePage/>} />
+            <Route path='/pages/LeaseUploadPage/*' element={<LeaseUpload/>} />
           </Routes>
         </div>
       </div>
