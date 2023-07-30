@@ -9,7 +9,6 @@ import { SelectedTicketContext } from '../components/SelectedTicketContext.js';
 import axios from 'axios';
 import { useAuthHeader } from 'react-auth-kit';
 
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
 function QuotationPage() {
     const {selectedTicket, setSelectedTicket} = useContext(SelectedTicketContext);

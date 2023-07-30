@@ -29,8 +29,6 @@ import { Accordion,
     Box, 
     AccordionIcon, 
     HStack,
-    Flex, 
-    Icon,
     Popover,
     PopoverTrigger,
     PopoverContent,
@@ -39,13 +37,22 @@ import { Accordion,
     PopoverFooter,
     PopoverArrow,
     PopoverCloseButton,
-    PopoverAnchor,
     ButtonGroup,
     useDisclosure,
     IconButton,
-    FocusLock, 
-    useBoolean,
-    FormControl} from '@chakra-ui/react';
+    FormControl,
+    extendTheme,
+    CSSReset,
+    ChakraProvider,
+    Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalHeader,
+    ModalFooter,
+    ModalBody,
+    ModalCloseButton,
+    FormLabbel,
+    FormHelperText} from '@chakra-ui/react';
 
 import { DeleteIcon } from '@chakra-ui/icons'
 
@@ -73,7 +80,27 @@ const AccountManagement = () => {
   const signIn = useSignIn();
   const [tenantAccounts, setTenantAccounts] = useState(null)
   const { onOpen: onOpen, onClose: onClose, isOpen: isOpen } = useDisclosure();
-  const [isVisible, setIsVisible] = React.useState(true);
+  const { onOpen: onOpenModal, onClose: onCloseModal, isOpen: isOpenModal } = useDisclosure();
+  const token = useAuthHeader();
+  const userDetails = useAuthUser();
+
+  const config = {
+    headers: {
+      Authorization: `${token()}`
+    },
+    params: {
+        email: userDetails().email
+    }
+}
+  const customTheme = extendTheme({
+    styles: {
+      global: {
+        body: {
+          bg: "gray.200", // Set the desired background color here
+        },
+      },
+    },
+  });
 
 
   const navigateToTenantCreationPage = () => {
@@ -86,6 +113,7 @@ const AccountManagement = () => {
   const APIGetTenantAccounts = async () => {
     const response = await axios.get(
         "http://localhost:5000/api/landlord/getTenantAccounts",
+        config
     )
     //console.log(response)
     return response
@@ -94,6 +122,7 @@ const AccountManagement = () => {
   const APIDeleteAllTenants = async () => {
     const response = await axios.patch(
         "http://localhost:5000/api/landlord/deleteAllTenants",
+        config
     )
     //console.log(response)
     GetTenantAccounts();
@@ -104,6 +133,7 @@ const AccountManagement = () => {
   const APIDeleteTenantByEmail = async (email) => {
     const response = await axios.patch(
         "http://localhost:5000/api/landlord/deleteTenantByEmail",
+        config,
         {email, }
     )
     console.log(email);
@@ -145,14 +175,31 @@ const AccountManagement = () => {
                   <FormControl>
                     <Button 
                       onClick={() => APIDeleteTenantByEmail(account.email)}
-                      
                       colorScheme='red'
                       >
                       confirm?
                     </Button>
                   </FormControl>
                 </Popup>
+                {/* <IconButton size='sm' icon={<DeleteIcon />} onClick={onOpen}></IconButton>
+                <Modal isOpen={isOpen} onClose={onClose} >
+                  <ModalOverlay/>
+                  <ModalContent>
+                    <ModalHeader>
+                      <ModalCloseButton/>
+                    </ModalHeader>
+                    <ModalBody>
+                      <Box>Doing so will permanently delete this account, are you sure?</Box>
+                    </ModalBody>
+                    <ModalFooter>
+                      <Button onClick={() => APIDeleteTenantByEmail(account.email)} colorScheme='red'> </Button>
+                    </ModalFooter>
+                  </ModalContent>
+                </Modal> */}
               </Box>
+
+
+              
 
           </AccordionButton>
           <AccordionPanel>
@@ -178,26 +225,30 @@ const AccountManagement = () => {
 
   return (
     <>
-    {NavigationBar()}
-    <Button
-      onClick={navigateToTenantCreationPage}
-      backgroundColor="teal.400" 
-      variant="unstyled"
-      padding={2}
-      position="fixed"
-      right="6"
-      marginTop="2"
-      textColor="white"
-    >
-    Create New Tenant
-    </Button>
-    <TableContainer marginTop="20" margin={20} border="1px" borderColor="gray.300" >
+    <ChakraProvider theme={customTheme}>
+      <CSSReset/>
+      {NavigationBar()}
+      <Box position="relative" marginTop="2em" float="right" right="2em">
+        <Button
+          onClick={navigateToTenantCreationPage}
+          colorScheme='teal'
+          padding={2}
+
+          textColor="white"
+        >
+        Create New Tenant
+        </Button>
+      </Box>
+      <Box  fontSize="30px" marginLeft="2.6em" marginTop="2em" marginBottom="-2.5em">
+        Tenant Details
+      </Box> 
+      <TableContainer  margin="5em" border="1px" borderColor="gray.300" boxShadow="0 0.188em 1.550em rgb(156, 156, 156)" background="white">
         <Table variant='simple'>
-        <Thead margin={0}>
+        <Thead margin={0} backgroundColor="blue.400" >
             <Tr>
-                <Th width="15vw" textAlign='left' paddingRight={0} > ID </Th>
-                <Th width='31vw' textAlign='left' paddingRight={0} paddingLeft={0}> Tenant </Th>
-                <Th width='35vw' textAlign='left' paddingRight={0} paddingLeft={0}>Building ID</Th>
+                <Th width="15vw" textAlign='left' paddingRight={0} textColor="white"> ID </Th>
+                <Th width='31vw' textAlign='left' paddingRight={0} paddingLeft={0} textColor="white"> Email </Th>
+                <Th width='35vw' textAlign='left' paddingRight={0} paddingLeft={0} textColor="white">Building ID</Th>
                 <Th width='2.5vw' alignItems="center" paddingRight={0} paddingLeft={0} >
                   <Popover
                     isOpen={isOpen}
@@ -231,7 +282,11 @@ const AccountManagement = () => {
         <Accordion allowToggle >
           {tenantAccounts}
         </Accordion>
-    </TableContainer>
+      </TableContainer>
+    </ChakraProvider>
+
+
+
 
 
     </>

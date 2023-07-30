@@ -1,32 +1,22 @@
 import React, { useState } from "react";
-import SignupStyles from "../styles/signup_form_landlord.module.css";
-import PasswordStyles from "../styles/usePasswordToggle.module.css";
-import "bootstrap/dist/css/bootstrap.min.css";
-import {useNavigate} from 'react-router-dom';
-import {useFormik} from "formik";
-import axios, {AxiosError} from "axios";
-import {useSignIn} from "react-auth-kit";
+import { useNavigate } from 'react-router-dom';
+import { useFormik } from "formik";
+import axios, { AxiosError } from "axios";
+import { useSignIn } from "react-auth-kit";
 import {
   Box,
   Button,
-  Checkbox,
   Flex,
   FormControl,
-  FormLabel,
   Input,
   InputGroup,
   InputRightElement,
   VStack,
-  Heading,
-  Center,
-  Text,
-  FormHelperText,
-  FormErrorMessage,
+  Heading
 } from "@chakra-ui/react";
 
 const LandlordSignup = () => {
   const navigate = useNavigate();
-  const [error, setError] = useState("");
   const signIn = useSignIn();
 
   const [passwordShown, setPasswordShown] = useState(false);
@@ -52,7 +42,6 @@ const LandlordSignup = () => {
 
   const onSubmit = async (values) => {
     console.log("Values: ", values);
-    setError("");
 
     try{
         const response = await axios.post(
@@ -74,13 +63,11 @@ const LandlordSignup = () => {
 
     } catch (err){
         if (err && err instanceof AxiosError) {
-            setError(err.response?.data.message);
+            console.log("Error: ", err);
         }
         else if (err && err instanceof Error){
-            setError(err.message);
+            console.log("Error: ", err);
         }
-
-        console.log("Error: ", err);
     }
   }
 
