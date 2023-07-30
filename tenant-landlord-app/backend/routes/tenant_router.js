@@ -10,7 +10,8 @@ import {
   controllerForgotPasswordTenant,
   controllerResetPasswordPageTenant,
   controllerResetPasswordTenant,
-  controllerGetTicketById
+  controllerGetTicketById,
+  controllerGetLeaseByTenant
 } from "../controller/tenant_controller.js";
 import express from "express";
 import { checkTenantToken } from "../auth/tenant_validation.js";
@@ -30,17 +31,21 @@ const router = express.Router();
  */
 
 router.post("/login", controllerLoginTenant);
-router.post("/createTicket", checkTenantToken, controllerCreateTicket);
 router.post("/forgot-password", controllerForgotPasswordTenant);
 router.post("/reset-password/:id/:jsontoken", controllerResetPasswordTenant);
+router.get("/reset-password/:id/:jsontoken", controllerResetPasswordPageTenant);
 
+router.get("/getLease", checkTenantToken, controllerGetLeaseByTenant);
+
+router.post("/createTicket", checkTenantToken, controllerCreateTicket);
 router.patch("/quotationApproval/:id", checkTenantToken, controllerQuotationApproval);
 
-router.get("/reset-password/:id/:jsontoken", controllerResetPasswordPageTenant);
 router.get("/getTickets",checkTenantToken, controllerGetTickets);
 router.get("/getTicketById/:id", checkTenantToken, controllerGetTicketById);
 router.get("/getTicketsByStatus/:status",checkTenantToken, controllerGetTicketsByStatus);
+
 router.patch("/addFeedbackRating/:id", checkTenantToken, controllerAddFeedbackRating);
 router.patch("/addFeedbackText/:id", checkTenantToken, controllerAddFeedbackText);
+
 router.patch("/closeTicketStatus/:id", checkTenantToken, controllerCloseTicketStatus);
 export default router;
