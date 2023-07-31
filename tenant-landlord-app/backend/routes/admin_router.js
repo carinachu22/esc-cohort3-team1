@@ -50,18 +50,18 @@ router.post("/forgot-password", controllerForgotPasswordAdmin);
 router.post("/reset-password/:id/:jsontoken", controllerResetPasswordAdmin);
 router.get("/reset-password/:id/:jsontoken", controllerResetPasswordPageAdmin);
 
-router.post("/createLandlord", controllerCreateLandlord);
-router.patch("/deleteLandlordByEmail", controllerDeleteLandlordByEmail);
-router.post("/createBuilding", controllerCreateBuilding);
+router.post("/createLandlord", checkAdminToken, controllerCreateLandlord);
+router.patch("/deleteLandlordByEmail", checkAdminToken, controllerDeleteLandlordByEmail);
+router.post("/createBuilding", checkAdminToken, controllerCreateBuilding);
 
 //LANDLORD PRIVILEGES
 
-router.post("/createTenant", controllerCreateTenant);
-router.get("/getTicket/:id", controllerGetTicketById);
-router.get("/getTickets", controllerGetTickets);
-router.post("/createTicket", controllerCreateTicket);
-router.patch("/deleteAllTenants", controllerDeleteAllTenants);
-router.patch("/deleteTenantByEmail", controllerDeleteTenantByEmail);
+router.post("/createTenant", checkAdminToken, controllerCreateTenant);
+router.get("/getTicket/:id", checkAdminToken, controllerGetTicketById);
+router.get("/getTickets", checkAdminToken, controllerGetTickets);
+router.post("/createTicket", checkAdminToken, controllerCreateTicket);
+router.patch("/deleteAllTenants", checkAdminToken, controllerDeleteAllTenants);
+router.patch("/deleteTenantByEmail", checkAdminToken, controllerDeleteTenantByEmail);
 
 // TODO: Do we want a generic API to patch any fields of a service ticket?
 //router.patch("/updateTicket/:id", controllerUpdateTicket);
