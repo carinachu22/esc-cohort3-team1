@@ -56,10 +56,20 @@
   "devDependencies": {
     "@babel/eslint-parser": "^7.22.9",
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@babel/preset-env": "^7.22.9",
+    "@babel/preset-react": "^7.22.5",
+    "babel-jest": "^29.6.2",
     "babel-plugin-styled-components": "^2.1.4",
     "babel-preset-flow": "^6.23.0",
     "eslint": "^8.45.0",
     "eslint-plugin-react": "^7.33.0"
   },
-  "lint": "eslint './src/**/*.js'"
+  "lint": "eslint './src/**/*.js'",
+  "jest": {
+    "coverageThreshold": {
+      "global": {
+        "lines": 80
+      }
+    }
+  }
 }
