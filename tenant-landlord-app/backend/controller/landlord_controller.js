@@ -317,8 +317,14 @@ export const controllerCreateTenant = (req, res) => {
 
 };
 
+/**
+ * delete all tenant accounts with same buildingID as landlord
+ * @param {*} req landlordEmail
+ * @param {*} res 
+ */
 export const controllerDeleteAllTenants = (req, res) => {
-  deleteAllTenants((err) => {
+  const {landlordEmail} = req.query;
+  getBuildingID(landlordEmail, (err, results) => {
     if (err) {
       console.log(err);
       return res.status(500).json({
@@ -326,11 +332,22 @@ export const controllerDeleteAllTenants = (req, res) => {
         message: "Database connection error",
       });
     }
-    return res.status(200).json({
-      success: 1,
-      message: "deleted successfully",
+    const buildingID = results.public_building_id;
+    deleteAllTenants(buildingID, (err, results) => {
+      if (err) {
+        console.log(err);
+        return res.status(500).json({
+          success: 0,
+          message: "Database connection error",
+        });
+      }
+      return res.status(200).json({
+        success: 1,
+        message: "deleted successfully",
+      });
     });
-  });
+  })
+
 };
 
 
