@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useFormik } from "formik";
 import axios, { AxiosError } from "axios";
 import { useSignIn } from "react-auth-kit";
+// import * as ReactDOM from 'react-dom';
 
 import {
     Box,
@@ -162,7 +163,10 @@ const LoginPage = () => {
                     <VStack align="flex-start" alignItems="center">
                         <Heading marginTop="4" fontSize="32">Welcome {role}!</Heading>
                         <FormControl marginTop="6">
+
                             <Input
+                                data-testid="text-email"
+                                // className="textEmail"
                                 id="email" 
                                 name="email"
                                 type="email" 
@@ -176,6 +180,8 @@ const LoginPage = () => {
                         <FormControl marginTop="6">
                             <InputGroup size='md'>
                                 <Input
+                                    data-testid="text-password"
+                                    // className="textPassword"
                                     id="password"
                                     name="password" 
                                     pr='4.5rem'
@@ -186,7 +192,7 @@ const LoginPage = () => {
                                     onChange={formik.handleChange}
                                 />
                                 <InputRightElement width="4.5rem">
-                                    <Button h='1.75rem' size='sm' onClick={togglePassword}  variant="unstyled">
+                                    <Button data-testid="login-button" className="loginButton" h='1.75rem' size='sm' onClick={togglePassword}  variant="unstyled">
                                         {passwordShown ? 'Hide' : 'Show'}
                                     </Button>
                                 </InputRightElement>
@@ -220,5 +226,8 @@ const LoginPage = () => {
     )
 
 }
+
+// const textEmail = document.getElementById('textEmail')
+// ReactDOM.createRoot(textEmail).render(<LoginPage />)
 
 export default LoginPage
