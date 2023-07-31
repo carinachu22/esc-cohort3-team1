@@ -1,3 +1,4 @@
 tenant-landlord-app/backend/test/tenant_model.test.js
 tenant-landlord-app/backend/.env
 
+/node_modules
