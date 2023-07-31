@@ -166,7 +166,6 @@ const LoginPage = () => {
                 placeholder="Email"
                 value={formik.values.email}
                 onChange={formik.handleChange}
-                data-testid="login-email"
               />
               {formik.errors.email ? (
                 <Box color="red.500" marginBottom="-6">
