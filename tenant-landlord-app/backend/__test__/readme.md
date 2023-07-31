@@ -12,6 +12,13 @@ Example: To run tenant_model.test.js
 cd tenant-landlord-app/backend/__test_
 npm test models/tenant_model.test.js
 ```
+If you just want to run that one specific test case, add a "`.only`" after the `test`.
+Example:
+```
+test.only("Only this test will be run", () => {
+    // sample code
+})
+```
 
 ### Step 2: Check test cases
 
