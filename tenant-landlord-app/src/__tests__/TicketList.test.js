@@ -1,11 +1,10 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
+//import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "./setupTests.js";
 import { BrowserRouter } from "react-router-dom";
-import App from "../pages/App.js";
 import "@testing-library/jest-dom";
-import { ChakraProvider } from "@chakra-ui/react";
+//import { ChakraProvider } from "@chakra-ui/react";
 import { AuthProvider, useSignIn } from "react-auth-kit";
-import LoginPage from "../pages/LoginPage.js";
 import TicketList from "../pages/TicketList.js";
 import ViewTicketPage from "../pages/ViewTicketPage.js";
 
@@ -26,6 +25,7 @@ describe("Level 2: Rendering pages that requires being logged in", () => {
         </BrowserRouter>
       </AuthProvider>
     );
+    screen.debug();
   });
   test("Render ViewTicketPage", () => {
     render(
