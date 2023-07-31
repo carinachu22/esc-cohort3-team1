@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Document, Page, pdfjs } from 'react-pdf';
 import { Box, Button, useToast, Heading } from '@chakra-ui/react';
 import { ArrowBackIcon } from '@chakra-ui/icons';
 import { useNavigate } from 'react-router-dom';
@@ -7,7 +6,6 @@ import { useNavigate } from 'react-router-dom';
 import NavigationBar from '../components/NavigationBar.js';
 import { SelectedTicketContext } from '../components/SelectedTicketContext.js';
 
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
 function ViewLeasePage() {
     const {selectedTicket, setSelectedTicket} = useContext(SelectedTicketContext);
@@ -16,7 +14,7 @@ function ViewLeasePage() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetch(`http://localhost:5000/api/landlord/getQuotation/?id=${selectedTicket.id}`,
+        fetch(`http://localhost:5000/api/landlord/getLeaseDetails/?id=${selectedTicket.id}`,
         ) // Replace with the actual lease pdf, now still quotation
           .then((response) => response.blob())
           .then((data) => {
