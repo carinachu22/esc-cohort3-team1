@@ -891,7 +891,7 @@ export const controllerUpdateLease = (req, res) => {
 export const controllerGetLeaseDetails = (req,res) => {
   const query = req.query;
   console.log("req query", req.query);
-  const {tenantUserId} = query;
+  const tenantUserId = query.id;
   console.log("user id", tenantUserId);
   getLeaseDetails(tenantUserId, (err,results) => {
     if (err) {
