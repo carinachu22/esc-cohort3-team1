@@ -145,9 +145,10 @@ export const deleteLandlord = (data, callBack) => {
  * @param {*} data 
  * @param {*} callBack 
  */
-export const deleteAllTenants = (callBack) => {
+export const deleteAllTenants = (buildingID, callBack) => {
   pool.query(
-    'DELETE FROM tenant_user',
+    'DELETE FROM tenant_user WHERE public_building_id=?',
+    [buildingID],
     (error, results, fields) => {
       if(error){
         callBack(error);
