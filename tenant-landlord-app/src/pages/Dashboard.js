@@ -1,6 +1,6 @@
 // Import react-bootstrap components
 
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 // Import React and hooks
 import React, { useEffect, useState } from "react";
@@ -34,9 +34,12 @@ Functionalities:
 **/
 export default function Dashboard() {
     // Initialise states and hooks
+    const navigate = useNavigate();
     const [tickets, setTickets] = useState([]);
     const [needAction, setNeedAction] = useState(0);
     const [waitAction, setWaitAction] = useState(0);
+    const [loggedin, setLoggedin] = useState(false);
+    const [email, setEmail] = useState("");
     const token = useAuthHeader();
     const authenticated = useIsAuthenticated();
     const userDetails = useAuthUser();
@@ -122,20 +125,33 @@ export default function Dashboard() {
         })
     }
 
-    const authenticate = (() => {
+    const authenticate = () => {
         // Check if still autenticated based on react auth kit
+        const temp_user = userDetails();
         if (!authenticated()){
             console.log("Not authenticated, redirecting.")
-            return <Navigate to="/"></Navigate>
+            return false
+        } else {
+            setLoggedin(true);
+            setEmail(temp_user.email);
+            return true
         }
-    })
+    }
 
     // This is to ensure that the GET request only happens once on page load
     // This will update the tickets state
     useEffect(() => {
-        GetServiceTickets(userDetails);
-        authenticate();},
-        [])
+        if (authenticate()){
+            GetServiceTickets(userDetails);
+        } else {
+            navigate('/')
+        }
+        }, [])
+
+    useEffect(() => {
+        authenticate()
+    })
+
 
 
     //console.log("Authenticated.")
@@ -151,7 +167,7 @@ export default function Dashboard() {
         {NavigationBar()}
         <Box maxW="7xl" mx={'auto'} pt={5} px={{ base: 2, sm: 12, md: 17 }}>
         <chakra.h1 textAlign={'center'} fontSize={'4xl'} py={10} fontWeight={'bold'}>
-        Welcome, {userDetails().email}
+        Welcome, {email}
         </chakra.h1>
         <SimpleGrid columns={{ base: 1, md: 3 }} spacing={{ base: 5, lg: 8 }}>
             {StatsCard('Total Tickets', tickets.length, <AiFillInfoCircle size={'3em'} color='lightblue' />)}
@@ -159,9 +175,9 @@ export default function Dashboard() {
             {StatsCard('Tickets Pending Your Tenant/Landlord Action', waitAction, <AiFillClockCircle size={'3em'} color='grey' />)}
         </SimpleGrid>
         </Box>
-  
         </>
     )
+    
 }
 
 
