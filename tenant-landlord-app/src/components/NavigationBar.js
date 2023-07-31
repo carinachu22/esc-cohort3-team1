@@ -9,7 +9,7 @@ import {
 } from '@chakra-ui/react';
   
 import * as React from 'react'; 
-import { useAuthUser, useSignOut } from 'react-auth-kit';
+import { useAuthUser, useSignOut, useIsAuthenticated } from 'react-auth-kit';
 import { Navigate, useNavigate } from 'react-router-dom';
 
 function CreateTicket(accountType){
@@ -52,9 +52,10 @@ export default function NavigationBar(){
     const navigate = useNavigate();
     const signOut = useSignOut();
     const userDetails = useAuthUser();
-    console.log(userDetails().type)
-    if (userDetails() == null){
-        return <Navigate to="/"></Navigate>
+    const authenticated = useIsAuthenticated();
+    console.log(userDetails())
+    if (!authenticated()){
+        return
     }
     return (
         <>
