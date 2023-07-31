@@ -1,28 +1,16 @@
 import React from "react";
+import userEvent from "@testing-library/user-event";
 import { render, screen, waitFor } from "./setupTests.js";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, MemoryRouter } from "react-router-dom";
 import App from "../pages/App.js";
 import "@testing-library/jest-dom";
 import { AuthProvider, useSignIn } from "react-auth-kit";
 import LoginPage from "../pages/LoginPage.js";
 
-// Mock react-router-dom before rendering the component
-//jest.mock("react-router-dom");
 //jest.mock("react-auth-kit"); //somehow this causes bugs
 
-describe("App.js", () => {
-  test("Render App.js", () => {
-    render(
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    );
-  });
-});
-
-/** Login Page first  */
 describe("Login.js", () => {
-  test("renders email input field-Placeholder Text", () => {
+  test("Email,Password, login btn features are present", () => {
     render(
       <AuthProvider
         authType={"cookie"}
@@ -37,5 +25,64 @@ describe("Login.js", () => {
     );
     const emailInput = screen.getByPlaceholderText("Email");
     expect(emailInput).toBeInTheDocument();
+
+    const passwordInput = screen.getByPlaceholderText("Password");
+    expect(passwordInput).toBeInTheDocument();
+
+    const submitBtn = screen.getByRole("button", { name: "LOGIN" });
+    expect(submitBtn).toBeInTheDocument();
+  });
+
+  test("Submit button click handler called", async () => {
+    render(
+      <AuthProvider
+        authType={"cookie"}
+        authName={"_auth"}
+        cookieDomain={window.location.hostname}
+        cookieSecure={false}
+      >
+        <BrowserRouter>
+          <LoginPage />
+        </BrowserRouter>
+      </AuthProvider>
+    );
+    await userEvent.click(screen.getByRole("button", { name: "LOGIN" }));
+  });
+
+  test("Successful tenant login", async () => {
+    render(
+      <AuthProvider
+        authType={"cookie"}
+        authName={"_auth"}
+        cookieDomain={window.location.hostname}
+        cookieSecure={false}
+      >
+        <BrowserRouter>
+          <LoginPage />
+        </BrowserRouter>
+      </AuthProvider>
+    );
+    await userEvent.click(screen.getByRole("button", { name: "LOGIN" }));
+    // TODO: Mock API calls, go to navigateDashboard page
+  });
+  test("Invalid email/Password", async () => {
+    render(
+      <AuthProvider
+        authType={"cookie"}
+        authName={"_auth"}
+        cookieDomain={window.location.hostname}
+        cookieSecure={false}
+      >
+        <BrowserRouter>
+          <LoginPage />
+        </BrowserRouter>
+      </AuthProvider>
+    );
+    await userEvent.click(screen.getByRole("button", { name: "LOGIN" }));
+    //Mock API calls, check values and call error
   });
 });
+
+/** Extra tests
+ * - Data validation of email/password
+ */
