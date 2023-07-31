@@ -84,14 +84,17 @@ const AccountManagement = () => {
   const token = useAuthHeader();
   const userDetails = useAuthUser();
 
+  console.log('user details', userDetails)
+
   const config = {
     headers: {
       Authorization: `${token()}`
     },
     params: {
-        email: userDetails().email
+        email: userDetails().email,
     }
-}
+  }
+
   const customTheme = extendTheme({
     styles: {
       global: {
@@ -102,27 +105,41 @@ const AccountManagement = () => {
     },
   });
 
+  // const APIGetLeaseDetails = async (tenant_user_id) => {
+  //   console.log("user id", tenant_user_id)
+  //   const response = await axios.get(
+  //       "http://localhost:5000/api/landlord/getLeaseDetails?tenantUserId=" + tenant_user_id
+  //   )
+  //   console.log("get lease res", response);
+  //   console.log(response.data.data.lease_id)
+  //   return response.data.data.lease_id
+  // }
+
+
 
   const navigateToTenantCreationPage = () => {
     navigate('/pages/TenantCreationPage');
   }
 
+  const navigateToViewLeasePage = (tenantID) => {
+    navigate('/pages/ViewLeasePage/', { state: { tenantID } } );
+  }
 
+  const navigateToLeaseUploadPage = (tenantID) => {
+    navigate('/pages/LeaseUploadPage/', { state: { tenantID } } );
+  }
 
-
-  const APIGetTenantAccounts = async () => {
+  const APIGetTenantAccounts = async (email) => {
     const response = await axios.get(
-        "http://localhost:5000/api/landlord/getTenantAccounts",
-        config
+        "http://localhost:5000/api/landlord/getTenantAccounts?landlordEmail=" + email
     )
-    //console.log(response)
+    console.log("APIGetTenantAccounts", response)
     return response
   }
   
   const APIDeleteAllTenants = async () => {
     const response = await axios.patch(
         "http://localhost:5000/api/landlord/deleteAllTenants",
-        config
     )
     //console.log(response)
     GetTenantAccounts();
@@ -133,7 +150,6 @@ const AccountManagement = () => {
   const APIDeleteTenantByEmail = async (email) => {
     const response = await axios.patch(
         "http://localhost:5000/api/landlord/deleteTenantByEmail",
-        config,
         {email, }
     )
     console.log(email);
@@ -142,35 +158,39 @@ const AccountManagement = () => {
 
   }
 
-  const GetTenantAccounts = () => {
+  const GetTenantAccounts = async () => {
     var temp_accounts = []
-    const accounts = APIGetTenantAccounts()
+    console.log(config.params.email);
+    const accounts = APIGetTenantAccounts(config.params.email);
     accounts.then((result) => {
-        if (result !== undefined){
+      if (result !== undefined){
         for (let i=0;i<result.data.data.length;i++){
             temp_accounts.push(result.data.data[i]);
         }
-    }
+      }
     console.log(temp_accounts)
 
     // Convert every tenant fetched to HTML to be shown on the left
     const tenant_html = temp_accounts.map(account => 
-      <div key={account.tenant_user_id}>
-      <AccordionItem>
+      <Box key={account.tenant_user_id}>
+      <AccordionItem p="0">
           <AccordionButton justifyContent="space-between">
               <HStack width="100%">
-              <Box textAlign='left' width="15vw" marginStart="2">
+              {/* <Box textAlign='left' width="15vw" marginStart="2">
               {account.tenant_user_id}
-              </Box>
-              <Box textAlign='left' width='34vw'>
+              </Box> */}
+              <Box textAlign='left' width='30em'>
               {account.email}
               </Box>
-              <Box textAlign='left' width='34vw'>
+              <Box textAlign='left' width='30em'>
               {account.public_building_id}
               </Box>
+              <Box textAlign='left' width='30em'>
+              {account.public_lease_id}
+              </Box>
               </HStack>
-              <AccordionIcon width='2.3vw'/>
-              <Box width='2.3vw' >
+              <AccordionIcon width='2em'/>
+              <Box width='5em' >
                 <Popup trigger={<IconButton size='sm' icon={<DeleteIcon />} />} position="left center">
                   <FormControl>
                     <Button 
@@ -197,22 +217,25 @@ const AccountManagement = () => {
                   </ModalContent>
                 </Modal> */}
               </Box>
-
-
-              
-
           </AccordionButton>
           <AccordionPanel>
               <HStack spacing='24vw'>
               <Box>
-              Tenant ID: {account.tenant_user_id} <br></br>
-              Email: {account.email} <br></br>
+              Lease ID: {account.public_lease_id} <br></br>
+              Floor: {account.floor} <br></br>
+              Unit: {account.unit_number} <br></br>
               </Box>
               </HStack>
               <br></br>
+              <Button onClick={() => navigateToLeaseUploadPage(account.tenant_user_id)} bgColor='blue.500' color='white' _hover={{bg: 'blue.800'}}>
+                  New Lease
+              </Button>
+              <Button onClick={() => navigateToViewLeasePage(account.tenant_user_id)} bgColor='blue.500' color='white' _hover={{bg: 'blue.800'}} marginLeft="2em">
+                  View Lease
+              </Button>
           </AccordionPanel>
       </AccordionItem>
-      </div>
+      </Box>
     );
     
     setTenantAccounts(tenant_html) 
@@ -244,12 +267,13 @@ const AccountManagement = () => {
       </Box> 
       <TableContainer  margin="5em" border="1px" borderColor="gray.300" boxShadow="0 0.188em 1.550em rgb(156, 156, 156)" background="white">
         <Table variant='simple'>
-        <Thead margin={0} backgroundColor="blue.400" >
+        <Thead margin={0} backgroundColor="blue.400" width="100%">
             <Tr>
-                <Th width="15vw" textAlign='left' paddingRight={0} textColor="white"> ID </Th>
-                <Th width='31vw' textAlign='left' paddingRight={0} paddingLeft={0} textColor="white"> Email </Th>
-                <Th width='35vw' textAlign='left' paddingRight={0} paddingLeft={0} textColor="white">Building ID</Th>
-                <Th width='2.5vw' alignItems="center" paddingRight={0} paddingLeft={0} >
+                {/* <Th width="15vw" textAlign='left' paddingRight={0} textColor="white"> ID </Th> */}
+                <Th width='25em' textAlign='left' paddingRight={0} paddingLeft={4} textColor="white"> Email </Th>
+                <Th width='25em' textAlign='left' paddingRight={0} paddingLeft={0} textColor="white">Building ID</Th>
+                <Th width='35em' textAlign='left' paddingRight={0} paddingLeft={0} textColor="white">Current Lease</Th>
+                <Th width='3.5em' alignItems="center" paddingRight={0} paddingLeft={0} >
                   <Popover
                     isOpen={isOpen}
                     onOpen={onOpen}
