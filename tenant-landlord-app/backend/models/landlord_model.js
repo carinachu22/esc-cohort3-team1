@@ -511,7 +511,7 @@ export const uploadLease = ({filepath, id}, callBack) => {
     `
     UPDATE lease
     SET pdf_path = ?
-    WHERE public_lease_id = ?
+    WHERE lease_id = ?
     `,
     [
       filepath,

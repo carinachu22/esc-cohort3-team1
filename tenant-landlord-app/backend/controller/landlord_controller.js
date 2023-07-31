@@ -22,7 +22,8 @@ import {
   deleteLease,
   updateLease,
   getLeaseDetails,
-  getBuildingID
+  getBuildingID,
+  uploadLease
 
 } from "../models/landlord_model.js";
 import { 
@@ -628,18 +629,16 @@ export const controllerGetTenantAccounts = (req, res) => {
 
 
 /**
- * store quotation in file system and its path in mysql database
+ * store lease in file system and its path in mysql database
  * @param {formData} req 
  */
 export const controllerUploadLease = (req, res) => {
-  console.log('???????')
   const id = req.params.id;
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "content-type");
+
   const files = req.file;
-
   console.log(files);
-
   const filepath = files.path;
   console.log(filepath);
 

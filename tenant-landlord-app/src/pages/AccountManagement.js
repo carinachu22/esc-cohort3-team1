@@ -220,6 +220,9 @@ const AccountManagement = () => {
               <Button onClick={() => {navigate('/pages/LeaseUploadPage/')}} bgColor='blue.500' color='white' _hover={{bg: 'blue.800'}}>
                   New Lease
               </Button>
+              <Button onClick={() => {navigate('/pages/ViewLeasePage/')}} bgColor='blue.500' color='white' _hover={{bg: 'blue.800'}} marginLeft="2em">
+                  View Lease
+              </Button>
           </AccordionPanel>
       </AccordionItem>
       </div>
