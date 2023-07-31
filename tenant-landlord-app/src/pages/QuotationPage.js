@@ -70,7 +70,11 @@ function QuotationPage() {
     };
 
     useEffect(() => {
-        fetch(`http://localhost:5000/api/landlord/getQuotation/?id=${selectedTicket.id}`,
+        fetch(`http://localhost:5000/api/landlord/getQuotation/?id=${selectedTicket.id}`,{
+            headers:{
+              Authorization: `${token()}`
+            }
+          }
         ) // Replace with the actual backend URL serving the PDF
           .then((response) => response.blob())
           .then((data) => {

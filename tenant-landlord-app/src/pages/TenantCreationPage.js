@@ -65,7 +65,8 @@ const TenantCreationPage = () => {
 
     const APIGetBuildingID = async (email) => {
         const response = await axios.get(
-            "http://localhost:5000/api/landlord/getTenantAccounts?landlordEmail=" + email
+            "http://localhost:5000/api/landlord/getTenantAccounts?landlordEmail=" + email,
+            config
         )
         console.log("APIGetBuildingID", response)
         return response
@@ -78,7 +79,8 @@ const TenantCreationPage = () => {
             const response = await axios.post(
                 //api to be added
                 "http://localhost:5000/api/landlord/createTenant",
-                values
+                values,
+                config
             )
             console.log(response);
             if (response.data.message === "created successfully"){

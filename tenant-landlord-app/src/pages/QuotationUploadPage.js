@@ -73,7 +73,8 @@ const QuotationUpload = () => {
                   {
                     params: { 'api-version': '3.0' },
                     headers: {
-                      "Content-Type": "multipart/form-data"
+                      "Content-Type": "multipart/form-data",
+                      Authorization: `${token()}`
                     },
                   }
                 );

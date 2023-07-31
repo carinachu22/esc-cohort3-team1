@@ -23,7 +23,8 @@ import {
   updateLease,
   getLeaseDetails,
   getBuildingID,
-  uploadLease
+  uploadLease,
+  getLeasePath
 
 } from "../models/landlord_model.js";
 import { 
@@ -316,8 +317,14 @@ export const controllerCreateTenant = (req, res) => {
 
 };
 
+/**
+ * delete all tenant accounts with same buildingID as landlord
+ * @param {*} req landlordEmail
+ * @param {*} res 
+ */
 export const controllerDeleteAllTenants = (req, res) => {
-  deleteAllTenants((err) => {
+  const {landlordEmail} = req.query;
+  getBuildingID(landlordEmail, (err, results) => {
     if (err) {
       console.log(err);
       return res.status(500).json({
@@ -325,11 +332,22 @@ export const controllerDeleteAllTenants = (req, res) => {
         message: "Database connection error",
       });
     }
-    return res.status(200).json({
-      success: 1,
-      message: "deleted successfully",
+    const buildingID = results.public_building_id;
+    deleteAllTenants(buildingID, (err, results) => {
+      if (err) {
+        console.log(err);
+        return res.status(500).json({
+          success: 0,
+          message: "Database connection error",
+        });
+      }
+      return res.status(200).json({
+        success: 1,
+        message: "deleted successfully",
+      });
     });
-  });
+  })
+
 };
 
 
@@ -491,7 +509,6 @@ export const controllerUploadQuotation = (req, res) => {
 }
 
 export const controllerGetQuotation = (req, res) => {
-  // hard-coded id, remove this in final version
   const id = req.query.id;
   console.log('id in controller', id)
   getQuotationPath(id, (err, results) => {
@@ -612,6 +629,7 @@ export const controllerGetTenantAccounts = (req, res) => {
       const public_building_id = results.public_building_id;
       console.log(public_building_id)
       getTenantAccounts(public_building_id, (err, results) => {
+        // console.log(results);
         if (err) {
           console.log(err);
           return;
@@ -641,6 +659,11 @@ export const controllerUploadLease = (req, res) => {
   console.log(files);
   const filepath = files.path;
   console.log(filepath);
+  const floor = req.body.floor;
+  const unit_number = req.body.unit_number;
+  console.log(floor);
+  console.log(unit_number);
+
 
   // get quotation's path in file system and store it in mysql database
   uploadLease({filepath, id}, (err, results) => {
@@ -665,11 +688,17 @@ export const controllerUploadLease = (req, res) => {
 
 }
 
+/**
+ * get tenant's current lease 
+ * @param {\} req 
+ * @param {*} res 
+ */
 export const controllerGetLease = (req, res) => {
-  // hard-coded id, remove this in final version
-  const id = req.query.id;
-  console.log('id in controller', id)
-  getLeasePath(id, (err, results) => {
+  const query = req.query;
+  console.log(query);
+  const {tenantID} = query;
+  console.log('tenantID: ', tenantID);
+  getLeasePath(tenantID, (err, results) => {
     if (err) {
       console.log(err);
       return;
@@ -680,12 +709,11 @@ export const controllerGetLease = (req, res) => {
         message: "service ticket not found",
       });
     } else {
-      var filepath = results.pdf_path;
+      var filepath = results[0].pdf_path;
       console.log(filepath);
       if (filepath == null){
         res.send("No quotation uploaded yet!")
         return
-
       }
       fs.readFile(filepath, (err, data) => {
         if (err) {
@@ -700,11 +728,6 @@ export const controllerGetLease = (req, res) => {
         // Send the PDF file data as the response
         res.send(data);
       });
-
-
-      if (err){
-        return console.log(err);
-      }
     }
   });
 };
@@ -723,9 +746,22 @@ export const controllerGetLease = (req, res) => {
  * @param {json} res 
  */
 export const controllerCreateLease = (req,res) => {
-  let landlordID = "";
-  let tenantID = "";
-  getLandlordUserId(req.body.landlord_email, (err,results) => {
+  
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "content-type");
+
+  const files = req.file;
+  console.log(files);
+  const filepath = files.path;
+  const floor = req.body.floor;
+  const unit_number = req.body.unit_number;
+  const landlordEmail = req.body.landlordEmail;
+  const tenantID = req.body.tenantID;
+  console.log("landlordEmail", landlordEmail);
+  console.log("tenantID", tenantID);
+  console.log("floor", floor);
+  console.log("unit_number", unit_number);
+  getLandlordUserId(landlordEmail, (err,results) => {
     if (err) {
       console.log(err);
       return;
@@ -735,44 +771,43 @@ export const controllerCreateLease = (req,res) => {
         message: "landlord not registered."
       })
     } else {
-      landlordID = results.landlord_user_id;
-      // console.log(landlordID)
-      getTenantUserId(req.body.tenant_email, (err, results) => {
+      const landlordID = results.landlord_user_id;
+      console.log("landlordID", landlordID);
+      const publicLeaseID = String(Date.now());
+      createLease(publicLeaseID, landlordID, tenantID, req.body, (err, results) => {
         if (err) {
-          console.log(err)
-          return
-        } if (!results) {
-          return res.json({
-            success:0,
-            message: "tenant not registered."
-          })
+          console.log(err);
+          return res.status(500).json({
+            success: 0,
+            message: "Database connection error"
+          });
         } else {
-          tenantID = results.tenant_user_id;
-          // console.log(tenantID)
-          createLease(landlordID, tenantID, req.body, (err, results) => {
+          // get lease's path in file system and store it in mysql database
+          uploadLease({filepath, publicLeaseID}, (err, results) => {
+            console.log('uploadLease results', results)
+            if (err) {
+              console.log(err);
+              return;
+            }
+          })
+          updateTenantLease(publicLeaseID, tenantID, (err,results) => {
+            console.log(publicLeaseID);
+            console.log(tenantID);
             if (err) {
               console.log(err);
               return res.status(500).json({
                 success: 0,
                 message: "Database connection error"
-              });
-            } else {
-              updateTenantLease(req.body.tenant_email,req.body.public_lease_id, (err,results) => {
-                if (err) {
-                  console.log(err);
-                  return res.status(500).json({
-                    success: 0,
-                    message: "Database connection error"
-                  })
-                } 
-              });
+              })
+            } 
+            else{
               return res.status(200).json({
-                success:1,
-                data: results
-              });
-            };
-          })
-        }
+                success: 1,
+                message: "updated succesfully!"
+              })
+            }
+          });
+        };
       })
     }
   })

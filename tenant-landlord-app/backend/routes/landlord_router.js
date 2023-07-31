@@ -65,15 +65,15 @@ router.post("/forgot-password", controllerForgotPasswordLandlord);
 router.post("/reset-password/:id/:jsontoken", controllerResetPasswordLandlord);
 router.get("/reset-password/:id/:jsontoken", controllerResetPasswordPageLandlord);
 
-router.post("/createTenant", controllerCreateTenant);
-router.post("/uploadLease/:id", upload.single('files'), controllerUploadLease);
-router.get("/getLease/", controllerGetLease);
+router.post("/createTenant", checkLandlordToken, controllerCreateTenant);
+router.post("/uploadLease/", checkLandlordToken, upload.single('files'), controllerUploadLease);
+router.get("/getLease/", checkLandlordToken, controllerGetLease);
 
-router.post("/createLease", controllerCreateLease);
-router.get("/getLeaseByLandlord", controllerGetLeaseByLandlord);
-router.get("/getLeaseDetails", controllerGetLeaseDetails);
-router.patch("/deleteLease", controllerDeleteLease)
-router.patch("/updateLease", controllerUpdateLease)
+router.post("/createLease", checkLandlordToken, upload.single('files'), controllerCreateLease);
+router.get("/getLeaseByLandlord", checkLandlordToken, controllerGetLeaseByLandlord);
+router.get("/getLeaseDetails", checkLandlordToken, controllerGetLeaseDetails);
+router.patch("/deleteLease", checkLandlordToken, controllerDeleteLease)
+router.patch("/updateLease", checkLandlordToken, controllerUpdateLease)
 
 router.get("/getTickets", checkLandlordToken, controllerGetTickets);
 router.get("/getTicketById/:id", checkLandlordToken, controllerGetTicketById);
