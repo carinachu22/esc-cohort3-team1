@@ -351,16 +351,16 @@ export const getLeaseByTenant = (id, callBack) => {
   )
 }
 
-export const updateTenantLease = (email, lease, callBack) => {
+export const updateTenantLease = (publicLeaseID, tenantID, callBack) => {
   pool.query(
     `
     UPDATE tenant_user
     SET public_lease_id = ?
-    WHERE email = ?
+    WHERE tenant_user_id = ?
     `,
     [
-      lease,
-      email
+      publicLeaseID,
+      tenantID
     ],
     (error, results, fields) => {
       if (error) {

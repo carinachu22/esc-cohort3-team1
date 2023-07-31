@@ -66,10 +66,10 @@ router.post("/reset-password/:id/:jsontoken", controllerResetPasswordLandlord);
 router.get("/reset-password/:id/:jsontoken", controllerResetPasswordPageLandlord);
 
 router.post("/createTenant", controllerCreateTenant);
-router.post("/uploadLease/:id", upload.single('files'), controllerUploadLease);
+router.post("/uploadLease/", upload.single('files'), controllerUploadLease);
 router.get("/getLease/", controllerGetLease);
 
-router.post("/createLease", controllerCreateLease);
+router.post("/createLease", upload.single('files'), controllerCreateLease);
 router.get("/getLeaseByLandlord", controllerGetLeaseByLandlord);
 router.get("/getLeaseDetails", controllerGetLeaseDetails);
 router.patch("/deleteLease", controllerDeleteLease)
