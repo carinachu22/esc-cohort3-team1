@@ -29,10 +29,10 @@ export const controllerLoginTenant = (req, res) => {
       console.log(err);
     }
     console.log(results[0]);
-    if (!results) {
+    if (results.length === 0) {
       return res.json({
         success: 0,
-        data: "Invalid username or password",
+        data: "Invalid email or password",
       });
     }
     
@@ -149,17 +149,18 @@ export const controllerResetPasswordTenant = async (req, res) => {
   const salt = genSaltSync(10);
   password = hashSync(password, salt);
 
-  getTenantById(id, (err, results) => {
-    console.log(results);
+  getTenantById(id, (err, result) => {
+    console.log(result[0]);
     if (err) {
       console.log(err);
     }
-    if (!results) {
+    if (result.length === 0) {
       return res.json({
         success: 0,
         message: "User does not exist!",
       });
     }
+    const results = result[0]
     const secret = process.env.JWT_SECRET + results.password;
     try {
       const verify = jwt.verify(jsontoken, secret);
@@ -375,13 +376,13 @@ export const controllerGetLeaseByTenant = (req,res) => {
     if (err) {
       console.log(err)
       return
-    } if (!results) {
+    } if (results.length === 0) {
       return res.json({
         success:0,
         message: "tenant not registered."
       })
     } else {
-      tenantID = results.tenant_user_id;
+      tenantID = results[0].tenant_user_id;
       // console.log(tenantID)
       getLeaseByTenant(tenantID, (err, results) => {
         if (err) {
