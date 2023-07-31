@@ -188,6 +188,12 @@ export const controllerResetPasswordTenant = async (req, res) => {
  */
 export const controllerCreateTicket = (req, res) => {
   const body = req.body;
+  if (!body.public_service_request_id || !body.name || !body.email || !body.request_type || body.request_description || body.quotation_path || body.submitted_date_time) {
+    return res.status(400).json({
+      success: 0,
+      message: "Incomplete data fields"
+    })
+  }
   createTicket(body, (err,results) => {
     if (err) {
       console.log(err);
