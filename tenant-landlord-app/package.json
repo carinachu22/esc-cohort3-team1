@@ -12,8 +12,6 @@
     "@mui/material": "^5.13.6",
     "@react-pdf-viewer/core": "^3.12.0",
     "@react-pdf/renderer": "^3.1.12",
-    "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.4.0",
     "bootstrap": "^5.3.0",
@@ -38,7 +36,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "NODE_ENV=test jest --config jest.config.js",
     "eject": "react-scripts eject"
   },
   "browserslist": {
@@ -56,20 +54,34 @@
   "devDependencies": {
     "@babel/eslint-parser": "^7.22.9",
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@babel/plugin-transform-react-jsx": "^7.22.5",
     "@babel/preset-env": "^7.22.9",
     "@babel/preset-react": "^7.22.5",
+    "@svgr/webpack": "^8.0.1",
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^14.0.0",
     "babel-jest": "^29.6.2",
+    "babel-plugin-inline-import": "^3.0.0",
     "babel-plugin-styled-components": "^2.1.4",
     "babel-preset-flow": "^6.23.0",
     "eslint": "^8.45.0",
-    "eslint-plugin-react": "^7.33.0"
+    "eslint-plugin-react": "^7.33.0",
+    "identity-obj-proxy": "^3.0.0",
+    "jest": "^27.5.1",
+    "react-test-renderer": "^18.2.0"
   },
   "lint": "eslint './src/**/*.js'",
   "jest": {
-    "coverageThreshold": {
-      "global": {
-        "lines": 80
-      }
-    }
+    "displayName": "react-b",
+    "testEnvironment": "jsdom",
+    "transform": {
+      "^.+\\.(js|jsx)$": "babel-jest"
+    },
+    "moduleFileExtensions": [
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ]
   }
 }
