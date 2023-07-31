@@ -20,7 +20,11 @@ import {
   createLease,
   getLeaseByLandlord,
   deleteLease,
-  updateLease
+  updateLease,
+  getLeaseDetails,
+  getBuildingID,
+  uploadLease
+
 } from "../models/landlord_model.js";
 import { 
   getTenantByEmail,
@@ -256,34 +260,52 @@ export const controllerResetPasswordLandlord = async (req, res) => {
 };
 
 /**
- * Create Tenant
- * @param {*} req tenant email, password(unhashed),  public_building_id (eg. RC)
+ * Create Tenant Account
+ * @param {*} req tenant's email, password(unhashed), landlord's email
  * @param {*} res 
  */
 export const controllerCreateTenant = (req, res) => {
-  const tenant_email = req.body.email;
+  const email = req.body.email;
   const password = req.body.password;
-  const public_building_id = req.body.buildingID;
-  console.log(public_building_id);
+  const landlordEmail = req.body.landlordEmail;
+  console.log("landlordEmail", landlordEmail);
   const salt = genSaltSync(10);
   const password_hashed = hashSync(password, salt);
-  getTenantByEmail(tenant_email, (err, results) => {
-    if (!results){
-      createTenant(tenant_email, password_hashed, public_building_id, (err, results) => {
+  //check if email already exist in database,
+  //only create new tenant account if the email is unique
+  getTenantByEmail(email, (err, results) => {
+    console.log(results);
+    if (results.length == 0){
+      console.log("creating tenant");
+      //get building id of landlord
+      getBuildingID(landlordEmail, (err, results) => {
         if (err) {
           console.log(err);
-          return res.status(500).json({
-            success: 0,
-            message: "Database connection error",
+          return;
+        } else {
+          const public_building_id = results.public_building_id;
+          console.log(public_building_id)
+          //create tenant account
+          createTenant(email, password_hashed, public_building_id, (err, results) => {
+            if (err) {
+              console.log(err);
+              return res.status(500).json({
+                success: 0,
+                message: "Database connection error",
+              });
+            }
+            return res.status(200).json({
+              success: 1,
+              message: "created successfully",
+              data: results,
+            });
           });
         }
-        return res.status(200).json({
-          success: 1,
-          message: "created successfully",
-          data: results,
-        });
       });
+
     } else{
+      console.log("tenant creation failed")
+      console.log(results)
       return res.status(500).json({
         success: 0,
         message: "Duplicate email entry"
@@ -579,33 +601,44 @@ export const controllerTicketWork = (req, res) => {
 }
 
 export const controllerGetTenantAccounts = (req, res) => {
-    getTenantAccounts((err, results) => {
-      if (err) {
-        console.log(err);
-        return;
-      } else {
-        return res.json({
-          success: "1",
-          data: results,
-        });
-      }
-    });
+  const query = req.query;
+  const {landlordEmail} = query;
+  console.log("email", landlordEmail);
+  getBuildingID(landlordEmail, (err, results) => {
+    if (err) {
+      console.log(err);
+      return;
+    } else {
+      const public_building_id = results.public_building_id;
+      console.log(public_building_id)
+      getTenantAccounts(public_building_id, (err, results) => {
+        if (err) {
+          console.log(err);
+          return;
+        } else {
+          return res.json({
+            success: "1",
+            data: results,
+          });
+        }
+      });
+    }
+  });
 };
 
 
+
 /**
- * store quotation in file system and its path in mysql database
+ * store lease in file system and its path in mysql database
  * @param {formData} req 
  */
 export const controllerUploadLease = (req, res) => {
-  console.log('???????')
   const id = req.params.id;
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "content-type");
+
   const files = req.file;
-
   console.log(files);
-
   const filepath = files.path;
   console.log(filepath);
 
@@ -852,5 +885,26 @@ export const controllerUpdateLease = (req, res) => {
         }
       })
     }
+  })
+}
+
+export const controllerGetLeaseDetails = (req,res) => {
+  const query = req.query;
+  console.log("req query", req.query);
+  const {tenantUserId} = query;
+  console.log("user id", tenantUserId);
+  getLeaseDetails(tenantUserId, (err,results) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).json({
+        success: 0,
+        message: "Database connection error",
+      });
+    }
+    return res.status(200).json({
+      success: 1,
+      message: "successfully retrieve lease details",
+      data: results
+    });
   })
 }
