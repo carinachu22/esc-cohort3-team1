@@ -68,7 +68,7 @@ export const getLandlordById = (id, callBack) => {
         callBack(error);
       } else {
         // console.log(results);
-        callBack(null, results[0]);
+        callBack(null, results);
       }
     }
   );
@@ -94,7 +94,7 @@ export const updateLandlordPassword = ({password, id}, callBack) => {
       if(error){
         callBack(error);
       }
-      return callBack(null, results[0]);
+      return callBack(null, results);
     }
   );
 }
@@ -117,7 +117,7 @@ export const updateLandlord = (data, callBack) => {
       if(error){
         callBack(error);
       }
-      return callBack(null, results[0]);
+      return callBack(null, results);
     }
   );
 }
@@ -135,7 +135,7 @@ export const deleteLandlord = (data, callBack) => {
       if(error){
         callBack(error);
       }
-      return callBack(null, results[0]);
+      return callBack(null, results);
     }
   );
 }
@@ -152,7 +152,7 @@ export const deleteAllTenants = (callBack) => {
       if(error){
         callBack(error);
       }
-      return callBack(null, results[0]);
+      return callBack(null, results);
     }
   );
 }
@@ -170,7 +170,7 @@ export const deleteTenantByEmail = (email, callBack) => {
       if(error){
         callBack(error);
       }
-      return callBack(null, results[0]);
+      return callBack(null, results);
     }
   );
 }
@@ -233,7 +233,7 @@ export const getTicketById = (id, callBack) => {
       if (error) {
         callBack(error);
       } else {
-        callBack(null, results[0]);
+        callBack(null, results);
       }
     }
   );
@@ -343,7 +343,7 @@ export const getQuotationPath = (id, callBack) => {
       if (error) {
         callBack(error);
       } else {
-        callBack(null, results[0]);
+        callBack(null, results);
       }
     }
   );
@@ -367,7 +367,7 @@ export const getQuotation = (filepath, callBack) => {
       if (error) {
         callBack(error);
       } else {
-        callBack(null, results[0]);
+        callBack(null, results);
       }
     }
   );
@@ -540,7 +540,7 @@ export const getLandlordUserId = (email, callBack) => {
       if (error) {
         callBack(error);
       } else {
-        callBack(null, results[0])
+        callBack(null, results)
       };
     }
   )
@@ -596,7 +596,7 @@ export const deleteLease = (lease_id, callBack) => {
       if(error){
         callBack(error);
       }
-      return callBack(null, results[0]);
+      return callBack(null, results);
     }
   );
 }
@@ -692,7 +692,7 @@ export const getLease = (filepath, callBack) => {
       if (error) {
         callBack(error);
       } else {
-        callBack(null, results[0]);
+        callBack(null, results);
       }
     }
   );

@@ -68,17 +68,6 @@ describe("Testing getLandlordByEmail() in landlord model", () => {
 })
 
 describe ("Testing getTicketsByStatus() in landlord model", () => {
-    // test ("Test calling getTicketsByStatus() on a valid email & valid status", (done) => {
-    //     getTicketsByStatus('tenant1@gmail.com', 'landlord_completed_work', (err, results) => {
-    //         if(err){
-    //             console.log("ERROR",err)
-    //         }
-    //         // console.log(results)
-    //         const rowsLength = results.length
-    //         expect(rowsLength).toBe(1);
-    //         done()
-    //     })
-    // })
 
     test ("Test calling getTicketsByStatus() on a status not available", (done) => {
         getTicketsByStatus('landlord_started_work', (err, results) => {
@@ -92,12 +81,12 @@ describe ("Testing getTicketsByStatus() in landlord model", () => {
     })
 
     test ("Test calling getTicketsByStatus() on a status available", (done) =>{
-        getTicketsByStatus('landlord_completed_work', (err, results) => {
+        getTicketsByStatus('tenant_ticket_created', (err, results) => {
             if(err){
                 console.log("ERROR",err)
             }
             const rowsLength = results.length
-            expect(rowsLength).toBe(0);
+            expect(rowsLength).toBe(2);
             done()
         })
     })
