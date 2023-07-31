@@ -13,9 +13,20 @@ import {
   getQuotationPath,
   ticketApproval,
   ticketWork,
-  getTenantAccounts
-
+  getTenantAccounts,
+  deleteAllTenants,
+  deleteTenantByEmail,
+  getLandlordUserId,
+  createLease,
+  getLeaseByLandlord,
+  deleteLease,
+  updateLease
 } from "../models/landlord_model.js";
+import { 
+  getTenantByEmail,
+  getTenantUserId,
+  updateTenantLease
+} from "../models/tenant_model.js";
 import { genSaltSync, hashSync, compareSync } from "bcrypt";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
@@ -26,7 +37,7 @@ import { send } from "process";
 
 
 /**
- * Create landlord account
+ * Create landlord account and store it in mysql database
  * @param {*} req email, password(unhashed), ticket_type
  * @param {*} res 
  */
@@ -65,7 +76,7 @@ export const controllerCreateLandlord = (req, res) => {
 
 /**
  * Login for landlord
- * @param {*} req landlord email
+ * @param {*} req email
  * @param {*} res 
  */
 export const controllerLoginLandlord = (req, res) => {
@@ -75,37 +86,43 @@ export const controllerLoginLandlord = (req, res) => {
     if (err) {
       console.log(err);
     }
-    if (!results) {
+    if (results.length === 0) {
       return res.json({
         success: 0,
         message: "Invalid email or password",
-      });
-    }
-    console.log(body.password, results.password);
-    const password_check = compareSync(body.password, results.password);
-    console.log(password_check);
-    if (password_check) {
-      results.password = undefined;
-      const jsontoken = jwt.sign({ result: results }, "qwe1234", {
-        expiresIn: "1h",
-      });
-      return res.json({
-        success: 1,
-        message: "Login successfully",
-        token: jsontoken,
       });
     } else {
-      console.log(results);
-      res.json({
-        success: 0,
-        message: "Invalid email or password",
-      });
+      console.log(body.password, results[0].password);
+      const password_check = compareSync(body.password, results[0].password);
+      console.log(password_check);
+      if (password_check) {
+        results[0].password = undefined;
+        const jsontoken = jwt.sign({ result: results[0] }, "qwe1234", {
+          expiresIn: "1h",
+        });
+        return res.json({
+          success: 1,
+          message: "Login successfully",
+          token: jsontoken,
+        });
+      } else {
+        console.log(results[0]);
+        res.json({
+          success: 0,
+          message: "Invalid email or password",
+        });
+      }
     }
   });
 };
 
 
-
+/**
+ * Verify that the landlord account exist in the database through their email,
+ * then send the link to their email which will direct them to the reset-password page
+ * @param {*} req email
+ * @param {*} res 
+ */
 export const controllerForgotPasswordLandlord = (req, res) => {
   const body = req.body;
   console.log(body.email);
@@ -119,7 +136,9 @@ export const controllerForgotPasswordLandlord = (req, res) => {
         message: "User does not exist!",
       });
     }
+    //creating the secret key for json token
     const secret = process.env.JWT_SECRET + results.password;
+    //creating the signature of json token
     const jsontoken = jwt.sign({email: results.email, id: results.landlord_user_id}, secret, {expiresIn: 300});
     const link = `http://localhost:5000/api/landlord/reset-password/${results.landlord_user_id}/${jsontoken}`;
 
@@ -158,6 +177,11 @@ export const controllerForgotPasswordLandlord = (req, res) => {
   });
 };
 
+/**
+ * Render the reset-password page. Details of landlord is obtained through their id
+ * @param {*} req id and jsontoken
+ * @param {*} res 
+ */
 export const controllerResetPasswordPageLandlord = async (req, res) => {
   const {id, jsontoken} = req.params;
   console.log(req.params);
@@ -172,8 +196,10 @@ export const controllerResetPasswordPageLandlord = async (req, res) => {
         message: "User does not exist!",
       });
     }
+    //obtaining the secret key for jwt
     const secret = process.env.JWT_SECRET + results.password;
     try {
+      //verifying the json token signature
       const verify = jwt.verify(jsontoken, secret);
       return res.render("ResetPasswordPage", {email: verify.email, status: "not verified"});
       
@@ -185,6 +211,11 @@ export const controllerResetPasswordPageLandlord = async (req, res) => {
 
 };
 
+/**
+ * Reset password of landlord. The landlord is accessed in the database using their id
+ * @param {*} req landlord_user_id
+ * @param {*} res 
+ */
 export const controllerResetPasswordLandlord = async (req, res) => {
   const {id, jsontoken} = req.params;
   console.log({id, jsontoken});
@@ -222,25 +253,49 @@ export const controllerResetPasswordLandlord = async (req, res) => {
       console.log(error);
     }
   })
-
-
-
-  
-
-
 };
 
 /**
  * Create Tenant
- * @param {*} req tenant email, password(unhashed)
+ * @param {*} req tenant email, password(unhashed),  public_building_id (eg. RC)
  * @param {*} res 
  */
 export const controllerCreateTenant = (req, res) => {
-  const body = req.body;
-  console.log(body);
+  const tenant_email = req.body.email;
+  const password = req.body.password;
+  const public_building_id = req.body.buildingID;
+  console.log(public_building_id);
   const salt = genSaltSync(10);
-  body.password = hashSync(body.password, salt);
-  createTenant(body, (err, results) => {
+  const password_hashed = hashSync(password, salt);
+  getTenantByEmail(tenant_email, (err, results) => {
+    if (!results){
+      createTenant(tenant_email, password_hashed, public_building_id, (err, results) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).json({
+            success: 0,
+            message: "Database connection error",
+          });
+        }
+        return res.status(200).json({
+          success: 1,
+          message: "created successfully",
+          data: results,
+        });
+      });
+    } else{
+      return res.status(500).json({
+        success: 0,
+        message: "Duplicate email entry"
+      })
+    }
+  })
+
+
+};
+
+export const controllerDeleteAllTenants = (req, res) => {
+  deleteAllTenants((err) => {
     if (err) {
       console.log(err);
       return res.status(500).json({
@@ -250,7 +305,28 @@ export const controllerCreateTenant = (req, res) => {
     }
     return res.status(200).json({
       success: 1,
-      data: results,
+      message: "deleted successfully",
+    });
+  });
+};
+
+
+export const controllerDeleteTenantByEmail = (req, res) => {
+  const body = req.body;
+  console.log(body);
+  const {email} = body;
+  console.log(email);
+  deleteTenantByEmail(email, (err) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).json({
+        success: 0,
+        message: "Database connection error",
+      });
+    }
+    return res.status(200).json({
+      success: 1,
+      message: "deleted successfully",
     });
   });
 };
@@ -276,8 +352,8 @@ export const controllerGetTickets = (req, res) => {
 };
 
 /**
- * Gets ticket by service_request_id
- * @param {*} req service_request_id
+ * Gets ticket by public_service_request_id(YYYY-MM-DD 00:00:00)
+ * @param {*} req 
  * @param {*} res 
  */
 export const controllerGetTicketById = (req, res) => {
@@ -302,8 +378,8 @@ export const controllerGetTicketById = (req, res) => {
 };
 
 /**
- * Get Tickets by status
- * @param {*} req status
+ * Get Tickets by status, status in params
+ * @param {*} req 
  * @param {*} res 
  */
 export const controllerGetTicketsByStatus = (req, res) => {
@@ -328,8 +404,8 @@ export const controllerGetTicketsByStatus = (req, res) => {
 };
 
 /**
- * Landlord updates quotation
- * @param {*} req service_request_id, quotation_amount(float, 2dp), status
+ * Landlord updates quotation. params: public_service_request_id (YYYY-MM-DD 00:00:00)
+ * @param {*} req  status
  * @param {*} res 
  */
 export const controllerUpdateQuotation = (req, res) => {
@@ -436,6 +512,11 @@ export const controllerGetQuotation = (req, res) => {
   });
 };
 
+/**
+ * Ticket Approval, public_service_request_id (YYYY-MM-DD 00:00:00) in params
+ * @param {*} req 
+ * @param {*} res 
+ */
 export const controllerTicketApproval = (req, res) => {
   const id = req.params.id;
   const body = req.body;
@@ -464,6 +545,11 @@ export const controllerTicketApproval = (req, res) => {
   })
 }
 
+/**
+ * params: public_service_request_id (YYYY-MM-DD 00:00:00)
+ * @param {*} req 
+ * @param {*} res 
+ */
 export const controllerTicketWork = (req, res) => {
   const id = req.params.id;
   const body = req.body;
@@ -505,3 +591,266 @@ export const controllerGetTenantAccounts = (req, res) => {
       }
     });
 };
+
+
+/**
+ * store quotation in file system and its path in mysql database
+ * @param {formData} req 
+ */
+export const controllerUploadLease = (req, res) => {
+  console.log('???????')
+  const id = req.params.id;
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "content-type");
+  const files = req.file;
+
+  console.log(files);
+
+  const filepath = files.path;
+  console.log(filepath);
+
+  // get quotation's path in file system and store it in mysql database
+  uploadLease({filepath, id}, (err, results) => {
+    console.log('uploadLease results', results)
+    if (err) {
+      console.log(err);
+      return;
+    }
+    if (!results) {
+      return res.json({
+        success: 0,
+        message: "Failed to upload file",
+      });
+    }
+    return res.status(200).json({
+      success: 1,
+      data: "updated successfully!",
+    });
+
+  })
+
+
+}
+
+export const controllerGetLease = (req, res) => {
+  // hard-coded id, remove this in final version
+  const id = req.query.id;
+  console.log('id in controller', id)
+  getLeasePath(id, (err, results) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+    if (!results) {
+      return res.json({
+        success: 0,
+        message: "service ticket not found",
+      });
+    } else {
+      var filepath = results.pdf_path;
+      console.log(filepath);
+      if (filepath == null){
+        res.send("No quotation uploaded yet!")
+        return
+
+      }
+      fs.readFile(filepath, (err, data) => {
+        if (err) {
+          console.log('error')
+          console.error(err);
+          res.status(500).send("Internal Server Error");
+          return;
+        }
+        // Set headers for the response
+        res.setHeader("Content-Type", "application/pdf");
+        res.setHeader("Content-Disposition", "attachment; filename=file.pdf");
+        // Send the PDF file data as the response
+        res.send(data);
+      });
+
+
+      if (err){
+        return console.log(err);
+      }
+    }
+  });
+};
+
+/**
+ * 
+ * @param {object} req 
+ * {
+ * landlord_email,
+ * tenant_email,
+ * public_lease_id,
+ * floor,
+ * unit_number,
+ * pdf_path
+ * }
+ * @param {json} res 
+ */
+export const controllerCreateLease = (req,res) => {
+  let landlordID = "";
+  let tenantID = "";
+  getLandlordUserId(req.body.landlord_email, (err,results) => {
+    if (err) {
+      console.log(err);
+      return;
+    } if (!results) {
+      return res.json({
+        success : 0,
+        message: "landlord not registered."
+      })
+    } else {
+      landlordID = results.landlord_user_id;
+      // console.log(landlordID)
+      getTenantUserId(req.body.tenant_email, (err, results) => {
+        if (err) {
+          console.log(err)
+          return
+        } if (!results) {
+          return res.json({
+            success:0,
+            message: "tenant not registered."
+          })
+        } else {
+          tenantID = results.tenant_user_id;
+          // console.log(tenantID)
+          createLease(landlordID, tenantID, req.body, (err, results) => {
+            if (err) {
+              console.log(err);
+              return res.status(500).json({
+                success: 0,
+                message: "Database connection error"
+              });
+            } else {
+              updateTenantLease(req.body.tenant_email,req.body.public_lease_id, (err,results) => {
+                if (err) {
+                  console.log(err);
+                  return res.status(500).json({
+                    success: 0,
+                    message: "Database connection error"
+                  })
+                } 
+              });
+              return res.status(200).json({
+                success:1,
+                data: results
+              });
+            };
+          })
+        }
+      })
+    }
+  })
+}
+
+/**
+ * 
+ * @param {object} req 
+ * {email}
+ * @param {json} res 
+ */
+export const controllerGetLeaseByLandlord = (req,res) => {
+  let landlordID = "";
+  getLandlordUserId(req.body.email, (err, results) => {
+    if (err) {
+      console.log(err)
+      return
+    } if (!results) {
+      return res.json({
+        success:0,
+        message: "landlord not registered."
+      })
+    } else {
+      landlordID = results.landlord_user_id;
+      // console.log(landlordID)
+      getLeaseByLandlord(landlordID, (err, results) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).json({
+            success: 0,
+            message: "Database connection error"
+          });
+        } else {
+          return res.status(200).json({
+            success:1,
+            data: results
+          });
+        };
+      })
+    }
+  })
+}
+
+export const controllerDeleteLease = (req,res) => {
+  deleteLease(req.body.public_lease_id, (err,results) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).json({
+        success: 0,
+        message: "Database connection error",
+      });
+    }
+    return res.status(200).json({
+      success: 1,
+      message: "deleted successfully",
+    });
+  })
+}
+
+export const controllerUpdateLease = (req, res) => {
+  let landlordID = "";
+  let tenantID = "";
+  getLandlordUserId(req.body.landlord_email, (err,results) => {
+    if (err) {
+      console.log(err);
+      return;
+    } if (!results) {
+      return res.json({
+        success : 0,
+        message: "landlord not registered."
+      })
+    } else {
+      landlordID = results.landlord_user_id;
+      // console.log(landlordID)
+      getTenantUserId(req.body.tenant_email, (err, results) => {
+        if (err) {
+          console.log(err)
+          return
+        } if (!results) {
+          return res.json({
+            success:0,
+            message: "tenant not registered."
+          })
+        } else {
+          tenantID = results.tenant_user_id;
+          // console.log(tenantID)
+          updateLease(landlordID, tenantID, req.body, (err, results) => {
+            if (err) {
+              console.log(err);
+              return res.status(500).json({
+                success: 0,
+                message: "Database connection error"
+              });
+            } else {
+              updateTenantLease(req.body.tenant_email,req.body.new_public_lease_id, (err,results) => {
+                if (err) {
+                  console.log(err);
+                  return res.status(500).json({
+                    success: 0,
+                    message: "Database connection error"
+                  })
+                } 
+              });
+              return res.status(200).json({
+                success:1,
+                data: results
+              });
+            };
+          })
+        }
+      })
+    }
+  })
+}

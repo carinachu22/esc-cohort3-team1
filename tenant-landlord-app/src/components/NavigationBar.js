@@ -12,8 +12,8 @@ import * as React from 'react';
 import { useAuthUser, useSignOut } from 'react-auth-kit';
 import { Navigate, useNavigate } from 'react-router-dom';
 
-function CreateTicket({accountType}){
-    if (accountType == 'landlord'){
+function CreateTicket(accountType){
+    if (accountType === 'landlord'){
         return null
     }
     return (
@@ -27,8 +27,8 @@ function CreateTicket({accountType}){
     )
 }
 
-function AccountManagement({accountType}){
-    if (accountType == 'tenant'){
+function AccountManagement(accountType){
+    if (accountType === 'tenant'){
         return null
     }
     return (
@@ -42,10 +42,17 @@ function AccountManagement({accountType}){
     )
 }
 
+/**
+ * Summary.
+ * Returns the navigation bar for rendering.
+ * Some links are user type specific.
+ * @returns 
+ */
 export default function NavigationBar(){
     const navigate = useNavigate();
     const signOut = useSignOut();
     const userDetails = useAuthUser();
+    console.log(userDetails().type)
     if (userDetails() == null){
         return <Navigate to="/"></Navigate>
     }
@@ -74,8 +81,8 @@ export default function NavigationBar(){
                     Service Ticket List
                 </Link>
             </Box>
-            <CreateTicket accountType={userDetails().type}/>
-            <AccountManagement accountType={userDetails().type}/>
+            {CreateTicket(userDetails().type)}
+            {AccountManagement(userDetails().type)}
             </HStack>
             <Spacer />
             <Box style={{  

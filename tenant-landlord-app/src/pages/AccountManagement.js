@@ -3,6 +3,7 @@
 import { Navigate } from 'react-router-dom';
 import styles from "../styles/dashboard.module.css";
 import { useEffect } from 'react';
+import Popup from 'reactjs-popup';
 
 // Import React and hooks
 import { useAuthUser, useAuthHeader, useSignOut, useIsAuthenticated } from 'react-auth-kit';
@@ -11,16 +12,49 @@ import { useAuthUser, useAuthHeader, useSignOut, useIsAuthenticated } from 'reac
 import "bootstrap/dist/css/bootstrap.min.css";
 
 // Import axios for http requests
-import NavigationBar from '../components/NavigationBar';
-import { Accordion, AccordionButton, AccordionItem, AccordionPanel, TableContainer, Table,
+import NavigationBar from '../components/NavigationBar.js';
+import { Accordion, 
+    AccordionButton, 
+    AccordionItem, 
+    AccordionPanel, 
+    TableContainer, 
+    Table,
     Thead,
     Tbody,
     Tfoot,
     Tr,
     Th,
     Td,
-    TableCaption,
-Box, AccordionIcon, HStack, Flex } from '@chakra-ui/react';
+    Button,
+    Box, 
+    AccordionIcon, 
+    HStack,
+    Popover,
+    PopoverTrigger,
+    PopoverContent,
+    PopoverHeader,
+    PopoverBody,
+    PopoverFooter,
+    PopoverArrow,
+    PopoverCloseButton,
+    ButtonGroup,
+    useDisclosure,
+    IconButton,
+    FormControl,
+    extendTheme,
+    CSSReset,
+    ChakraProvider,
+    Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalHeader,
+    ModalFooter,
+    ModalBody,
+    ModalCloseButton,
+    FormLabbel,
+    FormHelperText} from '@chakra-ui/react';
+
+import { DeleteIcon } from '@chakra-ui/icons'
 
 /**
 Functional component to display service ticket list
@@ -35,32 +69,80 @@ import TableStyles from "../styles/account_management.module.css";
 import PasswordStyles from "../styles/usePasswordToggle.module.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {useNavigate} from 'react-router-dom';
-import {useFormik} from "formik";
+import {Form, useFormik} from "formik";
 import axios, {AxiosError} from "axios";
 import {useSignIn} from "react-auth-kit";
+
 
 const AccountManagement = () => {
   const navigate = useNavigate();
   const [error, setError] = useState("");
   const signIn = useSignIn();
   const [tenantAccounts, setTenantAccounts] = useState(null)
+  const { onOpen: onOpen, onClose: onClose, isOpen: isOpen } = useDisclosure();
+  const { onOpen: onOpenModal, onClose: onCloseModal, isOpen: isOpenModal } = useDisclosure();
+  const token = useAuthHeader();
+  const userDetails = useAuthUser();
 
-  const [passwordShown, setPasswordShown] = useState(false);
-
-  const togglePassword = () => {
-      //passwordShown = true if handler is invoked  
-      setPasswordShown(!passwordShown)
+  const config = {
+    headers: {
+      Authorization: `${token()}`
+    },
+    params: {
+        email: userDetails().email
     }
+}
+  const customTheme = extendTheme({
+    styles: {
+      global: {
+        body: {
+          bg: "gray.200", // Set the desired background color here
+        },
+      },
+    },
+  });
 
-    const APIGetTenantAccounts = async () => {
+
+  const navigateToTenantCreationPage = () => {
+    navigate('/pages/TenantCreationPage');
+  }
+
+
+
+
+  const APIGetTenantAccounts = async () => {
     const response = await axios.get(
         "http://localhost:5000/api/landlord/getTenantAccounts",
+        config
     )
     //console.log(response)
     return response
-    }
+  }
+  
+  const APIDeleteAllTenants = async () => {
+    const response = await axios.patch(
+        "http://localhost:5000/api/landlord/deleteAllTenants",
+        config
+    )
+    //console.log(response)
+    GetTenantAccounts();
+    onClose();
+  }
 
-    const GetTenantAccounts = () => {
+
+  const APIDeleteTenantByEmail = async (email) => {
+    const response = await axios.patch(
+        "http://localhost:5000/api/landlord/deleteTenantByEmail",
+        config,
+        {email, }
+    )
+    console.log(email);
+    GetTenantAccounts();
+    console.log("bye");
+
+  }
+
+  const GetTenantAccounts = () => {
     var temp_accounts = []
     const accounts = APIGetTenantAccounts()
     accounts.then((result) => {
@@ -70,127 +152,144 @@ const AccountManagement = () => {
         }
     }
     console.log(temp_accounts)
-    // account.email
-    const accounts_table = (
-        <TableContainer>
-          <Table variant='simple'>
-            <Tbody>
-              {temp_accounts.map((account) => (
-                <Tr key={account.tenant_user_id}>
-                  <Td>{account.tenant_user_id}</Td>
-                  <Td>{account.email}</Td>
-                </Tr>
-              ))}
-            </Tbody>
-          </Table>
-        </TableContainer>
-      );
+
+    // Convert every tenant fetched to HTML to be shown on the left
+    const tenant_html = temp_accounts.map(account => 
+      <div key={account.tenant_user_id}>
+      <AccordionItem>
+          <AccordionButton justifyContent="space-between">
+              <HStack width="100%">
+              <Box textAlign='left' width="15vw" marginStart="2">
+              {account.tenant_user_id}
+              </Box>
+              <Box textAlign='left' width='34vw'>
+              {account.email}
+              </Box>
+              <Box textAlign='left' width='34vw'>
+              {account.public_building_id}
+              </Box>
+              </HStack>
+              <AccordionIcon width='2.3vw'/>
+              <Box width='2.3vw' >
+                <Popup trigger={<IconButton size='sm' icon={<DeleteIcon />} />} position="left center">
+                  <FormControl>
+                    <Button 
+                      onClick={() => APIDeleteTenantByEmail(account.email)}
+                      colorScheme='red'
+                      >
+                      confirm?
+                    </Button>
+                  </FormControl>
+                </Popup>
+                {/* <IconButton size='sm' icon={<DeleteIcon />} onClick={onOpen}></IconButton>
+                <Modal isOpen={isOpen} onClose={onClose} >
+                  <ModalOverlay/>
+                  <ModalContent>
+                    <ModalHeader>
+                      <ModalCloseButton/>
+                    </ModalHeader>
+                    <ModalBody>
+                      <Box>Doing so will permanently delete this account, are you sure?</Box>
+                    </ModalBody>
+                    <ModalFooter>
+                      <Button onClick={() => APIDeleteTenantByEmail(account.email)} colorScheme='red'> </Button>
+                    </ModalFooter>
+                  </ModalContent>
+                </Modal> */}
+              </Box>
+
+
+              
+
+          </AccordionButton>
+          <AccordionPanel>
+              <HStack spacing='24vw'>
+              <Box>
+              Tenant ID: {account.tenant_user_id} <br></br>
+              Email: {account.email} <br></br>
+              </Box>
+              </HStack>
+              <br></br>
+          </AccordionPanel>
+      </AccordionItem>
+      </div>
+    );
     
-    setTenantAccounts(accounts_table) 
-    })}
+    setTenantAccounts(tenant_html) 
+  })}
 
-  const onSubmit = async (values) => {
-    console.log("Values: ", values);
-    setError("");
-
-    try{
-        const response = await axios.post(
-            "http://localhost:5000/api/landlord/createTenant",
-            values
-        )
-        //console.log(response);
-        signIn({
-            token: response.data.token,
-            expiresIn: 60,
-            tokenType: "Bearer",
-            authState: {email: values.email}
-        });
-        if (response.data.message === "created successfully"){
-            navigateToDashboard();
-        }
-
-
-
-    } catch (err){
-        if (err && err instanceof AxiosError) {
-            setError(err.response?.data.message);
-        }
-        else if (err && err instanceof Error){
-            setError(err.message);
-        }
-
-        console.log("Error: ", err);
-    }
-    window.location.reload();
-  }
-
-  const navigateToDashboard = () => {
-    navigate('/pages/Dashboard');
-  };
-
-  const formik = useFormik({
-    initialValues: {
-        email: "",
-        password: "",
-    },
-    onSubmit,
-  });
 
   useEffect(() => {
     GetTenantAccounts()},
     [])
-  return (
-    <div className={TableStyles.pageWrapper}>
-      <div className={TableStyles.page}>
-        <form className={TableStyles.cover} onSubmit={formik.handleSubmit}>
-          <h1 className={TableStyles.header}>Register</h1>
-          <div className={TableStyles.context}>sign up as a landlord</div>
-          <input
-            name="email"
-            type="email"
-            className={TableStyles.input}
-            placeholder="EMAIL"
-            value={formik.values.email}
-            onChange={formik.handleChange}
-          />
-          <div className={TableStyles.passwordToggle}>
-            <input
-              name="password"
-              type={passwordShown ? "text" : "password"}
-              placeholder="PASSWORD"
-              className={TableStyles.passwordInput}
-              value={formik.values.password}
-              onChange={formik.handleChange}
-            />
-            <span onClick={togglePassword}>
-              {passwordShown ? "Hide" : "Show"}
-            </span>
-          </div>
-          <button
-            className={TableStyles.next_btn}
-            type="submit"
-            isLoading={formik.isSubmitting}
-          >
-            FINISH
-          </button>
-        </form>
-      </div>
 
-      <div className={TableStyles.container}>
-        <h2>Your Tenants</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Requester</th>
-            </tr>
-          </thead>
-          <tbody>
-            {tenantAccounts}
-          </tbody>
-        </table>
-      </div>
-    </div>
+  return (
+    <>
+    <ChakraProvider theme={customTheme}>
+      <CSSReset/>
+      {NavigationBar()}
+      <Box position="relative" marginTop="2em" float="right" right="2em">
+        <Button
+          onClick={navigateToTenantCreationPage}
+          colorScheme='teal'
+          padding={2}
+
+          textColor="white"
+        >
+        Create New Tenant
+        </Button>
+      </Box>
+      <Box  fontSize="30px" marginLeft="2.6em" marginTop="2em" marginBottom="-2.5em">
+        Tenant Details
+      </Box> 
+      <TableContainer  margin="5em" border="1px" borderColor="gray.300" boxShadow="0 0.188em 1.550em rgb(156, 156, 156)" background="white">
+        <Table variant='simple'>
+        <Thead margin={0} backgroundColor="blue.400" >
+            <Tr>
+                <Th width="15vw" textAlign='left' paddingRight={0} textColor="white"> ID </Th>
+                <Th width='31vw' textAlign='left' paddingRight={0} paddingLeft={0} textColor="white"> Email </Th>
+                <Th width='35vw' textAlign='left' paddingRight={0} paddingLeft={0} textColor="white">Building ID</Th>
+                <Th width='2.5vw' alignItems="center" paddingRight={0} paddingLeft={0} >
+                  <Popover
+                    isOpen={isOpen}
+                    onOpen={onOpen}
+                    onClose={onClose}
+                    placement='left'
+                    closeOnBlur={false}
+                  >
+                    <PopoverTrigger >
+                      <IconButton size='sm' icon={<DeleteIcon />} />
+                    </PopoverTrigger>
+                    <PopoverContent >
+                      <PopoverHeader fontWeight='semibold'>Confirmation</PopoverHeader>
+                      <PopoverArrow />
+                      <PopoverCloseButton />
+                      <PopoverBody>
+                        Delete All Users
+                      </PopoverBody>
+                      <PopoverFooter display='flex' justifyContent='flex-end'>
+                        <ButtonGroup size='sm'>
+                          <Button variant='outline' onClick={onClose}>Cancel</Button>
+                          <Button colorScheme='red' onClick={APIDeleteAllTenants} >Confirm</Button>
+                        </ButtonGroup>
+                      </PopoverFooter>
+                    </PopoverContent>
+                  </Popover>
+                </Th>
+            </Tr>
+        </Thead>
+        </Table>
+        <Accordion allowToggle >
+          {tenantAccounts}
+        </Accordion>
+      </TableContainer>
+    </ChakraProvider>
+
+
+
+
+
+    </>
   );
 };
 export default AccountManagement

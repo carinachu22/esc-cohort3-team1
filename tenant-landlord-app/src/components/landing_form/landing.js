@@ -1,5 +1,6 @@
 import styles from "../../styles/landing.module.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+import React from "react";
 
 import {useNavigate} from 'react-router-dom';
 import {
@@ -23,25 +24,29 @@ import {
 const Landing = () => {
 
     const navigate = useNavigate();
+    
   
-    const navigateToLandlordLogin = () => {
-      navigate('/pages/landlord_login');
+    const navigateToLandlordLogin = (role) => {
+      navigate('/pages/LoginPage', { state: { role } });
       
     };
   
-    const navigateToTenantLogin = () => {
-      navigate ('/pages/tenant_login');
-      
+    const navigateToTenantLogin = (role) => {
+      navigate ('/pages/LoginPage', { state: { role } });
+    };
+
+    const navigateToAdminLogin = (role) => {
+      navigate ('/pages/LoginPage', { state: { role } });
     };
 
 
     return (
         <Flex align="center" justify="center" h="100vh" w="100%">
-          <Box w="22em" h="30em" p={8} rounded="md" position="relative" borderRadius="1em" boxShadow="0 0.188em 1.550em rgb(156, 156, 156)">
+          <Box w="22em" h="30em" p={6} rounded="md" position="relative" borderRadius="1em" boxShadow="0 0.188em 1.550em rgb(156, 156, 156)">
             <VStack alignItems="center" >
               <Heading marginTop="10">Service Portal</Heading>
               <Button 
-                onClick={navigateToTenantLogin} 
+                onClick={() => navigateToTenantLogin('tenant')} 
                 w="80%" 
                 h="4em" 
                 background="rgb(192, 17, 55)" 
@@ -52,7 +57,7 @@ const Landing = () => {
               TENANT LOGIN
               </Button>
               <Button 
-                onClick={navigateToLandlordLogin} 
+                onClick={() => navigateToLandlordLogin('landlord')} 
                 w="80%" 
                 h="4em" 
                 background="rgb(192, 17, 55)" 
@@ -61,6 +66,18 @@ const Landing = () => {
                 marginTop="10"
               >
               LANDLORD LOGIN
+              </Button>
+              <Button 
+                onClick={() => navigateToAdminLogin('admin')} 
+                w="80%" 
+                h="4em" 
+                background="rgb(192, 17, 55)" 
+                textColor="white" 
+                variant="unstyled"
+                marginTop="10"
+                value="admin"
+              >
+              ADMIN LOGIN
               </Button>
 
             </VStack>

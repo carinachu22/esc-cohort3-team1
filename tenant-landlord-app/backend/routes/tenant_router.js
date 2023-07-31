@@ -6,10 +6,15 @@ import {
   controllerQuotationApproval,
   controllerAddFeedbackRating,
   controllerAddFeedbackText,
-  controllerCloseTicketStatus
+  controllerCloseTicketStatus,
+  controllerForgotPasswordTenant,
+  controllerResetPasswordPageTenant,
+  controllerResetPasswordTenant,
+  controllerGetTicketById,
+  controllerGetLeaseByTenant
 } from "../controller/tenant_controller.js";
 import express from "express";
-import { checkToken } from "../auth/token_validation.js";
+import { checkTenantToken } from "../auth/tenant_validation.js";
 
 const router = express.Router();
 
@@ -26,11 +31,21 @@ const router = express.Router();
  */
 
 router.post("/login", controllerLoginTenant);
-router.post("/createTicket", checkToken, controllerCreateTicket);
-router.patch("/quotationApproval/:id", checkToken, controllerQuotationApproval);
-router.get("/getTickets",checkToken, controllerGetTickets);
-router.get("/getTicketsByStatus/:status",checkToken, controllerGetTicketsByStatus);
-router.patch("/addFeedbackRating/:id", checkToken, controllerAddFeedbackRating);
-router.patch("/addFeedbackText/:id", checkToken, controllerAddFeedbackText);
-router.patch("/closeTicketStatus/:id", checkToken, controllerCloseTicketStatus);
+router.post("/forgot-password", controllerForgotPasswordTenant);
+router.post("/reset-password/:id/:jsontoken", controllerResetPasswordTenant);
+router.get("/reset-password/:id/:jsontoken", controllerResetPasswordPageTenant);
+
+router.get("/getLease", checkTenantToken, controllerGetLeaseByTenant);
+
+router.post("/createTicket", checkTenantToken, controllerCreateTicket);
+router.patch("/quotationApproval/:id", checkTenantToken, controllerQuotationApproval);
+
+router.get("/getTickets",checkTenantToken, controllerGetTickets);
+router.get("/getTicketById/:id", checkTenantToken, controllerGetTicketById);
+router.get("/getTicketsByStatus/:status",checkTenantToken, controllerGetTicketsByStatus);
+
+router.patch("/addFeedbackRating/:id", checkTenantToken, controllerAddFeedbackRating);
+router.patch("/addFeedbackText/:id", checkTenantToken, controllerAddFeedbackText);
+
+router.patch("/closeTicketStatus/:id", checkTenantToken, controllerCloseTicketStatus);
 export default router;
