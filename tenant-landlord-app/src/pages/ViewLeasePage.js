@@ -5,19 +5,24 @@ import { ArrowBackIcon } from '@chakra-ui/icons';
 import { useNavigate , useLocation } from 'react-router-dom';
 
 import NavigationBar from '../components/NavigationBar.js';
+import { useAuthHeader } from 'react-auth-kit';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
 function ViewLeasePage() {
     const [pdfUrl,setPdfUrl] = useState('')
     const navigate = useNavigate();
-
+    const token = useAuthHeader(); 
     const location = useLocation();
     const { tenantID } = location.state;
     console.log("tenantID: ", tenantID);
 
     useEffect(() => {
-      fetch(`http://localhost:5000/api/landlord/getLease/?tenantID=${tenantID}`,
+      fetch(`http://localhost:5000/api/landlord/getLease/?tenantID=${tenantID}`, {
+        headers:{
+          Authorization: `${token()}`
+        }
+      }
       ) 
         .then((response) => response.blob())
         .then((data) => {

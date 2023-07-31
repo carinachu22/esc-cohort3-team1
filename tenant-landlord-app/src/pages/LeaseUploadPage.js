@@ -73,11 +73,12 @@ const LeaseUpload = () => {
                             {
                                 params: { 'api-version': '3.0' },
                                 headers: {
-                                "Content-Type": "multipart/form-data"
+                                "Content-Type": "multipart/form-data",
+                                Authorization: `${token()}`
                                 },
                             }
                         );
-                        console.log(response);
+                        console.log('lease upload response',response);
                         navigateToViewLeasePage(tenantID);
                         toast({
                             title: "Lease Uploaded",
