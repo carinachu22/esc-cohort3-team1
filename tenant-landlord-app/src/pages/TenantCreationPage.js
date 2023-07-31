@@ -4,6 +4,9 @@ import { useFormik } from "formik";
 import axios, { AxiosError } from "axios";
 import NavigationBar from '../components/NavigationBar.js';
 
+// Import React and hooks
+import { useAuthUser, useAuthHeader, useSignOut, useIsAuthenticated } from 'react-auth-kit';
+
 import {
     Box,
     Button,
@@ -18,6 +21,19 @@ import {
 
 const TenantCreationPage = () => {
     const navigate = useNavigate();
+    const token = useAuthHeader();
+    const userDetails = useAuthUser();
+
+    const config = {
+        headers: {
+          Authorization: `${token()}`
+        },
+        params: {
+            email: userDetails().email
+        }
+      }
+
+    
 
     const validate = values => {
         let errors = {};
@@ -46,6 +62,14 @@ const TenantCreationPage = () => {
     const navigateToAccountManagement = () => {
         navigate('/pages/AccountManagement');
     };
+
+    const APIGetBuildingID = async (email) => {
+        const response = await axios.get(
+            "http://localhost:5000/api/landlord/getTenantAccounts?landlordEmail=" + email
+        )
+        console.log("APIGetBuildingID", response)
+        return response
+    }
 
     const onSubmit = async (values) => {
         console.log("Values: ", values);
@@ -76,7 +100,7 @@ const TenantCreationPage = () => {
         initialValues: {
             email: "",
             password: "",
-            buildingID: "",
+            landlordEmail: config.params.email,
             hasError: false
         },
         onSubmit,
@@ -126,20 +150,6 @@ const TenantCreationPage = () => {
                                 </InputRightElement>
                             </InputGroup>
                             {formik.errors.password ? <Box color="red.500"  marginBottom="-6">{formik.errors.password}</Box>: null}                          
-                        </FormControl>
-                        <FormControl marginTop="6">
-                            <InputGroup size='md'>
-                                <Input
-                                    id="buildingID"
-                                    name="buildingID" 
-                                    pr='4.5rem'
-                                    type="text"
-                                    placeholder="Building ID"
-                                    variant="filled"
-                                    value={formik.values.buildingID}
-                                    onChange={formik.handleChange}
-                                />
-                            </InputGroup>                        
                         </FormControl>
                         <FormControl marginTop="6" >
                             <Button 
