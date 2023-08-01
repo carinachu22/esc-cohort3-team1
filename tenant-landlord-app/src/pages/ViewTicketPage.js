@@ -112,12 +112,14 @@ export default function ViewTicketPage() {
 
   
   useEffect(() => {
-
-    GetServiceTickets(userDetails);
-    if (status === 'completed') {
-      navigate('/pages/FeedbackForm');
+    if (authenticate()){
+      GetServiceTickets(userDetails);
+      if (status === 'completed') {
+        navigate('/pages/FeedbackForm');
+      } 
     }
   }, [status, navigate]);
+
 
     // Ensure that user is authenticated for all renders
     const authenticate = () => {

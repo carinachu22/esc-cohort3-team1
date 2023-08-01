@@ -12,11 +12,15 @@ function ViewLeasePage() {
     const navigate = useNavigate();
     const token = useAuthHeader(); 
     const location = useLocation();
-    const { tenantID } = location.state;
+    var tenantID;
+    if (location != null){
+      tenantID = location.state;
+    }
     const authenticated = useIsAuthenticated();
-    console.log("tenantID: ", tenantID);
+    //console.log("tenantID: ", tenantID);
 
     useEffect(() => {
+      if (authenticate()){
       fetch(`http://localhost:5000/api/landlord/getLease/?tenantID=${tenantID}`, {
         headers:{
           Authorization: `${token()}`
@@ -33,7 +37,7 @@ function ViewLeasePage() {
           console.error(error);
           // Handle error
         });
-    }, []);
+    }}, []);
 
     // Ensure that user is authenticated for all renders
     const authenticate = () => {
