@@ -102,7 +102,7 @@ describe("Testing updateTenantPassword() in tenant model", () => {
 
 describe ("Testing getTicketsByTenant() in tenant model", () => {
     test ("Test calling getTicketsByTenant() on a valid email with no tickets", (done) => {
-        getTicketsByTenant('tenant5@gmail.com', (err, results) => {
+        getTicketsByTenant('tenant6@gmail.com', (err, results) => {
             if(err){
                 console.log("ERROR",err)
             }
@@ -379,11 +379,11 @@ describe("Testing getLeaseByTenant() in tenant model", () => {
     });
 })
 
-describe("Testing updateTenantLease() in tenant model", () => {
+describe.only("Testing updateTenantLease() in tenant model", () => {
     test ("Test calling updateTenantLease() on valid tenant email",(done) => {
         var currentdate = new Date(); 
         const date = currentdate.getFullYear().toString() + '-' + (currentdate.getMonth() + 1).toString() + '-' + currentdate.getDate().toString() + ' ' + currentdate.getHours().toString() + ':' + ('0' + currentdate.getMinutes()).slice(-2) + ':' + currentdate.getSeconds().toString()
-        updateTenantLease("tenant4@gmail.com",date, (err, results) => {
+        updateTenantLease(date,4, (err, results) => {
             if (err){
                 console.log("ERROR",err)
             }
@@ -395,7 +395,7 @@ describe("Testing updateTenantLease() in tenant model", () => {
     test ("Test calling updateTenantLease() on an invalid tenant email",(done) => {
         var currentdate = new Date(); 
         const date = currentdate.getFullYear().toString() + '-' + (currentdate.getMonth() + 1).toString() + '-' + currentdate.getDate().toString() + ' ' + currentdate.getHours().toString() + ':' + ('0' + currentdate.getMinutes()).slice(-2) + ':' + currentdate.getSeconds().toString()
-        updateTenantLease("tenant@gmail.com", date, (err, results) => {
+        updateTenantLease(date,999, (err, results) => {
             if (err){
                 console.log("ERROR",err)
             }

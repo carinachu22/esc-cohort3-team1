@@ -34,7 +34,8 @@ export default async function setup() {
                     ("tenant2@gmail.com","${hash_password}", "FC", "2001-01-01 00:00:00"),
                     ("tenant3@gmail.com","${hash_password}", "CWP", "2001-02-16 12:01:09"),
                     ("tenant4@gmail.com","${hash_password}", "FC", "2002-03-24 23:01:10"),
-                    ("tenant5@gmail.com","${hash_password}", "CWP", "2002-10-30 10:10:10");
+                    ("tenant5@gmail.com","${hash_password}", "CWP", "2002-10-30 10:10:10"),
+                    ("tenant6@gmail.com","${hash_password}", "RC", "2003-10-30 11:11:11");
         `);
 
         //        CREATE TEMPORARY TABLE landlord_user table
@@ -95,7 +96,8 @@ export default async function setup() {
                         (2,'2001-02-16 12:01:09',2,1,'02','894',':Content/Documents/lease_details/2'),
                         (3,'2002-03-24 23:01:10',3,2,'12','921',':Content/Documents/lease_details/3'),
                         (4,'2002-10-30 10:10:10',4,3,'10','30',':Content/Documents/lease_details/4'),
-                        (5,'2007-11-20 11:11:11',5,3,'6','100',':Content/Documents/lease_details/5');
+                        (5,'2007-11-20 11:11:11',5,3,'6','100',':Content/Documents/lease_details/5'),
+                        (6,'2004-01-20 11:11:11',6,3,'1','50',':Content/Documents/lease_details/6');
     
             `);
         
