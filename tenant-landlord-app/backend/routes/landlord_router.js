@@ -83,7 +83,7 @@ router.get("/getQuotation/", checkLandlordToken, controllerGetQuotation);
 router.post("/uploadQuotation/:id", checkLandlordToken, upload.single('files'), controllerUploadQuotation);
 router.patch("/updateQuotation/:id", checkLandlordToken, controllerUpdateQuotation);
 
-router.patch("/ticketApproval/:id", checkLandlordToken, controllerTicketApproval);
+router.patch("/ticketApproval/:id/:isCheckboxChecked", checkLandlordToken, controllerTicketApproval);
 router.patch("/ticketWork/:id", checkLandlordToken, controllerTicketWork);
 
 router.get("/getTenantAccounts/", controllerGetTenantAccounts);

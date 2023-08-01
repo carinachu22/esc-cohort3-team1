@@ -7,7 +7,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import NavigationBar from '../components/NavigationBar.js';
 import { SelectedTicketContext } from '../components/SelectedTicketContext.js';
 import axios from 'axios';
-import { useAuthHeader } from 'react-auth-kit';
+import { useAuthHeader, useIsAuthenticated } from 'react-auth-kit';
 
 
 function QuotationPage() {
@@ -25,6 +25,7 @@ function QuotationPage() {
     const navigateToViewTicketPage =  (ticketID) => {
         navigate('/pages/ViewTicketPage/', { state: { ticketID } } );
       }
+    const authenticated = useIsAuthenticated();
 
     const handleApprove = () => {
         const config = {
@@ -94,6 +95,20 @@ function QuotationPage() {
             // Handle error
           });
       }, []);
+    // Ensure that user is authenticated for all renders
+    const authenticate = () => {
+        // Check if still autenticated based on react auth kit
+        if (!authenticated()){
+            console.log("Not authenticated, redirecting.")
+            navigate('/')
+            return false
+        } else {
+            return true
+        }
+    }
+    useEffect(() => {
+        authenticate()
+    })
 
     return (
         <>

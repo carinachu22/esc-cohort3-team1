@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Box, Heading, Textarea, Input } from '@chakra-ui/react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useAuthUser, useAuthHeader } from 'react-auth-kit';
+import { useAuthUser, useAuthHeader, useIsAuthenticated } from 'react-auth-kit';
 import { useFormik } from 'formik';
 import axios, { AxiosError } from 'axios';
 
@@ -19,6 +19,7 @@ export default function ViewTicketPage() {
   const location = useLocation();
   const { ticketID } = location.state;
   console.log('ID', ticketID)
+  const authenticated = useIsAuthenticated();
 
   console.log('selectedTicket:', selectedTicket);
   const GetServiceTickets = (userDetails) => {
@@ -86,13 +87,16 @@ export default function ViewTicketPage() {
         var category = tickets[0].request_type;
         setstatus(tickets[0].status)
         var timesubmitted = tickets[0].submitted_date_time;
+        var floor = tickets[0].floor;
+        var unit_number = tickets[0].unit_number;
         setTicket(tickets[0])
         // console.log('tenantComment', tenantComment);
         // console .log('category', category);
         // console.log('status', status);
         // console.log('timesubmitted', timesubmitted);
         formik.setValues({
-          // location: response.data.data.location, // Replace 'location' with the appropriate field names from your response
+          floor: floor,
+          unit_number: unit_number,
           category: category,
           tenantComment: tenantComment,
           status: status,
@@ -104,7 +108,8 @@ export default function ViewTicketPage() {
 
   const formik = useFormik({
     initialValues: {
-      location: '',
+      floor: '',
+      unit_number: '',
       category: '',
       tenantComment: '',
       status: '',
@@ -115,12 +120,30 @@ export default function ViewTicketPage() {
 
   
   useEffect(() => {
-
-    GetServiceTickets(userDetails);
-    if (status === 'completed') {
-      navigate('/pages/FeedbackForm');
+    if (authenticate()){
+      GetServiceTickets(userDetails);
+      if (status === 'completed') {
+        navigate('/pages/FeedbackForm');
+      } 
     }
   }, [status, navigate]);
+
+
+    // Ensure that user is authenticated for all renders
+    const authenticate = () => {
+      // Check if still autenticated based on react auth kit
+      if (!authenticated()){
+          console.log("Not authenticated, redirecting.")
+          navigate('/')
+          return false
+      } else {
+          return true
+      }
+  }
+  useEffect(() => {
+      authenticate()
+  })
+
 
   return (
     <>
@@ -146,14 +169,13 @@ export default function ViewTicketPage() {
         {/* Comment Box 1 */}
         <Box flex="1" marginRight="2em">
           <Heading as="h5" size="lg" marginBottom="1em">
-            Location
+            Floor
           </Heading>
           <Textarea isDisabled
-            name="location"
-            placeholder="Enter location"
-            value={formik.values.location}
-            onChange={formik.handleChange}
+            name="floor"
             marginBottom="2em"
+            value={formik.values.floor}
+            onChange={formik.handleChange}
           />
           <Heading as="h5" size="lg" marginBottom="1em">
             Category Of Request
@@ -177,8 +199,17 @@ export default function ViewTicketPage() {
           />
         </Box>
 
-        {/* Comment Box 3 */}
+        {/* Comment Box 2 */}
         <Box flex="1" marginLeft="2em">
+          <Heading as="h5" size="lg" marginBottom="1em">
+            Unit Number
+          </Heading>
+          <Textarea isDisabled
+            name="unit_number"
+            marginBottom="2em"
+            value={formik.values.unit_number}
+            onChange={formik.handleChange}
+          />
           <Heading as="h5" size="lg" marginBottom="1em">
             Description
           </Heading>

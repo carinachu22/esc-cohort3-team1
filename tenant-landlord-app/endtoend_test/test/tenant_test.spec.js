@@ -1,11 +1,8 @@
 const {By, Builder, Browser, until} = require('selenium-webdriver');
-const {suite} = require('selenium-webdriver/testing');
-const assert = require("assert");
-const { WebElement } = require('selenium-webdriver');
+const chai = require('chai');
 
-
-
-
+// Use Chai assertion styles (e.g., "assert.equal")
+const assert = chai.assert;
     describe('Login', function () {
       let driver;
   
@@ -53,6 +50,16 @@ const { WebElement } = require('selenium-webdriver');
         assert.equal(true, result)
       });
 
+    
+    });
+
+    describe('Service Tickets', async function () {
+      let driver
+      before(async function () {
+        driver = await new Builder().forBrowser('chrome').build();
+      });
+  
+      after(async () => await driver.quit());
       it('Tenant View Service Tickets', async function () {
         await driver.get('http://localhost:3000/pages/Dashboard/');
 
@@ -98,4 +105,6 @@ const { WebElement } = require('selenium-webdriver');
 
 
       });
+
     });
+

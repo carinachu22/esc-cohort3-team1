@@ -13,12 +13,14 @@ import {
   getTenantUserId,
   getLeaseByTenant,
   getQuotation,
-  getQuotationPath
+  getQuotationPath,
+  getLeaseByTenantEmail
 } from "../models/tenant_model.js";
 import { genSaltSync, hashSync, compareSync } from "bcrypt";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 import fs from "fs";
+import { getLease } from "../models/landlord_model.js";
 
 
 /**
@@ -191,7 +193,11 @@ export const controllerResetPasswordTenant = async (req, res) => {
  */
 export const controllerCreateTicket = (req, res) => {
   const body = req.body;
-  createTicket(body, (err,results) => {
+  const tenantEmail = req.body.email;
+  console.log("tenantEmail", tenantEmail);
+  console.log("req.body", body);
+  getLeaseByTenantEmail(tenantEmail, (err,results) => {
+    console.log("results", results);
     if (err) {
       console.log(err);
       return res.status(500).json({
@@ -199,12 +205,32 @@ export const controllerCreateTicket = (req, res) => {
         message: "Database connection error"
       });
     } else {
-      return res.status(200).json({
-        success:1,
-        data: results
-      });
+      if (results[0] === undefined){
+        return res.status(200).json({
+          success: 0,
+          message: "You do not have a lease attached. Please contact your landlord."
+        })
+      }
+      const floor = results[0].floor;
+      const unit_number = results[0].unit_number;
+      console.log("floor", floor);
+      createTicket(body, floor, unit_number, (err,results) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).json({
+            success: 0,
+            message: "Database connection error"
+          });
+        } else {
+          return res.status(200).json({
+            success:1,
+            data: results
+          });
+        };
+      })
     };
   })
+
 };
 
 /**

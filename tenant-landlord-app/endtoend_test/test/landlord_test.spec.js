@@ -50,3 +50,34 @@ describe('Login', function () {
         assert.equal(true, result);
     });
 });
+
+describe('Viewing Service Tickets', function () {
+    let driver;
+
+    before(async function () {
+        driver = await new Builder().forBrowser('chrome').build();
+    });
+
+    after(async () => await driver.quit());
+    it("View Drop Down Detailed Service Request", async function() {
+
+
+    await driver.get('http://localhost:3000/pages/TicketList');
+
+    let title = await driver.getTitle();
+    assert.equal("React App", title);
+
+        //TODO - fix Drop Down view of service tickets info
+
+        // await driver.manage().setTimeouts({implicit: 500});
+
+        
+        // await driver.findElement(By.xpath('//*[@id="root"]/div/div/div[6]/div[1]/div')).click();
+
+        // await driver.manage().setTimeouts({implicit: 500});
+
+        // // View Dropdown Details
+        // let result =  await driver.findElement(By.xpath("//*[@id='accordion-panel-:r0:']/div/div[1]")).isDisplayed();
+        // assert.equal(true, result)
+    })
+});
