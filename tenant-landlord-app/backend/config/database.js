@@ -3,14 +3,28 @@ import dotenv from "dotenv";
 
 import { createPool } from "mysql2"; //this is just to import a method
 dotenv.config();
-export const pool = createPool({
+
+const env = process.env.NODE_ENV || 'development';
+console.log(env)
+const dbConfig = env === 'test' ? {
+  port:process.env.DB_TESTPORT,
+  host: process.env.DB_TESTHOST,
+  user: process.env.DB_TESTUSER,
+  password: process.env.DB_TESTPASSWORD,
+  database: process.env.DB_TESTMYSQL,
+  connectionLimit: 10,
+} :{
   port: process.env.DB_PORT,
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_MYSQL,
   connectionLimit: 10,
-});
+};
+
+console.log(dbConfig)
+
+export const pool = createPool(dbConfig)
 
 /**
  * Test the database connection
