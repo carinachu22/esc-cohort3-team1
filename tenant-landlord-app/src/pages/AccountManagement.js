@@ -16,7 +16,8 @@ import NavigationBar from '../components/NavigationBar.js';
 import { Accordion, 
     AccordionButton, 
     AccordionItem, 
-    AccordionPanel, 
+    AccordionPanel,
+    Flex, 
     TableContainer, 
     Table,
     Thead,
@@ -83,8 +84,7 @@ const AccountManagement = () => {
   const { onOpen: onOpenModal, onClose: onCloseModal, isOpen: isOpenModal } = useDisclosure();
   const token = useAuthHeader();
   const userDetails = useAuthUser();
-
-  console.log('user details', userDetails)
+  const authenticated = useIsAuthenticated();
 
   const config = {
     headers: {
@@ -184,7 +184,8 @@ const AccountManagement = () => {
     const tenant_html = temp_accounts.map(account => 
       <Box key={account.tenant_user_id}>
       <AccordionItem p="0">
-          <AccordionButton justifyContent="space-between">
+        <Flex>
+          <AccordionButton justifyContent="space-between" w="95%">
               <HStack width="100%">
               {/* <Box textAlign='left' width="15vw" marginStart="2">
               {account.tenant_user_id}
@@ -200,6 +201,7 @@ const AccountManagement = () => {
               </Box>
               </HStack>
               <AccordionIcon width='2em'/>
+          </AccordionButton>
               <Box width='5em' >
                 <Popup trigger={<IconButton size='sm' icon={<DeleteIcon />} />} position="left center">
                   <FormControl>
@@ -207,7 +209,7 @@ const AccountManagement = () => {
                       onClick={() => APIDeleteTenantByEmail(account.email)}
                       colorScheme='red'
                       >
-                      confirm?
+                      Confirm?
                     </Button>
                   </FormControl>
                 </Popup>
@@ -227,7 +229,7 @@ const AccountManagement = () => {
                   </ModalContent>
                 </Modal> */}
               </Box>
-          </AccordionButton>
+          </Flex>
           <AccordionPanel>
               <HStack spacing='24vw'>
               <Box>
@@ -251,10 +253,24 @@ const AccountManagement = () => {
     setTenantAccounts(tenant_html) 
   })}
 
-
-  useEffect(() => {
-    GetTenantAccounts()},
+  const authenticate = () => {
+    // Check if still autenticated based on react auth kit
+    if (!authenticated()){
+        console.log("Not authenticated, redirecting.")
+        navigate('/')
+        return false
+    } else {
+        return true
+    }
+}
+    useEffect(() => {
+        GetTenantAccounts()},
     [])
+
+    // Ensure that user is authenticated for all renders
+    useEffect(() => {
+        authenticate()
+    })
 
   return (
     <>
