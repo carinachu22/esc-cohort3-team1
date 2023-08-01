@@ -166,7 +166,7 @@ const LoginPage = () => {
 
                             <Input
                                 data-testid="text-email"
-                                // className="textEmail"
+                                className="textEmail"
                                 id="email" 
                                 name="email"
                                 type="email" 
@@ -181,7 +181,7 @@ const LoginPage = () => {
                             <InputGroup size='md'>
                                 <Input
                                     data-testid="text-password"
-                                    // className="textPassword"
+                                    className="textPassword"
                                     id="password"
                                     name="password" 
                                     pr='4.5rem'
@@ -192,7 +192,15 @@ const LoginPage = () => {
                                     onChange={formik.handleChange}
                                 />
                                 <InputRightElement width="4.5rem">
-                                    <Button data-testid="login-button" className="loginButton" h='1.75rem' size='sm' onClick={togglePassword}  variant="unstyled">
+                                    <Button 
+                                        data-testid="login-button" 
+                                        className="loginButton" 
+                                        id = "loginButton"
+                                        name = "loginButton"
+                                        h='1.75rem' 
+                                        size='sm' 
+                                        onClick={togglePassword}  
+                                        variant="unstyled">
                                         {passwordShown ? 'Hide' : 'Show'}
                                     </Button>
                                 </InputRightElement>
@@ -227,7 +235,7 @@ const LoginPage = () => {
 
 }
 
-// const textEmail = document.getElementById('textEmail')
-// ReactDOM.createRoot(textEmail).render(<LoginPage />)
+
+
 
 export default LoginPage

@@ -1,4 +1,4 @@
-const {By, Builder, Browser} = require('selenium-webdriver');
+const {By, Builder, Browser, until} = require('selenium-webdriver');
 const {suite} = require('selenium-webdriver/testing');
 const assert = require("assert");
 
@@ -12,41 +12,45 @@ suite(function (env) {
       });
   
       after(async () => await driver.quit());
+
+      it('Select Landlord Option', async function () {
+        await driver.get('http://localhost:3000/');
+
+        let title = await driver.getTitle();
+        assert.equal("React App", title);
+
+        await driver.manage().setTimeouts({implicit: 300});
+
+        // In first page
+        await driver.findElement(By.xpath("//*[@id='root']/div/div/div/div/div/button[1]")).click();
+
+        await driver.manage().setTimeouts({implicit: 500});
+
+        // In Landlord Login Page
+        let result =  await driver.findElement(By.xpath("//*[@id='root']/div/div/div/div/form/div/h2")).isDisplayed();
+        assert.equal(true, result)
+
+      });
   
       it('Landlord login', async function () {
         await driver.get('http://localhost:3000/pages/LoginPage');
   
         let title = await driver.getTitle();
         assert.equal("React App", title);
-  
-        // await driver.manage().setTimeouts({implicit: 500});
-  
-        // let textBoxEmail = await driver. find_element_by_css_selector('[data-testid="text-email"]');
-        // let textBoxPassword = await driver. find_element_by_css_selector('[data-testid="text-password"]');
-        // let loginButton = await driver. find_element_by_css_selector('[data-testid="login-button"]');
-        // // let textBoxEmail = await driver.findElement(By.className('[data-testid="textEmail]'));
-        // // let textBoxEmail = await driver.findElement(By.xpath("//input[@id=email"))
-        // // let textBoxPassword = await driver.findElement(By.id('password'));
-        // // let loginButton = await driver.findElement(By.id('loginButton'));
-  
-        // await textBoxEmail.sendKeys('john123@gmail.com');
-        // await textBoxEmail.sendKeys('password');
-        // await loginButton.click();
 
-        // await driver. findElement(By.CSS_SELECTOR, '[data-testid="text-email"]').sendKeys('john123@gmail.com');
-        // await driver. findElement(By.CSS_SELECTOR, '[data-testid="text-password"]').sendKeys('password');
-        // await driver. findElement(By.CSS_SELECTOR, '[data-testid="login-button"]').click();
+        await driver.manage().setTimeouts({implicit: 300});
 
+        await driver.findElement(By.xpath('//*[@id="email"]')).sendKeys('landlord1@gmail.com');
+        await driver.findElement(By.xpath('//*[@id="password"]')).sendKeys('password');
+        await driver.findElement(By.xpath('//*[@id="root"]/div/div/div/div/form/div/div[3]')).click();
 
-        // await driver. findElement(By.cssSelector('[data-testid="text-email"]')).sendKeys('john123@gmail.com');
-        // await driver. findElement(By.cssSelector('[data-testid="text-password"]')).sendKeys('password');
-        // await driver. findElement(By.cssSelector('[data-testid="login-button"]')).click();
+        await driver.manage().setTimeouts({implicit: 800});
 
-        // // let new_title = await driver.getTitle()
-
-        // let message = await driver.findElement(By.id('message'));
-        // let value = await message.getText();
-        // assert.equal("Received!", value);;
+        // In Landlord Dashboard
+        let result =  await driver.findElement(By.xpath("//*[@id='root']/div/div/div/div/form/div/div[3]")).isDisplayed();
+        assert.equal(true, result)
       });
+
+
     });
   }, { browsers: [Browser.FIREFOX]});
