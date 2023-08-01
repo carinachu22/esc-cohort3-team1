@@ -11,7 +11,8 @@ import {
   controllerResetPasswordPageTenant,
   controllerResetPasswordTenant,
   controllerGetTicketById,
-  controllerGetLeaseByTenant
+  controllerGetLeaseByTenant,
+  controllerGetQuotation
 } from "../controller/tenant_controller.js";
 import express from "express";
 import { checkTenantToken } from "../auth/tenant_validation.js";
@@ -36,6 +37,8 @@ router.post("/reset-password/:id/:jsontoken", controllerResetPasswordTenant);
 router.get("/reset-password/:id/:jsontoken", controllerResetPasswordPageTenant);
 
 router.get("/getLease", checkTenantToken, controllerGetLeaseByTenant);
+
+router.get("/getQuotation/", checkTenantToken, controllerGetQuotation);
 
 router.post("/createTicket", checkTenantToken, controllerCreateTicket);
 router.patch("/quotationApproval/:id", checkTenantToken, controllerQuotationApproval);
