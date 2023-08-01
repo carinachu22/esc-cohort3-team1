@@ -36,7 +36,7 @@ export default function CheckTicket(ticket, userDetails){
     }
 
     if (userDetails() === null){
-        navigate('/')
+        return
     }
     if (status === 'landlord_completed_work'){
       if (userDetails().type === 'tenant'){
