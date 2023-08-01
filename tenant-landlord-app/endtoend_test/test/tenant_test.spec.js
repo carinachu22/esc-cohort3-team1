@@ -54,6 +54,10 @@ suite(function (env) {
         assert.equal(true, result)
       });
 
+    
+    });
+
+    describe('Service Tickets', async function () {
       it('Tenant View Service Tickets', async function () {
         await driver.get('http://localhost:3000/pages/Dashboard/');
 
@@ -99,9 +103,8 @@ suite(function (env) {
 
 
       });
-    });
 
-    describe('Service Tickets', async function () {
-      
+
+
     })
   }, { browsers: [Browser.FIREFOX]});
