@@ -632,3 +632,108 @@ describe ("/tenant/addFeedbackRating/:id", () => {
         })
   })
 })
+
+describe ("/tenant/addFeedbackText/:id", () => {
+  test("valid ticket id and feedback text", async () =>  {
+    const token = await authorisation()
+    await request(app)
+      .patch("/api/tenant/addFeedbackText/2002-02-02 02:02:02")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ feedback_text: "good job!" })
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toMatchObject({
+            success: 1,
+            data: "updated successfully"
+          })
+        })
+  })
+
+  test("invalid ticket id", async () =>  {
+    const token = await authorisation()
+    await request(app)
+      .patch("/api/tenant/addFeedbackText/2002-02-02")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ feedback_text: "good job!" })
+      .expect(400)
+      .then((response) => {
+        expect(response.body).toEqual({
+            success: 0,
+            message: "service request not found"
+          })
+        })
+  })
+
+  test("tenant user with no token", async () =>  {
+    await request(app)
+      .patch("/api/tenant/addfeedbackText/2002-02-02 02:02:02")
+      .send({ feedback_rating: "1" })
+      .then((response) => {
+        expect(JSON.parse(response.text)).toEqual({
+            success: 0,
+            message: "Access denied: You are unauthorized!",
+          })
+        })
+  })
+})
+
+describe ("/tenant/closeTicketStatus/:id", () => {
+  test("valid ticket id and status", async () =>  {
+    const token = await authorisation()
+    await request(app)
+      .patch("/api/tenant/closeTicketStatus/2002-02-02 02:02:02")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ status: "close" })
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toMatchObject({
+            success: 1,
+            data: "updated successfully",
+            status: "landlord_ticket_closed"
+          })
+        })
+  })
+
+  test("valid ticket id and incorrect status", async () =>  {
+    const token = await authorisation()
+    await request(app)
+      .patch("/api/tenant/closeTicketStatus/2002-02-02 02:02:02")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ status: "open sesame" })
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toMatchObject({
+            success: 1,
+            data: "updated successfully",
+            status: "close_attempt_failed"
+          })
+        })
+  })
+
+  test("invalid ticket id", async () =>  {
+    const token = await authorisation()
+    await request(app)
+      .patch("/api/tenant/closeTicketStatus/2002-02-02")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ status: "close" })
+      .expect(400)
+      .then((response) => {
+        expect(response.body).toEqual({
+            success: 0,
+            message: "Failed to update status"
+          })
+        })
+  })
+
+  test("tenant user with no token", async () =>  {
+    await request(app)
+      .patch("/api/tenant/closeTicketStatus/2002-02-02 02:02:02")
+      .send({ status: "close" })
+      .then((response) => {
+        expect(JSON.parse(response.text)).toEqual({
+            success: 0,
+            message: "Access denied: You are unauthorized!",
+          })
+        })
+  })
+})

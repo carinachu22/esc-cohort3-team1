@@ -407,19 +407,34 @@ export const controllerAddFeedbackRating = (req, res) => {
  export const controllerAddFeedbackText = (req, res) => {
   const id = req.params.id;
   const feedback_text = req.body.feedback_text; 
-  addFeedbackText (id, feedback_text, (err, results) => {
+  getTicketById(id, (err,results) => {
     if (err) {
-      // console.log(err);
-      return;
-    } if (!results) {
-      return res.json ({
-        success : 0,
-        message: "Failed to update user"
+      return res.status(500).json({
+        success: 0,
+        message: "internal server error"
       })
-    } return res.status(200).json({
-      success: 1,
-      data: "updated sucessfully"
-    })
+    } else{
+      if (results.length === 0) {
+        return res.status(400).json({
+          success: 0,
+          message: "service request not found"
+        })
+      }
+      addFeedbackText (id, feedback_text, (err, results) => {
+        if (err) {
+          // console.log(err);
+          return;
+        } if (JSON.parse(JSON.stringify(results)).changedRows === 0) {
+          return res.json ({
+            success : 0,
+            message: "Failed to update feedback"
+          })
+        } return res.status(200).json({
+          success: 1,
+          data: "updated successfully"
+        })
+      })
+    }
   })
 }
 
@@ -442,14 +457,15 @@ export const controllerCloseTicketStatus = (req, res) => {
     if (err) {
       // console.log(err);
       return;
-    } if (!results) {
-      return res.json ({
+    } if (JSON.parse(JSON.stringify(results)).changedRows === 0) {
+      return res.status(400).json ({
         success : 0,
-        message: "Failed to update user"
+        message: "Failed to update status"
       })
     } return res.status(200).json({
       success: 1,
-      data: "updated sucessfully"
+      data: "updated successfully",
+      status: `${status}`
     })
   })
 }
