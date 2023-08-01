@@ -37,7 +37,7 @@ export const getLandlordByEmail = (email, callBack) => {
     `
     SELECT *
     FROM landlord_user
-    WHERE email = ? AND landlord_user.deleted_date IS NULL
+    WHERE email = ?
     `,
     [email],
     (error, results, fields) => {
