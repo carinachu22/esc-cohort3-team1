@@ -6,7 +6,6 @@ const { WebElement } = require('selenium-webdriver');
 
 
 
-suite(function (env) {
     describe('Login', function () {
       let driver;
   
@@ -100,4 +99,3 @@ suite(function (env) {
 
       });
     });
-  }, { browsers: [Browser.FIREFOX]});
