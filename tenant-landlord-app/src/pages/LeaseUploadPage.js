@@ -34,7 +34,10 @@ const LeaseUpload = () => {
     const authenticated = useIsAuthenticated();
 
     const location = useLocation();
-    const { tenantID } = location.state;
+    var tenantID;
+    if (location.state != null){
+      tenantID = location.state.tenantID;
+    }
     console.log("tenantID: ", tenantID);
 
     const navigateToViewLeasePage = (tenantID) => {
@@ -49,12 +52,15 @@ const LeaseUpload = () => {
       });
       
 
-    const config = {
-        headers: {
-          Authorization: `${token()}`
-        },
-        params: {
-            email: userDetails().email,
+      var config
+      if (authenticated()){
+        config = {
+          headers: {
+            Authorization: `${token()}`
+          },
+          params: {
+              email: userDetails().email,
+          }
         }
       }
 

@@ -12,12 +12,13 @@ function ViewLeasePage() {
     const navigate = useNavigate();
     const token = useAuthHeader(); 
     const location = useLocation();
+    console.log(location)
     var tenantID;
-    if (location != null){
-      tenantID = location.state;
+    if (location.state != null){
+      tenantID = location.state.tenantID;
     }
     const authenticated = useIsAuthenticated();
-    //console.log("tenantID: ", tenantID);
+    console.log("tenantID: ", tenantID);
 
     const navigateToAccountManagement = () => {
       navigate('/pages/AccountManagement/');

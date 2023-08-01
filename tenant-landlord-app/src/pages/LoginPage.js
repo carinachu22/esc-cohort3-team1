@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useFormik } from "formik";
@@ -23,7 +23,10 @@ const LoginPage = () => {
     const signIn = useSignIn();
 
     const location = useLocation();
-    const { role } = location.state;
+    var role;
+    if (location.state != null){
+      role = location.state.role;
+    } 
     console.log(role);
 
     const validate = values => {
@@ -151,10 +154,15 @@ const LoginPage = () => {
         validate
     });
 
-
-
+    useEffect(() => {
+        if (role === undefined){
+            navigate('/')
+        }
+    }, [])
 
     /////// code below uses Chakra styling ////////
+
+
     return (
         <Flex align="center" justify="center" h="100vh" w="100%">
             <Box w="22em" h="30em" p={8} rounded="md" position="relative" borderRadius="1em" boxShadow="0 0.188em 1.550em rgb(156, 156, 156)">

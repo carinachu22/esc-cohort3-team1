@@ -5,7 +5,6 @@ import { useAuthUser, useAuthHeader, useIsAuthenticated } from 'react-auth-kit';
 import { useFormik } from 'formik';
 import axios, { AxiosError } from 'axios';
 
-import { SelectedTicketContext } from '../components/SelectedTicketContext.js';
 import NavigationBar from '../components/NavigationBar.js';
 import CheckTicket from '../components/CheckTicket.js';
 
@@ -14,14 +13,14 @@ export default function ViewTicketPage() {
   const token = useAuthHeader();
   const userDetails = useAuthUser();
   const [status, setstatus] = useState('');
-  const {selectedTicket, setSelectedTicket} = useContext(SelectedTicketContext);
   const [ticket, setTicket] = useState('');
   const location = useLocation();
-  const { ticketID } = location.state;
+  var ticketID;
+  if (location.state != null){
+    ticketID = location.state.ticketID;
+  }
   console.log('ID', ticketID)
   const authenticated = useIsAuthenticated();
-
-  console.log('selectedTicket:', selectedTicket);
   const GetServiceTickets = (userDetails) => {
     if (userDetails() === undefined){
         return;
@@ -158,7 +157,6 @@ export default function ViewTicketPage() {
       fontFamily="'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif"
       marginTop="5vh"
     >
-      {console.log(selectedTicket)}
       {/* Title */}
       <Heading as="h4" size="2xl" marginBottom="1em">
         Your Service Ticket

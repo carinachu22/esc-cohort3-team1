@@ -27,12 +27,16 @@ const TenantCreationPage = () => {
     const toast = useToast();
     const authenticated = useIsAuthenticated();
 
-    const config = {
-        headers: {
-          Authorization: `${token()}`
-        },
-        params: {
-            email: userDetails().email
+    var config
+
+      if (authenticated()){
+        config = {
+          headers: {
+            Authorization: `${token()}`
+          },
+          params: {
+              email: userDetails().email,
+          }
         }
       }
 

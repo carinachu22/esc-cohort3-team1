@@ -19,7 +19,10 @@ function QuotationPage() {
     const toast = useToast();
     const token = useAuthHeader();
     const location = useLocation();
-    const { ticketID } = location.state;
+    var ticketID;
+    if (location.state != null){
+      ticketID = location.state.ticketID;
+    }
     console.log('ID', ticketID)
 
     const navigateToViewTicketPage =  (ticketID) => {

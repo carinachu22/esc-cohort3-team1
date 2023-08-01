@@ -15,7 +15,10 @@ function FeedbackForm() {
   const [rating, setRating] = useState(-1);
   const toast = useToast();
   const location = useLocation();
-  const { ticketID } = location.state;
+  var ticketID;
+  if (location.state != null){
+    ticketID = location.state.ticketID;
+  }
   console.log('ID', ticketID)
   const authenticated = useIsAuthenticated();
 

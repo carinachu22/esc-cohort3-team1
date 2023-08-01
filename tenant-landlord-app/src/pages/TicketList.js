@@ -328,8 +328,9 @@ export default function TicketList() {
     // This is to ensure that the GET request only happens once on page load
     // This will update the tickets state
     useEffect(() => {
-        GetServiceTickets(userDetails);
-        authenticate();},
+        if (authenticate()){
+            GetServiceTickets(userDetails);
+        }},
         [])
 
     useEffect(() => {
