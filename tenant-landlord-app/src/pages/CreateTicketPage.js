@@ -71,7 +71,6 @@ function CreateTicketPage() {
         // Set values based on ticket type
         if (ticketType === 'Others' ){
             values = {
-            name: '--',
             email: userDetails().email,
             request_type: ticketType + ' - ' + otherRequestType,
             request_description: tenantComment,
@@ -94,7 +93,6 @@ function CreateTicketPage() {
             };
         } else {
         values = {
-        name: '--',
         email: userDetails().email,
         request_type: ticketType,
         request_description: tenantComment,
@@ -146,7 +144,6 @@ function CreateTicketPage() {
     // Initialise formik with initial values
     const formik = useFormik({
         initialValues: {
-            location: '',
             category: '',
             tenantComment: '',
         },
@@ -175,7 +172,6 @@ function CreateTicketPage() {
     {NavigationBar()}
     <Formik
     initialValues={{
-      location: '',
       category: '',
       tenantComment: '',
     }}
@@ -201,42 +197,32 @@ function CreateTicketPage() {
         {/* Comment Box 1 */}
         <Box flex="1" marginRight="2em">
           <Heading as="h5" size="lg" marginBottom="1em">
-            Location
+            Request Type
           </Heading>
-          <Textarea
-            name="location"
-            placeholder="Enter location"
-            value={formik.values.location}
-            onChange={formik.handleChange}
+          <Select
+            name="requestType"
+            placeholder="Select request type"
+            value={ticketType}
+            onChange={handleRequestTypeChange}
             marginBottom="2em"
-          />
-              <Heading as="h5" size="lg" marginBottom="1em">
-                Request Type
-              </Heading>
-              <Select
-                name="requestType"
-                placeholder="Select request type"
-                value={ticketType}
-                onChange={handleRequestTypeChange}
-                marginBottom="2em"
-              >
-                <option value="Aircon">Aircon</option>
-                <option value="Cleanliness">Cleanliness</option>
-                <option value="Admin">Admin</option>
-                <option value="Others">Others</option>
-              </Select>
-              {showOtherInput && (
-                <Input
-                  name="otherRequestType"
-                  placeholder="Enter other request type"
-                  value={otherRequestType}
-                  onChange={handleOtherRequestTypeChange}
-                  marginBottom="1em"
-                />
-              )}
-            </Box>
+          >
+            <option value="Aircon">Aircon</option>
+            <option value="Cleanliness">Cleanliness</option>
+            <option value="Admin">Admin</option>
+            <option value="Others">Others</option>
+          </Select>
+          {showOtherInput && (
+            <Input
+              name="otherRequestType"
+              placeholder="Enter other request type"
+              value={otherRequestType}
+              onChange={handleOtherRequestTypeChange}
+              marginBottom="1em"
+            />
+          )}
+        </Box>
 
-        {/* Comment Box 3 */}
+        {/* Comment Box 2 */}
         <Box flex="1" marginLeft="2em">
           <Heading as="h5" size="lg" marginBottom="1em">
             Description
