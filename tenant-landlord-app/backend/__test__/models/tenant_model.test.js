@@ -270,11 +270,7 @@ describe("Testing addFeedbackRating() in tenant model", () => {
         // INVALID ID SUPERSEDES INVALID VALUE!
         // YOU WILL GET LENGTH 0
         addFeedbackRating("0000-00-00 00:00:00", 6, (err, results) => {
-            if (err){
-                console.log("ERROR",err)
-            }
-            const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
-            expect(rowsChanged).toBe(0);
+            expect(err).toBe("data validation error")
             done();
         })
     });
@@ -379,7 +375,7 @@ describe("Testing getLeaseByTenant() in tenant model", () => {
     });
 })
 
-describe.only("Testing updateTenantLease() in tenant model", () => {
+describe("Testing updateTenantLease() in tenant model", () => {
     test ("Test calling updateTenantLease() on valid tenant email",(done) => {
         var currentdate = new Date(); 
         const date = currentdate.getFullYear().toString() + '-' + (currentdate.getMonth() + 1).toString() + '-' + currentdate.getDate().toString() + ' ' + currentdate.getHours().toString() + ':' + ('0' + currentdate.getMinutes()).slice(-2) + ':' + currentdate.getSeconds().toString()
