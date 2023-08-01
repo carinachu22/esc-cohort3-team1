@@ -5,6 +5,7 @@ import "@testing-library/jest-dom";
 import { AuthProvider, useSignIn } from "react-auth-kit";
 import LoginPage from "../pages/LoginPage.js";
 
+
 test("renders email input field-Placeholder Text", () => {
   render(
     <AuthProvider

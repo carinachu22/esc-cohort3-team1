@@ -2,12 +2,11 @@ import React from "react";
 import userEvent from "@testing-library/user-event";
 import { render, screen, waitFor } from "./setupTests.js";
 import { BrowserRouter, MemoryRouter } from "react-router-dom";
-import App from "../pages/App.js";
 import "@testing-library/jest-dom";
 import { AuthProvider, useSignIn } from "react-auth-kit";
-import LoginPage from "../pages/LoginPage.js";
 
-//jest.mock("react-auth-kit"); //somehow this causes bugs
+import LoginPage from "../pages/LoginPage.js";
+import Dashboard from "../pages/Dashboard.js"
 
 describe("Login.js", () => {
   test("Email,Password, login btn features are present", () => {
