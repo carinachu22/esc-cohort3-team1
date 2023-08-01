@@ -184,8 +184,7 @@ const AccountManagement = () => {
     const tenant_html = temp_accounts.map(account => 
       <Box key={account.tenant_user_id}>
       <AccordionItem p="0">
-        <Flex>
-          <AccordionButton justifyContent="space-between" w="95%">
+          <AccordionButton justifyContent="space-between">
               <HStack width="100%">
               {/* <Box textAlign='left' width="15vw" marginStart="2">
               {account.tenant_user_id}
@@ -201,7 +200,6 @@ const AccountManagement = () => {
               </Box>
               </HStack>
               <AccordionIcon width='2em'/>
-          </AccordionButton>
               <Box width='5em' >
                 <Popup trigger={<IconButton size='sm' icon={<DeleteIcon />} />} position="left center">
                   <FormControl>
@@ -209,7 +207,7 @@ const AccountManagement = () => {
                       onClick={() => APIDeleteTenantByEmail(account.email)}
                       colorScheme='red'
                       >
-                      Confirm?
+                      confirm?
                     </Button>
                   </FormControl>
                 </Popup>
@@ -229,7 +227,7 @@ const AccountManagement = () => {
                   </ModalContent>
                 </Modal> */}
               </Box>
-          </Flex>
+          </AccordionButton>
           <AccordionPanel>
               <HStack spacing='24vw'>
               <Box>
