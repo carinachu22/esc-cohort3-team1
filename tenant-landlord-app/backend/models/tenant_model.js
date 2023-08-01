@@ -163,8 +163,7 @@ export const getTicketsByStatus = (email, status, callBack) => {
  * @param {*} data public_service_request_id (eg. 2023-01-01 00:00:00), name, email, request_type, request_description, quptation_path, submitted_date_time(Date Type)
  * @param {*} callBack 
  */
-export const createTicket = (data, callBack) => {
-
+export const createTicket = (data, floor, unit_number,  callBack) => {
   const status = "tenant_ticket_created";
   const public_service_request_id = data.submitted_date_time;
   const feedback_rating = null;
@@ -173,12 +172,11 @@ export const createTicket = (data, callBack) => {
     pool.query(
       `
       INSERT INTO service_request
-      (public_service_request_id, name, email, request_type, request_description, quotation_path, submitted_date_time, status, feedback_rating, feedback_text)
-      VALUES (?,?,?,?,?,?,?,?,?,?)
+      (public_service_request_id, email, request_type, request_description, quotation_path, submitted_date_time, status, feedback_rating, feedback_text, floor, unit_number)
+      VALUES (?,?,?,?,?,?,?,?,?,?,?)
       `,
       [
         public_service_request_id,
-        data.name,
         data.email,
         data.request_type,
         data.request_description,
@@ -186,7 +184,9 @@ export const createTicket = (data, callBack) => {
         data.submitted_date_time,
         status,
         feedback_rating,
-        feedback_text
+        feedback_text,
+        floor,
+        unit_number
       ],
       (error, results, fields) => {
         if (error) {
@@ -372,6 +372,31 @@ export const getLeaseByTenant = (id, callBack) => {
         callBack(error);
       } else {
         callBack(null,results);
+      }
+    }
+  )
+}
+
+/**
+ * get lease details using tenant's email
+ * @param {*} email 
+ * @param {*} callBack 
+ */
+export const getLeaseByTenantEmail = (tenantEmail, callBack) => {
+  pool.query(
+    `
+    SELECT *
+    FROM LEASE LEFT JOIN TENANT_USER ON LEASE.tenant_user_id = TENANT_USER.tenant_user_id
+    WHERE email = ?
+    `,
+    [
+      tenantEmail
+    ],
+    (error, results, fields) => {
+      if (error) {
+        callBack(error);
+      } else {
+        callBack(null, results)
       }
     }
   )

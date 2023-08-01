@@ -387,20 +387,22 @@ export const getQuotation = (filepath, callBack) => {
 /**
  * 
  * @param {*} id public_service_request_id (YYYY-MM-DD 00:00:00)
+ * @param {*} quotationRequired a String with true/false value 
  * @param {*} data 
  * @param {*} status 
  * @param {*} callBack 
  */
-export const ticketApproval = (id, data, status, callBack) => {
+export const ticketApproval = (id, quotationRequired, data, status, callBack) => {
   if (statuses.includes(status)) {
     pool.query(
       `
       UPDATE service_request
-      SET status = ?
+      SET status = ?, quotation_required = ?
       WHERE public_service_request_id = ?
       `,
       [
         status,
+        quotationRequired,
         id
       ],
       (error, results, fields) => {

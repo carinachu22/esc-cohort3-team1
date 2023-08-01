@@ -582,12 +582,15 @@ export const controllerGetQuotation = (req, res) => {
 };
 
 /**
- * Ticket Approval, public_service_request_id (YYYY-MM-DD 00:00:00) in params
+ * Ticket Approval, public_service_request_id (YYYY-MM-DD 00:00:00) and boolean for if quotation is required in params
  * @param {*} req 
  * @param {*} res 
  */
 export const controllerTicketApproval = (req, res) => {
   const id = req.params.id;
+  console.log(req.params);
+  const quotationRequired = String(req.params.isCheckboxChecked);
+  console.log(quotationRequired);
   const body = req.body;
   let status;
   if (body.ticket_approved_by_landlord === 1) {
@@ -596,7 +599,7 @@ export const controllerTicketApproval = (req, res) => {
     status = "landlord_ticket_rejected"
   }
 
-  ticketApproval(id,body,status, (err, results) => {
+  ticketApproval(id, quotationRequired, body, status, (err, results) => {
     if (err) {
       console.log(err);
       return;
@@ -956,7 +959,7 @@ export const controllerUpdateLease = (req, res) => {
 export const controllerGetLeaseDetails = (req,res) => {
   const query = req.query;
   console.log("req query", req.query);
-  const {tenantUserId} = query;
+  const tenantUserId = query.id;
   console.log("user id", tenantUserId);
   getLeaseDetails(tenantUserId, (err,results) => {
     if (err) {
