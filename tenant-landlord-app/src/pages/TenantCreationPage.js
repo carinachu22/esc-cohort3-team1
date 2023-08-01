@@ -17,12 +17,14 @@ import {
     InputRightElement,
     VStack,
     Heading,
+    useToast
 } from "@chakra-ui/react";
 
 const TenantCreationPage = () => {
     const navigate = useNavigate();
     const token = useAuthHeader();
     const userDetails = useAuthUser();
+    const toast = useToast();
 
     const config = {
         headers: {
@@ -82,9 +84,19 @@ const TenantCreationPage = () => {
                 values,
                 config
             )
-            console.log(response);
+            console.log("response", response);
             if (response.data.message === "created successfully"){
                 navigateToAccountManagement();
+            } else if (response.data.message === "Duplicate email entry"){
+                toast({
+                    title: "Email already exist!",
+                    description: "Please register with a different email",
+                    status: "success",
+                    colorScheme: "red",
+                    duration: 3000,
+                    isClosable: true,
+                    position: "top",
+                    })
             }
         } catch (err){
             if (err && err instanceof AxiosError) {
