@@ -12,7 +12,7 @@ export const getTenantByEmail = (email, callBack) => {
     `
     SELECT *
     FROM tenant_user
-    WHERE email = ?
+    WHERE email = ? 
     `,
     [email],
     (error, results, fields) => {
@@ -30,7 +30,7 @@ export const getTenantById = (id, callBack) => {
     `
     SELECT *
     FROM tenant_user
-    WHERE tenant_user_id = ?
+    WHERE tenant_user_id = ? AND TENANT_USER.deleted_date IS NULL
     `,
     [id],
     (error, results, fields) => {
@@ -60,6 +60,30 @@ export const updateTenantPassword = ({password, id}, callBack) => {
         callBack(error);
       }
       return callBack(null, results);
+    }
+  );
+}
+
+/**
+ * recover tenant account by setting the deleted_date to NULL
+ * @param {*} id 
+ * @param {*} callBack 
+ */
+export const recoverTenantAccount = (id, callBack) => {
+  pool.query(
+    `
+    UPDATE tenant_user 
+    SET deleted_date = NULL 
+    WHERE tenant_user_id = ?
+    `,
+    [
+      id
+    ],
+    (error, results, fields) => {
+      if(error){
+        callBack(error);
+      }
+      return callBack(null, results[0]);
     }
   );
 }
