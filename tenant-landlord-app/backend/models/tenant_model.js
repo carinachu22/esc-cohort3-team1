@@ -164,6 +164,7 @@ export const getTicketsByStatus = (email, status, callBack) => {
  * @param {*} callBack 
  */
 export const createTicket = (data, callBack) => {
+
   const status = "tenant_ticket_created";
   const public_service_request_id = data.submitted_date_time;
   const feedback_rating = null;

@@ -1,14 +1,14 @@
 {
   "stats": {
     "suites": 6,
-    "tests": 6,
-    "passes": 6,
+    "tests": 7,
+    "passes": 7,
     "pending": 0,
     "failures": 0,
-    "start": "2023-08-01T11:13:24.482Z",
-    "end": "2023-08-01T11:13:34.028Z",
-    "duration": 9546,
-    "testsRegistered": 6,
+    "start": "2023-08-01T18:12:05.903Z",
+    "end": "2023-08-01T18:12:16.476Z",
+    "duration": 10573,
+    "testsRegistered": 7,
     "passPercent": 100,
     "pendingPercent": 0,
     "other": 0,
@@ -18,7 +18,7 @@
   },
   "results": [
     {
-      "uuid": "0bfe1086-cd15-42d8-903f-12942000ded6",
+      "uuid": "ffbde59f-1ee6-43d1-aecf-1c148be75a31",
       "title": "",
       "fullFile": "",
       "file": "",
@@ -37,8 +37,8 @@
           "context": null,
           "code": "if (seleniumServer) {\n  return seleniumServer.kill()\n}",
           "err": {},
-          "uuid": "80ec3858-ebeb-4eae-992b-41dd9d9156ba",
-          "parentUUID": "0bfe1086-cd15-42d8-903f-12942000ded6",
+          "uuid": "aae337a3-b447-4984-bbf4-ffd1b43f0223",
+          "parentUUID": "ffbde59f-1ee6-43d1-aecf-1c148be75a31",
           "isHook": true,
           "skipped": false
         }
@@ -46,7 +46,7 @@
       "tests": [],
       "suites": [
         {
-          "uuid": "403dc20c-03ea-4ea3-9bc0-4f92771de2bf",
+          "uuid": "e7ceb02a-5a58-4578-a671-4266e3ff16aa",
           "title": "[firefox]",
           "fullFile": "C:\\Users\\65961\\Documents\\Term 5\\Software_Construction\\esc-cohort3-team1\\tenant-landlord-app\\endtoend_test\\test\\firstScript.spec.js",
           "file": "\\test\\firstScript.spec.js",
@@ -55,7 +55,7 @@
           "tests": [],
           "suites": [
             {
-              "uuid": "304f6afa-33e7-4470-90e9-95f23e686b00",
+              "uuid": "0f9f959a-f4cb-4266-9813-b5153c795aa6",
               "title": "First script",
               "fullFile": "C:\\Users\\65961\\Documents\\Term 5\\Software_Construction\\esc-cohort3-team1\\tenant-landlord-app\\endtoend_test\\test\\firstScript.spec.js",
               "file": "\\test\\firstScript.spec.js",
@@ -64,7 +64,7 @@
                   "title": "\"before all\" hook in \"First script\"",
                   "fullTitle": "[firefox] First script \"before all\" hook in \"First script\"",
                   "timedOut": false,
-                  "duration": 1606,
+                  "duration": 2494,
                   "state": null,
                   "speed": null,
                   "pass": false,
@@ -73,8 +73,8 @@
                   "context": null,
                   "code": "driver = await new Builder().forBrowser('chrome').build();",
                   "err": {},
-                  "uuid": "ac633ca6-1aa5-4ad3-9f5a-9cca72452d3c",
-                  "parentUUID": "304f6afa-33e7-4470-90e9-95f23e686b00",
+                  "uuid": "c86a8837-41fa-402a-8f28-910ab46259e0",
+                  "parentUUID": "0f9f959a-f4cb-4266-9813-b5153c795aa6",
                   "isHook": true,
                   "skipped": false
                 }
@@ -84,7 +84,7 @@
                   "title": "\"after all\" hook in \"First script\"",
                   "fullTitle": "[firefox] First script \"after all\" hook in \"First script\"",
                   "timedOut": false,
-                  "duration": 32,
+                  "duration": 26,
                   "state": null,
                   "speed": null,
                   "pass": false,
@@ -93,8 +93,8 @@
                   "context": null,
                   "code": "await driver.quit()",
                   "err": {},
-                  "uuid": "df5181f4-ec34-420a-9c18-402004091fce",
-                  "parentUUID": "304f6afa-33e7-4470-90e9-95f23e686b00",
+                  "uuid": "bc6880e3-bb0c-4be2-bc76-4d89e39a0ce0",
+                  "parentUUID": "0f9f959a-f4cb-4266-9813-b5153c795aa6",
                   "isHook": true,
                   "skipped": false
                 }
@@ -104,7 +104,7 @@
                   "title": "First Selenium script",
                   "fullTitle": "[firefox] First script First Selenium script",
                   "timedOut": false,
-                  "duration": 1412,
+                  "duration": 1452,
                   "state": "passed",
                   "speed": "slow",
                   "pass": true,
@@ -113,23 +113,23 @@
                   "context": null,
                   "code": "await driver.get('https://www.selenium.dev/selenium/web/web-form.html');\nlet title = await driver.getTitle();\nassert.equal(\"Web form\", title);\nawait driver.manage().setTimeouts({implicit: 500});\nlet textBox = await driver.findElement(By.name('my-text'));\nlet submitButton = await driver.findElement(By.css('button'));\nawait textBox.sendKeys('Selenium');\nawait submitButton.click();\nlet message = await driver.findElement(By.id('message'));\nlet value = await message.getText();\nassert.equal(\"Received!\", value);",
                   "err": {},
-                  "uuid": "79e96849-26eb-4a84-86d2-f89363503391",
-                  "parentUUID": "304f6afa-33e7-4470-90e9-95f23e686b00",
+                  "uuid": "4364688a-6895-46da-8777-58f3560a07c1",
+                  "parentUUID": "0f9f959a-f4cb-4266-9813-b5153c795aa6",
                   "isHook": false,
                   "skipped": false
                 }
               ],
               "suites": [],
               "passes": [
-                "79e96849-26eb-4a84-86d2-f89363503391"
+                "4364688a-6895-46da-8777-58f3560a07c1"
               ],
               "failures": [],
               "pending": [],
               "skipped": [],
-              "duration": 1412,
+              "duration": 1452,
               "root": false,
               "rootEmpty": false,
-              "_timeout": 0
+              "_timeout": 10000
             }
           ],
           "passes": [],
@@ -139,10 +139,10 @@
           "duration": 0,
           "root": false,
           "rootEmpty": false,
-          "_timeout": 0
+          "_timeout": 10000
         },
         {
-          "uuid": "7def7506-8101-4cfd-be3a-9f94ffc355ad",
+          "uuid": "dab5c891-c380-4e41-921a-1bb6a2d57da6",
           "title": "[firefox]",
           "fullFile": "C:\\Users\\65961\\Documents\\Term 5\\Software_Construction\\esc-cohort3-team1\\tenant-landlord-app\\endtoend_test\\test\\landlord_test.spec.js",
           "file": "\\test\\landlord_test.spec.js",
@@ -151,7 +151,7 @@
           "tests": [],
           "suites": [
             {
-              "uuid": "8b9fd593-a794-4a0c-9bb1-8923be3cf646",
+              "uuid": "4ac7fc63-6332-4f0e-83e6-d241a036bbeb",
               "title": "Login",
               "fullFile": "C:\\Users\\65961\\Documents\\Term 5\\Software_Construction\\esc-cohort3-team1\\tenant-landlord-app\\endtoend_test\\test\\landlord_test.spec.js",
               "file": "\\test\\landlord_test.spec.js",
@@ -160,7 +160,7 @@
                   "title": "\"before all\" hook in \"Login\"",
                   "fullTitle": "[firefox] Login \"before all\" hook in \"Login\"",
                   "timedOut": false,
-                  "duration": 1446,
+                  "duration": 1437,
                   "state": null,
                   "speed": null,
                   "pass": false,
@@ -169,8 +169,8 @@
                   "context": null,
                   "code": "driver = await new Builder().forBrowser('chrome').build();",
                   "err": {},
-                  "uuid": "19986707-cf87-413b-b35b-8fd0a0735e51",
-                  "parentUUID": "8b9fd593-a794-4a0c-9bb1-8923be3cf646",
+                  "uuid": "6946673a-22d6-4bf1-ade4-707788b7c29d",
+                  "parentUUID": "4ac7fc63-6332-4f0e-83e6-d241a036bbeb",
                   "isHook": true,
                   "skipped": false
                 }
@@ -180,7 +180,7 @@
                   "title": "\"after all\" hook in \"Login\"",
                   "fullTitle": "[firefox] Login \"after all\" hook in \"Login\"",
                   "timedOut": false,
-                  "duration": 24,
+                  "duration": 27,
                   "state": null,
                   "speed": null,
                   "pass": false,
@@ -189,8 +189,8 @@
                   "context": null,
                   "code": "await driver.quit()",
                   "err": {},
-                  "uuid": "b2b0540d-492a-4a01-b826-1fd9325f2c1d",
-                  "parentUUID": "8b9fd593-a794-4a0c-9bb1-8923be3cf646",
+                  "uuid": "c0c1ad62-3d1f-483c-8365-193edd78eddb",
+                  "parentUUID": "4ac7fc63-6332-4f0e-83e6-d241a036bbeb",
                   "isHook": true,
                   "skipped": false
                 }
@@ -200,7 +200,7 @@
                   "title": "Select Landlord Option",
                   "fullTitle": "[firefox] Login Select Landlord Option",
                   "timedOut": false,
-                  "duration": 1147,
+                  "duration": 1169,
                   "state": "passed",
                   "speed": "slow",
                   "pass": true,
@@ -209,8 +209,8 @@
                   "context": null,
                   "code": "await driver.get('http://localhost:3000/');\nlet title = await driver.getTitle();\nassert.equal(\"React App\", title);\nawait driver.manage().setTimeouts({implicit: 300});\n// In first page\nawait driver.findElement(By.xpath(\"//*[@id='root']/div/div/div/div/div/button[1]\")).click();\nawait driver.manage().setTimeouts({implicit: 500});\n// In Landlord Login Page\nlet result =  await driver.findElement(By.xpath(\"//*[@id='root']/div/div/div/div/form/div/h2\")).isDisplayed();\nassert.equal(true, result)",
                   "err": {},
-                  "uuid": "15ebdd67-ba14-4eb1-9413-155f275bce91",
-                  "parentUUID": "8b9fd593-a794-4a0c-9bb1-8923be3cf646",
+                  "uuid": "8f0e0266-7254-45f2-bd36-2dc121dc85c5",
+                  "parentUUID": "4ac7fc63-6332-4f0e-83e6-d241a036bbeb",
                   "isHook": false,
                   "skipped": false
                 },
@@ -218,7 +218,7 @@
                   "title": "Landlord login",
                   "fullTitle": "[firefox] Login Landlord login",
                   "timedOut": false,
-                  "duration": 555,
+                  "duration": 545,
                   "state": "passed",
                   "speed": "slow",
                   "pass": true,
@@ -227,24 +227,24 @@
                   "context": null,
                   "code": "await driver.get('http://localhost:3000/pages/LoginPage');\n  \nlet title = await driver.getTitle();\nassert.equal(\"React App\", title);\nawait driver.manage().setTimeouts({implicit: 300});\nawait driver.findElement(By.xpath('//*[@id=\"email\"]')).sendKeys('landlord1@gmail.com');\nawait driver.findElement(By.xpath('//*[@id=\"password\"]')).sendKeys('password');\nawait driver.findElement(By.xpath('//*[@id=\"root\"]/div/div/div/div/form/div/div[3]')).click();\nawait driver.manage().setTimeouts({implicit: 800});\n// In Landlord Dashboard\nlet result =  await driver.findElement(By.xpath(\"//*[@id='root']/div/div/div/div/form/div/div[3]\")).isDisplayed();\nassert.equal(true, result)",
                   "err": {},
-                  "uuid": "1aaa0752-e851-4c96-b74a-c2e36351a8d1",
-                  "parentUUID": "8b9fd593-a794-4a0c-9bb1-8923be3cf646",
+                  "uuid": "56440bdd-3f5b-4260-adff-88cf4a349802",
+                  "parentUUID": "4ac7fc63-6332-4f0e-83e6-d241a036bbeb",
                   "isHook": false,
                   "skipped": false
                 }
               ],
               "suites": [],
               "passes": [
-                "15ebdd67-ba14-4eb1-9413-155f275bce91",
-                "1aaa0752-e851-4c96-b74a-c2e36351a8d1"
+                "8f0e0266-7254-45f2-bd36-2dc121dc85c5",
+                "56440bdd-3f5b-4260-adff-88cf4a349802"
               ],
               "failures": [],
               "pending": [],
               "skipped": [],
-              "duration": 1702,
+              "duration": 1714,
               "root": false,
               "rootEmpty": false,
-              "_timeout": 0
+              "_timeout": 10000
             }
           ],
           "passes": [],
@@ -254,10 +254,10 @@
           "duration": 0,
           "root": false,
           "rootEmpty": false,
-          "_timeout": 0
+          "_timeout": 10000
         },
         {
-          "uuid": "1e40cba2-ee19-4533-a29a-d86b954e3ead",
+          "uuid": "76bfd81f-93fb-477d-baca-26054bf9f051",
           "title": "[firefox]",
           "fullFile": "C:\\Users\\65961\\Documents\\Term 5\\Software_Construction\\esc-cohort3-team1\\tenant-landlord-app\\endtoend_test\\test\\tenant_test.spec.js",
           "file": "\\test\\tenant_test.spec.js",
@@ -266,7 +266,7 @@
           "tests": [],
           "suites": [
             {
-              "uuid": "94c8e718-d946-4063-8531-13adc79a7a48",
+              "uuid": "9ac86d3b-106b-419f-ba34-06f1302af69b",
               "title": "Login",
               "fullFile": "C:\\Users\\65961\\Documents\\Term 5\\Software_Construction\\esc-cohort3-team1\\tenant-landlord-app\\endtoend_test\\test\\tenant_test.spec.js",
               "file": "\\test\\tenant_test.spec.js",
@@ -275,7 +275,7 @@
                   "title": "\"before all\" hook in \"Login\"",
                   "fullTitle": "[firefox] Login \"before all\" hook in \"Login\"",
                   "timedOut": false,
-                  "duration": 1448,
+                  "duration": 1420,
                   "state": null,
                   "speed": null,
                   "pass": false,
@@ -284,8 +284,8 @@
                   "context": null,
                   "code": "driver = await new Builder().forBrowser('chrome').build();",
                   "err": {},
-                  "uuid": "9ffa716e-adce-48b8-b25e-2ae4128f26b8",
-                  "parentUUID": "94c8e718-d946-4063-8531-13adc79a7a48",
+                  "uuid": "2917d8a9-6e98-4263-a6ec-482e9e14a1a9",
+                  "parentUUID": "9ac86d3b-106b-419f-ba34-06f1302af69b",
                   "isHook": true,
                   "skipped": false
                 }
@@ -295,7 +295,7 @@
                   "title": "\"after all\" hook in \"Login\"",
                   "fullTitle": "[firefox] Login \"after all\" hook in \"Login\"",
                   "timedOut": false,
-                  "duration": 25,
+                  "duration": 27,
                   "state": null,
                   "speed": null,
                   "pass": false,
@@ -304,8 +304,8 @@
                   "context": null,
                   "code": "await driver.quit()",
                   "err": {},
-                  "uuid": "81f3a257-a8f8-4469-8fe8-b14d6768e37f",
-                  "parentUUID": "94c8e718-d946-4063-8531-13adc79a7a48",
+                  "uuid": "2e70d9d9-5332-493c-993d-785c62ab7e0e",
+                  "parentUUID": "9ac86d3b-106b-419f-ba34-06f1302af69b",
                   "isHook": true,
                   "skipped": false
                 }
@@ -315,7 +315,7 @@
                   "title": "Select Tenant Option",
                   "fullTitle": "[firefox] Login Select Tenant Option",
                   "timedOut": false,
-                  "duration": 1146,
+                  "duration": 1128,
                   "state": "passed",
                   "speed": "slow",
                   "pass": true,
@@ -324,8 +324,8 @@
                   "context": null,
                   "code": "await driver.get('http://localhost:3000/');\nlet title = await driver.getTitle();\nassert.equal(\"React App\", title);\nawait driver.manage().setTimeouts({implicit: 300});\n// In first page\nawait driver.findElement(By.xpath(\"//*[@id='root']/div/div/div/div/div/button[1]\")).click();\nawait driver.manage().setTimeouts({implicit: 500});\n// In Tenant Login Page\nlet result =  await driver.findElement(By.xpath(\"//*[@id='root']/div/div/div/div/form/div/h2\")).isDisplayed();\nassert.equal(true, result)",
                   "err": {},
-                  "uuid": "734abb98-f886-4615-b66b-005c722e1ae4",
-                  "parentUUID": "94c8e718-d946-4063-8531-13adc79a7a48",
+                  "uuid": "3d0151f5-262c-4e9c-abe7-a9f6bef43a26",
+                  "parentUUID": "9ac86d3b-106b-419f-ba34-06f1302af69b",
                   "isHook": false,
                   "skipped": false
                 },
@@ -333,7 +333,7 @@
                   "title": "Tenant login",
                   "fullTitle": "[firefox] Login Tenant login",
                   "timedOut": false,
-                  "duration": 531,
+                  "duration": 542,
                   "state": "passed",
                   "speed": "slow",
                   "pass": true,
@@ -342,8 +342,8 @@
                   "context": null,
                   "code": "await driver.get('http://localhost:3000/pages/LoginPage');\n  \nlet title = await driver.getTitle();\nassert.equal(\"React App\", title);\n  \nawait driver.manage().setTimeouts({implicit: 300});\nawait driver.findElement(By.xpath('//*[@id=\"email\"]')).sendKeys('tenant1@gmail.com');\nawait driver.findElement(By.xpath('//*[@id=\"password\"]')).sendKeys('password');\nawait driver.findElement(By.xpath('//*[@id=\"root\"]/div/div/div/div/form/div/div[3]')).click();\nawait driver.manage().setTimeouts({implicit: 800});\n// In Tenant Dashboard\nlet result =  await driver.findElement(By.xpath(\"//*[@id='root']/div/div/div/div/form/div/div[3]\")).isDisplayed();\nassert.equal(true, result)",
                   "err": {},
-                  "uuid": "e0772a96-1e4d-4c06-8a99-cfd14ff5dffc",
-                  "parentUUID": "94c8e718-d946-4063-8531-13adc79a7a48",
+                  "uuid": "5485c8ef-4397-4a23-8762-ef6761033371",
+                  "parentUUID": "9ac86d3b-106b-419f-ba34-06f1302af69b",
                   "isHook": false,
                   "skipped": false
                 },
@@ -351,7 +351,7 @@
                   "title": "Tenant View Service Tickets",
                   "fullTitle": "[firefox] Login Tenant View Service Tickets",
                   "timedOut": false,
-                  "duration": 163,
+                  "duration": 153,
                   "state": "passed",
                   "speed": "slow",
                   "pass": true,
@@ -360,25 +360,44 @@
                   "context": null,
                   "code": "await driver.get('http://localhost:3000/pages/Dashboard/');\nlet title = await driver.getTitle();\nassert.equal(\"React App\", title);\nawait driver.manage().setTimeouts({implicit: 300});\n\n//TODO - tenant can view tickets",
                   "err": {},
-                  "uuid": "d6f1e60f-dd05-49a5-9d70-c6026c4a53b0",
-                  "parentUUID": "94c8e718-d946-4063-8531-13adc79a7a48",
+                  "uuid": "88670258-54b6-47c4-99bb-e4865e119beb",
+                  "parentUUID": "9ac86d3b-106b-419f-ba34-06f1302af69b",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "Tenant Create Service Ticket",
+                  "fullTitle": "[firefox] Login Tenant Create Service Ticket",
+                  "timedOut": false,
+                  "duration": 142,
+                  "state": "passed",
+                  "speed": "slow",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "await driver.get('http://localhost:3000/pages/CreateTicketPage/');\nlet title = await driver.getTitle();\nassert.equal(\"React App\", title);\nawait driver.manage().setTimeouts({implicit: 1000});\n //TODO - tenant can create tickets\n// // Location\n// await driver.findElement(By.xpath('//*[@id=\"root\"]/div/div/form/div/div[1]/div[1]/textarea')).sendKeys(\"Next to escalator 2A\");\n// // Request Type\n// await driver.findElement(By.xpath(\"//*[@id='root']/div/div/form/div/div[1]/div[1]/div/div/svg\")).click();\n// await driver.manage().setTimeouts({implicit: 200});\n// await driver.findElement(By.xpath(\"//*[@id='root']/div/div/form/div/div[1]/div[1]/div/select/option[2]\")).click();\n// // Request Description\n// await driver.findElement(By.xpath(\"//*[@id='root']/div/div/form/div/div[1]/div[2]/textarea\")).sendKeys(\"Aircon is leaking\");\n// await driver.manage().setTimeouts({implicit: 200});\n// // Submit Button\n// await driver.findElement(By.xpath(\"//*[@id='root']/div/div/form/div/div[2]/button\")).click();\n\n// // await driver.manage().setTimeouts({implicit: 500});\n// // // In Ticket Creation\n// // let result =  await driver.findElement(By.xpath(\"//*[@id='root']/div/div/div/div/form/div/div[3]\")).isDisplayed();\n// // assert.equal(true, result)\n// // awai",
+                  "err": {},
+                  "uuid": "2684dfac-d92d-426e-921b-48778dcb78c6",
+                  "parentUUID": "9ac86d3b-106b-419f-ba34-06f1302af69b",
                   "isHook": false,
                   "skipped": false
                 }
               ],
               "suites": [],
               "passes": [
-                "734abb98-f886-4615-b66b-005c722e1ae4",
-                "e0772a96-1e4d-4c06-8a99-cfd14ff5dffc",
-                "d6f1e60f-dd05-49a5-9d70-c6026c4a53b0"
+                "3d0151f5-262c-4e9c-abe7-a9f6bef43a26",
+                "5485c8ef-4397-4a23-8762-ef6761033371",
+                "88670258-54b6-47c4-99bb-e4865e119beb",
+                "2684dfac-d92d-426e-921b-48778dcb78c6"
               ],
               "failures": [],
               "pending": [],
               "skipped": [],
-              "duration": 1840,
+              "duration": 1965,
               "root": false,
               "rootEmpty": false,
-              "_timeout": 0
+              "_timeout": 10000
             }
           ],
           "passes": [],
@@ -388,7 +407,7 @@
           "duration": 0,
           "root": false,
           "rootEmpty": false,
-          "_timeout": 0
+          "_timeout": 10000
         }
       ],
       "passes": [],
@@ -398,7 +417,7 @@
       "duration": 0,
       "root": true,
       "rootEmpty": true,
-      "_timeout": 0
+      "_timeout": 10000
     }
   ],
   "meta": {
