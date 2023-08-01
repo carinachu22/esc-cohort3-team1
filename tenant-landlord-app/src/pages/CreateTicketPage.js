@@ -122,16 +122,25 @@ function CreateTicketPage() {
         );
         console.log('got response of creating ticket:');
         console.log(response1);
-
+        if (response1.data.success === 0){
+            toast({
+                title: "Unable to create service ticket.",
+                description: "No associated lease was found. Please contact your landlord.",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+                position: "top",
+            });
+        } else {toast({
+              title: "Ticket Created",
+              description: "Ticket has been created.",
+              status: "success",
+              duration: 5000,
+              isClosable: true,
+              position: "top",
+          });
+        }
         navigate('/pages/Dashboard'); // Navigate to the Dashboard form page
-        toast({
-            title: "Ticket Created",
-            description: "Ticket has been created.",
-            status: "success",
-            duration: 5000,
-            isClosable: true,
-            position: "top",
-        });
     } catch (err) {
         // Standard error catching
         if (err && err instanceof AxiosError) {

@@ -205,6 +205,12 @@ export const controllerCreateTicket = (req, res) => {
         message: "Database connection error"
       });
     } else {
+      if (results[0] === undefined){
+        return res.status(200).json({
+          success: 0,
+          message: "You do not have a lease attached. Please contact your landlord."
+        })
+      }
       const floor = results[0].floor;
       const unit_number = results[0].unit_number;
       console.log("floor", floor);
