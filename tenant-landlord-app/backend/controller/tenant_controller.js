@@ -488,7 +488,6 @@ export const controllerGetLeaseByTenant = (req,res) => {
       })
     } else {
       tenantID = results[0].tenant_user_id;
-      // console.log(tenantID)
       getLeaseByTenant(tenantID, (err, results) => {
         if (err) {
           console.log(err);
@@ -509,7 +508,6 @@ export const controllerGetLeaseByTenant = (req,res) => {
 
 export const controllerGetQuotation = (req, res) => {
   const id = req.query.id;
-  console.log('id in controller', id)
   getQuotationPath(id, (err, results) => {
     if (err) {
       console.log(err);

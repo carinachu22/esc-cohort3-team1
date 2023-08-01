@@ -356,7 +356,6 @@ describe ("/tenant/quotationApproval/:id", () => {
         quotation_accepted_by_tenant: 1
       })
       .then((response) => {
-        console.log(response)
         expect(JSON.parse(response.text)).toEqual({
             success: 0,
             message: "Access denied: You are unauthorized!",
@@ -626,7 +625,6 @@ describe ("/tenant/addFeedbackRating/:id", () => {
       .patch("/api/tenant/addfeedbackRating/2002-02-02 02:02:02")
       .send({ feedback_rating: "1" })
       .then((response) => {
-        console.log(response)
         expect(JSON.parse(response.text)).toEqual({
             success: 0,
             message: "Access denied: You are unauthorized!",

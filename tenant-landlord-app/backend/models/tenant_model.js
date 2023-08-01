@@ -37,7 +37,6 @@ export const getTenantById = (id, callBack) => {
       if (error) {
         callBack(error);
       } else {
-        // console.log(results);
         callBack(null, results);
       }
     }
@@ -136,7 +135,6 @@ export const getTicketById = (id, callBack) => {
  * @param {*} callBack 
  */
 export const getTicketsByStatus = (email, status, callBack) => {
-  console.log(`status ${status}`)
   if (statuses.includes(status)) {
     pool.query(
       `
@@ -189,7 +187,6 @@ export const createTicket = (data, callBack) => {
       ],
       (error, results, fields) => {
         if (error) {
-          console.log(error)
           callBack(error);
         } else {
           callBack(null,results);
