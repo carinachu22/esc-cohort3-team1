@@ -53,7 +53,6 @@ export default function NavigationBar(){
     const signOut = useSignOut();
     const userDetails = useAuthUser();
     const authenticated = useIsAuthenticated();
-    console.log(userDetails())
     if (!authenticated()){
         return
     }
