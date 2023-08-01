@@ -137,28 +137,65 @@ export default function CheckTicket(ticket, userDetails){
 
     // Check if landlord has approved service ticket
     // Do not allow tenant to do anything
-    // Allow landlord to view/add quotation
+    // Allow landlord to view/add quotation if quotation is required
+    // Else, allow landlord to start work
     if (status === 'landlord_ticket_approved'){
         if (userDetails().type === 'landlord'){
-            return(
-                <Button
-                variant="solid"
-                colorScheme="blue"
-                onClick={() => {if (userDetails().type === 'landlord'){
-                navigateToQuotationUploadPage(ticket.public_service_request_id)}
-                else{
-                navigateToQuotationPage(ticket.public_service_request_id)
-                }}}
-                width="13em"
-                height="3em"
-                marginTop="3em"
-                borderRadius="0.25em"
-                >
-                View/Add Quotation
-                </Button>
-            )
-        } else {
-            return
+            if (ticket.quotation_required === 'true'){
+                return(
+                    <Button
+                    variant="solid"
+                    colorScheme="blue"
+                    onClick={() => {if (userDetails().type === 'landlord'){
+                    navigateToQuotationUploadPage(ticket.public_service_request_id)}
+                    else{
+                    navigateToQuotationPage(ticket.public_service_request_id)
+                    }}}
+                    width="13em"
+                    height="3em"
+                    marginTop="3em"
+                    borderRadius="0.25em"
+                    >
+                    View/Add Quotation
+                    </Button>
+                )
+            } else {
+                return (                
+                    <Button
+                    variant="solid"
+                    colorScheme="blue"
+                    width="13em"
+                    height="3em"
+                    marginTop="3em"
+                    marginLeft="2.3em"
+                    marginBottom="5vh"
+                    borderRadius="0.25em"
+                    onClick = {() => {console.log('starting work');
+                    axios.patch(
+                    `http://localhost:5000/api/landlord/ticketWork/${id}`,
+                    {
+                        ticket_work_status: 1
+                    },
+                    {
+                        headers: {
+                            Authorization: `${token()}`
+                        }
+                    }
+                    );navigate('/pages/TicketList');
+                    toast({
+                        title: "Work Started",
+                        description: "Ticket work set to started.",
+                        status: "success",
+                        duration: 5000,
+                        isClosable: true,
+                        position: "top",
+                        })}
+                    }
+                    >
+                    Start Work
+                    </Button>
+                )
+            }
         }
     }
 
