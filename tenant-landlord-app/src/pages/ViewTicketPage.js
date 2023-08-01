@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Box, Heading, Textarea, Input } from '@chakra-ui/react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthUser, useAuthHeader } from 'react-auth-kit';
 import { useFormik } from 'formik';
 import axios, { AxiosError } from 'axios';
@@ -16,6 +16,9 @@ export default function ViewTicketPage() {
   const [status, setstatus] = useState('');
   const {selectedTicket, setSelectedTicket} = useContext(SelectedTicketContext);
   const [ticket, setTicket] = useState('');
+  const location = useLocation();
+  const { ticketID } = location.state;
+  console.log('ID', ticketID)
 
   console.log('selectedTicket:', selectedTicket);
   const GetServiceTickets = (userDetails) => {
@@ -28,7 +31,8 @@ export default function ViewTicketPage() {
 
     // Initialse function for fetching ALL service tickets if landlord is logged in
     const APIGetTickets = async (type) => {
-        //console.log('type',type)
+        console.log('type',type)
+        console.log(ticketID)
         try{
             const config = {
                 headers: {
@@ -40,13 +44,13 @@ export default function ViewTicketPage() {
             }
             if (type === 'landlord'){
                 response = await axios.get(
-                  `http://localhost:5000/api/landlord/getTicketById/${selectedTicket.id}`,
+                  `http://localhost:5000/api/landlord/getTicketById/${ticketID}`,
                     // console.log(`http://localhost:5000/api/landlord/getTicketById/${selectedTicket}`),
                     config
                 )
             } else if (type === 'tenant'){ 
                 response = await axios.get(
-                  `http://localhost:5000/api/tenant/getTicketById/${selectedTicket.id}`,
+                  `http://localhost:5000/api/tenant/getTicketById/${ticketID}`,
                     config
                 )
             }
@@ -68,7 +72,7 @@ export default function ViewTicketPage() {
     const ticket = APIGetTickets(type)
     // Wait for promise to be fulfilled (fetching tickets from database)
     ticket.then(function(result){
-        //console.log('result',result)
+        console.log('result',result)
         // Naive data validation
         // console.log('result',result)
         // console.log(result !== undefined)
@@ -76,8 +80,8 @@ export default function ViewTicketPage() {
             tickets.push(result);
         }   
         console.log('tickets',tickets)
-        console.log('tickets[0]',tickets[0])
-        console.log('tickets[0].request_description',tickets[0].request_description)
+        // console.log('tickets[0]',tickets[0])
+        // console.log('tickets[0].request_description',tickets[0].request_description)
         var tenantComment = tickets[0].request_description;
         var category = tickets[0].request_type;
         setstatus(tickets[0].status)

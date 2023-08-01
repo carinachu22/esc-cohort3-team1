@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import { Box, Button, useToast, Heading, Checkbox } from '@chakra-ui/react';
 import { ArrowBackIcon } from '@chakra-ui/icons';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 import NavigationBar from '../components/NavigationBar.js';
 import { SelectedTicketContext } from '../components/SelectedTicketContext.js';
@@ -18,6 +18,13 @@ function QuotationPage() {
     const navigate = useNavigate();
     const toast = useToast();
     const token = useAuthHeader();
+    const location = useLocation();
+    const { ticketID } = location.state;
+    console.log('ID', ticketID)
+
+    const navigateToViewTicketPage =  (ticketID) => {
+        navigate('/pages/ViewTicketPage/', { state: { ticketID } } );
+      }
 
     const handleApprove = () => {
         const config = {
@@ -37,11 +44,11 @@ function QuotationPage() {
         position: "top",
         });
         axios.patch(
-            `http://localhost:5000/api/tenant/quotationApproval/${selectedTicket.id}`,
+            `http://localhost:5000/api/tenant/quotationApproval/${ticketID}`,
             values,
             config
         )
-        navigate('/pages/ViewTicketPage')
+        navigateToViewTicketPage(ticketID)
     };
 
     const handleReject = () => {
@@ -62,7 +69,7 @@ function QuotationPage() {
         position: "top",
         });
         axios.patch(
-            `http://localhost:5000/api/tenant/quotationApproval/${selectedTicket.id}`,
+            `http://localhost:5000/api/tenant/quotationApproval/${ticketID}`,
             values,
             config
         )
@@ -70,7 +77,11 @@ function QuotationPage() {
     };
 
     useEffect(() => {
-        fetch(`http://localhost:5000/api/landlord/getQuotation/?id=${selectedTicket.id}`,
+        fetch(`http://localhost:5000/api/tenant/getQuotation/?id=${ticketID}`,{
+            headers:{
+              Authorization: `${token()}`
+            }
+          }
         ) // Replace with the actual backend URL serving the PDF
           .then((response) => response.blob())
           .then((data) => {

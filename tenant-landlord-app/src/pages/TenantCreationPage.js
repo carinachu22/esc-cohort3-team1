@@ -17,12 +17,14 @@ import {
     InputRightElement,
     VStack,
     Heading,
+    useToast
 } from "@chakra-ui/react";
 
 const TenantCreationPage = () => {
     const navigate = useNavigate();
     const token = useAuthHeader();
     const userDetails = useAuthUser();
+    const toast = useToast();
 
     const config = {
         headers: {
@@ -65,7 +67,8 @@ const TenantCreationPage = () => {
 
     const APIGetBuildingID = async (email) => {
         const response = await axios.get(
-            "http://localhost:5000/api/landlord/getTenantAccounts?landlordEmail=" + email
+            "http://localhost:5000/api/landlord/getTenantAccounts?landlordEmail=" + email,
+            config
         )
         console.log("APIGetBuildingID", response)
         return response
@@ -78,11 +81,22 @@ const TenantCreationPage = () => {
             const response = await axios.post(
                 //api to be added
                 "http://localhost:5000/api/landlord/createTenant",
-                values
+                values,
+                config
             )
-            console.log(response);
+            console.log("response", response);
             if (response.data.message === "created successfully"){
                 navigateToAccountManagement();
+            } else if (response.data.message === "Duplicate email entry"){
+                toast({
+                    title: "Email already exist!",
+                    description: "Please register with a different email",
+                    status: "success",
+                    colorScheme: "red",
+                    duration: 3000,
+                    isClosable: true,
+                    position: "top",
+                    })
             }
         } catch (err){
             if (err && err instanceof AxiosError) {

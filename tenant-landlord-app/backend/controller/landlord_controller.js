@@ -28,6 +28,7 @@ import {
 
 } from "../models/landlord_model.js";
 import { 
+  recoverTenantAccount,
   getTenantByEmail,
   getTenantUserId,
   updateTenantLease
@@ -261,7 +262,9 @@ export const controllerResetPasswordLandlord = async (req, res) => {
 };
 
 /**
- * Create Tenant Account
+ * Create Tenant Account, check if an account already exist or if it has been deleted.
+ * If the account exist, send a message saying that the account exist.
+ * If the account has been deleted, recover the account.
  * @param {*} req tenant's email, password(unhashed), landlord's email
  * @param {*} res 
  */
@@ -303,22 +306,45 @@ export const controllerCreateTenant = (req, res) => {
           });
         }
       });
-
-    } else{
-      console.log("tenant creation failed")
-      console.log(results)
-      return res.status(500).json({
-        success: 0,
-        message: "Duplicate email entry"
-      })
-    }
+    } else if (results[0].deleted_date != null){
+        console.log(results);
+        const id = results[0].tenant_user_id;
+        console.log("recovering");
+        console.log("id: ", id);
+        recoverTenantAccount(id, (err, results) => {
+          if (err) {
+            console.log(err);
+            return res.status(500).json({
+              success: 0,
+              message: "Database connection error",
+            });
+          }
+          return res.status(200).json({
+            success: 1,
+            message: "created successfully",
+            data: results,
+          });
+        })
+      } else{
+        console.log("tenant creation failed")
+        console.log(results)
+        return res.status(200).json({
+          success: 0,
+          message: "Duplicate email entry",
+          data: results
+        })
+      }
   })
-
-
 };
 
+/**
+ * delete all tenant accounts with same buildingID as landlord
+ * @param {*} req landlordEmail
+ * @param {*} res 
+ */
 export const controllerDeleteAllTenants = (req, res) => {
-  deleteAllTenants((err) => {
+  const {landlordEmail} = req.query;
+  getBuildingID(landlordEmail, (err, results) => {
     if (err) {
       console.log(err);
       return res.status(500).json({
@@ -326,11 +352,27 @@ export const controllerDeleteAllTenants = (req, res) => {
         message: "Database connection error",
       });
     }
-    return res.status(200).json({
-      success: 1,
-      message: "deleted successfully",
+    const buildingID = results.public_building_id;
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth() + 1;
+    const day = currentDate.getDate();
+    const deletedDate = String(day) + "-" + String(month) + "-" + String(year);
+    deleteAllTenants(deletedDate, buildingID, (err, results) => {
+      if (err) {
+        console.log(err);
+        return res.status(500).json({
+          success: 0,
+          message: "Database connection error",
+        });
+      }
+      return res.status(200).json({
+        success: 1,
+        message: "deleted successfully",
+      });
     });
-  });
+  })
+
 };
 
 
@@ -339,7 +381,12 @@ export const controllerDeleteTenantByEmail = (req, res) => {
   console.log(body);
   const {email} = body;
   console.log(email);
-  deleteTenantByEmail(email, (err) => {
+  const currentDate = new Date();
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth() + 1;
+  const day = currentDate.getDate();
+  const deletedDate = String(day) + "-" + String(month) + "-" + String(year);
+  deleteTenantByEmail(deletedDate, email, (err) => {
     if (err) {
       console.log(err);
       return res.status(500).json({

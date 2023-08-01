@@ -131,15 +131,20 @@ const AccountManagement = () => {
 
   const APIGetTenantAccounts = async (email) => {
     const response = await axios.get(
-        "http://localhost:5000/api/landlord/getTenantAccounts?landlordEmail=" + email
+        "http://localhost:5000/api/landlord/getTenantAccounts?landlordEmail=" + email,
+        config
     )
     console.log("APIGetTenantAccounts", response)
     return response
   }
   
-  const APIDeleteAllTenants = async () => {
+  const APIDeleteAllTenants = async (email) => {
     const response = await axios.patch(
-        "http://localhost:5000/api/landlord/deleteAllTenants",
+        "http://localhost:5000/api/landlord/deleteAllTenants?landlordEmail=" + email,{
+          headers: {
+            Authorization: `${token()}`
+          }
+        }
     )
     //console.log(response)
     GetTenantAccounts();
@@ -150,7 +155,12 @@ const AccountManagement = () => {
   const APIDeleteTenantByEmail = async (email) => {
     const response = await axios.patch(
         "http://localhost:5000/api/landlord/deleteTenantByEmail",
-        {email, }
+        {email, },
+        {
+          headers: {
+            Authorization: `${token()}`
+          }
+        }
     )
     console.log(email);
     GetTenantAccounts();
@@ -294,7 +304,7 @@ const AccountManagement = () => {
                       <PopoverFooter display='flex' justifyContent='flex-end'>
                         <ButtonGroup size='sm'>
                           <Button variant='outline' onClick={onClose}>Cancel</Button>
-                          <Button colorScheme='red' onClick={APIDeleteAllTenants} >Confirm</Button>
+                          <Button colorScheme='red' onClick={() => APIDeleteAllTenants(config.params.email)} >Confirm</Button>
                         </ButtonGroup>
                       </PopoverFooter>
                     </PopoverContent>

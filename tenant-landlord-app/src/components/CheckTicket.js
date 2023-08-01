@@ -17,11 +17,24 @@ import { IoIosStarOutline, IoIosStar } from 'react-icons/io/index.esm.js';
  * @returns 
  */
 export default function CheckTicket(ticket, userDetails){
-    const id = ticket.service_request_id
+    const id = ticket.public_service_request_id
     const status = ticket.status
     const navigate = useNavigate();
     const token = useAuthHeader();
     const toast = useToast();
+
+    const navigateToQuotationUploadPage =  (ticketID) => {
+      navigate('/pages/QuotationUploadPage/', { state: { ticketID } } );
+    }
+
+    const navigateToQuotationPage =  (ticketID) => {
+      navigate('/pages/QuotationPage/', { state: { ticketID } } );
+    }
+
+    const navigateToFeedbackPage =  (ticketID) => {
+      navigate('/pages/FeedbackForm/', { state: { ticketID } } );
+    }
+
     if (userDetails() === null){
         navigate('/')
     }
@@ -31,7 +44,7 @@ export default function CheckTicket(ticket, userDetails){
           <Button
           variant="solid"
           colorScheme="blue"
-          onClick={() => navigate('/pages/FeedbackForm')}
+          onClick={() => navigateToFeedbackPage(id)}
           width="13em"
           height="3em"
           marginTop="3em"
@@ -159,9 +172,9 @@ export default function CheckTicket(ticket, userDetails){
     variant="solid"
     colorScheme="blue"
     onClick={() => {if (userDetails().type === 'landlord'){
-      navigate('/pages/QuotationUploadPage')}
+      navigateToQuotationUploadPage(ticket.public_service_request_id)}
     else{
-      navigate('/pages/QuotationPage')
+      navigateToQuotationPage(ticket.public_service_request_id)
     }}}
     width="13em"
     height="3em"
