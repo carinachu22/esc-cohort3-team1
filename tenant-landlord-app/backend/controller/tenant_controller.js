@@ -197,6 +197,7 @@ export const controllerCreateTicket = (req, res) => {
   console.log("tenantEmail", tenantEmail);
   console.log("req.body", body);
   getLeaseByTenantEmail(tenantEmail, (err,results) => {
+    console.log("results", results);
     if (err) {
       console.log(err);
       return res.status(500).json({

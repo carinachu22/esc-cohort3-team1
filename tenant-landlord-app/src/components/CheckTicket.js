@@ -1,9 +1,9 @@
 import axios from "axios";
 import { useAuthHeader, useIsAuthenticated } from "react-auth-kit";
 import { useNavigate } from "react-router-dom"
-import React from "react"
+import React, {useState} from "react"
 
-import { Box, Button, Textarea, useToast, Heading, Stack, Icon } from '@chakra-ui/react';
+import { Box, Button, Textarea, useToast, Heading, Stack, Icon, Checkbox } from '@chakra-ui/react';
 import { IoIosStarOutline, IoIosStar } from 'react-icons/io/index.esm.js';
 
 /**
@@ -23,6 +23,7 @@ export default function CheckTicket(ticket, userDetails){
     const token = useAuthHeader();
     const toast = useToast();
     const authenticated = useIsAuthenticated();
+    const [isCheckboxChecked, setCheckboxChecked] = useState(false); 
 
     const navigateToQuotationUploadPage =  (ticketID) => {
       navigate('/pages/QuotationUploadPage/', { state: { ticketID } } );
@@ -49,6 +50,9 @@ export default function CheckTicket(ticket, userDetails){
         if (userDetails().type === 'landlord'){
             return (
                 <>
+                    <Checkbox isChecked={isCheckboxChecked} onChange={(e) => setCheckboxChecked(e.target.checked)}>
+                      Is quotation required?
+                    </Checkbox>
                     <Button
                     variant="solid"
                     colorScheme="blue"
@@ -61,7 +65,7 @@ export default function CheckTicket(ticket, userDetails){
                     borderRadius="0.25em"
                     onClick = {() => {console.log('approving');
                             axios.patch(
-                            `http://localhost:5000/api/landlord/ticketApproval/${id}`,
+                            `http://localhost:5000/api/landlord/ticketApproval/${id}/${isCheckboxChecked}`,
                             {
                                 ticket_approved_by_landlord: 1
                             },
