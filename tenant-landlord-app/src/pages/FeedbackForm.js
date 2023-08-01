@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { Box, Button, Textarea, useToast, Heading, Stack, Icon } from '@chakra-ui/react';
 import { IoIosStarOutline, IoIosStar } from 'react-icons/io/index.esm.js';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthHeader }from 'react-auth-kit';
 import { useFormik } from 'formik';
 import axios, { AxiosError } from 'axios';
@@ -12,9 +12,11 @@ function FeedbackForm() {
   const {selectedTicket, setSelectedTicket} = useContext(SelectedTicketContext);
   const token = useAuthHeader();
   const navigate = useNavigate();
-  const ticketID = selectedTicket.id;
   const [rating, setRating] = useState(-1);
   const toast = useToast();
+  const location = useLocation();
+  const { ticketID } = location.state;
+  console.log('ID', ticketID)
 
   const handleRatingChange = (newRating) => {
     setRating(newRating);

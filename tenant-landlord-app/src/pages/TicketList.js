@@ -93,7 +93,7 @@ export default function TicketList() {
             return 'Work Started By Landlord'
         } else if (status === 'landlord_completed_work'){
             return 'Work Completed By Landlord'
-        } else if (status === 'landlord_ticket_closed'){
+        } else if (status === 'landlord_ticket_closed' || status === 'tenant_feedback_given'){
             return "Closed"
         }
     }
@@ -219,7 +219,7 @@ export default function TicketList() {
                         </Box>
                         </HStack>
                         <br></br>
-                        <Button onClick={() => {navigate('/pages/ViewTicketPage/');setSelectedTicket({"id":ticket.service_request_id})}} bgColor='blue.500' color='white' _hover={{bg: 'blue.800'}}>
+                        <Button onClick={() => navigateToViewTicketPage(ticket.public_service_request_id)} bgColor='blue.500' color='white' _hover={{bg: 'blue.800'}}>
                             View Details & Actions
                         </Button>
                     </AccordionPanel>
@@ -247,6 +247,12 @@ export default function TicketList() {
             ticket.request_type.toLowerCase().includes(searchType.toLowerCase())
         );
     };
+
+    const navigateToViewTicketPage =  (ticketID) => {
+        navigate('/pages/ViewTicketPage/', { state: { ticketID } } );
+      }
+    
+
     // Combine filtering and searching
     const getFilteredTickets = () => {
         const filtered_tikcets = (searchTickets(
@@ -306,7 +312,7 @@ export default function TicketList() {
                     </Box>
                     </HStack>
                     <br></br>
-                    <Button onClick={() => {navigate('/pages/ViewTicketPage/');setSelectedTicket({"id":ticket.service_request_id})}} bgColor='blue.500' color='white' _hover={{bg: 'blue.800'}}>
+                    <Button onClick={() => navigateToViewTicketPage(ticket.public_service_request_id)} bgColor='blue.500' color='white' _hover={{bg: 'blue.800'}}>
                         View Details & Actions
                     </Button>
                 </AccordionPanel>

@@ -224,11 +224,10 @@ export const getTickets = (callBack) => {
  * @param {*} callBack 
  */
 export const getTicketById = (id, callBack) => {
-  // Temporarily changed to service_request_id
   pool.query(
     `
     SELECT * FROM SERVICE_REQUEST
-    WHERE service_request_id = ?
+    WHERE public_service_request_id = ?
     `,
     [id],
     (error, results, fields) => {

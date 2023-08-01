@@ -11,11 +11,14 @@ import {
   closeTicketStatus,
   getTicketById,
   getTenantUserId,
-  getLeaseByTenant
+  getLeaseByTenant,
+  getQuotation,
+  getQuotationPath
 } from "../models/tenant_model.js";
 import { genSaltSync, hashSync, compareSync } from "bcrypt";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
+import fs from "fs";
 
 
 /**
@@ -252,6 +255,7 @@ export const controllerGetTicketsByStatus = (req, res) => {
 };
 
 export const controllerGetTicketById = (req, res) => {
+  console.log('huh')
   const id = req.params.id;
   getTicketById(id, (err, results) => {
     if (err) {
@@ -422,3 +426,46 @@ export const controllerGetLeaseByTenant = (req,res) => {
     }
   })
 }
+
+export const controllerGetQuotation = (req, res) => {
+  const id = req.query.id;
+  console.log('id in controller', id)
+  getQuotationPath(id, (err, results) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+    if (!results) {
+      return res.json({
+        success: 0,
+        message: "service ticket not found",
+      });
+    } else {
+      var filepath = results.quotation_path;
+      console.log(filepath);
+      if (filepath == null){
+        res.send("No quotation uploaded yet!")
+        return
+
+      }
+      fs.readFile(filepath, (err, data) => {
+        if (err) {
+          console.log('error')
+          console.error(err);
+          res.status(500).send("Internal Server Error");
+          return;
+        }
+        // Set headers for the response
+        res.setHeader("Content-Type", "application/pdf");
+        res.setHeader("Content-Disposition", "attachment; filename=file.pdf");
+        // Send the PDF file data as the response
+        res.send(data);
+      });
+
+
+      if (err){
+        return console.log(err);
+      }
+    }
+  });
+};

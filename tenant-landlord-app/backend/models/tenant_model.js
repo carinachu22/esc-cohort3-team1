@@ -93,7 +93,7 @@ export const getTicketById = (id, callBack) => {
   pool.query(
     `
     SELECT * FROM SERVICE_REQUEST
-    WHERE service_request_id = ?
+    WHERE public_service_request_id = ?
     `,
     [id],
     (error, results, fields) => {
@@ -141,6 +141,7 @@ export const getTicketsByStatus = (email, status, callBack) => {
  */
 export const createTicket = (data, callBack) => {
   const status = "tenant_ticket_created";
+  const public_service_request_id = data.submitted_date_time;
   const feedback_rating = null;
   const feedback_text = null;
   if (statuses.includes(status)){
@@ -151,7 +152,7 @@ export const createTicket = (data, callBack) => {
       VALUES (?,?,?,?,?,?,?,?,?,?)
       `,
       [
-        data.public_service_request_id,
+        public_service_request_id,
         data.name,
         data.email,
         data.request_type,
@@ -220,7 +221,7 @@ export const addFeedbackRating = (id, feedback_rating, callBack) => {
     `
     UPDATE service_request
     SET feedback_rating = ?, status = ?
-    WHERE service_request_id = ?
+    WHERE public_service_request_id = ?
     `,
     [
       feedback_rating, "tenant_feedback_given", id
@@ -247,10 +248,10 @@ export const addFeedbackText = (id, feedback_text, callBack) => {
     `
     UPDATE service_request
     SET feedback_text = ?, status = ?
-    WHERE service_request_id = ?
+    WHERE public_service_request_id = ?
     `,
     [
-      data.feedback_text, "tenant_feedback_given", id
+      feedback_text, "tenant_feedback_given", id
     ],
     (error, results, fields) => {
       if (error) {
@@ -274,7 +275,7 @@ export const closeTicketStatus = (id, data, callBack) => {
       `
       UPDATE service_request
       SET status = ?
-      WHERE service_request_id = ?
+      WHERE public_service_request_id = ?
       `,
       [
         data, id
@@ -370,4 +371,54 @@ export const updateTenantLease = (publicLeaseID, tenantID, callBack) => {
       }
     }
   )
+}
+
+
+/**
+ * get the quotation path of a specific service request 
+ * @param {*} id public_service_request_id (YYYY-MM-DD 00:00:00)
+ * @param {*} callBack 
+ */
+ export const getQuotationPath = (id, callBack) => {
+  pool.query(
+    `
+    SELECT quotation_path
+    FROM service_request
+    WHERE public_service_request_id = ?
+    `,
+    [
+      id
+    ],
+    (error, results, fields) => {
+      if (error) {
+        callBack(error);
+      } else {
+        callBack(null, results[0]);
+      }
+    }
+  );
+}
+
+/**
+ * 
+ * @param {*} filepath 
+ * @param {*} callBack 
+ */
+export const getQuotation = (filepath, callBack) => {
+  pool.query(
+    `
+    SELECT 
+    LOAD_FILE(?)
+    `,
+    [
+      filepath
+    ],
+    (error, results, fields) => {
+      if (error) {
+        callBack(error);
+      } else {
+        callBack(null, results[0]);
+      }
+    }
+  );
 }
