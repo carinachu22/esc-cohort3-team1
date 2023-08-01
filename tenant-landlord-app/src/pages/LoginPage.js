@@ -73,13 +73,13 @@ const LoginPage = () => {
                     "http://localhost:5000/api/landlord/login",
                     values
                 )
-                signIn({
-                    token: response.data.token,
-                    expiresIn: 60,
-                    tokenType: "Bearer",
-                    authState: {email: values.email, type: "landlord"}
-                });
                 if (response.data.message === "Login successfully"){
+                    signIn({
+                        token: response.data.token,
+                        expiresIn: 60,
+                        tokenType: "Bearer",
+                        authState: {email: values.email, type: "landlord"}
+                    });
                     console.log(response.data.message);
                     navigateToDashboard();
                 }
@@ -93,14 +93,14 @@ const LoginPage = () => {
                     "http://localhost:5000/api/tenant/login",
                     values
                 )
-                signIn({
-                    token: response.data.token,
-                    expiresIn: 60,
-                    tokenType: "Bearer",
-                    authState: {email: values.email, type: "tenant"}
-                });
                 if (response.data.message === "Login successfully"){
                     console.log(response.data.message);
+                    signIn({
+                        token: response.data.token,
+                        expiresIn: 60,
+                        tokenType: "Bearer",
+                        authState: {email: values.email, type: "tenant"}
+                    });
                     navigateToDashboard();
                 }
                 else if (response.data.message === "Invalid email or password"){
