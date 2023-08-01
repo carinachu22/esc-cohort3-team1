@@ -119,7 +119,6 @@ describe ("Testing getTicketsByTenant() in tenant model", () => {
                 done();
                 return;
             }
-            console.log(results)
             const rowsLength = results.length
             expect(rowsLength).toBe(1);
             done()

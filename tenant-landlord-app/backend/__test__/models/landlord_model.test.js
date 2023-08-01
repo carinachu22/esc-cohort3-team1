@@ -47,7 +47,6 @@ describe("Testing getLandlordByEmail() in landlord model", () => {
             const rowsLength = results.length
             // console.log(rowsLength)
             expect(rowsLength).toBe(1);
-            console.log('done?')
             done();
         })
     });

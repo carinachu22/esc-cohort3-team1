@@ -8,6 +8,7 @@ const config = {
     transform: {},
     testEnvironment: 'node',
     setupFiles: ['dotenv/config'],
+    maxWorkers: 1,
     // globalSetup: process.env.SETUP_FILE,
     // globalTeardown: process.env.TEARDOWN_FILE
   };
