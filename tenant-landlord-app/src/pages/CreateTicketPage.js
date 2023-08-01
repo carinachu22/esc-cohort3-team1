@@ -1,81 +1,99 @@
+// import React and hooks
 import React, { useState, useEffect } from 'react';
-import { Box, Text, Button, Heading, Textarea, FormControl, FormLabel, Input, Select, useToast } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthUser, useAuthHeader, useIsAuthenticated } from 'react-auth-kit';
-import { Formik, Form,useFormik } from 'formik';
+
+// import Formik module for forms
+import { Formik, Form, useFormik } from 'formik';
+
+// Import axios for http requests
 import axios, { AxiosError } from "axios";
+
+// import NavigationBar component
 import NavigationBar from '../components/NavigationBar.js';
 
+// Import Chakra components
+import { Box, Text, Button, Heading, Textarea, FormControl, FormLabel, Input, Select, useToast } from '@chakra-ui/react';
 
-
+/**
+ * Functional component to display ticket creation page.
+ * 
+ * Displays form for user to input.
+ * Captures input from user.
+ * Sends API Post call on submit.
+ * 
+*/
 function CreateTicketPage() {
-  const navigate = useNavigate();
-  const token = useAuthHeader();
-  const userDetails = useAuthUser();
-  const [tenantComment, setTenantComment] = useState('');
-  const [ticketType, setTicketType] = useState('');
-  const [additionalHeading, setAdditionalHeading] = useState('');
-  const [showOtherInput, setShowOtherInput] = useState(false);
-  const [otherRequestType, setOtherRequestType] = useState('');
-  const toast = useToast();
-  const authenticated = useIsAuthenticated();
+    // Initialise states and hooks
+    const [tenantComment, setTenantComment] = useState('');     // Initialise state to contain comment text
+    const [ticketType, setTicketType] = useState('');           // Initialise state to contain selected ticket type
+    const [additionalHeading, setAdditionalHeading] = useState('');
+    const [showOtherInput, setShowOtherInput] = useState(false);    // Initialise state to check if "Others" text field should be shown
+    const [otherRequestType, setOtherRequestType] = useState('');   // Initialise state to contain "Others" request type
+    const toast = useToast();                                       // Initialise hook to use toasts
+    const token = useAuthHeader();                                  // Initialise hook to pass token in API call
+    const authenticated = useIsAuthenticated();                     // Initialise hook to check if valid sign in session
+    const userDetails = useAuthUser();                              // Initialise hook to get user details, such as email
+    const navigate = useNavigate();                                 // Initialise hook to allow rerouting
 
-  const handleCommentChange = (event) => {
-    setTenantComment(event.target.value);
-  };
+    const handleCommentChange = (event) => {
+        setTenantComment(event.target.value);
+    };
 
-  // const handleTicketTypeChange = (event) => {
-  //   setTicketType(event.target.value);
-  // };
+    // const handleTicketTypeChange = (event) => {
+    //   setTicketType(event.target.value);
+    // };
 
-  const handleRequestTypeChange = (event) => {
-    const selectedType = event.target.value;
-    setTicketType(selectedType);
-    setShowOtherInput(selectedType === 'Others');
-  };
+    const handleRequestTypeChange = (event) => {
+        const selectedType = event.target.value;
+        setTicketType(selectedType);
+        setShowOtherInput(selectedType === 'Others');
+    };
 
+    const handleOtherRequestTypeChange = (event) => {
+        setOtherRequestType(event.target.value);
+    };
 
-  const handleOtherRequestTypeChange = (event) => {
-    setOtherRequestType(event.target.value);
-  };
-
-  const handleCreateTicket = async () => {
-    console.log(tenantComment);
-    console.log(token());
+    // Initialise function to call API with new ticket details
+    const handleCreateTicket = async () => {
+        console.log(tenantComment);
+        console.log(token());
 
     try {
-      const config = {
-        headers: {
-          Authorization: `${token()}`,
-        },
-      };
-      const currentdate = new Date();
-      var values = {}
-      if (ticketType === 'Others' ){
-         values = {
-          name: '--',
-          email: userDetails().email,
-          request_type: ticketType + ' - ' + otherRequestType,
-          request_description: tenantComment,
-          additional_heading: additionalHeading,
-          submitted_date_time:
-            currentdate.getFullYear().toString() +
-            '-' +
-            (currentdate.getMonth() + 1).toString() +
-            '-' +
-            currentdate.getDate().toString() +
-            ' ' +
-            currentdate.getHours().toString() +
-            ':' +
-            ('0' + currentdate.getMinutes()).slice(-2) +
-            ':' +
-            currentdate.getSeconds().toString(),
-          status: 'SUBMITTED',
-          feedback_text: '',
-          feedback_rating: '-1',
+        // Initialise config header to pass token and other params through API call
+        const config = {
+            headers: {
+                Authorization: `${token()}`,
+            },
         };
-      } else {
-       values = {
+        const currentdate = new Date();
+        var values = {}                 // Initialise values object to hold ticket deatils
+        // Set values based on ticket type
+        if (ticketType === 'Others' ){
+            values = {
+            name: '--',
+            email: userDetails().email,
+            request_type: ticketType + ' - ' + otherRequestType,
+            request_description: tenantComment,
+            additional_heading: additionalHeading,
+            submitted_date_time:
+                currentdate.getFullYear().toString() +
+                '-' +
+                (currentdate.getMonth() + 1).toString() +
+                '-' +
+                currentdate.getDate().toString() +
+                ' ' +
+                currentdate.getHours().toString() +
+                ':' +
+                ('0' + currentdate.getMinutes()).slice(-2) +
+                ':' +
+                currentdate.getSeconds().toString(),
+            status: 'SUBMITTED',
+            feedback_text: '',
+            feedback_rating: '-1',
+            };
+        } else {
+        values = {
         name: '--',
         email: userDetails().email,
         request_type: ticketType,
@@ -96,57 +114,60 @@ function CreateTicketPage() {
         feedback_text: '',
         feedback_rating: '-1',
       };
-    }
-    console.log(values['request_type'])
-    console.log(values['request_type'].slice(0,6))
-      const response1 = await axios.post(
-        'http://localhost:5000/api/tenant/createTicket',
-        values,
-        config
-      );
-      console.log('got response of creating ticket:');
-      console.log(response1);
+        }
+        console.log(values['request_type'])
+        console.log(values['request_type'].slice(0,6))
+        const response1 = await axios.post(
+            'http://localhost:5000/api/tenant/createTicket',
+            values,
+            config
+        );
+        console.log('got response of creating ticket:');
+        console.log(response1);
 
-      navigate('/pages/Dashboard'); // Navigate to the Dashboard form page
-      toast({
-        title: "Ticket Created",
-        description: "Ticket has been created.",
-        status: "success",
-        duration: 5000,
-        isClosable: true,
-        position: "top",
+        navigate('/pages/Dashboard'); // Navigate to the Dashboard form page
+        toast({
+            title: "Ticket Created",
+            description: "Ticket has been created.",
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+            position: "top",
         });
     } catch (err) {
-      if (err && err instanceof AxiosError) {
-        console.log('Error: ', err);
-      } else if (err && err instanceof Error) {
-        console.log('Error: ', err);
-      }
+        // Standard error catching
+        if (err && err instanceof AxiosError) {
+            console.log('Error: ', err);
+        } else if (err && err instanceof Error) {
+            console.log('Error: ', err);
+        }      
+    }};
 
-      
-    }
-  };
+    // Initialise formik with initial values
+    const formik = useFormik({
+        initialValues: {
+            location: '',
+            category: '',
+            tenantComment: '',
+        },
+        onSubmit: handleCreateTicket,
+    });
 
-  const formik = useFormik({
-    initialValues: {
-      location: '',
-      category: '',
-      tenantComment: '',
-    },
-    onSubmit: handleCreateTicket,
-  });
-  const authenticate = () => {
-    // Check if still autenticated based on react auth kit
-    if (!authenticated()){
-        console.log("Not authenticated, redirecting.")
-        navigate('/')
-        return false
-    } else {
-        return true
+    // Initialise authenticate function
+    // Redirects to index page if not authenticated
+    const authenticate = () => {
+        // Check if still autenticated based on react auth kit
+        if (!authenticated()){
+            console.log("Not authenticated, redirecting.")
+            navigate('/')
+            return false
+        } else {
+            return true
+        }
     }
-}
-      // Ensure that user is authenticated for all renders
-      useEffect(() => {
+
+    // Ensure that user is authenticated for all renders
+    useEffect(() => {
         authenticate()
     })
   return (
