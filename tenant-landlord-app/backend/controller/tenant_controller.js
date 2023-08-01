@@ -188,7 +188,7 @@ export const controllerResetPasswordTenant = async (req, res) => {
  */
 export const controllerCreateTicket = (req, res) => {
   const body = req.body;
-  if (!body.public_service_request_id || !body.name || !body.email || !body.request_type || body.request_description || body.quotation_path || body.submitted_date_time) {
+  if (!body.public_service_request_id || !body.name || !body.email || !body.request_type || !body.request_description || !body.quotation_path || !body.submitted_date_time) {
     return res.status(400).json({
       success: 0,
       message: "Incomplete data fields"
@@ -217,20 +217,33 @@ export const controllerCreateTicket = (req, res) => {
  */
 export const controllerGetTickets = (req, res) => {
   const email = req.query.email;
-  getTicketsByTenant(email, (err,results) => {
-    if (err) {
-      console.log(err);
-      return res.status(500).json({
+  console.log(req.query)
+  getTenantByEmail(email, (err,result) => {
+    console.log(result)
+    if (result.length === 0) {
+      return res.status(400).json({
         success: 0,
-        message: "Database connection error"
-      });
+        message: "User not found"
+      })
     } else {
-      return res.json({
-        success: "1",
-        data: results,
+      console.log(`email ${email}`)
+      getTicketsByTenant(email, (err,results) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).json({
+            success: 0,
+            message: "Database connection error"
+          });
+        } else {
+          console.log(`expected results: {success: 1,\ndata:${results}}`)
+          return res.json({
+            success: 1,
+            data: results,
+          });
+        }
       });
     }
-  });
+  })
 };
 
 /**
@@ -241,20 +254,37 @@ export const controllerGetTickets = (req, res) => {
 export const controllerGetTicketsByStatus = (req, res) => {
   const email = req.body.email;
   const status = req.params.status;
-  getTicketsByStatus(email, status, (err,results) => {
-    if (err) {
-      console.log(err);
-      return res.status(500).json({
+  getTenantByEmail(email, (err,result) => {
+    // console.log(email)
+    // console.log(result)
+    if (result.length === 0) {
+      return res.status(400).json({
         success: 0,
-        message: "Database connection error"
-      });
+        message: "User not found"
+      })
     } else {
-      return res.json({
-        success: "1",
-        data: results,
+      getTicketsByStatus(email, status, (err,results) => {
+        if (err === "invalid status") {
+          console.log(err);
+          return res.status(400).json({
+            success: 0,
+            message: `${err}`
+          });
+        } else if (err) {
+          console.log(err)
+          return res.status(500).json({
+            success: 0,
+            message: "Database connection error"
+          });
+        } else {
+          return res.json({
+            success: "1",
+            data: results,
+          });
+        }
       });
     }
-  });
+  })
 };
 
 /**
@@ -270,6 +300,11 @@ export const controllerQuotationApproval = (req, res) => {
     status = "ticket_quotation_approved"
   } else if (body.quotation_accepted_by_tenant === 0) {
     status = "ticket_quotation_rejected"
+  } else {
+    return res.status(400).json({
+      success: 0,
+      message: "Data validation error"
+    })
   }
 
   quotationApproval(id,status, (err, results) => {
@@ -277,7 +312,7 @@ export const controllerQuotationApproval = (req, res) => {
       console.log(err);
       return;
     }
-    if (!results) {
+    if (results.changedRows === 0) {
       return res.json({
         success: 0,
         message: "Failed to update user"
