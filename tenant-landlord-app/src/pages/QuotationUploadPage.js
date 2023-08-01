@@ -17,7 +17,7 @@ import {
 } from "@chakra-ui/react";
 
 import { SelectedTicketContext } from '../components/SelectedTicketContext.js';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import NavigationBar from "../components/NavigationBar.js";
 
@@ -27,6 +27,9 @@ const QuotationUpload = () => {
   const token = useAuthHeader();
   const navigate = useNavigate();
   const toast = useToast();
+  const location = useLocation();
+  const { ticketID } = location.state;
+  console.log('ID', ticketID)
 
   const retrieveFile = () => {
     console.log(selectedTicket);
@@ -53,6 +56,10 @@ const QuotationUpload = () => {
       })
     }
 
+    const navigateToViewTicketPage =  (ticketID) => {
+      navigate('/pages/ViewTicketPage/', { state: { ticketID } } );
+    }
+
   return (
     <>
       {NavigationBar()}
@@ -68,17 +75,18 @@ const QuotationUpload = () => {
               formData.append("files", values.files); // Access files through form values
               try {
                 const response = await axios.post(
-                  `http://localhost:5000/api/landlord/uploadQuotation/${selectedTicket.id}`,
+                  `http://localhost:5000/api/landlord/uploadQuotation/${ticketID}`,
                   formData,
                   {
                     params: { 'api-version': '3.0' },
                     headers: {
-                      "Content-Type": "multipart/form-data"
+                      "Content-Type": "multipart/form-data",
+                      Authorization: `${token()}`
                     },
                   }
                 );
                 console.log(response);
-                navigate("/pages/ViewTicketPage");
+                navigateToViewTicketPage(ticketID);
                 toast({
                     title: "Quotation Uploaded",
                     description: "Quotation has been attached to the ticket.",

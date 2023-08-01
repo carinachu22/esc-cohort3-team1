@@ -60,7 +60,7 @@ export const getLandlordById = (id, callBack) => {
     `
     SELECT *
     FROM landlord_user
-    WHERE landlord_user_id = ?
+    WHERE landlord_user_id = ? AND landlord_user.deleted_date IS NULL
     `,
     [id],
     (error, results, fields) => {
@@ -106,7 +106,7 @@ export const updateLandlordPassword = ({password, id}, callBack) => {
  */
 export const updateLandlord = (data, callBack) => {
   pool.query(
-    'UPDATE landlord_user SET email=?, password=?, ticket_type=? WHERE landlord_user_id=?',
+    'UPDATE landlord_user SET email=?, password=?, ticket_type=? WHERE landlord_user_id=? ',
     [
       data.email,
       data.password,
@@ -127,10 +127,13 @@ export const updateLandlord = (data, callBack) => {
  * @param {*} data landlord email
  * @param {*} callBack 
  */
-export const deleteLandlord = (data, callBack) => {
+export const deleteLandlord = (deletedDate, email, callBack) => {
   pool.query(
-    'DELETE FROM landlord_user where email=?',
-    [data.email],
+    'UPDATE landlord_user SET deleted_date = ? WHERE email = ?',
+    [
+      deletedDate,
+      email
+    ],
     (error, results, fields) => {
       if(error){
         callBack(error);
@@ -145,9 +148,13 @@ export const deleteLandlord = (data, callBack) => {
  * @param {*} data 
  * @param {*} callBack 
  */
-export const deleteAllTenants = (callBack) => {
+export const deleteAllTenants = (deletedDate, buildingID, callBack) => {
   pool.query(
-    'DELETE FROM tenant_user ',
+    'UPDATE tenant_user SET deleted_date = ? WHERE public_building_id = ?',
+    [
+      deletedDate,
+      buildingID
+    ],
     (error, results, fields) => {
       if(error){
         callBack(error);
@@ -162,10 +169,13 @@ export const deleteAllTenants = (callBack) => {
  * @param {*} email 
  * @param {*} callBack 
  */
-export const deleteTenantByEmail = (email, callBack) => {
+export const deleteTenantByEmail = (deletedDate, email, callBack) => {
   pool.query(
-    'DELETE FROM tenant_user WHERE email = ?',
-    [email],
+    'UPDATE tenant_user SET deleted_date = ? WHERE email = ?',
+    [
+      deletedDate,
+      email
+    ],
     (error, results, fields) => {
       if(error){
         callBack(error);
@@ -441,15 +451,17 @@ export const ticketWork = (id, data, status, callBack) => {
 
 
 /**
- * get tenant accounts by building id
+ * get tenant accounts 
  * @param {*} public_building_id 
  * @param {*} callBack 
  */
-export const getTenantAccounts = (callBack) => {
+export const getTenantAccounts = (public_building_id, callBack) => {
   pool.query(
     `
-    SELECT * 
-    FROM TENANT_USER`,
+    SELECT TENANT_USER.*, LEASE.public_lease_id, LEASE.lease_id, LEASE.landlord_user_id, LEASE.floor, LEASE.unit_number, LEASE.pdf_path
+    FROM TENANT_USER LEFT JOIN LEASE ON TENANT_USER.public_lease_id = LEASE.public_lease_id
+    WHERE public_building_id=? AND TENANT_USER.deleted_date IS NULL`,
+    [public_building_id],
     (error, results, fields) => {
       if (error) {
         callBack(error);
@@ -458,6 +470,8 @@ export const getTenantAccounts = (callBack) => {
     }
   );
 };
+
+
 
 /**
  * 
@@ -470,15 +484,15 @@ export const getTenantAccounts = (callBack) => {
     }
  * @param {*} callBack 
  */
-export const createLease = (landlordID, tenantID, data, callBack) => {
+export const createLease = (publicLeaseID, landlordID, tenantID, data, callBack) => {
   pool.query (
     `
     INSERT INTO lease
-    (public_lease_id, tenant_user_id, landlord_user_id, floor, unit_number, pdf_path)
-    VALUES (?,?,?,?,?,?)
+    (public_lease_id, tenant_user_id, landlord_user_id, floor, unit_number)
+    VALUES (?,?,?,?,?)
     `,
     [
-      data.public_lease_id,
+      publicLeaseID,
       tenantID,
       landlordID,
       data.floor,
@@ -502,7 +516,7 @@ export const createLease = (landlordID, tenantID, data, callBack) => {
  * @param {*} param0 {filepath, id}
  * @param {*} callBack 
  */
-export const uploadLease = ({filepath, id}, callBack) => {
+export const uploadLease = ({filepath, publicLeaseID}, callBack) => {
   pool.query(
     `
     UPDATE lease
@@ -511,7 +525,7 @@ export const uploadLease = ({filepath, id}, callBack) => {
     `,
     [
       filepath,
-      id
+      publicLeaseID
     ],
     (error, results, fields) => {
       if (error) {
@@ -522,6 +536,7 @@ export const uploadLease = ({filepath, id}, callBack) => {
     }
   )
 }
+
 
 /**
  * 
@@ -583,6 +598,19 @@ export const getLeaseByLandlord = (id, callBack) => {
   )
 }
 
+export const getLeaseDetails = (tenant_user_id, callBack) => {
+  pool.query(
+    'SELECT * FROM lease WHERE tenant_user_id = ?',
+    [tenant_user_id],
+    (error, results, fields) => {
+      if(error){
+        callBack(error);
+      }
+      return callBack(null, results[0]);
+    }
+  );
+}
+
 /**
  * 
  * @param {string} lease_id public_lease_id
@@ -590,8 +618,11 @@ export const getLeaseByLandlord = (id, callBack) => {
  */
 export const deleteLease = (lease_id, callBack) => {
   pool.query(
-    'DELETE FROM lease where public_lease_id = ?',
-    [lease_id],
+    'DELETE lease where public_lease_id = ?',
+    [
+      deletedDate,
+      lease_id
+    ],
     (error, results, fields) => {
       if(error){
         callBack(error);
@@ -648,22 +679,19 @@ export const updateLease = (landlordID, tenantID, data, callBack) => {
 }
 
 
-//get the quotation path of a specific service request 
+
 /**
  * 
  * @param {string} id public_lease_id
  * @param {*} callBack 
  */
-export const getLeasePath = (id, callBack) => {
+export const getLeasePath = (tenantID, callBack) => {
   pool.query(
     `
-    SELECT pdf_path
-    FROM lease
-    WHERE public_lease_id = ?
-    `,
-    [
-      id
-    ],
+    SELECT * 
+    FROM TENANT_USER LEFT JOIN LEASE ON TENANT_USER.public_lease_id = LEASE.public_lease_id
+    WHERE TENANT_USER.tenant_user_id=?`,
+    [tenantID],
     (error, results, fields) => {
       if (error) {
         callBack(error);
@@ -687,6 +715,31 @@ export const getLease = (filepath, callBack) => {
     `,
     [
       filepath
+    ],
+    (error, results, fields) => {
+      if (error) {
+        callBack(error);
+      } else {
+        callBack(null, results[0]);
+      }
+    }
+  );
+}
+
+/**
+ * get building id of landlord
+ * @param {*} email 
+ * @param {*} callBack 
+ */
+export const getBuildingID = (email, callBack) => {
+  pool.query(
+    `
+    SELECT public_building_id
+    FROM landlord_user
+    WHERE email=? 
+    `,
+    [
+      email
     ],
     (error, results, fields) => {
       if (error) {

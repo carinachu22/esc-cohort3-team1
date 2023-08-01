@@ -21,7 +21,8 @@ import {
   controllerCreateLease,
   controllerGetLeaseByLandlord,
   controllerDeleteLease,
-  controllerUpdateLease
+  controllerUpdateLease,
+  controllerGetLeaseDetails
 } from "../controller/landlord_controller.js";
 import express from "express";
 import { checkLandlordToken } from "../auth/landlord_validation.js";
@@ -65,13 +66,14 @@ router.post("/reset-password/:id/:jsontoken", controllerResetPasswordLandlord);
 router.get("/reset-password/:id/:jsontoken", controllerResetPasswordPageLandlord);
 
 router.post("/createTenant", checkLandlordToken, controllerCreateTenant);
-router.post("/uploadLease/:id", checkLandlordToken, upload.single('files'), controllerUploadLease);
+router.post("/uploadLease/", checkLandlordToken, upload.single('files'), controllerUploadLease);
 router.get("/getLease/", checkLandlordToken, controllerGetLease);
 
-router.post("/createLease", checkLandlordToken, controllerCreateLease);
-router.get("/getLeaseByLandlord", checkLandlordToken, controllerGetLeaseByLandlord)
+router.post("/createLease", checkLandlordToken, upload.single('files'), controllerCreateLease);
+router.get("/getLeaseByLandlord", checkLandlordToken, controllerGetLeaseByLandlord);
+router.get("/getLeaseDetails", checkLandlordToken, controllerGetLeaseDetails);
 router.patch("/deleteLease", checkLandlordToken, controllerDeleteLease)
-router.patch("/updateLease",checkLandlordToken,controllerUpdateLease)
+router.patch("/updateLease", checkLandlordToken, controllerUpdateLease)
 
 router.get("/getTickets", checkLandlordToken, controllerGetTickets);
 router.get("/getTicketById/:id", checkLandlordToken, controllerGetTicketById);
@@ -84,9 +86,9 @@ router.patch("/updateQuotation/:id", checkLandlordToken, controllerUpdateQuotati
 router.patch("/ticketApproval/:id", checkLandlordToken, controllerTicketApproval);
 router.patch("/ticketWork/:id", checkLandlordToken, controllerTicketWork);
 
-router.get("/getTenantAccounts/", checkLandlordToken, controllerGetTenantAccounts);
-router.patch("/deleteAllTenants", checkLandlordToken, controllerDeleteAllTenants);
-router.patch("/deleteTenantByEmail", checkLandlordToken, controllerDeleteTenantByEmail);
+router.get("/getTenantAccounts/", controllerGetTenantAccounts);
+router.patch("/deleteAllTenants", controllerDeleteAllTenants);
+router.patch("/deleteTenantByEmail", controllerDeleteTenantByEmail);
 
 
 export default router;
