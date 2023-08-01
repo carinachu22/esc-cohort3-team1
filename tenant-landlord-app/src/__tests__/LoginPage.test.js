@@ -48,7 +48,7 @@ describe("Login.js", () => {
     await userEvent.click(screen.getByRole("button", { name: "LOGIN" }));
   });
 
-  test("Successful tenant login", async () => {
+  test("Toggle Password visible", async () => {
     render(
       <AuthProvider
         authType={"cookie"}
@@ -61,8 +61,8 @@ describe("Login.js", () => {
         </BrowserRouter>
       </AuthProvider>
     );
-    await userEvent.click(screen.getByRole("button", { name: "LOGIN" }));
-    // TODO: Mock API calls, go to navigateDashboard page
+    await userEvent.click(screen.getByRole("button", { name: "Show" }));
+    expect(screen.getByText(/Hide/i)).toBeInTheDocument();// TODO: Mock API calls, go to navigateDashboard page
   });
   test("Invalid email/Password", async () => {
     render(
