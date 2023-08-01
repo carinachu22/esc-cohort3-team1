@@ -86,12 +86,15 @@ const AccountManagement = () => {
   const userDetails = useAuthUser();
   const authenticated = useIsAuthenticated();
 
-  const config = {
-    headers: {
-      Authorization: `${token()}`
-    },
-    params: {
-        email: userDetails().email,
+  var config
+  if (authenticated()){
+    config = {
+      headers: {
+        Authorization: `${token()}`
+      },
+      params: {
+          email: userDetails().email,
+      }
     }
   }
 
@@ -262,7 +265,9 @@ const AccountManagement = () => {
     }
 }
     useEffect(() => {
-        GetTenantAccounts()},
+      if (authenticate()){
+        GetTenantAccounts()}
+      },
     [])
 
     // Ensure that user is authenticated for all renders

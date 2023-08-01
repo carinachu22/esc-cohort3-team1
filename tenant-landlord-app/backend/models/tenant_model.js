@@ -172,11 +172,10 @@ export const createTicket = (data, floor, unit_number,  callBack) => {
     pool.query(
       `
       INSERT INTO service_request
-      (public_service_request_id, email, request_type, request_description, quotation_path, submitted_date_time, status, feedback_rating, feedback_text, floor, unit_number)
-      VALUES (?,?,?,?,?,?,?,?,?,?,?)
+      (email, request_type, request_description, quotation_path, submitted_date_time, status, feedback_rating, feedback_text, floor, unit_number)
+      VALUES (?,?,?,?,?,?,?,?,?,?)
       `,
       [
-        public_service_request_id,
         data.email,
         data.request_type,
         data.request_description,

@@ -1,7 +1,7 @@
 // Import React and hooks
 import React, { useEffect, useState } from "react";
 import { useAuthUser, useAuthHeader, useIsAuthenticated } from 'react-auth-kit';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 // Import bootstrap for automatic styling
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -197,6 +197,10 @@ export default function Dashboard() {
     useEffect(() => {
         authenticate()
     })
+
+    if (!authenticated()){
+        return <Navigate to='/'/>
+    }
 
     if (userDetails().type === 'tenant'){
         return (
