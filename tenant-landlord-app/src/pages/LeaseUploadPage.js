@@ -2,7 +2,8 @@ import React, { useState, useRef, useContext } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios, { AxiosError } from "axios";
 import { Helmet } from "react-helmet";
-import { Formik, Form, Field } from 'formik'; // Import Formik components
+import { Formik, Form, Field, ErrorMessage  } from 'formik'; // Import Formik components
+import * as Yup from 'yup';
 
 // Import React and hooks
 import { useAuthUser, useAuthHeader, useSignOut, useIsAuthenticated } from 'react-auth-kit';
@@ -39,6 +40,12 @@ const LeaseUpload = () => {
         navigate('/pages/ViewLeasePage/', { state: { tenantID } } );
     }
 
+    const validationSchema = Yup.object().shape({
+        floor: Yup.string().required('Floor is required.'),
+        unit_number: Yup.string().required('Unit number is required.'),
+      });
+      
+
     const config = {
         headers: {
           Authorization: `${token()}`
@@ -47,6 +54,8 @@ const LeaseUpload = () => {
             email: userDetails().email,
         }
       }
+
+      
 
 
     return (
@@ -59,6 +68,7 @@ const LeaseUpload = () => {
             <Box w="30em" h="40em" p={8} rounded="md" position="relative" borderRadius="1em" boxShadow="0 0.188em 1.550em rgb(156, 156, 156)" >
             <Formik
                 initialValues={{ files: null, floor: "", unit_number: "", landlordEmail: config.params.email, tenantID: tenantID}} // Set initial value
+                
                 onSubmit={async (values) => { // Handle form submission
                     const formData = new FormData();
                     formData.append("files", values.files);
@@ -92,6 +102,7 @@ const LeaseUpload = () => {
                         console.error(error);
                     }
                 }}
+                validationSchema={validationSchema}
             >
                 {({ handleSubmit, setFieldValue }) => ( // Use Formik's handleSubmit and setFieldValue
                 <Form target="_blank" action={`http://localhost:5000/api/landlord/createLease/`} method="POST" encType="multipart/form-data">
@@ -106,6 +117,7 @@ const LeaseUpload = () => {
                                 variant="filled"
                                 placeholder="Floor"
                             />
+                            <ErrorMessage name="floor" component="div" style={{ color: 'red' }} />
                         </FormControl>
                         <FormControl marginTop="6">
                             <Field
@@ -115,6 +127,7 @@ const LeaseUpload = () => {
                                 variant="filled"
                                 placeholder="Unit Number"
                             />
+                            <ErrorMessage name="unit_number" component="div" style={{ color: 'red' }} />
                         </FormControl>
                     </Form>
 
