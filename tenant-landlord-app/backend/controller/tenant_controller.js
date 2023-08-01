@@ -304,7 +304,7 @@ export const controllerGetTicketById = (req, res) => {
       console.log(err);
       return;
     }
-    if (!results) {
+    if (results.length === 0) {
       return res.json({
         success: 0,
         message: "Record not found",
@@ -367,20 +367,50 @@ export const controllerQuotationApproval = (req, res) => {
 export const controllerAddFeedbackRating = (req, res) => {
   const id = req.params.id;
   const feedback_rating = req.body.feedback_rating; 
-  console.log("feedback_rating", feedback_rating)
-  addFeedbackRating(id, feedback_rating, (err, results) => {
+  getTicketById(id, (err,results) => {
     if (err) {
-      console.log(err);
-      return;
-    } if (!results) {
-      return res.json ({
-        success : 0,
-        message: "Failed to update user"
+      return res.status(500).json({
+        success: 0,
+        message: "internal server error"
       })
-    } return res.status(200).json({
-      success: 1,
-      data: "updated sucessfully"
+    } else{
+      if (results.length === 0) {
+        return res.status(400).json({
+          success: 0,
+          message: "service request not found"
+        })
+      }
+      addFeedbackRating(id, feedback_rating, (err, results) => {
+        if (err) {
+          console.log(err);
+          if (err === "data validation error") {
+            console.log("data validation error")
+            return res.status(400).json({
+              success: 0,
+              message: err
+            });
+          }
+          else {
+            console.log("internal server error")
+            return res.status(500).json({
+              success: 0,
+              message: "internal server error"
+            })
+          }
+        } if (JSON.parse(JSON.stringify(results)).changedRows === 0) {
+          console.log("failed to update feedback")
+          return res.json ({
+            success : 0,
+            message: "Failed to update feedback"
+          })
+        } else{
+          return res.status(200).json({
+            success: 1,
+            data: "updated successfully"
+          })
+        }
     })
+    }
   })
 }
 

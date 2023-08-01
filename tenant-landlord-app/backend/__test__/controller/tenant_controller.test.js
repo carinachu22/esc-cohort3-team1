@@ -529,3 +529,108 @@ describe ("/tenant/getTicketsByStatus/:status", () => {
         })
   })
 })
+
+describe ("/tenant/addFeedbackRating/:id", () => {
+  test("valid ticket id and feedback rating = 1", async () =>  {
+    const token = await authorisation()
+    await request(app)
+      .patch("/api/tenant/addFeedbackRating/2002-02-02 02:02:02")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ feedback_rating: 1 })
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toMatchObject({
+            success: 1,
+            data: "updated successfully"
+          })
+        })
+  })
+
+  test("valid ticket id and feedback rating = '3", async () =>  {
+    const token = await authorisation()
+    await request(app)
+      .patch("/api/tenant/addFeedbackRating/2002-02-02 02:02:02")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ feedback_rating: '3' })
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toMatchObject({
+            success: 1,
+            data: "updated successfully"
+          })
+        })
+  })
+
+  test("valid ticket id and feedback rating = 5", async () =>  {
+    const token = await authorisation()
+    await request(app)
+      .patch("/api/tenant/addFeedbackRating/2004-04-04 04:04:04")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ feedback_rating: 5 })
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toMatchObject({
+            success: 1,
+            data: "updated successfully"
+          })
+        })
+  })
+
+  test("valid public ticket id but invalid feedback rating = 0", async () =>  {
+    const token = await authorisation()
+    await request(app)
+      .patch("/api/tenant/addFeedbackRating/2002-02-02 02:02:02")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ feedback_rating: 0 })
+      .expect(400)
+      .then((response) => {
+        expect(response.body).toEqual({
+            success: 0,
+            message: "data validation error"
+          })
+        })
+  })
+
+  test("valid public ticket id but invalid feedback rating = 3", async () =>  {
+    const token = await authorisation()
+    await request(app)
+      .patch("/api/tenant/addFeedbackRating/2002-02-02 02:02:02")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ feedback_rating: "invalid" })
+      .expect(400)
+      .then((response) => {
+        expect(response.body).toEqual({
+            success: 0,
+            message: "data validation error"
+          })
+        })
+  })
+
+  test("invalid ticket id", async () =>  {
+    const token = await authorisation()
+    await request(app)
+      .patch("/api/tenant/addFeedbackRating/2002-02-02")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ feedback_rating: "5" })
+      .expect(400)
+      .then((response) => {
+        expect(response.body).toEqual({
+            success: 0,
+            message: "service request not found"
+          })
+        })
+  })
+
+  test("tenant user with no token", async () =>  {
+    await request(app)
+      .patch("/api/tenant/addfeedbackRating/2002-02-02 02:02:02")
+      .send({ feedback_rating: "1" })
+      .then((response) => {
+        console.log(response)
+        expect(JSON.parse(response.text)).toEqual({
+            success: 0,
+            message: "Access denied: You are unauthorized!",
+          })
+        })
+  })
+})
