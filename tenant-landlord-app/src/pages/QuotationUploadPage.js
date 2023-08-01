@@ -112,6 +112,7 @@ const QuotationUpload = () => {
                       variant="filled"
                       placeholder="Upload Quotation"
                       accept=".pdf"
+                      p={1}
                       onChange={(event) => setFieldValue("files", event.currentTarget.files[0])} // Update form values using setFieldValue
                     />
                   </FormControl>
@@ -139,6 +140,7 @@ const QuotationUpload = () => {
             textColor="white"
             variant="unstyled"
             onClick={retrieveFile}
+            marginTop="6"
           >
             Get Quotation
           </Button>
