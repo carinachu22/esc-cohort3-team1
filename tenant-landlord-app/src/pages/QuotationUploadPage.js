@@ -139,6 +139,7 @@ const QuotationUpload = () => {
             textColor="white"
             variant="unstyled"
             onClick={retrieveFile}
+            marginTop="6"
           >
             Get Quotation
           </Button>
