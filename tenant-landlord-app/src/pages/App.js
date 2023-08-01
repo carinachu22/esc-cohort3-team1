@@ -13,12 +13,12 @@ import TicketList from './TicketList.js';
 import AccountManagement from './AccountManagement.js';
 import QuotationUpload from './QuotationUploadPage.js';
 import TenantCreationPage from './TenantCreationPage.js';
-import LeaseCreationPage from './LeaseCreationPage.js';
+import ViewLeasePage from './ViewLeasePage.js';
+import LeaseUpload from './LeaseUploadPage.js';
 
 
-import {Routes, Route} from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import { ChakraProvider } from "@chakra-ui/react";
-import { useState } from 'react';
 
 import { SelectedTicketProvider } from '../components/SelectedTicketContext.js';
 
@@ -34,7 +34,6 @@ function App() {
             <Route path="/pages/LoginPage/*" element={<LoginPage />} />
             <Route path="/pages/QuotationUploadPage/*" element={<QuotationUpload />} />
             <Route path="/pages/TenantCreationPage/*" element={<TenantCreationPage />} />
-            <Route path="/pages/LeaseCreationPage/*" element={<LeaseCreationPage />} />
             <Route path='/pages/ForgotPasswordPage' element={<ForgotPasswordPage/>} />
             <Route path="/pages/landlord_signup/*" element={<LandlordSignup />} />
             <Route path='/pages/Dashboard/*' element={<Dashboard/>} />
@@ -45,6 +44,8 @@ function App() {
             <Route path='/pages/ViewTicketPage/*' element={<ViewTicketPage/>} />
             <Route path='/pages/QuotationPage/*' element={<QuotationPage />} />
             <Route path='/pages/AccountManagement/*' element={<AccountManagement/>} />
+            <Route path='/pages/ViewLeasePage/*' element={<ViewLeasePage/>} />
+            <Route path='/pages/LeaseUploadPage/*' element={<LeaseUpload/>} />
           </Routes>
         </div>
       </div>

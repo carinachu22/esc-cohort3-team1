@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Box, Text, Button, Heading, Textarea, FormControl, FormLabel, Input } from '@chakra-ui/react';
+import { Box, Text, Button, Heading, Textarea, FormControl, FormLabel, Input, Select, useToast } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthUser, useAuthHeader } from 'react-auth-kit';
 import { Formik, Form,useFormik } from 'formik';
-import axios, {AxiosError} from "axios";
+import axios, { AxiosError } from "axios";
 import NavigationBar from '../components/NavigationBar.js';
 
 
@@ -12,27 +12,35 @@ function CreateTicketPage() {
   const navigate = useNavigate();
   const token = useAuthHeader();
   const userDetails = useAuthUser();
-  const [error, setError] = useState('');
   const [tenantComment, setTenantComment] = useState('');
   const [ticketType, setTicketType] = useState('');
   const [additionalHeading, setAdditionalHeading] = useState('');
+  const [showOtherInput, setShowOtherInput] = useState(false);
+  const [otherRequestType, setOtherRequestType] = useState('');
+  const toast = useToast();
 
   const handleCommentChange = (event) => {
     setTenantComment(event.target.value);
   };
 
-  const handleTicketTypeChange = (event) => {
-    setTicketType(event.target.value);
+  // const handleTicketTypeChange = (event) => {
+  //   setTicketType(event.target.value);
+  // };
+
+  const handleRequestTypeChange = (event) => {
+    const selectedType = event.target.value;
+    setTicketType(selectedType);
+    setShowOtherInput(selectedType === 'Others');
   };
 
-  const handleAdditionalHeadingChange = (event) => {
-    setAdditionalHeading(event.target.value);
+
+  const handleOtherRequestTypeChange = (event) => {
+    setOtherRequestType(event.target.value);
   };
 
   const handleCreateTicket = async () => {
     console.log(tenantComment);
     console.log(token());
-    setError('');
 
     try {
       const config = {
@@ -41,12 +49,36 @@ function CreateTicketPage() {
         },
       };
       const currentdate = new Date();
-      const values = {
+      var values = {}
+      if (ticketType === 'Others' ){
+         values = {
+          name: '--',
+          email: userDetails().email,
+          request_type: ticketType + ' - ' + otherRequestType,
+          request_description: tenantComment,
+          additional_heading: additionalHeading,
+          submitted_date_time:
+            currentdate.getFullYear().toString() +
+            '-' +
+            (currentdate.getMonth() + 1).toString() +
+            '-' +
+            currentdate.getDate().toString() +
+            ' ' +
+            currentdate.getHours().toString() +
+            ':' +
+            ('0' + currentdate.getMinutes()).slice(-2) +
+            ':' +
+            currentdate.getSeconds().toString(),
+          status: 'SUBMITTED',
+          feedback_text: '',
+          feedback_rating: '-1',
+        };
+      } else {
+       values = {
         name: '--',
         email: userDetails().email,
         request_type: ticketType,
         request_description: tenantComment,
-        additional_heading: additionalHeading,
         submitted_date_time:
           currentdate.getFullYear().toString() +
           '-' +
@@ -63,7 +95,9 @@ function CreateTicketPage() {
         feedback_text: '',
         feedback_rating: '-1',
       };
-
+    }
+    console.log(values['request_type'])
+    console.log(values['request_type'].slice(0,6))
       const response1 = await axios.post(
         'http://localhost:5000/api/tenant/createTicket',
         values,
@@ -73,14 +107,22 @@ function CreateTicketPage() {
       console.log(response1);
 
       navigate('/pages/Dashboard'); // Navigate to the Dashboard form page
+      toast({
+        title: "Ticket Created",
+        description: "Ticket has been created.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+        });
     } catch (err) {
       if (err && err instanceof AxiosError) {
-        setError(err.response);
+        console.log('Error: ', err);
       } else if (err && err instanceof Error) {
-        setError(err.message);
+        console.log('Error: ', err);
       }
 
-      console.log('Error: ', err);
+      
     }
   };
 
@@ -133,17 +175,31 @@ function CreateTicketPage() {
             onChange={formik.handleChange}
             marginBottom="2em"
           />
-          <Heading as="h5" size="lg" marginBottom="1em">
-            Category Of Request
-          </Heading>
-          <Textarea
-            name="category"
-            placeholder="Enter category"
-            value={ticketType}
-            onChange={handleTicketTypeChange}
-            marginBottom="1em"
-          />
-        </Box>
+              <Heading as="h5" size="lg" marginBottom="1em">
+                Request Type
+              </Heading>
+              <Select
+                name="requestType"
+                placeholder="Select request type"
+                value={ticketType}
+                onChange={handleRequestTypeChange}
+                marginBottom="2em"
+              >
+                <option value="Aircon">Aircon</option>
+                <option value="Cleanliness">Cleanliness</option>
+                <option value="Admin">Admin</option>
+                <option value="Others">Others</option>
+              </Select>
+              {showOtherInput && (
+                <Input
+                  name="otherRequestType"
+                  placeholder="Enter other request type"
+                  value={otherRequestType}
+                  onChange={handleOtherRequestTypeChange}
+                  marginBottom="1em"
+                />
+              )}
+            </Box>
 
         {/* Comment Box 3 */}
         <Box flex="1" marginLeft="2em">

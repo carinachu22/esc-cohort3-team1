@@ -1,14 +1,7 @@
-import React, { useState, useRef, useContext } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
+import React, { useState, useContext } from "react";
 import axios from "axios";
 import { Helmet } from "react-helmet";
-import { Worker, Viewer } from '@react-pdf-viewer/core';
-import { PDFViewer, View } from '@react-pdf/renderer';
-import ReactPDF from '@react-pdf/renderer';
-import { useEffect } from "react";
-import { Document, Page } from 'react-pdf';
-import { Base64 } from 'js-base64';
-import { Formik, Form, Field } from 'formik'; // Import Formik components
+import { Formik, Form } from 'formik'; // Import Formik components
 
 import { useAuthHeader } from "react-auth-kit";
 
@@ -17,7 +10,6 @@ import {
   Button,
   Flex,
   FormControl,
-  FormLabel,
   Input,
   VStack,
   Heading,
@@ -25,17 +17,19 @@ import {
 } from "@chakra-ui/react";
 
 import { SelectedTicketContext } from '../components/SelectedTicketContext.js';
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import NavigationBar from "../components/NavigationBar.js";
 
 const QuotationUpload = () => {
-  const [text, setText] = useState('');
   const [pdfUrl, setPdfUrl] = useState('');
   const { selectedTicket, setSelectedTicket } = useContext(SelectedTicketContext);
   const token = useAuthHeader();
   const navigate = useNavigate();
   const toast = useToast();
+  const location = useLocation();
+  const { ticketID } = location.state;
+  console.log('ID', ticketID)
 
   const retrieveFile = () => {
     console.log(selectedTicket);
@@ -62,6 +56,10 @@ const QuotationUpload = () => {
       })
     }
 
+    const navigateToViewTicketPage =  (ticketID) => {
+      navigate('/pages/ViewTicketPage/', { state: { ticketID } } );
+    }
+
   return (
     <>
       {NavigationBar()}
@@ -77,17 +75,18 @@ const QuotationUpload = () => {
               formData.append("files", values.files); // Access files through form values
               try {
                 const response = await axios.post(
-                  `http://localhost:5000/api/landlord/uploadQuotation/${selectedTicket.id}`,
+                  `http://localhost:5000/api/landlord/uploadQuotation/${ticketID}`,
                   formData,
                   {
                     params: { 'api-version': '3.0' },
                     headers: {
-                      "Content-Type": "multipart/form-data"
+                      "Content-Type": "multipart/form-data",
+                      Authorization: `${token()}`
                     },
                   }
                 );
                 console.log(response);
-                navigate("/pages/ViewTicketPage");
+                navigateToViewTicketPage(ticketID);
                 toast({
                     title: "Quotation Uploaded",
                     description: "Quotation has been attached to the ticket.",

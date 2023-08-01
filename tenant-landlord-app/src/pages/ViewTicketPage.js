@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Box, Heading, Textarea, Button, Input, Flex } from '@chakra-ui/react';
-import { useNavigate } from 'react-router-dom';
-import { useAuthUser, useAuthHeader, useIsAuthenticated } from 'react-auth-kit';
+import { Box, Heading, Textarea, Input } from '@chakra-ui/react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuthUser, useAuthHeader } from 'react-auth-kit';
 import { useFormik } from 'formik';
 import axios, { AxiosError } from 'axios';
 
@@ -13,17 +13,16 @@ export default function ViewTicketPage() {
   const navigate = useNavigate();
   const token = useAuthHeader();
   const userDetails = useAuthUser();
-  const [error, setError] = useState('');
-  const [tenantComment, setTenantComment] = useState('');
-  const [ticketType, setTicketType] = useState('');
   const [status, setstatus] = useState('');
   const {selectedTicket, setSelectedTicket} = useContext(SelectedTicketContext);
   const [ticket, setTicket] = useState('');
-  const authenticated = useIsAuthenticated();
+  const location = useLocation();
+  const { ticketID } = location.state;
+  console.log('ID', ticketID)
 
   console.log('selectedTicket:', selectedTicket);
   const GetServiceTickets = (userDetails) => {
-    if (userDetails() == undefined){
+    if (userDetails() === undefined){
         return;
     }
     const type = userDetails().type;
@@ -32,8 +31,8 @@ export default function ViewTicketPage() {
 
     // Initialse function for fetching ALL service tickets if landlord is logged in
     const APIGetTickets = async (type) => {
-        setError("");
-        //console.log('type',type)
+        console.log('type',type)
+        console.log(ticketID)
         try{
             const config = {
                 headers: {
@@ -43,15 +42,15 @@ export default function ViewTicketPage() {
                     email: userDetails().email
                 }
             }
-            if (type == 'landlord'){
+            if (type === 'landlord'){
                 response = await axios.get(
-                  `http://localhost:5000/api/landlord/getTicketById/${selectedTicket.id}`,
+                  `http://localhost:5000/api/landlord/getTicketById/${ticketID}`,
                     // console.log(`http://localhost:5000/api/landlord/getTicketById/${selectedTicket}`),
                     config
                 )
-            } else if (type == 'tenant'){ 
+            } else if (type === 'tenant'){ 
                 response = await axios.get(
-                  `http://localhost:5000/api/landlord/getTicketById/${selectedTicket.id}`,
+                  `http://localhost:5000/api/tenant/getTicketById/${ticketID}`,
                     config
                 )
             }
@@ -60,12 +59,11 @@ export default function ViewTicketPage() {
             return response.data.data;
         } catch (err){
             if (err && err instanceof AxiosError) {
-                setError(err.response);
+              console.log("Error: ", err);
             }
             else if (err && err instanceof Error){
-                setError(err.message);
+              console.log("Error: ", err);
             }
-            console.log("Error: ", err);
         }
     }
 
@@ -74,7 +72,7 @@ export default function ViewTicketPage() {
     const ticket = APIGetTickets(type)
     // Wait for promise to be fulfilled (fetching tickets from database)
     ticket.then(function(result){
-        //console.log('result',result)
+        console.log('result',result)
         // Naive data validation
         // console.log('result',result)
         // console.log(result !== undefined)
@@ -82,8 +80,8 @@ export default function ViewTicketPage() {
             tickets.push(result);
         }   
         console.log('tickets',tickets)
-        console.log('tickets[0]',tickets[0])
-        console.log('tickets[0].request_description',tickets[0].request_description)
+        // console.log('tickets[0]',tickets[0])
+        // console.log('tickets[0].request_description',tickets[0].request_description)
         var tenantComment = tickets[0].request_description;
         var category = tickets[0].request_type;
         setstatus(tickets[0].status)

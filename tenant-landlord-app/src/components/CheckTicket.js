@@ -1,21 +1,40 @@
 import axios from "axios";
 import { useAuthHeader } from "react-auth-kit";
 import { useNavigate } from "react-router-dom"
+import React from "react"
 
-import { Box, Button, Text, Textarea, useToast, IconButton, Heading, Stack, Icon } from '@chakra-ui/react';
-import { StarIcon } from '@chakra-ui/icons';
+import { Box, Button, Textarea, useToast, Heading, Stack, Icon } from '@chakra-ui/react';
 import { IoIosStarOutline, IoIosStar } from 'react-icons/io/index.esm.js';
 
+/**
+ * Summary.
+ * Takes in a ticket and user details.
+ * Checks which buttons should be shown based on the two parameters above.
+ * Returns to function caller.
+ * 
+ * @param {*} ticket 
+ * @param {*} userDetails 
+ * @returns 
+ */
 export default function CheckTicket(ticket, userDetails){
-    const id = ticket.service_request_id
+    const id = ticket.public_service_request_id
     const status = ticket.status
-    console.log('ticket?',ticket)
-    console.log('id?',id)
-    console.log(status)
-    console.log('testing check ticket',userDetails())
     const navigate = useNavigate();
     const token = useAuthHeader();
     const toast = useToast();
+
+    const navigateToQuotationUploadPage =  (ticketID) => {
+      navigate('/pages/QuotationUploadPage/', { state: { ticketID } } );
+    }
+
+    const navigateToQuotationPage =  (ticketID) => {
+      navigate('/pages/QuotationPage/', { state: { ticketID } } );
+    }
+
+    const navigateToFeedbackPage =  (ticketID) => {
+      navigate('/pages/FeedbackForm/', { state: { ticketID } } );
+    }
+
     if (userDetails() === null){
         navigate('/')
     }
@@ -25,7 +44,7 @@ export default function CheckTicket(ticket, userDetails){
           <Button
           variant="solid"
           colorScheme="blue"
-          onClick={() => navigate('/pages/FeedbackForm')}
+          onClick={() => navigateToFeedbackPage(id)}
           width="13em"
           height="3em"
           marginTop="3em"
@@ -152,10 +171,10 @@ export default function CheckTicket(ticket, userDetails){
     <Button
     variant="solid"
     colorScheme="blue"
-    onClick={() => {if (userDetails().type == 'landlord'){
-      navigate('/pages/QuotationUploadPage')}
+    onClick={() => {if (userDetails().type === 'landlord'){
+      navigateToQuotationUploadPage(ticket.public_service_request_id)}
     else{
-      navigate('/pages/QuotationPage')
+      navigateToQuotationPage(ticket.public_service_request_id)
     }}}
     width="13em"
     height="3em"

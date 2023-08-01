@@ -88,6 +88,24 @@ export const getTicketsByTenant = (email, callBack) => {
   );
 };
 
+// Temp Fix
+export const getTicketById = (id, callBack) => {
+  pool.query(
+    `
+    SELECT * FROM SERVICE_REQUEST
+    WHERE public_service_request_id = ?
+    `,
+    [id],
+    (error, results, fields) => {
+      if (error) {
+        callBack(error);
+      } else {
+        callBack(null, results[0]);
+      }
+    }
+  );
+};
+
 /**
  * Get Tickets by Status
  * @param {*} email 
@@ -123,6 +141,7 @@ export const getTicketsByStatus = (email, status, callBack) => {
  */
 export const createTicket = (data, callBack) => {
   const status = "tenant_ticket_created";
+  const public_service_request_id = data.submitted_date_time;
   const feedback_rating = null;
   const feedback_text = null;
   if (statuses.includes(status)){
@@ -133,7 +152,7 @@ export const createTicket = (data, callBack) => {
       VALUES (?,?,?,?,?,?,?,?,?,?)
       `,
       [
-        data.public_service_request_id,
+        public_service_request_id,
         data.name,
         data.email,
         data.request_type,
@@ -332,16 +351,16 @@ export const getLeaseByTenant = (id, callBack) => {
   )
 }
 
-export const updateTenantLease = (email, lease, callBack) => {
+export const updateTenantLease = (publicLeaseID, tenantID, callBack) => {
   pool.query(
     `
     UPDATE tenant_user
     SET public_lease_id = ?
-    WHERE email = ?
+    WHERE tenant_user_id = ?
     `,
     [
-      lease,
-      email
+      publicLeaseID,
+      tenantID
     ],
     (error, results, fields) => {
       if (error) {
@@ -351,4 +370,54 @@ export const updateTenantLease = (email, lease, callBack) => {
       }
     }
   )
+}
+
+
+/**
+ * get the quotation path of a specific service request 
+ * @param {*} id public_service_request_id (YYYY-MM-DD 00:00:00)
+ * @param {*} callBack 
+ */
+ export const getQuotationPath = (id, callBack) => {
+  pool.query(
+    `
+    SELECT quotation_path
+    FROM service_request
+    WHERE public_service_request_id = ?
+    `,
+    [
+      id
+    ],
+    (error, results, fields) => {
+      if (error) {
+        callBack(error);
+      } else {
+        callBack(null, results[0]);
+      }
+    }
+  );
+}
+
+/**
+ * 
+ * @param {*} filepath 
+ * @param {*} callBack 
+ */
+export const getQuotation = (filepath, callBack) => {
+  pool.query(
+    `
+    SELECT 
+    LOAD_FILE(?)
+    `,
+    [
+      filepath
+    ],
+    (error, results, fields) => {
+      if (error) {
+        callBack(error);
+      } else {
+        callBack(null, results[0]);
+      }
+    }
+  );
 }

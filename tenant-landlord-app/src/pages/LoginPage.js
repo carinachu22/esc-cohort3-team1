@@ -1,27 +1,20 @@
 import React, { useState } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
-import {Link} from 'react-router-dom';
-import {useNavigate, useLocation} from 'react-router-dom';
-import {setIn, useFormik} from "formik";
-import axios, {AxiosError} from "axios";
-import {useSignIn} from "react-auth-kit";
+import { Link } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useFormik } from "formik";
+import axios, { AxiosError } from "axios";
+import { useSignIn } from "react-auth-kit";
 
 import {
     Box,
     Button,
-    Checkbox,
     Flex,
     FormControl,
-    FormLabel,
     Input,
     InputGroup,
     InputRightElement,
     VStack,
-    Heading,
-    Center,
-    Text,
-    FormHelperText,
-    FormErrorMessage,
+    Heading
 } from "@chakra-ui/react";
 
 const LoginPage = () => {

@@ -1,19 +1,17 @@
 import React, { useState } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
-import {Link} from 'react-router-dom';
-import {useNavigate} from 'react-router-dom';
-import {setIn, useFormik} from "formik";
-import axios, {AxiosError} from "axios";
-import {useSignIn} from "react-auth-kit";
+import { useNavigate } from 'react-router-dom';
+import { useFormik } from "formik";
+import axios, { AxiosError } from "axios";
 import NavigationBar from '../components/NavigationBar.js';
+
+// Import React and hooks
+import { useAuthUser, useAuthHeader, useSignOut, useIsAuthenticated } from 'react-auth-kit';
 
 import {
     Box,
     Button,
-    Checkbox,
     Flex,
     FormControl,
-    FormLabel,
     Input,
     InputGroup,
     InputRightElement,
@@ -23,8 +21,19 @@ import {
 
 const TenantCreationPage = () => {
     const navigate = useNavigate();
-    const [error, setError] = useState("");
-    const signIn = useSignIn();
+    const token = useAuthHeader();
+    const userDetails = useAuthUser();
+
+    const config = {
+        headers: {
+          Authorization: `${token()}`
+        },
+        params: {
+            email: userDetails().email
+        }
+      }
+
+    
 
     const validate = values => {
         let errors = {};
@@ -54,31 +63,36 @@ const TenantCreationPage = () => {
         navigate('/pages/AccountManagement');
     };
 
+    const APIGetBuildingID = async (email) => {
+        const response = await axios.get(
+            "http://localhost:5000/api/landlord/getTenantAccounts?landlordEmail=" + email,
+            config
+        )
+        console.log("APIGetBuildingID", response)
+        return response
+    }
+
     const onSubmit = async (values) => {
         console.log("Values: ", values);
-        setError("");
 
         try{
             const response = await axios.post(
                 //api to be added
                 "http://localhost:5000/api/landlord/createTenant",
-                values
+                values,
+                config
             )
             console.log(response);
             if (response.data.message === "created successfully"){
                 navigateToAccountManagement();
             }
-
-
         } catch (err){
             if (err && err instanceof AxiosError) {
-                setError(err.response?.data.message);
+                console.log("Error: ", err);
             }
             else if (err && err instanceof Error){
-                setError(err.message);
+                console.log("Error: ", err);
             }
-
-            console.log("Error: ", err);
         }
     }
   
@@ -88,7 +102,7 @@ const TenantCreationPage = () => {
         initialValues: {
             email: "",
             password: "",
-            buildingID: "",
+            landlordEmail: config.params.email,
             hasError: false
         },
         onSubmit,
@@ -138,20 +152,6 @@ const TenantCreationPage = () => {
                                 </InputRightElement>
                             </InputGroup>
                             {formik.errors.password ? <Box color="red.500"  marginBottom="-6">{formik.errors.password}</Box>: null}                          
-                        </FormControl>
-                        <FormControl marginTop="6">
-                            <InputGroup size='md'>
-                                <Input
-                                    id="buildingID"
-                                    name="buildingID" 
-                                    pr='4.5rem'
-                                    type="text"
-                                    placeholder="Building ID"
-                                    variant="filled"
-                                    value={formik.values.buildingID}
-                                    onChange={formik.handleChange}
-                                />
-                            </InputGroup>                        
                         </FormControl>
                         <FormControl marginTop="6" >
                             <Button 

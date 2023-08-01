@@ -1,23 +1,30 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
-import { Box, Button, useToast, Heading } from '@chakra-ui/react';
+import { Box, Button, useToast, Heading, Checkbox } from '@chakra-ui/react';
 import { ArrowBackIcon } from '@chakra-ui/icons';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 import NavigationBar from '../components/NavigationBar.js';
 import { SelectedTicketContext } from '../components/SelectedTicketContext.js';
 import axios from 'axios';
 import { useAuthHeader } from 'react-auth-kit';
 
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
 function QuotationPage() {
     const {selectedTicket, setSelectedTicket} = useContext(SelectedTicketContext);
-    const ticketName = `${selectedTicket.id}`; // placeholder
+    const ticketName = `${selectedTicket.id}`; 
     const [pdfUrl,setPdfUrl] = useState('')
+    const [isCheckboxChecked, setCheckboxChecked] = useState(false); 
     const navigate = useNavigate();
     const toast = useToast();
     const token = useAuthHeader();
+    const location = useLocation();
+    const { ticketID } = location.state;
+    console.log('ID', ticketID)
+
+    const navigateToViewTicketPage =  (ticketID) => {
+        navigate('/pages/ViewTicketPage/', { state: { ticketID } } );
+      }
 
     const handleApprove = () => {
         const config = {
@@ -37,11 +44,11 @@ function QuotationPage() {
         position: "top",
         });
         axios.patch(
-            `http://localhost:5000/api/tenant/quotationApproval/${selectedTicket.id}`,
+            `http://localhost:5000/api/tenant/quotationApproval/${ticketID}`,
             values,
             config
         )
-        navigate('/pages/ViewTicketPage')
+        navigateToViewTicketPage(ticketID)
     };
 
     const handleReject = () => {
@@ -62,7 +69,7 @@ function QuotationPage() {
         position: "top",
         });
         axios.patch(
-            `http://localhost:5000/api/tenant/quotationApproval/${selectedTicket.id}`,
+            `http://localhost:5000/api/tenant/quotationApproval/${ticketID}`,
             values,
             config
         )
@@ -70,7 +77,11 @@ function QuotationPage() {
     };
 
     useEffect(() => {
-        fetch(`http://localhost:5000/api/landlord/getQuotation/?id=${selectedTicket.id}`,
+        fetch(`http://localhost:5000/api/tenant/getQuotation/?id=${ticketID}`,{
+            headers:{
+              Authorization: `${token()}`
+            }
+          }
         ) // Replace with the actual backend URL serving the PDF
           .then((response) => response.blob())
           .then((data) => {
@@ -91,12 +102,15 @@ function QuotationPage() {
             <Heading mb={5} textAlign="center">Job Quote for Ticket: {ticketName}</Heading>
             <Box display="flex" flexDirection="column" justifyContent="center" minHeight="50vh">
                 {pdfUrl && <iframe src={pdfUrl} width="100%" height="600px" />}
+            <Checkbox isChecked={isCheckboxChecked} onChange={(e) => setCheckboxChecked(e.target.checked)}>
+                I have read and agree to the terms 
+            </Checkbox>
             <Box display="flex" justifyContent="space-around" m={1} p={1}>
                 <Button leftIcon={<ArrowBackIcon />} colorScheme="teal" variant="outline" onClick={() => navigate(-1)}>
                 Back
                 </Button>
                 <Button colorScheme="red" onClick={handleReject}>Reject</Button>
-                <Button colorScheme="green" onClick={handleApprove}>Approve</Button>
+                <Button colorScheme="green" onClick={handleApprove} isDisabled={!isCheckboxChecked}>Approve</Button>
             </Box>
             </Box>
         </Box>
