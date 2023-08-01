@@ -283,10 +283,10 @@ describe ("/tenant/createTicket", () => {
 })
 
 describe ("/tenant/quotationApproval/:id", () => {
-  test("valid tenant id and accept quotation", async () =>  {
+  test("valid ticket id and accept quotation", async () =>  {
     const token = await authorisation()
     await request(app)
-      .patch("/api/tenant/quotationApproval/2003-03-03 03:03:03")
+      .patch("/api/tenant/quotationApproval/2004-04-04 04:04:04")
       .set("Authorization", `Bearer ${token}`)
       .send({ quotation_accepted_by_tenant: 1 })
       .expect(200)
@@ -298,7 +298,7 @@ describe ("/tenant/quotationApproval/:id", () => {
         })
   })
 
-  test.only("valid tenant id and reject quotation", async () =>  {
+  test("valid ticket id and reject quotation", async () =>  {
     const token = await authorisation()
     await request(app)
       .patch("/api/tenant/quotationApproval/2002-02-02 02:02:02")
@@ -315,10 +315,10 @@ describe ("/tenant/quotationApproval/:id", () => {
         })
   })
 
-  test("valid tenant id and data validation error", async () =>  {
+  test("valid ticket id and data validation error", async () =>  {
     const token = await authorisation()
     await request(app)
-      .patch("/api/tenant/quotationApproval/3")
+      .patch("/api/tenant/quotationApproval/2005-05-05 05:05:05")
       .set("Authorization", `Bearer ${token}`)
       .send({
         quotation_accepted_by_tenant: 2
@@ -332,7 +332,7 @@ describe ("/tenant/quotationApproval/:id", () => {
         })
   })
 
-  test("invalid tenant id", async () =>  {
+  test("invalid ticket id", async () =>  {
     const token = await authorisation()
     await request(app)
       .patch("/api/tenant/quotationApproval/999")
@@ -344,14 +344,14 @@ describe ("/tenant/quotationApproval/:id", () => {
       .then((response) => {
         expect(response.body).toEqual({
             success: 0,
-            message: "Failed to update user"
+            message: "Failed to update quotation"
           })
         })
   })
 
   test("tenant user with no token", async () =>  {
     await request(app)
-      .patch("/api/tenant/quotationApproval/3")
+      .patch("/api/tenant/quotationApproval/2005-05-05 05:05:05")
       .send({
         quotation_accepted_by_tenant: 1
       })
@@ -447,19 +447,19 @@ describe ("/tenant/getTicketsByStatus/:status", () => {
     await request(app)
       .get("/api/tenant/getTicketsByStatus/landlord_completed_work")
       .set("Authorization", `Bearer ${token}`)
-      .send({ email: "tenant1@gmail.com" })
+      .send({ email: "tenant5@gmail.com" })
       .expect(200)
       .then((response) => {
         expect(response.body).toMatchObject({
           success: "1",
           data: [{
-                service_request_id: 3,
-                public_service_request_id: "2004-04-04 04:04:04",
-                name: "tenant1",
-                email: "tenant1@gmail.com",
+                service_request_id: 5,
+                public_service_request_id: "2006-06-06 06:06:06",
+                name: "tenant5",
+                email: "tenant5@gmail.com",
                 request_type: "cleanliness",
                 request_description: "not clean",
-                quotation_path: ":Content/Documents/quotation_details/q2",
+                quotation_path: ":Content/Documents/quotation_details/q3",
                 submitted_date_time: expect.any(String),
                 completed_date_time: null, 
                 status: "landlord_completed_work",
