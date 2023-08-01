@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Box, Heading, Textarea, Input } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
-import { useAuthUser, useAuthHeader } from 'react-auth-kit';
+import { useAuthUser, useAuthHeader, useIsAuthenticated } from 'react-auth-kit';
 import { useFormik } from 'formik';
 import axios, { AxiosError } from 'axios';
 
@@ -16,6 +16,7 @@ export default function ViewTicketPage() {
   const [status, setstatus] = useState('');
   const {selectedTicket, setSelectedTicket} = useContext(SelectedTicketContext);
   const [ticket, setTicket] = useState('');
+  const authenticated = useIsAuthenticated();
 
   console.log('selectedTicket:', selectedTicket);
   const GetServiceTickets = (userDetails) => {
@@ -117,6 +118,22 @@ export default function ViewTicketPage() {
       navigate('/pages/FeedbackForm');
     }
   }, [status, navigate]);
+
+    // Ensure that user is authenticated for all renders
+    const authenticate = () => {
+      // Check if still autenticated based on react auth kit
+      if (!authenticated()){
+          console.log("Not authenticated, redirecting.")
+          navigate('/')
+          return false
+      } else {
+          return true
+      }
+  }
+  useEffect(() => {
+      authenticate()
+  })
+
 
   return (
     <>

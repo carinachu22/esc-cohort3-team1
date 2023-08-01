@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Heading, Textarea, Button } from "@chakra-ui/react";
 import { useNavigate } from 'react-router-dom';
+import { useIsAuthenticated } from 'react-auth-kit';
 
 function CloseTicketPage() {
   const navigate = useNavigate();
   const [tenantComment, setTenantComment] = useState("");
+  const authenticated = useIsAuthenticated();
 
   const handleCommentChange = (event) => {
     setTenantComment(event.target.value);
@@ -18,7 +20,20 @@ function CloseTicketPage() {
   const handleRejectTicket = () => {
     console.log('Ticket closing rejected');
   };
-
+  const authenticate = () => {
+    // Check if still autenticated based on react auth kit
+    if (!authenticated()){
+        console.log("Not authenticated, redirecting.")
+        navigate('/')
+        return false
+    } else {
+        return true
+    }
+}
+    // Ensure that user is authenticated for all renders
+    useEffect(() => {
+      authenticate()
+  })
   return (
     <Box display="flex" flexDirection="column" justifyContent="center" minHeight="100vh" alignItems="center">
       <Box w="75%" mt={4}>

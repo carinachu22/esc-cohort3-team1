@@ -125,29 +125,31 @@ export default function Dashboard() {
         })
     }
 
-    const authenticate = () => {
-        // Check if still autenticated based on react auth kit
-        const temp_user = userDetails();
-        if (!authenticated()){
-            console.log("Not authenticated, redirecting.")
-            return false
-        } else {
-            setLoggedin(true);
-            setEmail(temp_user.email);
-            return true
-        }
-    }
+
 
     // This is to ensure that the GET request only happens once on page load
     // This will update the tickets state
     useEffect(() => {
         if (authenticate()){
             GetServiceTickets(userDetails);
+            const temp_user = userDetails();
+            setEmail(temp_user.email);
         } else {
             navigate('/')
         }
         }, [])
 
+    // Ensure that user is authenticated for all renders
+    const authenticate = () => {
+        // Check if still autenticated based on react auth kit
+        if (!authenticated()){
+            console.log("Not authenticated, redirecting.")
+            navigate('/')
+            return false
+        } else {
+            return true
+        }
+    }
     useEffect(() => {
         authenticate()
     })

@@ -318,13 +318,6 @@ export default function TicketList() {
         
     
 
-    const authenticate = (() => {
-        // Check if still autenticated based on react auth kit
-        if (!authenticated()){
-            console.log("Not authenticated, redirecting.")
-            return <Navigate to="/"></Navigate>
-        }
-    })
 
     // This is to ensure that the GET request only happens once on page load
     // This will update the tickets state
@@ -352,6 +345,22 @@ export default function TicketList() {
     if (isLoading){
         return<div className="App">Loading...</div>;
     }*/
+
+    // Ensure that user is authenticated for all renders
+    const authenticate = () => {
+        // Check if still autenticated based on react auth kit
+        if (!authenticated()){
+            console.log("Not authenticated, redirecting.")
+            navigate('/')
+            return false
+        } else {
+            return true
+        }
+    }
+    useEffect(() => {
+        authenticate()
+    })
+
     return (
         <>
         {NavigationBar()}

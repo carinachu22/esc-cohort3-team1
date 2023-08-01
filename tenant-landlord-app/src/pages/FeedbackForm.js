@@ -1,8 +1,8 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Box, Button, Textarea, useToast, Heading, Stack, Icon } from '@chakra-ui/react';
 import { IoIosStarOutline, IoIosStar } from 'react-icons/io/index.esm.js';
 import { useNavigate } from 'react-router-dom';
-import { useAuthHeader }from 'react-auth-kit';
+import { useAuthHeader, useIsAuthenticated }from 'react-auth-kit';
 import { useFormik } from 'formik';
 import axios, { AxiosError } from 'axios';
 
@@ -15,6 +15,7 @@ function FeedbackForm() {
   const ticketID = selectedTicket.id;
   const [rating, setRating] = useState(-1);
   const toast = useToast();
+  const authenticated = useIsAuthenticated();
 
   const handleRatingChange = (newRating) => {
     setRating(newRating);
@@ -103,6 +104,20 @@ function FeedbackForm() {
       onClick={() => handleRatingChange(index + 1)}
     />
   ));
+  const authenticate = () => {
+    // Check if still autenticated based on react auth kit
+    if (!authenticated()){
+        console.log("Not authenticated, redirecting.")
+        navigate('/')
+        return false
+    } else {
+        return true
+    }
+}
+      // Ensure that user is authenticated for all renders
+      useEffect(() => {
+        authenticate()
+    })
 
   return (
     <Box display="flex" flexDirection="column" justifyContent="center" minHeight="100vh">

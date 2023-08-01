@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Text, Button, Heading, Textarea, FormControl, FormLabel, Input, Select, useToast } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
-import { useAuthUser, useAuthHeader } from 'react-auth-kit';
+import { useAuthUser, useAuthHeader, useIsAuthenticated } from 'react-auth-kit';
 import { Formik, Form,useFormik } from 'formik';
 import axios, { AxiosError } from "axios";
 import NavigationBar from '../components/NavigationBar.js';
@@ -18,6 +18,7 @@ function CreateTicketPage() {
   const [showOtherInput, setShowOtherInput] = useState(false);
   const [otherRequestType, setOtherRequestType] = useState('');
   const toast = useToast();
+  const authenticated = useIsAuthenticated();
 
   const handleCommentChange = (event) => {
     setTenantComment(event.target.value);
@@ -134,7 +135,20 @@ function CreateTicketPage() {
     },
     onSubmit: handleCreateTicket,
   });
-
+  const authenticate = () => {
+    // Check if still autenticated based on react auth kit
+    if (!authenticated()){
+        console.log("Not authenticated, redirecting.")
+        navigate('/')
+        return false
+    } else {
+        return true
+    }
+}
+      // Ensure that user is authenticated for all renders
+      useEffect(() => {
+        authenticate()
+    })
   return (
     <>
     {NavigationBar()}

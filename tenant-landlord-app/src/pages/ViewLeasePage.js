@@ -4,7 +4,7 @@ import { ArrowBackIcon } from '@chakra-ui/icons';
 import { useNavigate , useLocation } from 'react-router-dom';
 
 import NavigationBar from '../components/NavigationBar.js';
-import { useAuthHeader } from 'react-auth-kit';
+import { useAuthHeader, useIsAuthenticated } from 'react-auth-kit';
 
 
 function ViewLeasePage() {
@@ -13,6 +13,7 @@ function ViewLeasePage() {
     const token = useAuthHeader(); 
     const location = useLocation();
     const { tenantID } = location.state;
+    const authenticated = useIsAuthenticated();
     console.log("tenantID: ", tenantID);
 
     useEffect(() => {
@@ -33,6 +34,22 @@ function ViewLeasePage() {
           // Handle error
         });
     }, []);
+
+    // Ensure that user is authenticated for all renders
+    const authenticate = () => {
+      // Check if still autenticated based on react auth kit
+      if (!authenticated()){
+          console.log("Not authenticated, redirecting.")
+          navigate('/')
+          return false
+      } else {
+          return true
+      }
+  }
+  useEffect(() => {
+      authenticate()
+  })
+
 
     return (
         <>

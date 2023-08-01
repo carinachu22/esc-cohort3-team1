@@ -1,9 +1,9 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import axios from "axios";
 import { Helmet } from "react-helmet";
 import { Formik, Form } from 'formik'; // Import Formik components
 
-import { useAuthHeader } from "react-auth-kit";
+import { useAuthHeader, useIsAuthenticated } from "react-auth-kit";
 
 import {
   Box,
@@ -27,6 +27,7 @@ const QuotationUpload = () => {
   const token = useAuthHeader();
   const navigate = useNavigate();
   const toast = useToast();
+  const authenticated = useIsAuthenticated();
 
   const retrieveFile = () => {
     console.log(selectedTicket);
@@ -52,6 +53,20 @@ const QuotationUpload = () => {
         // Handle error
       })
     }
+    // Ensure that user is authenticated for all renders
+    const authenticate = () => {
+      // Check if still autenticated based on react auth kit
+      if (!authenticated()){
+          console.log("Not authenticated, redirecting.")
+          navigate('/')
+          return false
+      } else {
+          return true
+      }
+  }
+  useEffect(() => {
+      authenticate()
+  })
 
   return (
     <>
