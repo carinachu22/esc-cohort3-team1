@@ -39,18 +39,19 @@ export default function ViewTicketPage() {
                   Authorization: `${token()}`
                 },
                 params: {
-                    email: userDetails().email
+                    email: userDetails().email,
+                    id: ticketID
                 }
             }
             if (type === 'landlord'){
                 response = await axios.get(
-                  `http://localhost:5000/api/landlord/getTicketById/${ticketID}`,
+                  `http://localhost:5000/api/landlord/getTicketById/`,
                     // console.log(`http://localhost:5000/api/landlord/getTicketById/${selectedTicket}`),
                     config
                 )
             } else if (type === 'tenant'){ 
                 response = await axios.get(
-                  `http://localhost:5000/api/tenant/getTicketById/${ticketID}`,
+                  `http://localhost:5000/api/tenant/getTicketById/`,
                     config
                 )
             }

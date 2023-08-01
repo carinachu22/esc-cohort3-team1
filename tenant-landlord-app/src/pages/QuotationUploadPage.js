@@ -46,7 +46,11 @@ const QuotationUpload = () => {
             responseType: "blob"
         }
     }
-    fetch(`http://localhost:5000/api/landlord/getQuotation/?id=${selectedTicket.id}`,
+    const encodedticketID = encodeURIComponent(ticketID);
+    fetch(`http://localhost:5000/api/landlord/getQuotation/?id=${encodedticketID}`,{
+    headers:{
+      Authorization: `${token()}`
+    }}
     ) // Replace with the actual backend URL serving the PDF
       .then((response) => response.blob())
       .then((data) => {
@@ -93,10 +97,13 @@ const QuotationUpload = () => {
               formData.append("files", values.files); // Access files through form values
               try {
                 const response = await axios.post(
-                  `http://localhost:5000/api/landlord/uploadQuotation/${ticketID}`,
+                  `http://localhost:5000/api/landlord/uploadQuotation/`,
                   formData,
                   {
-                    params: { 'api-version': '3.0' },
+                    params: { 
+                      'api-version': '3.0',
+                      ticket_id: ticketID
+                  },
                     headers: {
                       "Content-Type": "multipart/form-data",
                       Authorization: `${token()}`

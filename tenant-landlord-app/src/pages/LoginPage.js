@@ -202,9 +202,9 @@ const LoginPage = () => {
                                 <InputRightElement width="4.5rem">
                                     <Button 
                                         data-testid="login-button" 
-                                        className="loginButton" 
-                                        id = "loginButton"
-                                        name = "loginButton"
+                                        className="togglePassword" 
+                                        id = "togglePassword"
+                                        name = "togglePassword"
                                         h='1.75rem' 
                                         size='sm' 
                                         onClick={togglePassword}  

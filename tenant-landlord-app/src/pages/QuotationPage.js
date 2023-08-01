@@ -37,7 +37,8 @@ function QuotationPage() {
             }
         }
         const values = {
-            quotation_accepted_by_tenant: 1
+            quotation_accepted_by_tenant: 1,
+            ticket_id : ticketID
         }
         toast({
         title: "Quotation approved.",
@@ -48,7 +49,7 @@ function QuotationPage() {
         position: "top",
         });
         axios.patch(
-            `http://localhost:5000/api/tenant/quotationApproval/${ticketID}`,
+            `http://localhost:5000/api/tenant/quotationApproval/`,
             values,
             config
         )
@@ -62,7 +63,8 @@ function QuotationPage() {
             }
         }
         const values = {
-            quotation_accepted_by_tenant: 0
+            quotation_accepted_by_tenant: 0,
+            ticket_id : ticketID
         }
         toast({
         title: "Quotation rejected.",
@@ -73,7 +75,7 @@ function QuotationPage() {
         position: "top",
         });
         axios.patch(
-            `http://localhost:5000/api/tenant/quotationApproval/${ticketID}`,
+            `http://localhost:5000/api/tenant/quotationApproval/`,
             values,
             config
         )
@@ -81,7 +83,8 @@ function QuotationPage() {
     };
 
     useEffect(() => {
-        fetch(`http://localhost:5000/api/tenant/getQuotation/?id=${ticketID}`,{
+        const encodedticketID = encodeURIComponent(ticketID);
+        fetch(`http://localhost:5000/api/tenant/getQuotation/?id=${encodedticketID}`,{
             headers:{
               Authorization: `${token()}`
             }
