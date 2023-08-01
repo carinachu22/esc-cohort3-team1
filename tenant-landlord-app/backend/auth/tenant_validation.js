@@ -6,7 +6,7 @@ export const checkTenantToken = (req, res, next) => {
         token = token.slice(7);
         verify(token, "paolom8", (error, decoded) => {
         if (error) {
-            res.json({
+            return res.json({
             success: 0,
             message: "Invalid token",
             });
@@ -15,7 +15,7 @@ export const checkTenantToken = (req, res, next) => {
         }
         });
     } else {
-        res.json({
+        return res.json({
         success: 0,
         message: "Access denied: You are unauthorized!",
         });
