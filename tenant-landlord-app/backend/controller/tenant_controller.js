@@ -35,7 +35,7 @@ export const controllerLoginTenant = (req, res) => {
       console.log(err);
     }
     console.log(results[0]);
-    if (!results) {
+    if (results[0] === undefined) {
       return res.json({
         success: 0,
         data: "Invalid username or password",
