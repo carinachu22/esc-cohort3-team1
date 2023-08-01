@@ -198,21 +198,39 @@ export default function Dashboard() {
         authenticate()
     })
 
-    return (
-        <>
-        {NavigationBar()}
-        <Box maxW="7xl" mx={'auto'} pt={5} px={{ base: 2, sm: 12, md: 17 }}>
-            <chakra.h1 id="emailText" textAlign={'center'} fontSize={'4xl'} py={10} fontWeight={'bold'}>
-                Welcome, {email}
-            </chakra.h1>
-            <SimpleGrid columns={{ base: 1, md: 3 }} spacing={{ base: 5, lg: 8 }}>
-                {StatsCard('Total Tickets', tickets.length, <AiFillInfoCircle size={'3em'} color='lightblue' />)}
-                {StatsCard('Tickets Requiring Your Attention', needAction, <BiSolidError size={'3em'} color='orange' />)}
-                {StatsCard('Tickets Pending Your Tenant/Landlord Action', waitAction, <AiFillClockCircle size={'3em'} color='grey' />)}
-            </SimpleGrid>
-        </Box>
-        </>
-    )
+    if (userDetails().type === 'tenant'){
+        return (
+            <>
+            {NavigationBar()}
+            <Box maxW="7xl" mx={'auto'} pt={5} px={{ base: 2, sm: 12, md: 17 }}>
+                <chakra.h1 id="emailText" textAlign={'center'} fontSize={'4xl'} py={10} fontWeight={'bold'}>
+                    Welcome, {email}
+                </chakra.h1>
+                <SimpleGrid columns={{ base: 1, md: 3 }} spacing={{ base: 5, lg: 8 }}>
+                    {StatsCard('Total Tickets', tickets.length, <AiFillInfoCircle size={'3em'} color='lightblue' />)}
+                    {StatsCard('Tickets Requiring Your Attention', needAction, <BiSolidError size={'3em'} color='orange' />)}
+                    {StatsCard('Tickets Pending Your Landlord\'s Action', waitAction, <AiFillClockCircle size={'3em'} color='grey' />)}
+                </SimpleGrid>
+            </Box>
+            </>
+        )
+    } else {
+        return (
+            <>
+            {NavigationBar()}
+            <Box maxW="7xl" mx={'auto'} pt={5} px={{ base: 2, sm: 12, md: 17 }}>
+                <chakra.h1 id="emailText" textAlign={'center'} fontSize={'4xl'} py={10} fontWeight={'bold'}>
+                    Welcome, {email}
+                </chakra.h1>
+                <SimpleGrid columns={{ base: 1, md: 3 }} spacing={{ base: 5, lg: 8 }}>
+                    {StatsCard('Total Tickets', tickets.length, <AiFillInfoCircle size={'3em'} color='lightblue' />)}
+                    {StatsCard('Tickets Requiring Your Attention', needAction, <BiSolidError size={'3em'} color='orange' />)}
+                    {StatsCard('Tickets Pending Your Tenant\'s Action', waitAction, <AiFillClockCircle size={'3em'} color='grey' />)}
+                </SimpleGrid>
+            </Box>
+            </>
+        )
+    }
 }
 
 
