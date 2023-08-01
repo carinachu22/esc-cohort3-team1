@@ -17,8 +17,8 @@ beforeAll(async () => { await setup(); });
 afterAll(async () => { await teardown(); });
 
 describe ("/tenant/login", () => {
-  test("valid email and password credentials", () =>  {
-    return request(app)
+  test("valid email and password credentials", async () =>  {
+    await request(app)
       .post("/api/tenant/login")
       .send({
         email: 'tenant1@gmail.com',
@@ -102,7 +102,7 @@ describe ("/tenant/createTicket", () => {
 
   test("missing name", async () =>  {
     const token = await authorisation()
-    request(app)
+    await request(app)
       .post("/api/tenant/createTicket")
       .set("Authorization", `Bearer ${token}`)
       .send({
@@ -125,7 +125,7 @@ describe ("/tenant/createTicket", () => {
 
   test("missing public_service_request_id", async () =>  {
     const token = await authorisation()
-    return request(app)
+    await request(app)
       .post("/api/tenant/createTicket")
       .set("Authorization", `Bearer ${token}`)
       .send({
@@ -148,7 +148,7 @@ describe ("/tenant/createTicket", () => {
 
   test("missing email", async () =>  {
     const token = await authorisation()
-    request(app)
+    await request(app)
       .post("/api/tenant/createTicket")
       .set("Authorization", `Bearer ${token}`)
       .send({
@@ -171,7 +171,7 @@ describe ("/tenant/createTicket", () => {
 
   test("missing request_type", async () =>  {
     const token = await authorisation()
-    request(app)
+    await request(app)
       .post("/api/tenant/createTicket")
       .set("Authorization", `Bearer ${token}`)
       .send({
@@ -194,7 +194,7 @@ describe ("/tenant/createTicket", () => {
 
   test("missing request_description", async () =>  {
     const token = await authorisation()
-    request(app)
+    await request(app)
       .post("/api/tenant/createTicket")
       .set("Authorization", `Bearer ${token}`)
       .send({
@@ -217,7 +217,7 @@ describe ("/tenant/createTicket", () => {
 
   test("missing quotation_path", async () =>  {
     const token = await authorisation()
-    request(app)
+    await request(app)
       .post("/api/tenant/createTicket")
       .set("Authorization", `Bearer ${token}`)
       .send({
@@ -240,7 +240,7 @@ describe ("/tenant/createTicket", () => {
 
   test("missing submitted_date_time", async () =>  {
     const token = await authorisation()
-    request(app)
+    await request(app)
       .post("/api/tenant/createTicket")
       .set("Authorization", `Bearer ${token}`)
       .send({
@@ -262,7 +262,7 @@ describe ("/tenant/createTicket", () => {
   })
 
   test("tenant user with no token", async () =>  {
-    request(app)
+    await request(app)
       .post("/api/tenant/createTicket")
       .send({
         public_service_request_id: "2023-06-04 10:10:10", 
@@ -285,12 +285,10 @@ describe ("/tenant/createTicket", () => {
 describe ("/tenant/quotationApproval/:id", () => {
   test("valid tenant id and accept quotation", async () =>  {
     const token = await authorisation()
-    request(app)
-      .patch("/api/tenant/quotationApproval/2")
+    await request(app)
+      .patch("/api/tenant/quotationApproval/2003-03-03 03:03:03")
       .set("Authorization", `Bearer ${token}`)
-      .send({
-        quotation_accepted_by_tenant: 1
-      })
+      .send({ quotation_accepted_by_tenant: 1 })
       .expect(200)
       .then((response) => {
         expect(response.body).toEqual({
@@ -300,10 +298,10 @@ describe ("/tenant/quotationApproval/:id", () => {
         })
   })
 
-  test("valid tenant id and reject quotation", async () =>  {
+  test.only("valid tenant id and reject quotation", async () =>  {
     const token = await authorisation()
-    request(app)
-      .patch("/api/tenant/quotationApproval/1")
+    await request(app)
+      .patch("/api/tenant/quotationApproval/2002-02-02 02:02:02")
       .set("Authorization", `Bearer ${token}`)
       .send({
         quotation_accepted_by_tenant: 0
@@ -319,7 +317,7 @@ describe ("/tenant/quotationApproval/:id", () => {
 
   test("valid tenant id and data validation error", async () =>  {
     const token = await authorisation()
-    request(app)
+    await request(app)
       .patch("/api/tenant/quotationApproval/3")
       .set("Authorization", `Bearer ${token}`)
       .send({
@@ -336,7 +334,7 @@ describe ("/tenant/quotationApproval/:id", () => {
 
   test("invalid tenant id", async () =>  {
     const token = await authorisation()
-    request(app)
+    await request(app)
       .patch("/api/tenant/quotationApproval/999")
       .set("Authorization", `Bearer ${token}`)
       .send({
@@ -352,7 +350,7 @@ describe ("/tenant/quotationApproval/:id", () => {
   })
 
   test("tenant user with no token", async () =>  {
-    request(app)
+    await request(app)
       .patch("/api/tenant/quotationApproval/3")
       .send({
         quotation_accepted_by_tenant: 1
@@ -367,59 +365,54 @@ describe ("/tenant/quotationApproval/:id", () => {
   })
 })
 
-// TODO: test cases 1 and 2
 describe ("/tenant/getTickets", () => {
 
-  // // TODO: not getting response: empty array is returned -- suspect something might be wrong with getTicketsByTenant
-  // test("valid tenant email with service tickets", async () =>  {
-  //   const token = await authorisation()
-  //   request(app)
-  //     .get("/api/tenant/getTickets")
-  //     .set("Authorization", `Bearer ${token}`)
-  //     .query({ email: "tenant4@gmail.com" })
-  //     .expect(200)
-  //     .then((response) => {
-  //       expect(response.body).toEqual({
-  //           success: 1,
-  //           data: [{
-  //             service_request_id: 2,
-  //             public_service_request_id: "2003-03-03 03:03:03",
-  //             name: "tenant4",
-  //             email: "tenant4@gmail.com",
-  //             request_type: "aircon",
-  //             request_description: "aircon",
-  //             quotation_path: null,
-  //             submitted_date_time: "2003-03-03 03:03:03",
-  //             completed_date_time: null, 
-  //             status: "tenant_ticket_created",
-  //             feedback_rating: null,
-  //             feedback_text: null
-  //           }]
-  //         })
-  //       })
-  // })
+  test("valid tenant email with service tickets", async () =>  {
+    const token = await authorisation()
+    await request(app)
+      .get("/api/tenant/getTickets")
+      .set("Authorization", `Bearer ${token}`)
+      .query({ email: "tenant4@gmail.com" })
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toMatchObject({
+            success: 1,
+            data: [{
+              service_request_id: 2,
+              public_service_request_id: "2003-03-03 03:03:03",
+              name: "tenant4",
+              email: "tenant4@gmail.com",
+              request_type: "aircon",
+              request_description: "aircon",
+              quotation_path: null,
+              submitted_date_time: expect.any(String),
+              completed_date_time: null, 
+              status: "tenant_ticket_created",
+              feedback_rating: null,
+              feedback_text: null
+            }]
+          })
+        })
+  })
 
-  // // TODO: not getting response; skips past .then -- suspect something might be wrong with getTicketsByTenant
-  // test("valid tenant email without service tickets", async () =>  {
-  //   const token = await authorisation()
-  //   request(app)
-  //     .get("/api/tenant/getTickets")
-  //     .set("Authorization", `Bearer ${token}`)
-  //     .query({
-  //       email: "tenant2@gmail.com"
-  //     })
-  //     .expect(200)
-  //     // .then((response) => {
-  //     //     expect(response.body).toEqual({
-  //     //         success: 1,
-  //     //         data: []
-  //     //       })
-  //     //   })
-  // })
+  test("valid tenant email without service tickets", async () =>  {
+    const token = await authorisation()
+    await request(app)
+      .get("/api/tenant/getTickets")
+      .set("Authorization", `Bearer ${token}`)
+      .query({ email: "tenant2@gmail.com" })
+      .expect(200)
+      .then((response) => {
+          expect(response.body).toEqual({
+              success: 1,
+              data: []
+            })
+        })
+  })
 
   test("invalid tenant who is not in tenant_user table", async () =>  {
     const token = await authorisation()
-    request(app)
+    await request(app)
       .get("/api/tenant/getTickets")
       .set("Authorization", `Bearer ${token}`)
       .query({ email: "wrong@gmail.com" })
@@ -433,7 +426,7 @@ describe ("/tenant/getTickets", () => {
   })
 
   test("tenant user with no token", async () =>  {
-    request(app)
+    await request(app)
       .get("/api/tenant/getTickets")
       .query({
         email: "hacker@gmail.comm"
@@ -447,90 +440,83 @@ describe ("/tenant/getTickets", () => {
   })
 })
 
-// TODO: not getting response: controller throwing user not found error
 describe ("/tenant/getTicketsByStatus/:status", () => {
 
-  // // TODO: not getting response: controller throwing user not found error
-  // test("valid tenant email and status with service tickets", async () =>  {
-  //   const token = await authorisation()
-  //   request(app)
-  //     .get("/api/tenant/getTicketsByStatus/landlord_complete_work")
-  //     .set("Authorization", `Bearer ${token}`)
-  //     .send({ email: "tenant1@gmail.com" })
-  //     // .expect(200)
-  //     .then((response) => {
-  //       expect(response.body).toEqual({
-  //         success: 1,
-  //         data: [{
-  //               service_request_id: 2,
-  //               public_service_request_id: "2004-04-04 04:04:04",
-  //               name: "tenant1",
-  //               email: "tenant1@gmail.com",
-  //               request_type: "cleanliness",
-  //               request_description: "not clean",
-  //               quotation_path: ":Content/Documents/quotation_details/q2",
-  //               submitted_date_time: "2004-04-04 04:04:04",
-  //               completed_date_time: null, 
-  //               status: "landlord_completed_work",
-  //               feedback_rating: null,
-  //               feedback_text: null
-  //             }]
-  //     })
-  //       })
-  // })
+  test("valid tenant email and status with service tickets", async () =>  {
+    const token = await authorisation()
+    await request(app)
+      .get("/api/tenant/getTicketsByStatus/landlord_completed_work")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ email: "tenant1@gmail.com" })
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toMatchObject({
+          success: "1",
+          data: [{
+                service_request_id: 3,
+                public_service_request_id: "2004-04-04 04:04:04",
+                name: "tenant1",
+                email: "tenant1@gmail.com",
+                request_type: "cleanliness",
+                request_description: "not clean",
+                quotation_path: ":Content/Documents/quotation_details/q2",
+                submitted_date_time: expect.any(String),
+                completed_date_time: null, 
+                status: "landlord_completed_work",
+                feedback_rating: null,
+                feedback_text: null
+              }]
+      })
+        })
+  })
 
-  // // TODO: not getting response: controller throwing user not found error
-  // test("valid tenant email and status without service tickets", async () =>  {
-  //   const token = await authorisation()
-  //   request(app)
-  //     .get("/api/tenant/getTicketsByStatus/tenant_ticket_created")
-  //     .set("Authorization", `Bearer ${token}`)
-  //     .query({
-  //       email: "tenant3@gmail.com"
-  //     })
-  //     // .expect(200)
-  //     .then((response) => {
-  //         expect(response.body).toEqual({
-  //             success: 1,
-  //             data: []
-  //           })
-  //       })
-  // })
+  test("valid tenant email and status without service tickets", async () =>  {
+    const token = await authorisation()
+    await request(app)
+      .get("/api/tenant/getTicketsByStatus/tenant_ticket_created")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ email: "tenant3@gmail.com" })
+      // .expect(200)
+      .then((response) => {
+          expect(response.body).toEqual({
+              success: "1",
+              data: []
+            })
+        })
+  })
 
-  // // TODO: not getting response: controller throwing user not found error
-  // test("valid tenant user but invalid status", async () =>  {
-  //   const token = await authorisation()
-  //   request(app)
-  //     .get("/api/tenant/getTicketsByStatus/invalid_status")
-  //     .set("Authorization", `Bearer ${token}`)
-  //     .query({ email: "tenant1@gmail.com" })
-  //     .expect(400)
-  //     .then((response) => {
-  //       expect(response.body).toEqual({
-  //           success: 0,
-  //           message: "invalid status"
-  //         })
-  //       })
-  // })
+  test("valid tenant user but invalid status", async () =>  {
+    const token = await authorisation()
+    await request(app)
+      .get("/api/tenant/getTicketsByStatus/invalid_status")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ email: "tenant1@gmail.com" })
+      .expect(400)
+      .then((response) => {
+        expect(response.body).toEqual({
+            success: 0,
+            message: "invalid status"
+          })
+        })
+  })
 
-  // // TODO: not getting response: controller throwing user not found error
-  // test("valid status but invalid tenant user email", async () =>  {
-  //   const token = await authorisation()
-  //   request(app)
-  //     .get("/api/tenant/getTicketsByStatus/landlord_completed_work")
-  //     .set("Authorization", `Bearer ${token}`)
-  //     .query({ email: "wrong@gmail.com" })
-  //     .expect(400)
-  //     .then((response) => {
-  //       expect(response.body).toEqual({
-  //           success: 0,
-  //           message: "User not found"
-  //         })
-  //       })
-  // })
+  test("valid status but invalid tenant user email", async () =>  {
+    const token = await authorisation()
+    await request(app)
+      .get("/api/tenant/getTicketsByStatus/landlord_completed_work")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ email: "wrong@gmail.com" })
+      .expect(400)
+      .then((response) => {
+        expect(response.body).toEqual({
+            success: 0,
+            message: "User not found"
+          })
+        })
+  })
 
   test("tenant user with no token", async () =>  {
-    request(app)
+    await request(app)
       .get("/api/tenant/getTicketsByStatus/landlord_completed_work")
       .query({
         email: "tenant1@gmail.comm"

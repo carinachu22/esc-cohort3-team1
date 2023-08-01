@@ -19,7 +19,6 @@ export const getTenantByEmail = (email, callBack) => {
       if (error) {
         callBack(error);
       } else {
-        // console.log(results)
         callBack(null, results);
       }
     }
@@ -113,6 +112,7 @@ export const getTicketById = (id, callBack) => {
  * @param {*} callBack 
  */
 export const getTicketsByStatus = (email, status, callBack) => {
+  console.log(`status ${status}`)
   if (statuses.includes(status)) {
     pool.query(
       `

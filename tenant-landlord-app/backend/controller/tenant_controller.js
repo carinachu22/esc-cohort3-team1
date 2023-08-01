@@ -230,7 +230,6 @@ export const controllerGetTickets = (req, res) => {
         message: "User not found"
       })
     } else {
-      console.log(`email ${email}`)
       getTicketsByTenant(email, (err,results) => {
         if (err) {
           console.log(err);
@@ -259,9 +258,15 @@ export const controllerGetTicketsByStatus = (req, res) => {
   const email = req.body.email;
   const status = req.params.status;
   getTenantByEmail(email, (err,result) => {
-    // console.log(email)
-    // console.log(result)
-    if (result.length === 0) {
+    console.log(email)
+    console.log(result)
+    if (err) {
+      console.log(err)
+      return res.status(500).json({
+        success: 0,
+        message: "Database connection error"
+      })
+    } else if (result.length === 0) {
       return res.status(400).json({
         success: 0,
         message: "User not found"
@@ -332,8 +337,11 @@ export const controllerQuotationApproval = (req, res) => {
       message: "Data validation error"
     })
   }
+  console.log(status)
+  console.log(id)
 
   quotationApproval(id,status, (err, results) => {
+    console.log(results)
     if (err) {
       console.log(err);
       return;
@@ -341,7 +349,7 @@ export const controllerQuotationApproval = (req, res) => {
     if (results.changedRows === 0) {
       return res.json({
         success: 0,
-        message: "Failed to update user"
+        message: "Failed to update quotation"
       })
     }
     return res.status(200).json({
