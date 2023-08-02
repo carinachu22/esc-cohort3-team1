@@ -67,6 +67,7 @@ export const controllerForgotPasswordTenant = (req, res) => {
   const body = req.body;
   console.log(body.email);
   getTenantByEmail(body.email, (err, results) => {
+    console.log(results[0]);
     if (err) {
       console.log(err);
     }
@@ -76,9 +77,9 @@ export const controllerForgotPasswordTenant = (req, res) => {
         message: "User does not exist!",
       });
     }
-    const secret = process.env.JWT_SECRET + results.password;
-    const jsontoken = jwt.sign({email: results.email, id: results.tenant_user_id}, secret, {expiresIn: 300});
-    const link = `http://localhost:5000/api/tenant/reset-password/${results.tenant_user_id}/${jsontoken}`;
+    const secret = process.env.JWT_SECRET + results[0].password;
+    const jsontoken = jwt.sign({email: results[0].email, id: results[0].tenant_user_id}, secret, {expiresIn: 300});
+    const link = `http://localhost:5000/api/tenant/reset-password/${results[0].tenant_user_id}/${jsontoken}`;
 
     ////// NODEMAILER FEATURE ///////
     ///// nodemailer feature starts from here //////
@@ -99,7 +100,7 @@ export const controllerForgotPasswordTenant = (req, res) => {
     
     var mailOptions = {
       from: process.env.AUTH_USER,
-      to: results.email,
+      to: results[0].email,
       subject: 'Password Reset',
       text: link
     };
@@ -117,7 +118,7 @@ export const controllerForgotPasswordTenant = (req, res) => {
 
 export const controllerResetPasswordPageTenant = async (req, res) => {
   const {id, jsontoken} = req.params;
-  console.log(req.params);
+  console.log("req.params", req.params);
   getTenantById(id, (err, results) => {
     console.log(results);
     if (err) {

@@ -58,6 +58,7 @@ export default function Dashboard() {
     const GetServiceTickets = (userDetails) => {
         // Get user type, either "tenant" or "landlord"
         const type = userDetails().type;
+        console.log(userDetails);
 
         // Initialise variable first since response is conditional assignment
         let response;
