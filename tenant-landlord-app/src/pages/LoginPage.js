@@ -88,6 +88,7 @@ const LoginPage = () => {
           "http://localhost:5000/api/tenant/login",
           values
         );
+        console.log("POST tenant login'response is ", response);
         signIn({
           token: response.data.token,
           expiresIn: 60,

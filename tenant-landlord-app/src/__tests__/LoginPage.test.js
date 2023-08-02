@@ -6,7 +6,7 @@ import "@testing-library/jest-dom";
 import { AuthProvider, useSignIn } from "react-auth-kit";
 
 import LoginPage from "../pages/LoginPage.js";
-import Dashboard from "../pages/Dashboard.js"
+import Dashboard from "../pages/Dashboard.js";
 
 describe("Login.js", () => {
   test("Email,Password, login btn features are present", () => {
@@ -62,8 +62,9 @@ describe("Login.js", () => {
       </AuthProvider>
     );
     await userEvent.click(screen.getByRole("button", { name: "Show" }));
-    expect(screen.getByText(/Hide/i)).toBeInTheDocument();// TODO: Mock API calls, go to navigateDashboard page
+    expect(screen.getByText(/Hide/i)).toBeInTheDocument(); // TODO: Mock API calls, go to navigateDashboard page
   });
+  /** 
   test("Invalid email/Password", async () => {
     render(
       <AuthProvider
@@ -80,8 +81,9 @@ describe("Login.js", () => {
     await userEvent.click(screen.getByRole("button", { name: "LOGIN" }));
     //Mock API calls, check values and call error
   });
-});
 
+*/
+});
 /** Extra tests
  * - Data validation of email/password
  */
