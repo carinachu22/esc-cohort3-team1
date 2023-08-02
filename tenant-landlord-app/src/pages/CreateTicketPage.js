@@ -237,6 +237,7 @@ function CreateTicketPage() {
             Description
           </Heading>
           <Textarea
+            id = "tenantComment"
             name="tenantComment"
             placeholder="Enter your comment"
             value={tenantComment}
@@ -252,6 +253,7 @@ function CreateTicketPage() {
       {/* Submit Ticket Button */}
       <Box>
         <Button
+          name="submitButton"
           variant="solid"
           colorScheme="blue"
           onClick={formik.handleSubmit}

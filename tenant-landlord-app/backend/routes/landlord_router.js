@@ -76,15 +76,15 @@ router.patch("/deleteLease", checkLandlordToken, controllerDeleteLease)
 router.patch("/updateLease", checkLandlordToken, controllerUpdateLease)
 
 router.get("/getTickets", checkLandlordToken, controllerGetTickets);
-router.get("/getTicketById/:id", checkLandlordToken, controllerGetTicketById);
+router.get("/getTicketById/", checkLandlordToken, controllerGetTicketById);
 router.get("/getTicketsByStatus/:status", checkLandlordToken, controllerGetTicketsByStatus);
 
 router.get("/getQuotation/", checkLandlordToken, controllerGetQuotation);
-router.post("/uploadQuotation/:id", checkLandlordToken, upload.single('files'), controllerUploadQuotation);
+router.post("/uploadQuotation/", checkLandlordToken, upload.single('files'), controllerUploadQuotation);
 router.patch("/updateQuotation/:id", checkLandlordToken, controllerUpdateQuotation);
 
-router.patch("/ticketApproval/:id/:isCheckboxChecked", checkLandlordToken, controllerTicketApproval);
-router.patch("/ticketWork/:id", checkLandlordToken, controllerTicketWork);
+router.patch("/ticketApproval/", checkLandlordToken, controllerTicketApproval);
+router.patch("/ticketWork/", checkLandlordToken, controllerTicketWork);
 
 router.get("/getTenantAccounts/", controllerGetTenantAccounts);
 router.patch("/deleteAllTenants", controllerDeleteAllTenants);

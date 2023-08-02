@@ -57,10 +57,11 @@ function FeedbackForm() {
         status: 'close',
         feedback_text: data.comment,
         feedback_rating: rating,
+        ticket_id: ticketID
       };
 
       const response1 = await axios.patch(
-        `http://localhost:5000/api/tenant/addFeedbackText/${ticketID}`,
+        `http://localhost:5000/api/tenant/addFeedbackText/`,
         values,
         config
       );
@@ -68,7 +69,7 @@ function FeedbackForm() {
       console.log(response1);
 
       const response2 = await axios.patch(
-        `http://localhost:5000/api/tenant/addFeedbackRating/${ticketID}`,
+        `http://localhost:5000/api/tenant/addFeedbackRating/`,
         values,
         config
       );
@@ -77,7 +78,7 @@ function FeedbackForm() {
 
 
       const response3 = await axios.patch(
-        `http://localhost:5000/api/tenant/closeTicketStatus/${ticketID}`,
+        `http://localhost:5000/api/tenant/closeTicketStatus/`,
         values,
         config
       );

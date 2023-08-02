@@ -50,7 +50,7 @@ export default function CheckTicket(ticket, userDetails){
         if (userDetails().type === 'landlord'){
             return (
                 <>
-                    <Checkbox isChecked={isCheckboxChecked} onChange={(e) => setCheckboxChecked(e.target.checked)}>
+                    <Checkbox id="quotationCheckbox" isChecked={isCheckboxChecked} onChange={(e) => setCheckboxChecked(e.target.checked)}>
                       Is quotation required?
                     </Checkbox>
                     <Button
@@ -65,9 +65,12 @@ export default function CheckTicket(ticket, userDetails){
                     borderRadius="0.25em"
                     onClick = {() => {console.log('approving');
                             axios.patch(
-                            `http://localhost:5000/api/landlord/ticketApproval/${id}/${isCheckboxChecked}`,
+                            `http://localhost:5000/api/landlord/ticketApproval/`,
                             {
-                                ticket_approved_by_landlord: 1
+                                ticket_approved_by_landlord: 1,
+                                ticket_id : id,
+                                quotation_required : isCheckboxChecked
+                                
                             },
                             {
                                 headers: {
@@ -98,9 +101,10 @@ export default function CheckTicket(ticket, userDetails){
                         borderRadius="0.25em"
                         onClick = {() => {console.log('rejecting');
                             axios.patch(
-                            `http://localhost:5000/api/landlord/ticketApproval/${id}`,
+                            `http://localhost:5000/api/landlord/ticketApproval/`,
                             {
-                                ticket_approved_by_landlord: 0
+                                ticket_approved_by_landlord: 0,
+                                ticket_id : id
                             },
                             {
                                 headers: {
@@ -141,7 +145,7 @@ export default function CheckTicket(ticket, userDetails){
     // Else, allow landlord to start work
     if (status === 'landlord_ticket_approved'){
         if (userDetails().type === 'landlord'){
-            if (ticket.quotation_required === 'true'){
+            if (ticket.quotation_required === 'true' || ticket.quotation_required === "1"){
                 return(
                     <Button
                     variant="solid"
@@ -172,9 +176,10 @@ export default function CheckTicket(ticket, userDetails){
                     borderRadius="0.25em"
                     onClick = {() => {console.log('starting work');
                     axios.patch(
-                    `http://localhost:5000/api/landlord/ticketWork/${id}`,
+                    `http://localhost:5000/api/landlord/ticketWork/`,
                     {
-                        ticket_work_status: 1
+                        ticket_work_status: 1,
+                        ticket_id : id
                     },
                     {
                         headers: {
@@ -239,9 +244,10 @@ export default function CheckTicket(ticket, userDetails){
                 borderRadius="0.25em"
                 onClick = {() => {console.log('starting work');
                 axios.patch(
-                `http://localhost:5000/api/landlord/ticketWork/${id}`,
+                `http://localhost:5000/api/landlord/ticketWork/`,
                 {
-                    ticket_work_status: 1
+                    ticket_work_status: 1,
+                    ticket_id: id
                 },
                 {
                     headers: {
@@ -309,9 +315,10 @@ export default function CheckTicket(ticket, userDetails){
                   borderRadius="0.25em"
                   onClick = {() => {console.log('ending work');
                   axios.patch(
-                  `http://localhost:5000/api/landlord/ticketWork/${id}`,
+                  `http://localhost:5000/api/landlord/ticketWork/`,
                   {
-                      ticket_work_status: 0
+                      ticket_work_status: 0,
+                      ticket_id: id
                   },
                   {
                       headers: {

@@ -416,7 +416,7 @@ export default function TicketList() {
             </Select>
             </Box>
                 <TableContainer>
-            <Table variant='simple'>
+            <Table variant='simple' id='ticketTable'>
             <Thead>
                 <Tr>
                     <Th> No. </Th>

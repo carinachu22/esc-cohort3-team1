@@ -282,8 +282,7 @@ export const controllerGetTicketsByStatus = (req, res) => {
 };
 
 export const controllerGetTicketById = (req, res) => {
-  console.log('huh')
-  const id = req.params.id;
+  const id = req.query.id;
   getTicketById(id, (err, results) => {
     if (err) {
       console.log(err);
@@ -309,7 +308,7 @@ export const controllerGetTicketById = (req, res) => {
  * @param {*} res 
  */
 export const controllerQuotationApproval = (req, res) => {
-  const id = req.params.id;
+  const id = req.body.ticket_id;
   const body = req.body;
   let status;
   if (body.quotation_accepted_by_tenant === 1) {
@@ -318,7 +317,7 @@ export const controllerQuotationApproval = (req, res) => {
     status = "ticket_quotation_rejected"
   }
 
-  quotationApproval(id,status, (err, results) => {
+  quotationApproval(id, status, (err, results) => {
     if (err) {
       console.log(err);
       return;
@@ -342,7 +341,7 @@ export const controllerQuotationApproval = (req, res) => {
  * @param {*} res 
  */
 export const controllerAddFeedbackRating = (req, res) => {
-  const id = req.params.id;
+  const id = req.body.ticket_id;
   const feedback_rating = req.body.feedback_rating; 
   console.log("feedback_rating", feedback_rating)
   addFeedbackRating(id, feedback_rating, (err, results) => {
@@ -367,7 +366,7 @@ export const controllerAddFeedbackRating = (req, res) => {
  * @param {*} res 
  */
  export const controllerAddFeedbackText = (req, res) => {
-  const id = req.params.id;
+  const id = req.body.ticket_id;
   const feedback_text = req.body.feedback_text; 
   addFeedbackText (id, feedback_text, (err, results) => {
     if (err) {
@@ -391,7 +390,7 @@ export const controllerAddFeedbackRating = (req, res) => {
  * @param {*} res 
  */
 export const controllerCloseTicketStatus = (req, res) => {
-  const id = req.params.id;
+  const id = req.body.ticket_id;
   const body = req.body;
   let status;
   if (body.status == "close") {
