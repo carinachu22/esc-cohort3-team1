@@ -123,7 +123,7 @@ function QuotationPage() {
             <Heading mb={5} textAlign="center">Job Quote for Ticket: {ticketName}</Heading>
             <Box display="flex" flexDirection="column" justifyContent="center" minHeight="50vh">
                 {pdfUrl && <iframe src={pdfUrl} width="100%" height="600px" />}
-            <Checkbox isChecked={isCheckboxChecked} onChange={(e) => setCheckboxChecked(e.target.checked)}>
+            <Checkbox id="quotationCheckbox" isChecked={isCheckboxChecked} onChange={(e) => setCheckboxChecked(e.target.checked)}>
                 I have read and agree to the terms 
             </Checkbox>
             <Box display="flex" justifyContent="space-around" m={1} p={1}>
