@@ -1,8 +1,8 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Box, Button, Textarea, useToast, Heading, Stack, Icon } from '@chakra-ui/react';
 import { IoIosStarOutline, IoIosStar } from 'react-icons/io/index.esm.js';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useAuthHeader }from 'react-auth-kit';
+import { useAuthHeader, useIsAuthenticated }from 'react-auth-kit';
 import { useFormik } from 'formik';
 import axios, { AxiosError } from 'axios';
 
@@ -15,8 +15,12 @@ function FeedbackForm() {
   const [rating, setRating] = useState(-1);
   const toast = useToast();
   const location = useLocation();
-  const { ticketID } = location.state;
+  var ticketID;
+  if (location.state != null){
+    ticketID = location.state.ticketID;
+  }
   console.log('ID', ticketID)
+  const authenticated = useIsAuthenticated();
 
   const handleRatingChange = (newRating) => {
     setRating(newRating);
@@ -53,10 +57,11 @@ function FeedbackForm() {
         status: 'close',
         feedback_text: data.comment,
         feedback_rating: rating,
+        ticket_id: ticketID
       };
 
       const response1 = await axios.patch(
-        `http://localhost:5000/api/tenant/addFeedbackText/${ticketID}`,
+        `http://localhost:5000/api/tenant/addFeedbackText/`,
         values,
         config
       );
@@ -64,7 +69,7 @@ function FeedbackForm() {
       console.log(response1);
 
       const response2 = await axios.patch(
-        `http://localhost:5000/api/tenant/addFeedbackRating/${ticketID}`,
+        `http://localhost:5000/api/tenant/addFeedbackRating/`,
         values,
         config
       );
@@ -73,7 +78,7 @@ function FeedbackForm() {
 
 
       const response3 = await axios.patch(
-        `http://localhost:5000/api/tenant/closeTicketStatus/${ticketID}`,
+        `http://localhost:5000/api/tenant/closeTicketStatus/`,
         values,
         config
       );
@@ -105,6 +110,20 @@ function FeedbackForm() {
       onClick={() => handleRatingChange(index + 1)}
     />
   ));
+  const authenticate = () => {
+    // Check if still autenticated based on react auth kit
+    if (!authenticated()){
+        console.log("Not authenticated, redirecting.")
+        navigate('/')
+        return false
+    } else {
+        return true
+    }
+}
+      // Ensure that user is authenticated for all renders
+      useEffect(() => {
+        authenticate()
+    })
 
   return (
     <Box display="flex" flexDirection="column" justifyContent="center" minHeight="100vh">

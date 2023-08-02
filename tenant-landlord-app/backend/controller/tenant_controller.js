@@ -13,12 +13,14 @@ import {
   getTenantUserId,
   getLeaseByTenant,
   getQuotation,
-  getQuotationPath
+  getQuotationPath,
+  getLeaseByTenantEmail
 } from "../models/tenant_model.js";
 import { genSaltSync, hashSync, compareSync } from "bcrypt";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 import fs from "fs";
+import { getLease } from "../models/landlord_model.js";
 
 
 /**
@@ -33,7 +35,7 @@ export const controllerLoginTenant = (req, res) => {
       console.log(err);
     }
     console.log(results[0]);
-    if (!results) {
+    if (results[0] === undefined) {
       return res.json({
         success: 0,
         data: "Invalid username or password",
@@ -191,7 +193,11 @@ export const controllerResetPasswordTenant = async (req, res) => {
  */
 export const controllerCreateTicket = (req, res) => {
   const body = req.body;
-  createTicket(body, (err,results) => {
+  const tenantEmail = req.body.email;
+  console.log("tenantEmail", tenantEmail);
+  console.log("req.body", body);
+  getLeaseByTenantEmail(tenantEmail, (err,results) => {
+    console.log("results", results);
     if (err) {
       console.log(err);
       return res.status(500).json({
@@ -199,12 +205,32 @@ export const controllerCreateTicket = (req, res) => {
         message: "Database connection error"
       });
     } else {
-      return res.status(200).json({
-        success:1,
-        data: results
-      });
+      if (results[0] === undefined){
+        return res.status(200).json({
+          success: 0,
+          message: "You do not have a lease attached. Please contact your landlord."
+        })
+      }
+      const floor = results[0].floor;
+      const unit_number = results[0].unit_number;
+      console.log("floor", floor);
+      createTicket(body, floor, unit_number, (err,results) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).json({
+            success: 0,
+            message: "Database connection error"
+          });
+        } else {
+          return res.status(200).json({
+            success:1,
+            data: results
+          });
+        };
+      })
     };
   })
+
 };
 
 /**
@@ -255,8 +281,7 @@ export const controllerGetTicketsByStatus = (req, res) => {
 };
 
 export const controllerGetTicketById = (req, res) => {
-  console.log('huh')
-  const id = req.params.id;
+  const id = req.query.id;
   getTicketById(id, (err, results) => {
     if (err) {
       console.log(err);
@@ -282,7 +307,7 @@ export const controllerGetTicketById = (req, res) => {
  * @param {*} res 
  */
 export const controllerQuotationApproval = (req, res) => {
-  const id = req.params.id;
+  const id = req.body.ticket_id;
   const body = req.body;
   let status;
   if (body.quotation_accepted_by_tenant === 1) {
@@ -291,7 +316,7 @@ export const controllerQuotationApproval = (req, res) => {
     status = "ticket_quotation_rejected"
   }
 
-  quotationApproval(id,status, (err, results) => {
+  quotationApproval(id, status, (err, results) => {
     if (err) {
       console.log(err);
       return;
@@ -315,7 +340,7 @@ export const controllerQuotationApproval = (req, res) => {
  * @param {*} res 
  */
 export const controllerAddFeedbackRating = (req, res) => {
-  const id = req.params.id;
+  const id = req.body.ticket_id;
   const feedback_rating = req.body.feedback_rating; 
   console.log("feedback_rating", feedback_rating)
   addFeedbackRating(id, feedback_rating, (err, results) => {
@@ -340,7 +365,7 @@ export const controllerAddFeedbackRating = (req, res) => {
  * @param {*} res 
  */
  export const controllerAddFeedbackText = (req, res) => {
-  const id = req.params.id;
+  const id = req.body.ticket_id;
   const feedback_text = req.body.feedback_text; 
   addFeedbackText (id, feedback_text, (err, results) => {
     if (err) {
@@ -364,7 +389,7 @@ export const controllerAddFeedbackRating = (req, res) => {
  * @param {*} res 
  */
 export const controllerCloseTicketStatus = (req, res) => {
-  const id = req.params.id;
+  const id = req.body.ticket_id;
   const body = req.body;
   let status;
   if (body.status == "close") {

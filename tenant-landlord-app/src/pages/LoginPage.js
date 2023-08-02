@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useFormik } from "formik";
 import axios, { AxiosError } from "axios";
 import { useSignIn } from "react-auth-kit";
+// import * as ReactDOM from 'react-dom';
 
 import {
     Box,
@@ -23,7 +24,10 @@ const LoginPage = () => {
     const signIn = useSignIn();
 
     const location = useLocation();
-    const { role } = location.state;
+    var role;
+    if (location.state != null){
+      role = location.state.role;
+    } 
     console.log(role);
 
     const validate = values => {
@@ -70,13 +74,13 @@ const LoginPage = () => {
                     "http://localhost:5000/api/landlord/login",
                     values
                 )
-                signIn({
-                    token: response.data.token,
-                    expiresIn: 60,
-                    tokenType: "Bearer",
-                    authState: {email: values.email, type: "landlord"}
-                });
                 if (response.data.message === "Login successfully"){
+                    signIn({
+                        token: response.data.token,
+                        expiresIn: 60,
+                        tokenType: "Bearer",
+                        authState: {email: values.email, type: "landlord"}
+                    });
                     console.log(response.data.message);
                     navigateToDashboard();
                 }
@@ -90,14 +94,14 @@ const LoginPage = () => {
                     "http://localhost:5000/api/tenant/login",
                     values
                 )
-                signIn({
-                    token: response.data.token,
-                    expiresIn: 60,
-                    tokenType: "Bearer",
-                    authState: {email: values.email, type: "tenant"}
-                });
                 if (response.data.message === "Login successfully"){
                     console.log(response.data.message);
+                    signIn({
+                        token: response.data.token,
+                        expiresIn: 60,
+                        tokenType: "Bearer",
+                        authState: {email: values.email, type: "tenant"}
+                    });
                     navigateToDashboard();
                 }
                 else if (response.data.message === "Invalid email or password"){
@@ -151,10 +155,15 @@ const LoginPage = () => {
         validate
     });
 
-
-
+    useEffect(() => {
+        if (role === undefined){
+            navigate('/')
+        }
+    }, [])
 
     /////// code below uses Chakra styling ////////
+
+
     return (
         <Flex align="center" justify="center" h="100vh" w="100%">
             <Box w="22em" h="30em" p={8} rounded="md" position="relative" borderRadius="1em" boxShadow="0 0.188em 1.550em rgb(156, 156, 156)">
@@ -162,7 +171,10 @@ const LoginPage = () => {
                     <VStack align="flex-start" alignItems="center">
                         <Heading marginTop="4" fontSize="32">Welcome {role}!</Heading>
                         <FormControl marginTop="6">
+
                             <Input
+                                data-testid="text-email"
+                                className="textEmail"
                                 id="email" 
                                 name="email"
                                 type="email" 
@@ -176,6 +188,8 @@ const LoginPage = () => {
                         <FormControl marginTop="6">
                             <InputGroup size='md'>
                                 <Input
+                                    data-testid="text-password"
+                                    className="textPassword"
                                     id="password"
                                     name="password" 
                                     pr='4.5rem'
@@ -186,7 +200,15 @@ const LoginPage = () => {
                                     onChange={formik.handleChange}
                                 />
                                 <InputRightElement width="4.5rem">
-                                    <Button h='1.75rem' size='sm' onClick={togglePassword}  variant="unstyled">
+                                    <Button 
+                                        data-testid="login-button" 
+                                        className="togglePassword" 
+                                        id = "togglePassword"
+                                        name = "togglePassword"
+                                        h='1.75rem' 
+                                        size='sm' 
+                                        onClick={togglePassword}  
+                                        variant="unstyled">
                                         {passwordShown ? 'Hide' : 'Show'}
                                     </Button>
                                 </InputRightElement>
@@ -220,5 +242,8 @@ const LoginPage = () => {
     )
 
 }
+
+
+
 
 export default LoginPage

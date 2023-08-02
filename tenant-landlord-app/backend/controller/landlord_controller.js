@@ -427,7 +427,7 @@ export const controllerGetTickets = (req, res) => {
  * @param {*} res 
  */
 export const controllerGetTicketById = (req, res) => {
-  const id = req.params.id;
+  const id = req.query.id;
   getTicketById(id, (err, results) => {
     if (err) {
       console.log(err);
@@ -504,8 +504,8 @@ export const controllerUpdateQuotation = (req, res) => {
  * @param {formData} req 
  */
 export const controllerUploadQuotation = (req, res) => {
-  console.log('???????')
-  const id = req.params.id;
+  const id = req.query.ticket_id;
+  //console.log(req)
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "content-type");
   const files = req.file;
@@ -582,12 +582,15 @@ export const controllerGetQuotation = (req, res) => {
 };
 
 /**
- * Ticket Approval, public_service_request_id (YYYY-MM-DD 00:00:00) in params
+ * Ticket Approval, public_service_request_id (YYYY-MM-DD 00:00:00) and boolean for if quotation is required in params
  * @param {*} req 
  * @param {*} res 
  */
 export const controllerTicketApproval = (req, res) => {
-  const id = req.params.id;
+  const id = req.body.ticket_id;
+  console.log(req.body.ticket_id);
+  const quotationRequired = req.body.quotation_required;
+  console.log(quotationRequired);
   const body = req.body;
   let status;
   if (body.ticket_approved_by_landlord === 1) {
@@ -596,7 +599,7 @@ export const controllerTicketApproval = (req, res) => {
     status = "landlord_ticket_rejected"
   }
 
-  ticketApproval(id,body,status, (err, results) => {
+  ticketApproval(id, quotationRequired, body, status, (err, results) => {
     if (err) {
       console.log(err);
       return;
@@ -620,16 +623,16 @@ export const controllerTicketApproval = (req, res) => {
  * @param {*} res 
  */
 export const controllerTicketWork = (req, res) => {
-  const id = req.params.id;
-  const body = req.body;
+  const id = req.body.ticket_id;
+  console.log(id)
   let status;
-  if (body.ticket_work_status === 1) {
+  if (req.body.ticket_work_status === 1) {
     status = "landlord_started_work"
-  } else if (body.ticket_work_status === 0) {
+  } else if (req.body.ticket_work_status === 0) {
     status = "landlord_completed_work"
   }
 
-  ticketWork(id,body,status, (err, results) => {
+  ticketWork(id, req.body, status, (err, results) => {
     if (err) {
       console.log(err);
       return;
@@ -956,7 +959,7 @@ export const controllerUpdateLease = (req, res) => {
 export const controllerGetLeaseDetails = (req,res) => {
   const query = req.query;
   console.log("req query", req.query);
-  const {tenantUserId} = query;
+  const tenantUserId = query.id;
   console.log("user id", tenantUserId);
   getLeaseDetails(tenantUserId, (err,results) => {
     if (err) {

@@ -167,13 +167,13 @@ export default function TicketList() {
 
 
             // Convert every ticket fetched to HTML to be shown on the left
-            const tickets_html = tickets_list.map(ticket => 
-                <div key={ticket.service_request_id}>
+            const tickets_html = tickets_list.map((ticket, index) => 
+                <div key={index+1}>
                 <AccordionItem>
                     <AccordionButton justifyContent="space-between">
                         <HStack spacing='24px' width="100%">
                         <Box textAlign='left' width="16vw">
-                        {ticket.service_request_id}
+                        {index+1}
                         </Box>
                         <Box textAlign='left' width='34vw'>
                         {ticket.email}
@@ -190,7 +190,7 @@ export default function TicketList() {
                     <AccordionPanel>
                         <HStack spacing='24vw'>
                         <Box>
-                        Service Request ID: {ticket.service_request_id} <br></br>
+                        Service Request ID: {ticket.public_service_request_id} <br></br>
                         Email: {ticket.email} <br></br>
                         Request Type: {ticket.request_type} <br></br>
                         Request Description: {ticket.request_description} <br></br>
@@ -259,14 +259,15 @@ export default function TicketList() {
             filterTickets(tickets, filterOption),
             searchInput, searchType
             ))
+        console.log(filtered_tikcets)
         if (filtered_tikcets != null){
-        setFilteredTickets(filtered_tikcets.map((ticket) => (
-            <div key={ticket.service_request_id}>
+        setFilteredTickets(filtered_tikcets.map((ticket, index) => (
+            <div key={index+1}>
             <AccordionItem>
                 <AccordionButton justifyContent="space-between">
                     <HStack spacing='24px' width="100%">
                     <Box textAlign='left' width="16vw">
-                    {ticket.service_request_id}
+                    {index+1}
                     </Box>
                     <Box textAlign='left' width='34vw'>
                     {ticket.email}
@@ -283,7 +284,7 @@ export default function TicketList() {
                 <AccordionPanel>
                     <HStack spacing='24vw'>
                     <Box>
-                    Service Request ID: {ticket.service_request_id} <br></br>
+                    Service Request ID: {ticket.public_service_request_id} <br></br>
                     Email: {ticket.email} <br></br>
                     Request Type: {ticket.request_type} <br></br>
                     Request Description: {ticket.request_description} <br></br>
@@ -324,19 +325,13 @@ export default function TicketList() {
         
     
 
-    const authenticate = (() => {
-        // Check if still autenticated based on react auth kit
-        if (!authenticated()){
-            console.log("Not authenticated, redirecting.")
-            return <Navigate to="/"></Navigate>
-        }
-    })
 
     // This is to ensure that the GET request only happens once on page load
     // This will update the tickets state
     useEffect(() => {
-        GetServiceTickets(userDetails);
-        authenticate();},
+        if (authenticate()){
+            GetServiceTickets(userDetails);
+        }},
         [])
 
     useEffect(() => {
@@ -358,6 +353,22 @@ export default function TicketList() {
     if (isLoading){
         return<div className="App">Loading...</div>;
     }*/
+
+    // Ensure that user is authenticated for all renders
+    const authenticate = () => {
+        // Check if still autenticated based on react auth kit
+        if (!authenticated()){
+            console.log("Not authenticated, redirecting.")
+            navigate('/')
+            return false
+        } else {
+            return true
+        }
+    }
+    useEffect(() => {
+        authenticate()
+    })
+
     return (
         <>
         {NavigationBar()}
@@ -405,10 +416,10 @@ export default function TicketList() {
             </Select>
             </Box>
                 <TableContainer>
-            <Table variant='simple'>
+            <Table variant='simple' id='ticketTable'>
             <Thead>
                 <Tr>
-                    <Th> ID </Th>
+                    <Th> No. </Th>
                     <Th> Requester </Th>
                     <Th> Type </Th>
                     <Th> Status </Th>

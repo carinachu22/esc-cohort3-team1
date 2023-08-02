@@ -1,20 +1,23 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Document, Page, pdfjs } from 'react-pdf';
 import { Box, Button, useToast, Heading } from '@chakra-ui/react';
 import { ArrowBackIcon, ArrowForwardIcon } from '@chakra-ui/icons';
 import { useNavigate , useLocation } from 'react-router-dom';
 
 import NavigationBar from '../components/NavigationBar.js';
-import { useAuthHeader } from 'react-auth-kit';
+import { useAuthHeader, useIsAuthenticated } from 'react-auth-kit';
 
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
 function ViewLeasePage() {
     const [pdfUrl,setPdfUrl] = useState('')
     const navigate = useNavigate();
     const token = useAuthHeader(); 
     const location = useLocation();
-    const { tenantID } = location.state;
+    console.log(location)
+    var tenantID;
+    if (location.state != null){
+      tenantID = location.state.tenantID;
+    }
+    const authenticated = useIsAuthenticated();
     console.log("tenantID: ", tenantID);
 
     const navigateToAccountManagement = () => {
@@ -22,6 +25,7 @@ function ViewLeasePage() {
   }
 
     useEffect(() => {
+      if (authenticate()){
       fetch(`http://localhost:5000/api/landlord/getLease/?tenantID=${tenantID}`, {
         headers:{
           Authorization: `${token()}`
@@ -38,7 +42,23 @@ function ViewLeasePage() {
           console.error(error);
           // Handle error
         });
-    }, []);
+    }}, []);
+
+    // Ensure that user is authenticated for all renders
+    const authenticate = () => {
+      // Check if still autenticated based on react auth kit
+      if (!authenticated()){
+          console.log("Not authenticated, redirecting.")
+          navigate('/')
+          return false
+      } else {
+          return true
+      }
+  }
+  useEffect(() => {
+      authenticate()
+  })
+
 
     return (
         <>

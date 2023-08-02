@@ -16,7 +16,8 @@ import NavigationBar from '../components/NavigationBar.js';
 import { Accordion, 
     AccordionButton, 
     AccordionItem, 
-    AccordionPanel, 
+    AccordionPanel,
+    Flex, 
     TableContainer, 
     Table,
     Thead,
@@ -83,15 +84,17 @@ const AccountManagement = () => {
   const { onOpen: onOpenModal, onClose: onCloseModal, isOpen: isOpenModal } = useDisclosure();
   const token = useAuthHeader();
   const userDetails = useAuthUser();
+  const authenticated = useIsAuthenticated();
 
-  console.log('user details', userDetails)
-
-  const config = {
-    headers: {
-      Authorization: `${token()}`
-    },
-    params: {
-        email: userDetails().email,
+  var config
+  if (authenticated()){
+    config = {
+      headers: {
+        Authorization: `${token()}`
+      },
+      params: {
+          email: userDetails().email,
+      }
     }
   }
 
@@ -251,10 +254,26 @@ const AccountManagement = () => {
     setTenantAccounts(tenant_html) 
   })}
 
-
-  useEffect(() => {
-    GetTenantAccounts()},
+  const authenticate = () => {
+    // Check if still autenticated based on react auth kit
+    if (!authenticated()){
+        console.log("Not authenticated, redirecting.")
+        navigate('/')
+        return false
+    } else {
+        return true
+    }
+}
+    useEffect(() => {
+      if (authenticate()){
+        GetTenantAccounts()}
+      },
     [])
+
+    // Ensure that user is authenticated for all renders
+    useEffect(() => {
+        authenticate()
+    })
 
   return (
     <>

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext } from "react";
+import React, { useState, useRef, useContext, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios, { AxiosError } from "axios";
 import { Helmet } from "react-helmet";
@@ -31,9 +31,13 @@ const LeaseUpload = () => {
     const navigate = useNavigate();
     const toast = useToast();
     const userDetails = useAuthUser();
+    const authenticated = useIsAuthenticated();
 
     const location = useLocation();
-    const { tenantID } = location.state;
+    var tenantID;
+    if (location.state != null){
+      tenantID = location.state.tenantID;
+    }
     console.log("tenantID: ", tenantID);
 
     const navigateToViewLeasePage = (tenantID) => {
@@ -48,17 +52,33 @@ const LeaseUpload = () => {
       });
       
 
-    const config = {
-        headers: {
-          Authorization: `${token()}`
-        },
-        params: {
-            email: userDetails().email,
+      var config
+      if (authenticated()){
+        config = {
+          headers: {
+            Authorization: `${token()}`
+          },
+          params: {
+              email: userDetails().email,
+          }
         }
       }
 
-      
 
+      const authenticate = () => {
+        // Check if still autenticated based on react auth kit
+        if (!authenticated()){
+            console.log("Not authenticated, redirecting.")
+            navigate('/')
+            return false
+        } else {
+            return true
+        }
+    }
+    // Ensure that user is authenticated for all renders
+    useEffect(() => {
+        authenticate()
+    })
 
     return (
         <>
