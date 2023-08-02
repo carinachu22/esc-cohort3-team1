@@ -171,7 +171,8 @@ export default function ViewTicketPage() {
           <Heading as="h5" size="lg" marginBottom="1em">
             Floor
           </Heading>
-          <Textarea isDisabled
+          <Textarea 
+            readOnly
             name="floor"
             marginBottom="2em"
             value={formik.values.floor}
@@ -180,7 +181,8 @@ export default function ViewTicketPage() {
           <Heading as="h5" size="lg" marginBottom="1em">
             Category Of Request
           </Heading>
-          <Textarea isDisabled
+          <Textarea 
+            readOnly
             name="category"
             placeholder="Enter category"
             value={formik.values.category}
@@ -190,7 +192,8 @@ export default function ViewTicketPage() {
           <Heading as="h5" size="lg"  marginBottom="1em">
             Status
           </Heading>
-          <Textarea isDisabled
+          <Textarea 
+            readOnly
             name="category"
             placeholder="Enter category"
             value={formik.values.status}
@@ -204,7 +207,8 @@ export default function ViewTicketPage() {
           <Heading as="h5" size="lg" marginBottom="1em">
             Unit Number
           </Heading>
-          <Textarea isDisabled
+          <Textarea 
+            readOnly
             name="unit_number"
             marginBottom="2em"
             value={formik.values.unit_number}
@@ -213,7 +217,8 @@ export default function ViewTicketPage() {
           <Heading as="h5" size="lg" marginBottom="1em">
             Description
           </Heading>
-          <Textarea isDisabled
+          <Textarea 
+            readOnly
             name="tenantComment"
             placeholder="Enter your comment"
             value={formik.values.tenantComment}

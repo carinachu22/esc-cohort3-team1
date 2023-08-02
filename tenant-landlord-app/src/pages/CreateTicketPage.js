@@ -232,7 +232,7 @@ function CreateTicketPage() {
         </Box>
 
         {/* Comment Box 2 */}
-        <Box flex="1" marginLeft="2em">
+        <Box >
           <Heading as="h5" size="lg" marginBottom="1em">
             Description
           </Heading>
