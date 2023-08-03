@@ -78,7 +78,7 @@ export const controllerForgotPasswordTenant = (req, res) => {
     }
 
     const secret = process.env.JWT_SECRET + results[0].password;
-    const jsontoken = jwt.sign({email: results.email, id: results[0].tenant_user_id}, secret, {expiresIn: 300});
+    const jsontoken = jwt.sign({email: results[0].email, id: results[0].tenant_user_id}, secret, {expiresIn: 300});
     const link = `http://localhost:5000/api/tenant/reset-password/${results[0].tenant_user_id}/${jsontoken}`;
 
 
