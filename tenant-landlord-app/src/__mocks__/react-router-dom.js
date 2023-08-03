@@ -1,11 +1,10 @@
-//DONT USE THIS FOR NOW 
 import {
   BrowserRouter,
   useNavigate,
   Link,
   Routes,
   Route,
-  Navigate
+  Navigate,
 } from "react-router-dom/dist/index.js";
 
 export const useLocation = () => ({
@@ -16,4 +15,4 @@ export const useLocation = () => ({
   key: "mocked-key",
 });
 
-export { BrowserRouter, useNavigate, Link, Routes, Route,Navigate };
+export { BrowserRouter, useNavigate, Link, Routes, Route, Navigate };

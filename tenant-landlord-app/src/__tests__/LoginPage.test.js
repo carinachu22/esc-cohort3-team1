@@ -1,9 +1,17 @@
-import React from "react";
+import "@testing-library/jest-dom";
+import React, { useEffect, useState } from "react";
 import userEvent from "@testing-library/user-event";
 import { render, screen, waitFor } from "./setupTests.js";
-import { BrowserRouter, MemoryRouter } from "react-router-dom";
-import "@testing-library/jest-dom";
+import {
+  BrowserRouter,
+  MemoryRouter,
+  Link,
+  useNavigate,
+  useLocation,
+} from "react-router-dom";
 import { AuthProvider, useSignIn } from "react-auth-kit";
+import { useFormik } from "formik";
+//import axios, { AxiosError } from "axios";
 
 import LoginPage from "../pages/LoginPage.js";
 import Dashboard from "../pages/Dashboard.js";
@@ -46,6 +54,10 @@ describe("Login.js", () => {
       </AuthProvider>
     );
     await userEvent.click(screen.getByRole("button", { name: "LOGIN" }));
+
+    //Check if login button is still there - it is :( )
+    const submitBtn = screen.queryByRole("button", { name: "LOGIN" });
+    expect(submitBtn).toBeInTheDocument();
   });
 
   test("Toggle Password visible", async () => {
@@ -64,8 +76,8 @@ describe("Login.js", () => {
     await userEvent.click(screen.getByRole("button", { name: "Show" }));
     expect(screen.getByText(/Hide/i)).toBeInTheDocument(); // TODO: Mock API calls, go to navigateDashboard page
   });
-  /** 
-  test("Invalid email/Password", async () => {
+
+  test("Fill up email input", async () => {
     render(
       <AuthProvider
         authType={"cookie"}
@@ -78,12 +90,29 @@ describe("Login.js", () => {
         </BrowserRouter>
       </AuthProvider>
     );
-    await userEvent.click(screen.getByRole("button", { name: "LOGIN" }));
-    //Mock API calls, check values and call error
+    await userEvent.type(
+      screen.getByPlaceholderText("Email"),
+      "tenant1@gmail.com"
+    );
+    expect(screen.getByPlaceholderText("Email")).toHaveValue(
+      "tenant1@gmail.com"
+    );
   });
 
-*/
+  test("Fill up password input", async () => {
+    render(
+      <AuthProvider
+        authType={"cookie"}
+        authName={"_auth"}
+        cookieDomain={window.location.hostname}
+        cookieSecure={false}
+      >
+        <BrowserRouter>
+          <LoginPage />
+        </BrowserRouter>
+      </AuthProvider>
+    );
+    await userEvent.type(screen.getByPlaceholderText("Password"), "password");
+    expect(screen.getByPlaceholderText("Password")).toHaveValue("password");
+  });
 });
-/** Extra tests
- * - Data validation of email/password
- */
