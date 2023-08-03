@@ -120,7 +120,7 @@ function QuotationPage() {
         <>
         {NavigationBar()}
         <Box p={10} bg="#EDF2F7" borderRadius="md" boxShadow="lg" mr = "10%" ml="10%">
-            <Heading mb={5} textAlign="center">Job Quote for Ticket: {ticketName}</Heading>
+            <Heading mb={5} textAlign="center">Job Quote for Ticket: {ticketID}</Heading>
             <Box display="flex" flexDirection="column" justifyContent="center" minHeight="50vh">
                 {pdfUrl && <iframe src={pdfUrl} width="100%" height="600px" />}
             <Checkbox id="quotationCheckbox" isChecked={isCheckboxChecked} onChange={(e) => setCheckboxChecked(e.target.checked)}>
