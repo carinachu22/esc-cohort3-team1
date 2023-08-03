@@ -6,7 +6,7 @@ import axios, { AxiosError } from "axios";
 jest.mock("axios");
 
 test("API to login is successful", async () => {
-  const backend_response = [
+  const resp_data = [
     {
       tenant_user_id: 38,
       email: "tenant1@gmail.com",
@@ -16,7 +16,7 @@ test("API to login is successful", async () => {
       deleted_date: null,
     },
   ];
-  const resp = { data: backend_response };
+  const resp = { data: resp_data };
   const values = {
     email: "tenant1@gmail.com",
     hasError: false,
