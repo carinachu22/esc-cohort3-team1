@@ -19,12 +19,10 @@ import LeaseUpload from './LeaseUploadPage.js';
 import { Routes, Route } from 'react-router-dom';
 import { ChakraProvider } from "@chakra-ui/react";
 
-import { SelectedTicketProvider } from '../components/SelectedTicketContext.js';
 
 
 function App() {
   return (
-    <SelectedTicketProvider>
     <ChakraProvider>
       <div className="App">
         <div className='App-cover'>
@@ -48,7 +46,6 @@ function App() {
         </div>
       </div>
     </ChakraProvider>
-    </SelectedTicketProvider>
   );
 }
 

@@ -15,15 +15,12 @@ import {
   Heading,
   useToast
 } from "@chakra-ui/react";
-
-import { SelectedTicketContext } from '../components/SelectedTicketContext.js';
 import { useNavigate, useLocation } from "react-router-dom";
 
 import NavigationBar from "../components/NavigationBar.js";
 
 const QuotationUpload = () => {
   const [pdfUrl, setPdfUrl] = useState('');
-  const { selectedTicket, setSelectedTicket } = useContext(SelectedTicketContext);
   const token = useAuthHeader();
   const navigate = useNavigate();
   const toast = useToast();
@@ -36,13 +33,12 @@ const QuotationUpload = () => {
   const authenticated = useIsAuthenticated();
 
   const retrieveFile = () => {
-    console.log(selectedTicket);
     const config = {
         headers: {
             Authorization: `${token()}`
         },
         params: {
-            id: selectedTicket.id,
+            id: ticketID,
             responseType: "blob"
         }
     }
@@ -126,7 +122,7 @@ const QuotationUpload = () => {
             }}
           >
             {({ handleSubmit, setFieldValue }) => ( // Use Formik's handleSubmit and setFieldValue
-              <Form target="_blank" action={`http://localhost:5000/api/landlord/uploadQuotation/${selectedTicket.id}`} method="POST" encType="multipart/form-data">
+              <Form target="_blank" action={`http://localhost:5000/api/landlord/uploadQuotation/${ticketID}`} method="POST" encType="multipart/form-data">
                 <VStack align="flex-start" alignItems="center">
                   <Heading marginTop="4">Quotation Upload</Heading>
                   <FormControl marginTop="6">

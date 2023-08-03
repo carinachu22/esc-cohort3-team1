@@ -5,14 +5,11 @@ import { ArrowBackIcon } from '@chakra-ui/icons';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 import NavigationBar from '../components/NavigationBar.js';
-import { SelectedTicketContext } from '../components/SelectedTicketContext.js';
 import axios from 'axios';
 import { useAuthHeader, useIsAuthenticated } from 'react-auth-kit';
 
 
 function QuotationPage() {
-    const {selectedTicket, setSelectedTicket} = useContext(SelectedTicketContext);
-    const ticketName = `${selectedTicket.id}`; 
     const [pdfUrl,setPdfUrl] = useState('')
     const [isCheckboxChecked, setCheckboxChecked] = useState(false); 
     const navigate = useNavigate();

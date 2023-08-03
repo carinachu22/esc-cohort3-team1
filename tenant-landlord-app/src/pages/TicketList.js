@@ -28,7 +28,6 @@ Box, AccordionIcon, HStack, Button,
     InputGroup,
     InputRightElement
   } from '@chakra-ui/react';
-import { SelectedTicketContext } from '../components/SelectedTicketContext.js';
 
 
 
@@ -48,7 +47,6 @@ export default function TicketList() {
     const token = useAuthHeader();
     const authenticated = useIsAuthenticated();
     const userDetails = useAuthUser();
-    const {selectedTicket, setSelectedTicket} = useContext(SelectedTicketContext);
     const [searchInput, setSearchInput] = useState("");
     const [searchType, setSearchType] = useState("");
     const [filterOption, setFilterOption] = useState("");

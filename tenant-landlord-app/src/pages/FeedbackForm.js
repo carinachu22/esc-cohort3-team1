@@ -6,10 +6,8 @@ import { useAuthHeader, useIsAuthenticated }from 'react-auth-kit';
 import { useFormik } from 'formik';
 import axios, { AxiosError } from 'axios';
 
-import { SelectedTicketContext } from '../components/SelectedTicketContext.js';
 
 function FeedbackForm() {
-  const {selectedTicket, setSelectedTicket} = useContext(SelectedTicketContext);
   const token = useAuthHeader();
   const navigate = useNavigate();
   const [rating, setRating] = useState(-1);
