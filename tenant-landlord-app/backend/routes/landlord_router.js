@@ -22,7 +22,11 @@ import {
   controllerGetLeaseByLandlord,
   controllerDeleteLease,
   controllerUpdateLease,
-  controllerGetLeaseDetails
+  controllerGetLeaseDetails,
+  controllerGetLandlordAccounts,
+  controllerGetLandlordDetails,
+  controllerDeleteAllLandlords,
+  controllerDeleteLandlordByEmail
 } from "../controller/landlord_controller.js";
 import express from "express";
 import { checkLandlordToken } from "../auth/landlord_validation.js";
@@ -89,6 +93,11 @@ router.patch("/ticketWork/", checkLandlordToken, controllerTicketWork);
 router.get("/getTenantAccounts/", controllerGetTenantAccounts);
 router.patch("/deleteAllTenants", controllerDeleteAllTenants);
 router.patch("/deleteTenantByEmail", controllerDeleteTenantByEmail);
+
+router.get("/getLandlordAccounts", controllerGetLandlordAccounts);
+router.get("/getLandlordDetails", checkLandlordToken, controllerGetLandlordDetails);
+router.patch("/deleteAllLandlords", controllerDeleteAllLandlords);
+router.patch("/deleteLandlordByEmail", controllerDeleteLandlordByEmail);
 
 
 export default router;

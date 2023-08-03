@@ -1,7 +1,6 @@
 import Landing from '../components/landing_form/landing.js';
 import React from 'react';
 import LoginPage from './LoginPage.js';
-import LandlordSignup from './landlord_signup.js';
 import Dashboard from './Dashboard.js';
 import FeedbackForm from './FeedbackForm.js';
 import CreateTicketPage from './CreateTicketPage.js'; 
@@ -14,7 +13,7 @@ import QuotationUpload from './QuotationUploadPage.js';
 import TenantCreationPage from './TenantCreationPage.js';
 import ViewLeasePage from './ViewLeasePage.js';
 import LeaseUpload from './LeaseUploadPage.js';
-
+import LandlordCreationPage from './LandlordCreationPage.js';
 
 import { Routes, Route } from 'react-router-dom';
 import { ChakraProvider } from "@chakra-ui/react";
@@ -31,8 +30,8 @@ function App() {
             <Route path="/pages/LoginPage/*" element={<LoginPage />} />
             <Route path="/pages/QuotationUploadPage/*" element={<QuotationUpload />} />
             <Route path="/pages/TenantCreationPage/*" element={<TenantCreationPage />} />
+            <Route path="/pages/LandlordCreationPage/*" element={<LandlordCreationPage />} />
             <Route path='/pages/ForgotPasswordPage' element={<ForgotPasswordPage/>} />
-            <Route path="/pages/landlord_signup/*" element={<LandlordSignup />} />
             <Route path='/pages/Dashboard/*' element={<Dashboard/>} />
             <Route path='/pages/TicketList/*' element={<TicketList/>} />
             <Route path='/pages/FeedbackForm/*' element={<FeedbackForm/>} />

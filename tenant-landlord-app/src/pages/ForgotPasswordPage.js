@@ -121,7 +121,7 @@ const ForgotPasswordPage = () => {
                                 > 
                                 Send Link
                             </Button>
-                            {formik.errors.hasError ? <Box color="red.500" id="errorMessage" marginBottom="-6" >Invalid email or password</Box>: null}
+                            {formik.errors.hasError ? <Box color="red.500" id="errorMessage" marginBottom="-6" >User does not exist!</Box>: null}
                         </FormControl>
                         
                     </VStack>

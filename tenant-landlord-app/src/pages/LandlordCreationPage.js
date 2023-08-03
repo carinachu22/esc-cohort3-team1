@@ -20,26 +20,28 @@ import {
     useToast
 } from "@chakra-ui/react";
 
-const TenantCreationPage = () => {
+const LandlordCreationPage = () => {
     const navigate = useNavigate();
     const token = useAuthHeader();
     const userDetails = useAuthUser();
     const toast = useToast();
     const authenticated = useIsAuthenticated();
+    const type = userDetails().type;
+
 
     var config
     if (authenticated()){
-    config = {
-        headers: {
-        Authorization: `${token()}`
-        },
-        params: {
-            email: userDetails().email,
+        config = {
+            headers: {
+            Authorization: `${token()}`
+            },
+            params: {
+                email: userDetails().email,
+            }
         }
     }
-    }
 
-    
+
 
     const validate = values => {
         let errors = {};
@@ -52,6 +54,10 @@ const TenantCreationPage = () => {
 
         if(!values.password){
             errors.password = "Required";
+        }
+
+        if(!values.ticketType){
+            errors.ticketType = "Required";
         }
 
         return errors;
@@ -75,7 +81,7 @@ const TenantCreationPage = () => {
         try{
             const response = await axios.post(
                 //api to be added
-                "http://localhost:5000/api/landlord/createTenant",
+                "http://localhost:5000/api/landlord/create",
                 values,
                 config
             )
@@ -108,8 +114,9 @@ const TenantCreationPage = () => {
     const formik = useFormik({
         initialValues: {
             email: "",
+            user_email: config.params.email,
             password: "",
-            landlordEmail: config.params.email,
+            ticketType: "",
             hasError: false
         },
         onSubmit,
@@ -141,7 +148,7 @@ const TenantCreationPage = () => {
             <Box w="22em" h="30em" p={8} rounded="md" position="relative" borderRadius="1em" boxShadow="0 0.188em 1.550em rgb(156, 156, 156)">
                 <form onSubmit={formik.handleSubmit}>
                     <VStack align="flex-start" alignItems="center">
-                        <Heading marginTop="4" >Create Tenant</Heading>
+                        <Heading marginTop="4" >Create Staff</Heading>
                         <FormControl marginTop="6">
                             <Input
                                 id="email" 
@@ -174,6 +181,19 @@ const TenantCreationPage = () => {
                             </InputGroup>
                             {formik.errors.password ? <Box color="red.500"  marginBottom="-6">{formik.errors.password}</Box>: null}                          
                         </FormControl>
+                        <FormControl marginTop="6">
+                            <Input
+                                id="ticketType" 
+                                name="ticketType"
+                                type="text" 
+                                variant="filled"
+                                placeholder="Ticket Type"
+                                value={formik.values.ticketType}
+                                onChange={formik.handleChange}
+                                
+                            />
+                            {formik.errors.ticketType ? <Box color="red.500" marginBottom="-6">{formik.errors.ticketType}</Box>: null}
+                        </FormControl>
                         <FormControl marginTop="6" >
                             <Button 
                                 id="loginButton"
@@ -198,4 +218,4 @@ const TenantCreationPage = () => {
 
 }
 
-export default TenantCreationPage
+export default LandlordCreationPage

@@ -35,14 +35,12 @@ export const controllerLoginTenant = (req, res) => {
     if (err) {
       console.log(err);
     }
-    console.log(results[0]);
-    if (results[0] === undefined) {
+    else if (results.length === 0 || results[0].deleted_date != null) {
       return res.json({
         success: 0,
-        data: "Invalid username or password",
+        message: "Invalid email or password",
       });
     }
-    
     console.log(body.password, results[0].password);
     const password_check = compareSync(body.password, results[0].password);
     if (password_check) {
@@ -72,7 +70,7 @@ export const controllerForgotPasswordTenant = (req, res) => {
     if (err) {
       console.log(err);
     }
-    if (!results) {
+    if (results.length === 0 || results[0].deleted_date != null) {
       return res.json({
         success: 0,
         message: "User does not exist!",
