@@ -30,8 +30,8 @@ describe('Successful/Usual Service Ticket Workflow', function () {
         await tenant_driver.manage().setTimeouts({implicit: 500});
 
         // In Tenant Login Page
-        let result =  await tenant_driver.findElement(By.xpath("//*[@id='root']/div/div/div/div/form/div/h2")).isDisplayed();
-        assert.equal(true, result)
+        let result = await tenant_driver.findElement(By.xpath("//*[@id='root']/div/div/div/div/form/div/h2")).getText();
+        assert.equal("Welcome tenant!", result);
     });
 
     it('Tenant Login', async function () {
@@ -102,8 +102,8 @@ describe('Successful/Usual Service Ticket Workflow', function () {
         await landlord_driver.manage().setTimeouts({ implicit: 800 });
 
         // In Landlord Dashboard
-        let result = await landlord_driver.findElement(By.xpath("//*[@id='root']/div/div/div/div/form/div/div[3]")).isDisplayed();
-        assert.equal(true, result);
+        let result = await landlord_driver.findElement(By.xpath("//*[@id='root']/div/div/div/div/form/div/h2")).getText();
+        assert.equal("Welcome landlord!", result);
     });
         
     it('Tenant View Service Tickets', async function () {
@@ -114,7 +114,6 @@ describe('Successful/Usual Service Ticket Workflow', function () {
 
         await tenant_driver.manage().setTimeouts({implicit: 300});
     
-        //TODO - tenant can view tickets
         const result = await tenant_driver.findElement(By.css('#ticketTable')).isDisplayed();
         assert.equal(true, result);
     
@@ -164,7 +163,6 @@ describe('Successful/Usual Service Ticket Workflow', function () {
         await tenant_driver.manage().setTimeouts({implicit: 300});
         await tenant_driver.sleep(3000);
     
-        //TODO - tenant can view tickets
         // Can find element but not visible
         const result = await tenant_driver.findElement(By.xpath("//div[text()='Dummy Request Description']")).isDisplayed();
         assert.equal(false, result);
@@ -176,7 +174,7 @@ describe('Successful/Usual Service Ticket Workflow', function () {
 
         let title = await landlord_driver.getTitle();
         assert.equal("React App", title);
-
+        
         await landlord_driver.manage().setTimeouts({implicit: 300});
         //TODO - tenant can view tickets
         const result = await landlord_driver.findElement(By.css('#ticketTable')).isDisplayed();
@@ -191,7 +189,6 @@ describe('Successful/Usual Service Ticket Workflow', function () {
 
         await landlord_driver.manage().setTimeouts({implicit: 300});
     
-        //TODO - tenant can view tickets
         // Can find element but not visible
         const result = await landlord_driver.findElement(By.xpath("//div[text()='Dummy Request Description']")).isDisplayed();
         assert.equal(false, result);
