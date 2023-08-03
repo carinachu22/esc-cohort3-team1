@@ -72,7 +72,7 @@ function CreateTicketPage() {
         if (ticketType === 'Others' ){
             values = {
             email: userDetails().email,
-            request_type: ticketType + ' - ' + otherRequestType,
+            ticket_type: ticketType + ' - ' + otherRequestType,
             request_description: tenantComment,
             additional_heading: additionalHeading,
             submitted_date_time:
@@ -94,7 +94,7 @@ function CreateTicketPage() {
         } else {
         values = {
         email: userDetails().email,
-        request_type: ticketType,
+        ticket_type: ticketType,
         request_description: tenantComment,
         submitted_date_time:
           currentdate.getFullYear().toString() +
@@ -113,8 +113,8 @@ function CreateTicketPage() {
         feedback_rating: '-1',
       };
         }
-        console.log(values['request_type'])
-        console.log(values['request_type'].slice(0,6))
+        console.log(values['ticket_type'])
+        console.log(values['ticket_type'].slice(0,6))
         const response1 = await axios.post(
             'http://localhost:5000/api/tenant/createTicket',
             values,

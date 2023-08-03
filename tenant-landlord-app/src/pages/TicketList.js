@@ -182,7 +182,7 @@ export default function TicketList() {
                         {ticket.email}
                         </Box>
                         <Box textAlign='left' width='20vw'>
-                        {ticket.request_type}
+                        {ticket.ticket_type}
                         </Box>
                         <Box textAlign='left' width='18vw'>
                         {convertStatus(ticket.status)}
@@ -195,7 +195,7 @@ export default function TicketList() {
                         <Box>
                         Service Request ID: {ticket.public_service_request_id} <br></br>
                         Email: {ticket.email} <br></br>
-                        Request Type: {ticket.request_type} <br></br>
+                        Request Type: {ticket.ticket_type} <br></br>
                         Request Description: {ticket.request_description} <br></br>
                         Status: {convertStatus(ticket.status)} <br></br>
                         Landlord Assigned: {ticket.landlord_email}<br></br>
@@ -248,7 +248,7 @@ export default function TicketList() {
         }
         return tickets.filter((ticket) =>
             ticket.email.toLowerCase().includes(searchInput.toLowerCase()) &&
-            ticket.request_type.toLowerCase().includes(searchType.toLowerCase())
+            ticket.ticket_type.toLowerCase().includes(searchType.toLowerCase())
         );
     };
 
@@ -277,7 +277,7 @@ export default function TicketList() {
                     {ticket.email}
                     </Box>
                     <Box textAlign='left' width='20vw'>
-                    {ticket.request_type}
+                    {ticket.ticket_type}
                     </Box>
                     <Box textAlign='left' width='18vw'>
                     {convertStatus(ticket.status)}
@@ -290,7 +290,7 @@ export default function TicketList() {
                     <Box>
                     Service Request ID: {ticket.public_service_request_id} <br></br>
                     Email: {ticket.email} <br></br>
-                    Request Type: {ticket.request_type} <br></br>
+                    Request Type: {ticket.ticket_type} <br></br>
                     Request Description: {ticket.request_description} <br></br>
                     Status: {convertStatus(ticket.status)} <br></br>
                     </Box>

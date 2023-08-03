@@ -187,7 +187,7 @@ export const controllerResetPasswordTenant = async (req, res) => {
 
 /**
  * Create Ticket
- * @param {*} req public_service_request_id (eg. 2023-01-01 00:00:00), name, email, request_type, request_description, quptation_path, submitted_date_time(Date Type)
+ * @param {*} req public_service_request_id (eg. 2023-01-01 00:00:00), name, email, ticket_type, request_description, quptation_path, submitted_date_time(Date Type)
  * @param {*} res 
  */
 export const controllerCreateTicket = (req, res) => {
