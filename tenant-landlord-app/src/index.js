@@ -7,6 +7,8 @@ import { BrowserRouter } from 'react-router-dom';
 import {AuthProvider} from "react-auth-kit";
 import { ChakraProvider } from '@chakra-ui/react';
 
+// const textEmail = document.getElementById('textEmail');
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <ChakraProvider>
@@ -30,6 +32,7 @@ root.render(
   </ChakraProvider>
 
 );
+
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

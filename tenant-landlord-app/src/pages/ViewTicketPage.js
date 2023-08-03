@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Box, Heading, Textarea, Input } from '@chakra-ui/react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useAuthUser, useAuthHeader } from 'react-auth-kit';
+import { useAuthUser, useAuthHeader, useIsAuthenticated } from 'react-auth-kit';
 import { useFormik } from 'formik';
 import axios, { AxiosError } from 'axios';
 
-import { SelectedTicketContext } from '../components/SelectedTicketContext.js';
 import NavigationBar from '../components/NavigationBar.js';
 import CheckTicket from '../components/CheckTicket.js';
 
@@ -14,13 +13,14 @@ export default function ViewTicketPage() {
   const token = useAuthHeader();
   const userDetails = useAuthUser();
   const [status, setstatus] = useState('');
-  const {selectedTicket, setSelectedTicket} = useContext(SelectedTicketContext);
   const [ticket, setTicket] = useState('');
   const location = useLocation();
-  const { ticketID } = location.state;
+  var ticketID;
+  if (location.state != null){
+    ticketID = location.state.ticketID;
+  }
   console.log('ID', ticketID)
-
-  console.log('selectedTicket:', selectedTicket);
+  const authenticated = useIsAuthenticated();
   const GetServiceTickets = (userDetails) => {
     if (userDetails() === undefined){
         return;
@@ -39,18 +39,19 @@ export default function ViewTicketPage() {
                   Authorization: `${token()}`
                 },
                 params: {
-                    email: userDetails().email
+                    email: userDetails().email,
+                    id: ticketID
                 }
             }
             if (type === 'landlord'){
                 response = await axios.get(
-                  `http://localhost:5000/api/landlord/getTicketById/${ticketID}`,
+                  `http://localhost:5000/api/landlord/getTicketById/`,
                     // console.log(`http://localhost:5000/api/landlord/getTicketById/${selectedTicket}`),
                     config
                 )
             } else if (type === 'tenant'){ 
                 response = await axios.get(
-                  `http://localhost:5000/api/tenant/getTicketById/${ticketID}`,
+                  `http://localhost:5000/api/tenant/getTicketById/`,
                     config
                 )
             }
@@ -86,13 +87,16 @@ export default function ViewTicketPage() {
         var category = tickets[0].request_type;
         setstatus(tickets[0].status)
         var timesubmitted = tickets[0].submitted_date_time;
+        var floor = tickets[0].floor;
+        var unit_number = tickets[0].unit_number;
         setTicket(tickets[0])
         // console.log('tenantComment', tenantComment);
         // console .log('category', category);
         // console.log('status', status);
         // console.log('timesubmitted', timesubmitted);
         formik.setValues({
-          // location: response.data.data.location, // Replace 'location' with the appropriate field names from your response
+          floor: floor,
+          unit_number: unit_number,
           category: category,
           tenantComment: tenantComment,
           status: status,
@@ -104,7 +108,8 @@ export default function ViewTicketPage() {
 
   const formik = useFormik({
     initialValues: {
-      location: '',
+      floor: '',
+      unit_number: '',
       category: '',
       tenantComment: '',
       status: '',
@@ -115,12 +120,30 @@ export default function ViewTicketPage() {
 
   
   useEffect(() => {
-
-    GetServiceTickets(userDetails);
-    if (status === 'completed') {
-      navigate('/pages/FeedbackForm');
+    if (authenticate()){
+      GetServiceTickets(userDetails);
+      if (status === 'completed') {
+        navigate('/pages/FeedbackForm');
+      } 
     }
   }, [status, navigate]);
+
+
+    // Ensure that user is authenticated for all renders
+    const authenticate = () => {
+      // Check if still autenticated based on react auth kit
+      if (!authenticated()){
+          console.log("Not authenticated, redirecting.")
+          navigate('/')
+          return false
+      } else {
+          return true
+      }
+  }
+  useEffect(() => {
+      authenticate()
+  })
+
 
   return (
     <>
@@ -135,7 +158,6 @@ export default function ViewTicketPage() {
       fontFamily="'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif"
       marginTop="5vh"
     >
-      {console.log(selectedTicket)}
       {/* Title */}
       <Heading as="h4" size="2xl" marginBottom="1em">
         Your Service Ticket
@@ -146,14 +168,13 @@ export default function ViewTicketPage() {
         {/* Comment Box 1 */}
         <Box flex="1" marginRight="2em">
           <Heading as="h5" size="lg" marginBottom="1em">
-            Location
+            Floor
           </Heading>
           <Textarea isDisabled
-            name="location"
-            placeholder="Enter location"
-            value={formik.values.location}
-            onChange={formik.handleChange}
+            name="floor"
             marginBottom="2em"
+            value={formik.values.floor}
+            onChange={formik.handleChange}
           />
           <Heading as="h5" size="lg" marginBottom="1em">
             Category Of Request
@@ -177,8 +198,17 @@ export default function ViewTicketPage() {
           />
         </Box>
 
-        {/* Comment Box 3 */}
+        {/* Comment Box 2 */}
         <Box flex="1" marginLeft="2em">
+          <Heading as="h5" size="lg" marginBottom="1em">
+            Unit Number
+          </Heading>
+          <Textarea isDisabled
+            name="unit_number"
+            marginBottom="2em"
+            value={formik.values.unit_number}
+            onChange={formik.handleChange}
+          />
           <Heading as="h5" size="lg" marginBottom="1em">
             Description
           </Heading>
