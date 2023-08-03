@@ -14,7 +14,8 @@ import {
   getLeaseByTenant,
   getQuotation,
   getQuotationPath,
-  getLeaseByTenantEmail
+  getLeaseByTenantEmail,
+  rejectTicketWork
 } from "../models/tenant_model.js";
 import { genSaltSync, hashSync, compareSync } from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -415,6 +416,33 @@ export const controllerCloseTicketStatus = (req, res) => {
   })
 }
 
+export const controllerRejectTicketWork = (req, res) => {
+  const id = req.body.ticket_id;
+  const body = req.body;
+  console.log(body.status)
+  let status;
+  if (body.status === "work_rejected") {
+     status = "ticket_work_rejected"
+   } else {
+    status = "reject_attempt_failed"
+   }
+  
+  rejectTicketWork (id, status, (err, results) => {
+    if (err) {
+      console.log(err);
+      return;
+    } if (!results) {
+      return res.json ({
+        success : 0,
+        message: "Failed to update user"
+      })
+    } return res.status(200).json({
+      success: 1,
+      data: "updated sucessfully"
+    })
+  })
+}
+
 /**
  * 
  * @param {object} req 
@@ -495,3 +523,4 @@ export const controllerGetQuotation = (req, res) => {
     }
   });
 };
+

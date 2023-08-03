@@ -3,7 +3,7 @@ import { useAuthHeader, useIsAuthenticated } from "react-auth-kit";
 import { useNavigate } from "react-router-dom"
 import React, {useState} from "react"
 
-import { Box, Button, Textarea, useToast, Heading, Stack, Icon, Checkbox } from '@chakra-ui/react';
+import { Box, Button, Textarea, useToast, Heading, Stack, Icon, Checkbox, HStack } from '@chakra-ui/react';
 import { IoIosStarOutline, IoIosStar } from 'react-icons/io/index.esm.js';
 
 /**
@@ -301,7 +301,7 @@ export default function CheckTicket(ticket, userDetails){
     // Check if landlord has started work on service ticket
     // Do not allow tenant to do anything
     // Allow landlord to end work
-    // TODO: Allow tenant to view quotation without approve/reject
+    // TODO: Allow tenant to view quotation without approve/reject actions
     if (status === 'landlord_started_work'){
         if (userDetails().type === 'landlord'){
             return(
@@ -350,6 +350,39 @@ export default function CheckTicket(ticket, userDetails){
     if (status === 'landlord_completed_work'){
       if (userDetails().type === 'tenant'){
         return(
+            <HStack spacing='5vw'>
+            <Button
+            variant="solid"
+            colorScheme="blue"
+            onClick={() =>  {axios.patch(
+            `http://localhost:5000/api/tenant/rejectTicketWork/`,
+            {
+                status: "work_rejected",
+                ticket_id: id
+            },
+            {
+                headers: {
+                  Authorization: `${token()}`
+                }
+            }
+            );navigate('/pages/TicketList');                 
+            toast({
+                title: "Work Rejected",
+                description: "Rejected ticket work.",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+                position: "top",
+                })
+            }
+          }
+          width="13em"
+          height="3em"
+          marginTop="3em"
+          borderRadius="0.25em"
+          >
+          Reject Works
+          </Button>
           <Button
           variant="solid"
           colorScheme="blue"
@@ -361,11 +394,58 @@ export default function CheckTicket(ticket, userDetails){
           >
           Close Ticket & Give Feedback
           </Button>
+          </HStack>
         )
       } else {
         return
       }
     }
+
+    // Check if tenant has rejected the work done by tenant
+    // Do not allow tenant to do anything
+    // Allow landlord to start work
+    if (status === 'ticket_work_rejected'){
+      if (userDetails().type === 'landlord'){
+          return(
+              <Button
+              variant="solid"
+              colorScheme="blue"
+              width="13em"
+              height="3em"
+              marginTop="3em"
+              marginLeft="2.3em"
+              marginBottom="5vh"
+              borderRadius="0.25em"
+              onClick = {() => {console.log('starting work');
+              axios.patch(
+              `http://localhost:5000/api/landlord/ticketWork/`,
+              {
+                  ticket_work_status: 1,
+                  ticket_id: id
+              },
+              {
+                  headers: {
+                      Authorization: `${token()}`
+                  }
+              }
+              );navigate('/pages/TicketList');
+              toast({
+                  title: "Work Started",
+                  description: "Ticket work set to started.",
+                  status: "success",
+                  duration: 5000,
+                  isClosable: true,
+                  position: "top",
+                  })}
+              }
+              >
+              Start Work
+              </Button>
+          )
+      } else {
+          return
+      }
+  }
 
     // Check if service ticket has already been closed
     // Allow tenant and landlord to view feedback

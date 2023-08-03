@@ -1,6 +1,18 @@
 import {pool} from "../config/database.js";
 
-const statuses = ["tenant_ticket_created", "landlord_ticket_rejected", "landlord_ticket_approved", "landlord_quotation_sent", "ticket_quotation_rejected", "ticket_quotation_approved", "landlord_started_work", "landlord_completed_work", "tenant_feedback_given", "landlord_ticket_closed"]
+const statuses = [
+                    "tenant_ticket_created", 
+                    "landlord_ticket_rejected", 
+                    "landlord_ticket_approved", 
+                    "landlord_quotation_sent", 
+                    "ticket_quotation_rejected", 
+                    "ticket_quotation_approved", 
+                    "landlord_started_work", 
+                    "landlord_completed_work", 
+                    "tenant_feedback_given", 
+                    "landlord_ticket_closed",
+                    "ticket_work_rejected"
+                ]
 
 /**
  * Get tenant with email
@@ -294,6 +306,29 @@ export const addFeedbackText = (id, feedback_text, callBack) => {
  * @param {*} callBack 
  */
 export const closeTicketStatus = (id, data, callBack) => {
+  if (statuses.includes(data)) {
+    pool.query (
+      `
+      UPDATE service_request
+      SET status = ?
+      WHERE public_service_request_id = ?
+      `,
+      [
+        data, id
+      ],
+      (error, results, fields) => {
+        if (error) {
+          callBack(error);
+        } else {
+          callBack(null,results);
+        }
+      }  
+  )} else {
+    callBack("invalid status")
+  }
+}
+
+export const rejectTicketWork = (id, data, callBack) => {
   if (statuses.includes(data)) {
     pool.query (
       `
