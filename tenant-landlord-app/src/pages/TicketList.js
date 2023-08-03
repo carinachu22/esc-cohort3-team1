@@ -52,6 +52,7 @@ export default function TicketList() {
     const [filterOption, setFilterOption] = useState("");
     const [filteredTickets, setFilteredTickets] = useState(null);
 
+
     const checkStep = (status) => {
         const step_1 = ['tenant_ticket_created','landlord_quotation_sent', 'ticket_quotation_rejected', 'landlord_ticket_approved']
         const step_2 = ['ticket_quotation_approved', 'landlord_started_work','ticket_work_rejected']
@@ -113,6 +114,7 @@ export default function TicketList() {
         const type = userDetails().type;
         const tickets_list = [];
         let response;
+
     
         // Initialse function for fetching ALL service tickets if landlord is logged in
         const APIGetTickets = async (type) => {
@@ -128,9 +130,10 @@ export default function TicketList() {
                 }
                 if (type === 'landlord'){
                     response = await axios.get(
-                        "http://localhost:5000/api/landlord/getTickets",
+                        "http://localhost:5000/api/landlord/getTicketsByType",
                         config
                     )
+
                 } else if (type === 'tenant'){ 
                     response = await axios.get(
                         "http://localhost:5000/api/tenant/getTickets",
@@ -195,6 +198,7 @@ export default function TicketList() {
                         Request Type: {ticket.request_type} <br></br>
                         Request Description: {ticket.request_description} <br></br>
                         Status: {convertStatus(ticket.status)} <br></br>
+                        Landlord Assigned: {ticket.landlord_email}<br></br>
                         </Box>
                         <Box width='50vw'>
                             <Stepper index={checkStep(ticket.status)}>

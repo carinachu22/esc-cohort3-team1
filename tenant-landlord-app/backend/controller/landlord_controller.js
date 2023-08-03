@@ -28,7 +28,8 @@ import {
   uploadLease,
   getLeasePath,
   getLandlordAccounts,
-  recoverLandlordAccount
+  recoverLandlordAccount,
+  getTicketsByType
 
 } from "../models/landlord_model.js";
 import { 
@@ -523,20 +524,62 @@ export const controllerDeleteLandlordByEmail = (req, res) => {
 };
 
 /**
- * Gets tickets
+ * Gets tickets requested by tenants under the same building and ticket type as landlord
+ * @param {*} req 
+ * @param {*} res 
+ * @returns Tickets
+ */
+export const controllerGetTicketsByType = (req, res) => {
+  const {email} = req.query;
+  getLandlordByEmail(email, (err, results) => {
+    if (err) {
+      console.log(err);
+      return;
+    } else {
+      const public_building_id = results[0].public_building_id;
+      console.log("building id", public_building_id);
+      const ticketType = results[0].ticket_type;
+      getTicketsByType(public_building_id, ticketType, (err, results) => {
+        console.log(results);
+        if (err) {
+          console.log(err);
+          return;
+        } else {
+          return res.json({
+            success: "1",
+            data: results,
+          });
+        }
+      });
+    }
+  });
+};
+
+/**
+ * Gets tickets requested by tenants under the same building as landlord
  * @param {*} req 
  * @param {*} res 
  * @returns Tickets
  */
 export const controllerGetTickets = (req, res) => {
-  getTickets((err, results) => {
+  const {email} = req.query;
+  getBuildingID(email, (err, results) => {
     if (err) {
       console.log(err);
       return;
     } else {
-      return res.json({
-        success: "1",
-        data: results,
+      const public_building_id = results.public_building_id;
+      getTickets(public_building_id, (err, results) => {
+        console.log(results);
+        if (err) {
+          console.log(err);
+          return;
+        } else {
+          return res.json({
+            success: "1",
+            data: results,
+          });
+        }
       });
     }
   });

@@ -26,7 +26,8 @@ import {
   controllerGetLandlordAccounts,
   controllerGetLandlordDetails,
   controllerDeleteAllLandlords,
-  controllerDeleteLandlordByEmail
+  controllerDeleteLandlordByEmail,
+  controllerGetTicketsByType
 } from "../controller/landlord_controller.js";
 import express from "express";
 import { checkLandlordToken } from "../auth/landlord_validation.js";
@@ -80,6 +81,7 @@ router.patch("/deleteLease", checkLandlordToken, controllerDeleteLease)
 router.patch("/updateLease", checkLandlordToken, controllerUpdateLease)
 
 router.get("/getTickets", checkLandlordToken, controllerGetTickets);
+router.get("/getTicketsByType", checkLandlordToken, controllerGetTicketsByType);
 router.get("/getTicketById/", checkLandlordToken, controllerGetTicketById);
 router.get("/getTicketsByStatus/:status", checkLandlordToken, controllerGetTicketsByStatus);
 

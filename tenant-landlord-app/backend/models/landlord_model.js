@@ -285,13 +285,23 @@ export const createTenant = (email, password, public_building_id, callBack) => {
 };
 
 /**
- * Get Tickets
+ * Get Tickets requested by tenants of the same building and ticket type as landlord. 
+ * Mainly used by landlord staff
+ * @param {*} public_building_id
+ * @param {*} ticketType
  * @param {*} callBack 
  */
-export const getTickets = (callBack) => {
+export const getTicketsByType = (public_building_id, ticketType, callBack) => {
   pool.query(
     `
-    SELECT * FROM SERVICE_REQUEST`,
+    SELECT SERVICE_REQUEST.* 
+    FROM SERVICE_REQUEST 
+    LEFT JOIN TENANT_USER ON SERVICE_REQUEST.email = TENANT_USER.email
+    WHERE TENANT_USER.public_building_id = ? AND SERVICE_REQUEST.ticket_type = ?`,
+    [
+      public_building_id, 
+      ticketType
+    ],
     (error, results, fields) => {
       if (error) {
         callBack(error);
@@ -313,6 +323,31 @@ export const getTicketById = (id, callBack) => {
     WHERE public_service_request_id = ?
     `,
     [id],
+    (error, results, fields) => {
+      if (error) {
+        callBack(error);
+      } else {
+        callBack(null, results[0]);
+      }
+    }
+  );
+};
+
+/**
+ * Get Tickets requested by tenants of the same building and ticket type as landlord. 
+ * Mainly used by landlord supervisor
+ * @param {*} public_building_id 
+ * @param {*} callBack 
+ */
+export const getTickets = (public_building_id, callBack) => {
+  pool.query(
+    `
+    SELECT SERVICE_REQUEST.* 
+    FROM SERVICE_REQUEST 
+    LEFT JOIN TENANT_USER ON SERVICE_REQUEST.email = TENANT_USER.email
+    WHERE TENANT_USER.public_building_id = ?
+    `,
+    [public_building_id],
     (error, results, fields) => {
       if (error) {
         callBack(error);

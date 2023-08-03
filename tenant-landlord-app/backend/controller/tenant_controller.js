@@ -21,7 +21,6 @@ import { genSaltSync, hashSync, compareSync } from "bcrypt";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 import fs from "fs";
-import { getLease } from "../models/landlord_model.js";
 
 
 /**

@@ -78,7 +78,7 @@ export default function Dashboard() {
                 // If user is a landlord, use landlord API call
                 if (type === 'landlord'){
                     response = await axios.get(
-                        "http://localhost:5000/api/landlord/getTickets",
+                        "http://localhost:5000/api/landlord/getTicketsByType",
                         config
                     )
                 }
