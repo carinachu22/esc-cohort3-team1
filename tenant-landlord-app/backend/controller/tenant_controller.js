@@ -76,9 +76,11 @@ export const controllerForgotPasswordTenant = (req, res) => {
         message: "User does not exist!",
       });
     }
-    const secret = process.env.JWT_SECRET + results.password;
-    const jsontoken = jwt.sign({email: results.email, id: results.tenant_user_id}, secret, {expiresIn: 300});
-    const link = `http://localhost:5000/api/tenant/reset-password/${results.tenant_user_id}/${jsontoken}`;
+
+    const secret = process.env.JWT_SECRET + results[0].password;
+    const jsontoken = jwt.sign({email: results.email, id: results[0].tenant_user_id}, secret, {expiresIn: 300});
+    const link = `http://localhost:5000/api/tenant/reset-password/${results[0].tenant_user_id}/${jsontoken}`;
+
 
     ////// NODEMAILER FEATURE ///////
     ///// nodemailer feature starts from here //////
@@ -97,9 +99,9 @@ export const controllerForgotPasswordTenant = (req, res) => {
       }
     });
     
-    var mailOptions = {
+    let mailOptions = {
       from: process.env.AUTH_USER,
-      to: results.email,
+      to: results[0].email,
       subject: 'Password Reset',
       text: link
     };
