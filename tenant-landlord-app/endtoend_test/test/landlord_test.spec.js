@@ -22,12 +22,12 @@ describe('Login', function () {
         await driver.manage().setTimeouts({ implicit: 300 });
 
         // In first page
-        await driver.findElement(By.xpath("//*[@id='root']/div/div/div/div/div/button[1]")).click();
+        await driver.findElement(By.xpath("//*[@id='root']/div/div/div/div/div/button[2]")).click();
 
         await driver.manage().setTimeouts({ implicit: 500 });
 
         // In Landlord Login Page
-        let result = await driver.findElement(By.xpath("//*[@id='root']/div/div/div/div/form/div/h2")).getText();
+        let result = await driver.findElement(By.xpath('//*[@id="root"]/div/div/div/div/form/div/h2')).getText();
         assert.equal("Welcome landlord!", result);
     });
 

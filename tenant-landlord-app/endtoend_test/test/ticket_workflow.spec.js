@@ -76,8 +76,8 @@ describe('Successful/Usual Service Ticket Workflow', function () {
         await landlord_driver.manage().setTimeouts({ implicit: 500 });
 
         // In Landlord Login Page
-        let result = await landlord_driver.findElement(By.xpath("//*[@id='root']/div/div/div/div/form/div/h2")).isDisplayed();
-        assert.equal(true, result);
+        let result = await landlord_driver.findElement(By.xpath("//*[@id='root']/div/div/div/div/form/div/h2")).getText();
+        assert.equal("Welcome landlord!", result);
     });
 
     it('Landlord Login', async function () {
