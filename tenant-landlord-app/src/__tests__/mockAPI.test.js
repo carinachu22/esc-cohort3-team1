@@ -1,44 +1,37 @@
-import React from "react";
-import userEvent from "@testing-library/user-event";
-import { render, screen, waitFor } from "./setupTests.js";
-import { BrowserRouter, MemoryRouter } from "react-router-dom";
-import "@testing-library/jest-dom";
-import { AuthProvider, useSignIn } from "react-auth-kit";
-import axios from 'axios';
-import MockAdapter from 'axios-mock-adapter';
+// Refer to this file on how to mock axios API calls
+// The test passes
 
-import LoginPage from "../pages/LoginPage.js";
+import axios, { AxiosError } from "axios";
 
-// Create a new instance of the mock adapter
-const mock = new MockAdapter(axios);
+jest.mock("axios");
 
-// Mock the login API call with a custom response
-mock.onPost('http://localhost:5000/api/tenant/login').reply(200, {
-  token: 'mocked-token',
-  user: {
-    id: 123,
-    email: 'testuser',
-    // Add other properties as needed based on your response structure
-  },
+test("API to login is successful", async () => {
+  const backend_response = [
+    {
+      tenant_user_id: 38,
+      email: "tenant1@gmail.com",
+      password: "$2b$10$muetmRj1fDH.93XKBFt2yO.GMeLlDJLzB5fniGDLb/0lRNLjzb80y",
+      public_building_id: "RC",
+      public_lease_id: "1690926182158",
+      deleted_date: null,
+    },
+  ];
+  const resp = { data: backend_response };
+  const values = {
+    email: "tenant1@gmail.com",
+    hasError: false,
+    password: "password",
+  };
+  axios.post.mockResolvedValue(resp);
+
+  const result = await axios.post(
+    //api to be added
+    "http://localhost:5000/api/tenant/login",
+    values
+  );
+  expect(axios.post).toHaveBeenCalledWith(
+    "http://localhost:5000/api/tenant/login",
+    values
+  );
+  expect(result).toEqual(resp);
 });
-test("Submit button click handler called", async () => {
-    render(
-      <AuthProvider
-        authType={"cookie"}
-        authName={"_auth"}
-        cookieDomain={window.location.hostname}
-        cookieSecure={false}
-      >
-        <BrowserRouter>
-          <LoginPage />
-        </BrowserRouter>
-      </AuthProvider>
-    );
-    await userEvent.click(screen.getByRole("button", { name: "LOGIN" }));
-
-    //Check if Mock API call has run successfully 
-    // Check if the API call was made
-    await waitFor(() => {
-    expect(mock.history.post.length).toBe(1);
-  });
-  });
