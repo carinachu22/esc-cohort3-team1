@@ -98,7 +98,7 @@ export const controllerForgotPasswordTenant = (req, res) => {
       }
     });
     
-    var mailOptions = {
+    let mailOptions = {
       from: process.env.AUTH_USER,
       to: results[0].email,
       subject: 'Password Reset',

@@ -114,14 +114,14 @@ const LoginPage = () => {
                     "http://localhost:5000/api/admin/login",
                     values
                 )
-                signIn({
-                    token: response.data.token,
-                    expiresIn: 60,
-                    tokenType: "Bearer",
-                    authState: {email: values.email, type: "admin"}
-                });
                 if (response.data.message === "Login successfully"){
                     console.log(response.data.message);
+                    signIn({
+                        token: response.data.token,
+                        expiresIn: 60,
+                        tokenType: "Bearer",
+                        authState: {email: values.email, type: "admin"}
+                    });
                     navigateToDashboard();
                 }
                 else if (response.data.message === "Invalid email or password"){
