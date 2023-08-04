@@ -32,7 +32,7 @@ describe('Unusual Login --Landlord', function () {
         assert.equal("Welcome landlord!", result);
     });
 
-    it('Wrong login input', async function () {
+    it('Wrong login input --> Invalid email', async function () {
         await landlord_driver.get('http://localhost:3000/pages/LoginPage');
 
         let title = await landlord_driver.getTitle();
@@ -50,6 +50,23 @@ describe('Unusual Login --Landlord', function () {
         let result = await landlord_driver.findElement(By.xpath('//*[@id="root"]/div/div/div/div/form/div/div[1]/div')).getText();
         assert.equal("Invalid email", result);
     });
+
+    it('Forget password', async function() {
+        await landlord_driver.get('http://localhost:3000/pages/LoginPage');
+
+        let title = await landlord_driver.getTitle();
+        assert.equal("React App", title);
+
+        await landlord_driver.manage().setTimeouts({ implicit: 300 });
+        // click forget password
+        await landlord_driver.findElement(By.xpath('//*[@id="root"]/div/div/div/div/form/div/div[4]/a')).click();
+
+        await landlord_driver.manage().setTimeouts({ implicit: 100 });
+
+        currentURL = await landlord_driver.getCurrentUrl();
+        assert.equal('http://localhost:3000/pages/ForgotPasswordPage', currentURL)
+
+    })
 
 
 
@@ -84,7 +101,7 @@ describe('Unusual Login --Tenant', function () {
         assert.equal("Welcome tenant!", result);
     });
 
-    it('Wrong login input', async function () {
+    it('Wrong login input --> Invalid email', async function () {
         await tenant_driver.get('http://localhost:3000/pages/LoginPage');
 
         let title = await tenant_driver.getTitle();
@@ -102,6 +119,45 @@ describe('Unusual Login --Tenant', function () {
         let result = await tenant_driver.findElement(By.xpath('//*[@id="root"]/div/div/div/div/form/div/div[1]/div')).getText();
         assert.equal("Invalid email", result);
     });
+
+    it('Forget password page', async function() {
+        await tenant_driver.get('http://localhost:3000/pages/LoginPage');
+
+        let title = await tenant_driver.getTitle();
+        assert.equal("React App", title);
+
+        await tenant_driver.manage().setTimeouts({ implicit: 300 });
+        // click forget password
+        await tenant_driver.findElement(By.xpath('//*[@id="root"]/div/div/div/div/form/div/div[4]/a')).click();
+
+        await tenant_driver.manage().setTimeouts({ implicit: 100 });
+
+        currentURL = await tenant_driver.getCurrentUrl();
+        assert.equal('http://localhost:3000/pages/ForgotPasswordPage', currentURL)
+
+    })
+
+    it('Forget password fix', async function() {
+        await tenant_driver.get('http://localhost:3000/pages/ForgotPasswordPage');
+
+        let title = await tenant_driver.getTitle();
+        assert.equal("React App", title);
+
+        await tenant_driver.manage().setTimeouts({ implicit: 300 });
+
+        //TODO - sendkey for email in text holder
+        //await tenant_driver.findElement(By.xpath('//*[@id="email"]')).sendkeys('testerscn5@gmail.com');
+        await tenant_driver.findElement(By.xpath('//*[@id="sendButton"]')).click();
+
+
+        // currentURL = await tenant_driver.getCurrentUrl();
+        // assert.equal('http://localhost:3000/pages/ForgotPasswordPage', currentURL)
+
+    })
+
+    //TODO - DO 2FA -- login with email
+
+
 
 
 });
