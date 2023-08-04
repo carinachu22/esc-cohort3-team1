@@ -274,7 +274,7 @@ export default function TicketList() {
                     {index+1}
                     </Box>
                     <Box textAlign='left' width='34vw'>
-                    {ticket.email}
+                    {userDetails().type === 'tenant' ? ticket.landlord_email : ticket.email}
                     </Box>
                     <Box textAlign='left' width='20vw'>
                     {ticket.ticket_type}
@@ -373,6 +373,10 @@ export default function TicketList() {
         authenticate()
     })
 
+    if (!authenticated()){
+        return <Navigate to='/'/>
+    }
+
     return (
         <>
         {NavigationBar()}
@@ -424,7 +428,9 @@ export default function TicketList() {
             <Thead>
                 <Tr>
                     <Th> No. </Th>
-                    <Th> Requester </Th>
+                    <Th> 
+                        {userDetails().type === 'tenant' ? "Assigned To" : "Requester"} 
+                    </Th>
                     <Th> Type </Th>
                     <Th> Status </Th>
                 </Tr>
