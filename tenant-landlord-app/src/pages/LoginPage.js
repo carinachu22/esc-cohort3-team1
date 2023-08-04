@@ -79,7 +79,7 @@ const LoginPage = () => {
                         token: response.data.token,
                         expiresIn: 60,
                         tokenType: "Bearer",
-                        authState: {email: values.email, type: "landlord"}
+                        authState: {email: values.email, type: "landlord", role: `${response.data.role}`}
                     });
                     console.log(response.data.message);
                     navigateToDashboard();

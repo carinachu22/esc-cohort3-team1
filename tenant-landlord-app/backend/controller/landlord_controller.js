@@ -157,6 +157,7 @@ export const controllerLoginLandlord = (req, res) => {
           success: 1,
           message: "Login successfully",
           token: jsontoken,
+          role: results[0].role
         });
       } else {
         console.log(results[0]);
