@@ -56,7 +56,9 @@ const LoginPage = () => {
   };
 
   const navigateToDashboard = () => {
+    console.log("In navigate to dashboard() ");
     navigate("/pages/Dashboard");
+    console.log("In navigated to dashboard() ");
   };
 
   const navigateToForgotPasswordPage = (role) => {
