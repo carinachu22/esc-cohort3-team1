@@ -12,12 +12,12 @@ export default async function setup() {
             TRUNCATE service_request;`
         );
         await pool.promise().query(`
-            INSERT INTO service_request (public_service_request_id, name, email, request_type, request_description, submitted_date_time, status, quotation_path)
-            VALUES  ('2002-02-02 02:02:02', 'tenant1', 'tenant1@gmail.com', 'aircon', 'aircon warm', '2002-02-02 02:02:02', 'tenant_ticket_created', NULL),
-                    ('2003-03-03 03:03:03', 'tenant4', 'tenant4@gmail.com', 'aircon', 'aircon', '2003-03-03 03:03:03', 'tenant_ticket_created', NULL),
-                    ('2004-04-04 04:04:04', 'tenant1', 'tenant1@gmail.com', 'cleanliness', 'not clean', '2004-04-04 04:04:04', 'landlord_completed_work',':Content/Documents/quotation_details/q2'),
-                    ('2005-05-05 05:05:05', 'tenant3', 'tenant3@gmail.com', 'horticulture', 'wiltered', '2005-05-05 05:05:05', 'landlord_quotation_sent', ':Content/Documents/quotation_details/q1'),
-                    ('2006-06-06 06:06:06', 'tenant5', 'tenant5@gmail.com', 'cleanliness', 'not clean', '2006-06-06 06:06:06', 'landlord_completed_work',':Content/Documents/quotation_details/q3');
+            INSERT INTO service_request (public_service_request_id,  email, request_type, request_description, submitted_date_time, status, quotation_path, floor, unit_number)
+            VALUES  ('2002-02-02 02:02:02', 'tenant1@gmail.com', 'aircon', 'aircon warm', '2002-02-02 02:02:02', 'tenant_ticket_created', NULL,09,154),
+                    ('2003-03-03 03:03:03', 'tenant4@gmail.com', 'aircon', 'aircon', '2003-03-03 03:03:03', 'tenant_ticket_created', NULL,10,30),
+                    ('2004-04-04 04:04:04', 'tenant1@gmail.com', 'cleanliness', 'not clean', '2004-04-04 04:04:04', 'landlord_completed_work',':Content/Documents/quotation_details/q2', 09,154),
+                    ('2005-05-05 05:05:05', 'tenant3@gmail.com', 'horticulture', 'wiltered', '2005-05-05 05:05:05', 'landlord_quotation_sent', ':Content/Documents/quotation_details/q1',12,921),
+                    ('2006-06-06 06:06:06', 'tenant5@gmail.com', 'cleanliness', 'not clean', '2006-06-06 06:06:06', 'landlord_completed_work',':Content/Documents/quotation_details/q3',6,100);
         `);
 
         //        CREATE TEMPORARY TABLE tenant_user table
