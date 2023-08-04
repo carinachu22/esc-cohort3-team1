@@ -179,21 +179,22 @@ describe ("Testing getTicketsByStatus() in tenant model", () => {
     })
 })
 
-// TODO: TypeError: val.slice is not a function
 describe("Testing createTicket() in tenant model", () => {
     test ("Test calling createTicket() with valid values",(done) => {
+        var currentdate = new Date(); 
+        const date = currentdate.getFullYear().toString() + '-' + (currentdate.getMonth() + 1).toString() + '-' + currentdate.getDate().toString() + ' ' + currentdate.getHours().toString() + ':' + ('0' + currentdate.getMinutes()).slice(-2) + ':' + currentdate.getSeconds().toString()
         const data = {
             email: 'tenant4@gmail.com',
             request_type: 'aircon',
             request_description: 'aircon cold',
-            submitted_date_time: Date.now(),
-            floor: 10,
-            unit_number: 30
+            submitted_date_time: date,
+            quotation_path: null
         }
-        createTicket(data, (err, results) => {
+        createTicket(data, 10, 30, (err, results) => {
             if (err){
                 console.log("ERROR",err)
             }
+            console.log(`results ${results}`)
             const rowsChanged = JSON.parse(JSON.stringify(results)).affectedRows
             expect(rowsChanged).toBe(1);
             done();
@@ -201,9 +202,9 @@ describe("Testing createTicket() in tenant model", () => {
     });
 })
 
-describe.only("Testing quotationApproval() in tenant model", () => {
+describe("Testing quotationApproval() in tenant model", () => {
     test ("Test calling quotationApproval() on a valid service ticket ID & valid value",(done) => {
-        quotationApproval("2004-04-04 04:04:04", 'ticket_quotation_approved', (err, results) => {
+        quotationApproval("SR/2004/Apr/0001", 'ticket_quotation_approved', (err, results) => {
             if (err){
                 console.log("ERROR",err)
             }
@@ -213,7 +214,7 @@ describe.only("Testing quotationApproval() in tenant model", () => {
         })
     });
     test ("Test calling quotationApproval() on an invalid service ticket ID & valid value",(done) => {
-        quotationApproval("9999-99-99 99:99:99", 'ticket_quotation_rejected', (err, results) => {
+        quotationApproval("SR/9999/999/9999", 'ticket_quotation_rejected', (err, results) => {
             if (err){
                 console.log("ERROR",err)
             }
@@ -223,7 +224,7 @@ describe.only("Testing quotationApproval() in tenant model", () => {
         })
     });
     test ("Test calling quotationApproval() on status not approved in status library",(done) => {
-        quotationApproval("2005-05-05 05:05:05", 'ticket_quotation_reject', (err, results) => {
+        quotationApproval("SR/2004/Apr/0001", 'ticket_quotation_reject', (err, results) => {
             expect(err).toBe("invalid status");
             done()
         })
@@ -233,7 +234,7 @@ describe.only("Testing quotationApproval() in tenant model", () => {
 
 describe("Testing addFeedbackRating() in tenant model", () => {
     test ("Test calling addFeedBackRating() on a valid service ticket ID & valid value",(done) => {
-        addFeedbackRating("2002-02-02 02:02:02", 4, (err, results) => {
+        addFeedbackRating("SR/2002/Feb/0001", 4, (err, results) => {
             if (err){
                 console.log("ERROR",err)
             }
@@ -243,7 +244,7 @@ describe("Testing addFeedbackRating() in tenant model", () => {
         })
     });
     test ("Test calling addFeedBackRating() on an invalid service ticket ID & valid value",(done) => {
-        addFeedbackRating("9999-99-99 99:99:99", 4, (err, results) => {
+        addFeedbackRating("SR/9999/999/9999", 4, (err, results) => {
             if (err){
                 console.log("ERROR",err)
             }
@@ -253,7 +254,7 @@ describe("Testing addFeedbackRating() in tenant model", () => {
         })
     });
     test ("Test calling addFeedBackRating() on a valid service ticket ID & invalid value",(done) => {
-        addFeedbackRating("2003-03-03 03:03:03", 6, (err, results) => {
+        addFeedbackRating("SR/2003/Mar/0001", 6, (err, results) => {
             if (err) {
                 // Error is reported through the callback
                 expect(err).toBeTruthy(); // Use any appropriate assertion to check the error
@@ -267,7 +268,7 @@ describe("Testing addFeedbackRating() in tenant model", () => {
     test ("Test calling addFeedBackRating() on an invalid service ticket ID & invalid value",(done) => {
         // INVALID ID SUPERSEDES INVALID VALUE!
         // YOU WILL GET LENGTH 0
-        addFeedbackRating("0000-00-00 00:00:00", 6, (err, results) => {
+        addFeedbackRating("SR/9999/999/9999", 6, (err, results) => {
             expect(err).toBe("data validation error")
             done();
         })
@@ -277,7 +278,7 @@ describe("Testing addFeedbackRating() in tenant model", () => {
 
 describe("Testing addFeedbackText() in tenant model", () => {
     test ("Test calling addFeedbackText() on a valid service ticket ID",(done) => {
-        addFeedbackText("2003-03-03 03:03:03", "good job", (err, results) => {
+        addFeedbackText("SR/2003/Mar/0001", "good job", (err, results) => {
             if (err){
                 console.log("ERROR",err)
             }
@@ -287,7 +288,7 @@ describe("Testing addFeedbackText() in tenant model", () => {
         })
     });
     test ("Test calling addFeedbackText() on an invalid service ticket ID",(done) => {
-        addFeedbackText("0000-00-00 00:00:00", "good!", (err, results) => {
+        addFeedbackText("SR/9999/999/9999", "good!", (err, results) => {
             if (err){
                 console.log("ERROR",err)
             }
@@ -300,7 +301,7 @@ describe("Testing addFeedbackText() in tenant model", () => {
 
 describe("Testing closeTicketStatus() in tenant model", () => {
     test ("Test calling closeTicketStatus() on a valid service ticket ID & valid value",(done) => {
-        closeTicketStatus("2002-02-02 02:02:02", 'landlord_ticket_closed', (err, results) => {
+        closeTicketStatus("SR/2002/Feb/0001", 'landlord_ticket_closed', (err, results) => {
             if (err){
                 console.log("ERROR",err)
             }
@@ -310,7 +311,7 @@ describe("Testing closeTicketStatus() in tenant model", () => {
         })
     });
     test ("Test calling closeTicketStatus() on an invalid service ticket ID & valid value",(done) => {
-        closeTicketStatus("9999-99-99 99:99:99", 'landlord_ticket_closed', (err, results) => {
+        closeTicketStatus("SR/9999/999/9999", 'landlord_ticket_closed', (err, results) => {
             if (err){
                 console.log("ERROR",err)
             }
@@ -320,7 +321,7 @@ describe("Testing closeTicketStatus() in tenant model", () => {
         })
     });
     test ("Test calling closeTicketStatus() on an valid service ticket ID & invalid value",(done) => {
-        closeTicketStatus("2004-04-04 04:04:04", 'landlord__tickets_close', (err, results) => {
+        closeTicketStatus("SR/2004/Apr/0001", 'landlord__tickets_close', (err, results) => {
             expect(err).toBe('invalid status')
             done()
         })
