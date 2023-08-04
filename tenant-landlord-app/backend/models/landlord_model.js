@@ -677,14 +677,19 @@ export const getLandlordUserId = (email, callBack) => {
  * @param {*} public_building_id 
  * @param {*} callBack 
  */
-export const getLandlordAccounts = (public_building_id, callBack) => {
+export const getLandlordAccounts = (public_building_id, ticket_type = null, callBack) => {
+  let sqlQuery = `
+  SELECT *
+  FROM landlord_user
+  WHERE public_building_id = ? AND deleted_date IS NULL AND role = "staff"
+  `
+  if(ticket_type != null){
+    sqlQuery += `AND ticket_type = ?`
+  }
+  console.log(sqlQuery, ticket_type)
   pool.query(
-    `
-    SELECT *
-    FROM landlord_user
-    WHERE public_building_id = ? AND deleted_date IS NULL AND role = "staff"
-    `,
-    [public_building_id],
+    sqlQuery,
+    [public_building_id, ticket_type],
     (error, results, fields) => {
       if (error) {
         callBack(error);

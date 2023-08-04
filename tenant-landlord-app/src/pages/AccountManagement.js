@@ -107,7 +107,7 @@ const AccountManagement = () => {
   }
 
   /**
-   * display table if role of landlord is supervisor
+   * check if landlord is a supervisor
    * @param {*} email 
    * @returns 
    */
@@ -122,16 +122,16 @@ const AccountManagement = () => {
 
   }
 
-  const displayTable = () => {
-    const type = userDetails().type;
-    const email = userDetails().email;
-    if (type === "landlord"){
-      const role = userDetails().role;
-      if (role === "supervisor"){
-        {AccountManagementTable(() => APIDeleteAllLandlords(email), "Landlord", landlordAccounts, landlordRole)}
-      }
-    }
-  }
+  // const displayTable = () => {
+  //   const type = userDetails().type;
+  //   const email = userDetails().email;
+  //   if (type === "landlord"){
+  //     const role = userDetails().role;
+  //     if (role === "supervisor"){
+  //       {AccountManagementTable(() => APIDeleteAllLandlords(email), "Landlord", landlordAccounts, landlordRole)}
+  //     }
+  //   }
+  // }
 
 
   /**
@@ -406,8 +406,8 @@ const AccountManagement = () => {
       {NavigationBar()}
       
       {AccountManagementTable(() => APIDeleteAllTenants(config.params.email), "Tenant", tenantAccounts)}
-      {/* {AccountManagementTable(() => APIDeleteAllLandlords(config.params.email), "Landlord", landlordAccounts, landlordRole)} */}
-      {displayTable()}
+      {AccountManagementTable(() => APIDeleteAllLandlords(config.params.email), "Landlord", landlordAccounts, landlordRole)}
+
       
     </ChakraProvider>
 

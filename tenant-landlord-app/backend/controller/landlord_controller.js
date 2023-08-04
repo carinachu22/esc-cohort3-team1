@@ -573,7 +573,6 @@ export const controllerGetTickets = (req, res) => {
     } else {
       const public_building_id = results.public_building_id;
       getTickets(public_building_id, (err, results) => {
-        console.log(results);
         if (err) {
           console.log(err);
           return;
@@ -825,14 +824,14 @@ export const controllerTicketWork = (req, res) => {
 export const controllerGetTenantAccounts = (req, res) => {
   const query = req.query;
   const {landlordEmail} = query;
-  console.log("email", landlordEmail);
+  // console.log("email", landlordEmail);
   getBuildingID(landlordEmail, (err, results) => {
     if (err) {
       console.log(err);
       return;
     } else {
       const public_building_id = results.public_building_id;
-      console.log(public_building_id)
+      // console.log(public_building_id)
       getTenantAccounts(public_building_id, (err, results) => {
         // console.log(results);
         if (err) {
@@ -857,16 +856,19 @@ export const controllerGetTenantAccounts = (req, res) => {
  */
 export const controllerGetLandlordAccounts = (req, res) => {
   const query = req.query;
-  const {landlordEmail} = query;
+  const {landlordEmail, ticket_type} = query;
   console.log("email", landlordEmail);
+  console.log(ticket_type)
   getLandlordByEmail(landlordEmail, (err, results) => {
+    console.log(results);
     if (err) {
       console.log(err);
       return;
     } else {
       const public_building_id = results[0].public_building_id;
-      console.log(public_building_id)
-      getLandlordAccounts(public_building_id, (err, results) => {
+      // console.log(public_building_id)
+      getLandlordAccounts(public_building_id, ticket_type, (err, results) => {
+        console.log("results", results);
         if (err) {
           console.log(err);
           return;

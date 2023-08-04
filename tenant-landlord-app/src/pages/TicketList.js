@@ -7,6 +7,8 @@ import { useAuthUser, useAuthHeader, useIsAuthenticated } from 'react-auth-kit';
 // Import bootstrap for automatic styling
 import "bootstrap/dist/css/bootstrap.min.css";
 
+import DropDownMenu from '../components/DropDownMenu.js';
+
 // Import axios for http requests
 import axios, {AxiosError} from "axios";
 import NavigationBar from '../components/NavigationBar.js';
@@ -50,7 +52,8 @@ export default function TicketList() {
     const [searchInput, setSearchInput] = useState("");
     const [searchType, setSearchType] = useState("");
     const [filterOption, setFilterOption] = useState("");
-    const [filteredTickets, setFilteredTickets] = useState(null);
+    const [filteredTickets, setFilteredTickets] = useState([]);
+    const [landlordAccounts, setLandlordAccounts] = useState([])
 
 
     const checkStep = (status) => {
@@ -107,13 +110,29 @@ export default function TicketList() {
       ]
 
     // Initialise function for 1. Fetch all service tickets dependent on user type (tenant or landlord)
-    const GetServiceTickets = (userDetails) => {
+    const GetServiceTickets = async (userDetails) => {
         if (userDetails() === undefined){
             return;
         }
         const type = userDetails().type;
+        const buildingID = userDetails().building;
+        const email = userDetails().email;
         const tickets_list = [];
+        const landlord_list = ["landlord1@gmail.com", "landlord2@gmail.com"];
         let response;
+
+        //get landlord accounts 
+        const APIGetLandlordAccounts = async (ticket_type) => {
+            return new Promise((resolve, reject) => {(async () => {
+                const response = await axios.get(
+                    "http://localhost:5000/api/landlord/getLandlordAccounts?landlordEmail=" + email + "&ticket_type=" + ticket_type,
+                )
+                console.log("APIGetTenantAccounts", response)
+                return resolve(response.data.data  )
+                })()
+            })
+
+        }
 
     
         // Initialse function for fetching ALL service tickets if landlord is logged in
@@ -151,8 +170,7 @@ export default function TicketList() {
                         config
                     )
                 }
-                console.log("got response:")
-                console.log(response);
+                console.log("got response:", response.data.data);
                 return response.data.data;
             } catch (err){
                 if (err && err instanceof AxiosError) {
@@ -163,11 +181,11 @@ export default function TicketList() {
                 }
             }
         }
+        
+
 
         // Initialise promise
-        const test_tickets = APIGetTickets(type)
-        // Wait for promise to be fulfilled (fetching tickets from database)
-        test_tickets.then(function(result){
+        APIGetTickets(type).then(async function(result){
             //console.log('result',result)
             // Naive data validation
             if (result !== undefined){
@@ -178,8 +196,27 @@ export default function TicketList() {
             setTickets(tickets_list);
             //console.log('tickets',tickets)
 
+            const config = {
+                headers: {
+                  Authorization: `${token()}`
+                },
+                params: {
+                    email: userDetails().email
+                }
+            }
 
-
+            let landlordAccounts = []
+            for(const ticket of tickets_list){
+                const accounts = await APIGetLandlordAccounts(ticket.ticket_type)
+                console.log('accounts', accounts)
+                let emails = []
+                for(const staff of accounts){
+                    emails.push(staff.email)
+                }
+                landlordAccounts.push(emails)
+            }
+            console.log('LL accounts', landlordAccounts)
+            console.log(landlordAccounts[0])
             // Convert every ticket fetched to HTML to be shown on the left
             const tickets_html = tickets_list.map((ticket, index) => 
                 <div key={index+1}>
@@ -237,11 +274,15 @@ export default function TicketList() {
                         <Button onClick={() => navigateToViewTicketPage(ticket.public_service_request_id)} bgColor='blue.500' color='white' _hover={{bg: 'blue.800'}}>
                             View Details & Actions
                         </Button>
+                        <Box display="inline" marginLeft="3em">
+                            <DropDownMenu items={landlordAccounts[index]}/>
+                        </Box>
                     </AccordionPanel>
                 </AccordionItem>
                 </div>
             );
             // Update states to be accessed in return
+            console.log("tickets html", tickets_html)
             setFilteredTickets(tickets_html);
         })
     }
@@ -274,7 +315,7 @@ export default function TicketList() {
             filterTickets(tickets, filterOption),
             searchInput, searchType
             ))
-        console.log(filtered_tickets)
+        console.log('filtered tickets', filtered_tickets)
         if (filtered_tickets != null){
         setFilteredTickets(filtered_tickets.map((ticket, index) => (
             <div key={index+1}>
@@ -343,9 +384,9 @@ export default function TicketList() {
 
     // This is to ensure that the GET request only happens once on page load
     // This will update the tickets state
-    useEffect(() => {
+    useEffect(async () => {
         if (authenticate()){
-            GetServiceTickets(userDetails);
+            await GetServiceTickets(userDetails);
         }},
         [])
 
