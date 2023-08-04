@@ -129,10 +129,21 @@ export default function TicketList() {
                     }
                 }
                 if (type === 'landlord'){
-                    response = await axios.get(
-                        "http://localhost:5000/api/landlord/getTicketsByType",
-                        config
-                    )
+                    const role = userDetails().role;
+                    console.log("role: ", role);
+                    if (role === "staff"){
+                        response = await axios.get(
+                            "http://localhost:5000/api/landlord/getTicketsByType",
+                            config
+                        )
+                    }
+                    else if (role === 'supervisor'){
+                        response = await axios.get(
+                            "http://localhost:5000/api/landlord/getTickets",
+                            config
+                        )
+                    }
+
 
                 } else if (type === 'tenant'){ 
                     response = await axios.get(

@@ -558,6 +558,7 @@ export const controllerGetTicketsByType = (req, res) => {
 
 /**
  * Gets tickets requested by tenants under the same building as landlord
+ * Mainly used by landlord supervisors
  * @param {*} req 
  * @param {*} res 
  * @returns Tickets

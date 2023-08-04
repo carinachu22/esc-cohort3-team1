@@ -344,7 +344,7 @@ export const getTickets = (public_building_id, callBack) => {
     `
     SELECT SERVICE_REQUEST.* 
     FROM SERVICE_REQUEST 
-    LEFT JOIN TENANT_USER ON SERVICE_REQUEST.email = TENANT_USER.email
+    INNER JOIN TENANT_USER ON SERVICE_REQUEST.email = TENANT_USER.email
     WHERE TENANT_USER.public_building_id = ?
     `,
     [public_building_id],
@@ -352,7 +352,7 @@ export const getTickets = (public_building_id, callBack) => {
       if (error) {
         callBack(error);
       } else {
-        callBack(null, results[0]);
+        callBack(null, results);
       }
     }
   );

@@ -33,7 +33,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
  */
 export default function AccountManagementTable(APIDeleteAllUsers, user, getUserAccounts, role){
   const navigate = useNavigate();
-  const { onOpen: onOpen, onClose: onClose, isOpen: isOpen } = useDisclosure();
   console.log("role", role);
 
 
