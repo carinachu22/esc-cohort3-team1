@@ -158,10 +158,12 @@ export const getTicketsByStatus = (email, status, callBack) => {
 
 /**
  * Ticket Creation
- * @param {*} data public_service_request_id (eg. 2023-01-01 00:00:00), name, email, request_type, request_description, quptation_path, submitted_date_time(Date Type)
+ * @param {*} data email, request_type, request_description, quptation_path, submitted_date_time(Date Type)
+ * @param {*} floor
+ * @param {*} unit_number
  * @param {*} callBack 
  */
-export const createTicket = (data, callBack) => {
+export const createTicket = (data, floor, unit_number,  callBack) => {
   const status = "tenant_ticket_created";
   const public_service_request_id = data.submitted_date_time;
   const feedback_rating = null;
@@ -170,12 +172,10 @@ export const createTicket = (data, callBack) => {
     pool.query(
       `
       INSERT INTO service_request
-      (public_service_request_id, name, email, request_type, request_description, quotation_path, submitted_date_time, status, feedback_rating, feedback_text)
+      (email, request_type, request_description, quotation_path, submitted_date_time, status, feedback_rating, feedback_text, floor, unit_number)
       VALUES (?,?,?,?,?,?,?,?,?,?)
       `,
       [
-        public_service_request_id,
-        data.name,
         data.email,
         data.request_type,
         data.request_description,
@@ -183,10 +183,13 @@ export const createTicket = (data, callBack) => {
         data.submitted_date_time,
         status,
         feedback_rating,
-        feedback_text
+        feedback_text,
+        floor,
+        unit_number
       ],
       (error, results, fields) => {
         if (error) {
+          console.log(error)
           callBack(error);
         } else {
           callBack(null,results);

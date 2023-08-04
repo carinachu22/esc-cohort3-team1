@@ -179,17 +179,16 @@ describe ("Testing getTicketsByStatus() in tenant model", () => {
     })
 })
 
+// TODO: TypeError: val.slice is not a function
 describe("Testing createTicket() in tenant model", () => {
     test ("Test calling createTicket() with valid values",(done) => {
-        var currentdate = new Date(); 
-        const date = currentdate.getFullYear().toString() + '-' + (currentdate.getMonth() + 1).toString() + '-' + currentdate.getDate().toString() + ' ' + currentdate.getHours().toString() + ':' + ('0' + currentdate.getMinutes()).slice(-2) + ':' + currentdate.getSeconds().toString()
         const data = {
-            public_service_request_id:date,
-            name: 'tenant4',
             email: 'tenant4@gmail.com',
             request_type: 'aircon',
             request_description: 'aircon cold',
-            submitted_date_time: date
+            submitted_date_time: Date.now(),
+            floor: 10,
+            unit_number: 30
         }
         createTicket(data, (err, results) => {
             if (err){
@@ -202,7 +201,7 @@ describe("Testing createTicket() in tenant model", () => {
     });
 })
 
-describe("Testing quotationApproval() in tenant model", () => {
+describe.only("Testing quotationApproval() in tenant model", () => {
     test ("Test calling quotationApproval() on a valid service ticket ID & valid value",(done) => {
         quotationApproval("2004-04-04 04:04:04", 'ticket_quotation_approved', (err, results) => {
             if (err){
