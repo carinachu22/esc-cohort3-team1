@@ -1,5 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { Document, Page, pdfjs } from 'react-pdf';
+import React, { useEffect, useState } from 'react';
 import { Box, Button, useToast, Heading, Checkbox } from '@chakra-ui/react';
 import { ArrowBackIcon } from '@chakra-ui/icons';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -120,16 +119,16 @@ function QuotationPage() {
             <Heading mb={5} textAlign="center">Job Quote for Ticket: {ticketID}</Heading>
             <Box display="flex" flexDirection="column" justifyContent="center" minHeight="50vh">
                 {pdfUrl && <iframe src={pdfUrl} width="100%" height="600px" />}
-            <Checkbox id="quotationCheckbox" isChecked={isCheckboxChecked} onChange={(e) => setCheckboxChecked(e.target.checked)}>
-                I have read and agree to the terms 
-            </Checkbox>
-            <Box display="flex" justifyContent="space-around" m={1} p={1}>
-                <Button leftIcon={<ArrowBackIcon />} colorScheme="teal" variant="outline" onClick={() => navigate(-1)}>
-                Back
-                </Button>
-                <Button colorScheme="red" onClick={handleReject}>Reject</Button>
-                <Button colorScheme="green" onClick={handleApprove} isDisabled={!isCheckboxChecked}>Approve</Button>
-            </Box>
+                <Checkbox id="quotationCheckbox" isChecked={isCheckboxChecked} onChange={(e) => setCheckboxChecked(e.target.checked)}>
+                    I have read and agree to the terms 
+                </Checkbox>
+                <Box display="flex" justifyContent="space-around" m={1} p={1}>
+                    <Button leftIcon={<ArrowBackIcon />} colorScheme="teal" variant="outline" onClick={() => navigate(-1)}>
+                    Back
+                    </Button>
+                    <Button colorScheme="red" onClick={handleReject}>Reject</Button>
+                    <Button colorScheme="green" onClick={handleApprove} isDisabled={!isCheckboxChecked}>Approve</Button>
+                </Box>
             </Box>
         </Box>
         </>

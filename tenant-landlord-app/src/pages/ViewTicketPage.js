@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Heading, Textarea, Input } from '@chakra-ui/react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthUser, useAuthHeader, useIsAuthenticated } from 'react-auth-kit';
@@ -9,90 +9,90 @@ import NavigationBar from '../components/NavigationBar.js';
 import CheckTicket from '../components/CheckTicket.js';
 
 export default function ViewTicketPage() {
-  const navigate = useNavigate();
-  const token = useAuthHeader();
-  const userDetails = useAuthUser();
-  const [status, setstatus] = useState('');
-  const [ticket, setTicket] = useState('');
-  const location = useLocation();
-  var ticketID;
-  if (location.state != null){
-    ticketID = location.state.ticketID;
-  }
-  console.log('ID', ticketID)
-  console.log("userdetails", userDetails);
-  const authenticated = useIsAuthenticated();
-
-  const convertStatus = (status) => {
-    if (status === 'tenant_ticket_created'){
-        return 'Created'
-    } else if (status === 'landlord_ticket_rejected'){
-        return 'Rejected By Landlord'
-    } else if (status === 'landlord_ticket_approved'){
-        return 'Approved By Landlord'
-    } else if (status === 'landlord_quotation_sent'){
-        return 'Quotation Sent By Landlord'
-    } else if (status === 'ticket_quotation_approved'){
-        return 'Quotation Approved By Tenant'
-    } else if (status === 'ticket_quotation_rejected'){
-        return 'Quotation Rejected By Tenant'
-    } else if (status === 'landlord_started_work'){
-        return 'Work Started By Landlord'
-    } else if (status === 'landlord_completed_work'){
-        return 'Work Completed By Landlord'
-    } else if (status === 'ticket_work_rejected') {
-        return 'Work Rejected by Tenant'
-    } else if (status === 'landlord_ticket_closed' || status === 'tenant_feedback_given'){
-        return "Closed"
+    const navigate = useNavigate();
+    const token = useAuthHeader();
+    const userDetails = useAuthUser();
+    const [status, setstatus] = useState('');
+    const [ticket, setTicket] = useState('');
+    const location = useLocation();
+    var ticketID;
+    if (location.state != null){
+        ticketID = location.state.ticketID;
     }
-  }
+    console.log('ID', ticketID)
+    console.log("userdetails", userDetails);
+    const authenticated = useIsAuthenticated();
 
-  const GetServiceTickets = (userDetails) => {
-    if (userDetails() === undefined){
-        return;
-    }
-    const type = userDetails().type;
-    const tickets = [];
-    let response;
-
-    // Initialse function for fetching ALL service tickets if landlord is logged in
-    const APIGetTickets = async (type) => {
-        console.log('type',type)
-        console.log(ticketID)
-        try{
-            const config = {
-                headers: {
-                  Authorization: `${token()}`
-                },
-                params: {
-                    email: userDetails().email,
-                    id: ticketID
-                }
-            }
-            if (type === 'landlord'){
-                response = await axios.get(
-                  `http://localhost:5000/api/landlord/getTicketById/`,
-                    // console.log(`http://localhost:5000/api/landlord/getTicketById/${selectedTicket}`),
-                    config
-                )
-            } else if (type === 'tenant'){ 
-                response = await axios.get(
-                  `http://localhost:5000/api/tenant/getTicketById/`,
-                    config
-                )
-            }
-            console.log("got response:")
-            console.log(response);
-            return response.data.data;
-        } catch (err){
-            if (err && err instanceof AxiosError) {
-              console.log("Error: ", err);
-            }
-            else if (err && err instanceof Error){
-              console.log("Error: ", err);
-            }
+    const convertStatus = (status) => {
+        if (status === 'tenant_ticket_created'){
+            return 'Created'
+        } else if (status === 'landlord_ticket_rejected'){
+            return 'Rejected By Landlord'
+        } else if (status === 'landlord_ticket_approved'){
+            return 'Approved By Landlord'
+        } else if (status === 'landlord_quotation_sent'){
+            return 'Quotation Sent By Landlord'
+        } else if (status === 'ticket_quotation_approved'){
+            return 'Quotation Approved By Tenant'
+        } else if (status === 'ticket_quotation_rejected'){
+            return 'Quotation Rejected By Tenant'
+        } else if (status === 'landlord_started_work'){
+            return 'Work Started By Landlord'
+        } else if (status === 'landlord_completed_work'){
+            return 'Work Completed By Landlord'
+        } else if (status === 'ticket_work_rejected') {
+            return 'Work Rejected by Tenant'
+        } else if (status === 'landlord_ticket_closed' || status === 'tenant_feedback_given'){
+            return "Closed"
         }
     }
+
+    const GetServiceTickets = (userDetails) => {
+        if (userDetails() === undefined){
+            return;
+        }
+        const type = userDetails().type;
+        const tickets = [];
+        let response;
+
+        // Initialse function for fetching ALL service tickets if landlord is logged in
+        const APIGetTickets = async (type) => {
+            console.log('type',type)
+            console.log(ticketID)
+            try{
+                const config = {
+                    headers: {
+                    Authorization: `${token()}`
+                    },
+                    params: {
+                        email: userDetails().email,
+                        id: ticketID
+                    }
+                }
+                if (type === 'landlord'){
+                    response = await axios.get(
+                    `http://localhost:5000/api/landlord/getTicketById/`,
+                        // console.log(`http://localhost:5000/api/landlord/getTicketById/${selectedTicket}`),
+                        config
+                    )
+                } else if (type === 'tenant'){ 
+                    response = await axios.get(
+                    `http://localhost:5000/api/tenant/getTicketById/`,
+                        config
+                    )
+                }
+                console.log("got response:")
+                console.log(response);
+                return response.data.data;
+            } catch (err){
+                if (err && err instanceof AxiosError) {
+                console.log("Error: ", err);
+                }
+                else if (err && err instanceof Error){
+                console.log("Error: ", err);
+                }
+            }
+        }
 
   
     // Initialise promise
@@ -132,46 +132,46 @@ export default function ViewTicketPage() {
     })
 }
 
-  const formik = useFormik({
-    initialValues: {
-      floor: '',
-      unit_number: '',
-      category: '',
-      tenantComment: '',
-      status: '',
-      timesubmitted: '',
-    },
-    onSubmit: {},
-  });
+    const formik = useFormik({
+        initialValues: {
+            floor: '',
+            unit_number: '',
+            category: '',
+            tenantComment: '',
+            status: '',
+            timesubmitted: '',
+        },
+        onSubmit: {},
+    });
 
   
-  useEffect(() => {
-    if (authenticate()){
-      GetServiceTickets(userDetails);
-      if (status === 'completed') {
-        navigate('/pages/FeedbackForm');
-      } 
-    }
-  }, [status, navigate]);
+    useEffect(() => {
+        if (authenticate()){
+        GetServiceTickets(userDetails);
+        if (status === 'completed') {
+            navigate('/pages/FeedbackForm');
+        } 
+        }
+    }, [status, navigate]);
 
 
     // Ensure that user is authenticated for all renders
     const authenticate = () => {
-      // Check if still autenticated based on react auth kit
-      if (!authenticated()){
-          console.log("Not authenticated, redirecting.")
-          navigate('/')
-          return false
-      } else {
-          return true
-      }
-  }
-  useEffect(() => {
-      authenticate()
-  })
+    // Check if still autenticated based on react auth kit
+        if (!authenticated()){
+            console.log("Not authenticated, redirecting.")
+            navigate('/')
+            return false
+        } else {
+            return true
+        }
+    }
+    useEffect(() => {
+        authenticate()
+    })
 
 
-  return (
+    return (
     <>
     {NavigationBar()}
 

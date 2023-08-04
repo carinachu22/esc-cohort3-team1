@@ -175,42 +175,81 @@ export const getTicketsByStatus = (email, status, callBack) => {
  * @param {*} data public_service_request_id (eg. 2023-01-01 00:00:00), name, email, ticket_type, request_description, quptation_path, submitted_date_time(Date Type)
  * @param {*} callBack 
  */
-export const createTicket = (data, floor, unit_number,  callBack) => {
-  const status = "tenant_ticket_created";
-  const public_service_request_id = data.submitted_date_time;
-  const feedback_rating = null;
-  const feedback_text = null;
-  if (statuses.includes(status)){
-    pool.query(
-      `
-      INSERT INTO service_request
-      (email, ticket_type, request_description, quotation_path, submitted_date_time, status, feedback_rating, feedback_text, floor, unit_number)
-      VALUES (?,?,?,?,?,?,?,?,?,?)
-      `,
-      [
-        data.email,
-        data.ticket_type,
-        data.request_description,
-        data.quotation_path,
-        data.submitted_date_time,
-        status,
-        feedback_rating,
-        feedback_text,
-        floor,
-        unit_number
-      ],
-      (error, results, fields) => {
-        if (error) {
-          console.log(error)
-          callBack(error);
-        } else {
-          callBack(null,results);
+ export const createTicket = (data, floor, unit_number, callBack) => {
+    const status = 'tenant_ticket_created';
+    const feedback_rating = null;
+    const feedback_text = null;
+    
+    if (!statuses.includes(status)) {
+        callBack('Invalid status');
+        return;
+    }
+    const currentdate = new Date(data.submitted_date_time);
+    const txt = currentdate.toLocaleString('en', { month: 'short' }).toUpperCase();
+    const year_str = currentdate.getFullYear().toString();
+    const month_char = txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    // Check if the entry exists for the current month and year in the counters table
+    let max_increment
+    pool.query(`SELECT MAX(CAST(SUBSTRING(public_service_request_id, 15) AS SIGNED)) AS max_increment
+        FROM service_request
+        WHERE SUBSTRING(public_service_request_id, 1, 12) = CONCAT('SR/', ?, '/', ?, '/');`, 
+        [year_str, month_char], 
+        (error, results) => {
+            max_increment = results[0].max_increment
+            if (!max_increment) {
+                max_increment = 1;
+                } else {
+                max_increment = max_increment + 1;
+            }   
+            
+            // Generate the new public_service_request_id
+            let newPublicServiceRequestId = `SR/${year_str}/${month_char}/${String(max_increment).padStart(4, '0')}`;
+
+            // Keep checking if the new ID already exists in the table
+            const checkQuery = `SELECT 1 FROM service_request WHERE public_service_request_id = ?`;
+            const existingRow = pool.query(checkQuery, [newPublicServiceRequestId]);
+            while (existingRow.length > 0) {
+                max_increment++;
+                newPublicServiceRequestId = `SR/${year_str}/${month_char}/${String(max_increment).padStart(4, '0')}`;
+
+                // Check again
+                existingRow = pool.query(checkQuery, [newPublicServiceRequestId]);
+            }
+
+            // Set the new public_service_request_id for the new record
+            data.public_service_request_id = newPublicServiceRequestId;
+
+            //Insert the new ticket into the database
+            pool.query(
+                `
+                INSERT INTO service_request
+                (public_service_request_id, email, ticket_type, request_description, quotation_path, submitted_date_time, status, feedback_rating, feedback_text, floor, unit_number)
+                VALUES (?,?,?,?,?,?,?,?,?,?,?)
+                `,
+                [
+                data.public_service_request_id,
+                data.email,
+                data.ticket_type,
+                data.request_description,
+                data.quotation_path,
+                data.submitted_date_time,
+                status,
+                feedback_rating,
+                feedback_text,
+                floor,
+                unit_number
+                ],
+                (error, results) => {
+                if (error) {
+                    console.log(error)
+                    callBack(error);
+                } else {
+                    callBack(null,results);
+                }}
+            )
         }
-      }
-  )} else {
-    callBack("invalid status")
-  }
-};
+    )
+}
 
 /**
  * Tenant can approve quotation from landlord

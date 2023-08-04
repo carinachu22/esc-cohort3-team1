@@ -10,7 +10,6 @@ import {
     Button,
   } from '@chakra-ui/react'
 
-import axios, { AxiosError } from "axios";
 
 import {ChevronDownIcon} from '@chakra-ui/icons'
 import PropTypes from 'prop-types';

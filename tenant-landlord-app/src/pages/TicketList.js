@@ -1,7 +1,7 @@
 import { useNavigate, Navigate } from 'react-router-dom';
 
 // Import React and hooks
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuthUser, useAuthHeader, useIsAuthenticated } from 'react-auth-kit';
 
 // Import bootstrap for automatic styling
@@ -121,14 +121,14 @@ export default function TicketList() {
         const landlord_list = ["landlord1@gmail.com", "landlord2@gmail.com"];
         let response;
 
-        //get landlord accounts 
+        //get landlord accounts
         const APIGetLandlordAccounts = async (ticket_type) => {
             return new Promise((resolve, reject) => {(async () => {
                 const response = await axios.get(
                     "http://localhost:5000/api/landlord/getLandlordAccounts?landlordEmail=" + email + "&ticket_type=" + ticket_type,
                 )
                 console.log("APIGetTenantAccounts", response)
-                return resolve(response.data.data  )
+                return resolve(response.data.data)
                 })()
             })
 
@@ -384,11 +384,15 @@ export default function TicketList() {
 
     // This is to ensure that the GET request only happens once on page load
     // This will update the tickets state
-    useEffect(async () => {
-        if (authenticate()){
-            await GetServiceTickets(userDetails);
-        }},
-        [])
+    useEffect(() => {
+        async function fetchData(){
+            if (authenticate()){
+                await GetServiceTickets(userDetails);
+            }
+        }
+        fetchData()
+    },
+    [])
 
     useEffect(() => {
         // Function to handle filtering and searching whenever filterOption or searchInput changes

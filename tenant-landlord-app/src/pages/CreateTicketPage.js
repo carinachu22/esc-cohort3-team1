@@ -13,7 +13,7 @@ import axios, { AxiosError } from "axios";
 import NavigationBar from '../components/NavigationBar.js';
 
 // Import Chakra components
-import { Box, Text, Button, Heading, Textarea, FormControl, FormLabel, Input, Select, useToast } from '@chakra-ui/react';
+import { Box, Button, Heading, Textarea, Input, Select, useToast } from '@chakra-ui/react';
 
 /**
  * Functional component to display ticket creation page.
@@ -92,26 +92,26 @@ function CreateTicketPage() {
             feedback_rating: '-1',
             };
         } else {
-        values = {
-        email: userDetails().email,
-        ticket_type: ticketType,
-        request_description: tenantComment,
-        submitted_date_time:
-          currentdate.getFullYear().toString() +
-          '-' +
-          (currentdate.getMonth() + 1).toString() +
-          '-' +
-          currentdate.getDate().toString() +
-          ' ' +
-          currentdate.getHours().toString() +
-          ':' +
-          ('0' + currentdate.getMinutes()).slice(-2) +
-          ':' +
-          currentdate.getSeconds().toString(),
-        status: 'SUBMITTED',
-        feedback_text: '',
-        feedback_rating: '-1',
-      };
+            values = {
+            email: userDetails().email,
+            ticket_type: ticketType,
+            request_description: tenantComment,
+            submitted_date_time:
+            currentdate.getFullYear().toString() +
+            '-' +
+            (currentdate.getMonth() + 1).toString() +
+            '-' +
+            currentdate.getDate().toString() +
+            ' ' +
+            currentdate.getHours().toString() +
+            ':' +
+            ('0' + currentdate.getMinutes()).slice(-2) +
+            ':' +
+            currentdate.getSeconds().toString(),
+            status: 'SUBMITTED',
+            feedback_text: '',
+            feedback_rating: '-1',
+            };
         }
         console.log(values['ticket_type'])
         console.log(values['ticket_type'].slice(0,6))
@@ -176,7 +176,7 @@ function CreateTicketPage() {
     useEffect(() => {
         authenticate()
     })
-  return (
+    return (
     <>
     {NavigationBar()}
     <Formik
@@ -185,7 +185,7 @@ function CreateTicketPage() {
       tenantComment: '',
     }}
     onSubmit={handleCreateTicket}
-  >
+    >
     <Form>
     <Box
       display="flex"
@@ -195,32 +195,32 @@ function CreateTicketPage() {
       fontFamily="'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif"
       marginTop="5vh"
     >
-      {/* Title */}
-      <Heading as="h4" marginBottom="2em">
-        Create A Service Ticket
-      </Heading>
+        {/* Title */}
+        <Heading as="h4" marginBottom="2em">
+            Create A Service Ticket
+        </Heading>
 
 
-      {/* Comment Boxes */}
-      <Box display="flex" flexDirection="row" justifyContent="center" alignItems="center" marginBottom="2em">
+        {/* Comment Boxes */}
+        <Box display="flex" flexDirection="row" justifyContent="center" alignItems="center" marginBottom="2em">
         {/* Comment Box 1 */}
         <Box flex="1" marginRight="2em">
-          <Heading as="h5" size="lg" marginBottom="1em">
-            Request Type
-          </Heading>
-          <Select
-            name="requestType"
-            placeholder="Select request type"
-            value={ticketType}
-            onChange={handleRequestTypeChange}
-            marginBottom="2em"
-          >
+            <Heading as="h5" size="lg" marginBottom="1em">
+                Request Type
+            </Heading>
+            <Select
+                name="requestType"
+                placeholder="Select request type"
+                value={ticketType}
+                onChange={handleRequestTypeChange}
+                marginBottom="2em"
+            >
             <option value="Aircon">Aircon</option>
             <option value="Cleanliness">Cleanliness</option>
             <option value="Admin">Admin</option>
             <option value="Others">Others</option>
-          </Select>
-          {showOtherInput && (
+            </Select>
+            {showOtherInput && (
             <Input
               name="otherRequestType"
               placeholder="Enter other request type"
@@ -233,38 +233,36 @@ function CreateTicketPage() {
 
         {/* Comment Box 2 */}
         <Box >
-          <Heading as="h5" size="lg" marginBottom="1em">
-            Description
-          </Heading>
-          <Textarea
-            id = "tenantComment"
-            name="tenantComment"
-            placeholder="Enter your comment"
-            value={tenantComment}
-            onChange={handleCommentChange}
-            marginBottom="1em"
-            rows={8}
-          />
-          
-
+            <Heading as="h5" size="lg" marginBottom="1em">
+                Description
+            </Heading>
+            <Textarea
+                id = "tenantComment"
+                name="tenantComment"
+                placeholder="Enter your comment"
+                value={tenantComment}
+                onChange={handleCommentChange}
+                marginBottom="1em"
+                rows={8}
+            />
+            </Box>
         </Box>
-      </Box>
 
-      {/* Submit Ticket Button */}
-      <Box>
-        <Button
-          name="submitButton"
-          variant="solid"
-          colorScheme="blue"
-          onClick={formik.handleSubmit}
-          width="15em"
-          height="3em"
-          marginTop="3em"
-          borderRadius="0.25em"
-        >
-          Submit
-        </Button>
-      </Box>
+        {/* Submit Ticket Button */}
+        <Box>
+            <Button
+            name="submitButton"
+            variant="solid"
+            colorScheme="blue"
+            onClick={formik.handleSubmit}
+            width="15em"
+            height="3em"
+            marginTop="3em"
+            borderRadius="0.25em"
+            >
+            Submit
+            </Button>
+        </Box>
     </Box>
     </Form>
     </Formik>

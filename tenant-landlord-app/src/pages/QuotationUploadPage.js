@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Helmet } from "react-helmet";
 import { Formik, Form } from 'formik'; // Import Formik components
@@ -6,14 +6,14 @@ import { Formik, Form } from 'formik'; // Import Formik components
 import { useAuthHeader, useIsAuthenticated } from "react-auth-kit";
 
 import {
-  Box,
-  Button,
-  Flex,
-  FormControl,
-  Input,
-  VStack,
-  Heading,
-  useToast
+    Box,
+    Button,
+    Flex,
+    FormControl,
+    Input,
+    VStack,
+    Heading,
+    useToast
 } from "@chakra-ui/react";
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -61,24 +61,24 @@ const QuotationUpload = () => {
     }
     // Ensure that user is authenticated for all renders
     const authenticate = () => {
-      // Check if still autenticated based on react auth kit
-      if (!authenticated()){
-          console.log("Not authenticated, redirecting.")
-          navigate('/')
-          return false
-      } else {
-          return true
-      }
-  }
-  useEffect(() => {
-      authenticate()
-  })
+        // Check if still autenticated based on react auth kit
+        if (!authenticated()){
+            console.log("Not authenticated, redirecting.")
+            navigate('/')
+            return false
+        } else {
+            return true
+        }
+    }
+    useEffect(() => {
+        authenticate()
+    })
 
     const navigateToViewTicketPage =  (ticketID) => {
       navigate('/pages/ViewTicketPage/', { state: { ticketID } } );
     }
 
-  return (
+    return (
     <>
       {NavigationBar()}
       <Flex align="center" justify="center" h="100vh" w="100%">

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios, { AxiosError } from "axios";
 import { Helmet } from "react-helmet";
@@ -6,7 +6,7 @@ import { Formik, Form, Field, ErrorMessage  } from 'formik'; // Import Formik co
 import * as Yup from 'yup';
 
 // Import React and hooks
-import { useAuthUser, useAuthHeader, useSignOut, useIsAuthenticated } from 'react-auth-kit';
+import { useAuthUser, useAuthHeader, useIsAuthenticated } from 'react-auth-kit';
 
 import {
     Box,
@@ -25,7 +25,6 @@ import { useNavigate , useLocation } from 'react-router-dom';
 import NavigationBar from "../components/NavigationBar.js";
 
 const LeaseUpload = () => {
-    const [text, setText] = useState('');
     const [pdfUrl, setPdfUrl] = useState('');
     const token = useAuthHeader();
     const navigate = useNavigate();
@@ -52,17 +51,17 @@ const LeaseUpload = () => {
       });
       
 
-      var config
-      if (authenticated()){
+    var config
+    if (authenticated()){
         config = {
-          headers: {
+            headers: {
             Authorization: `${token()}`
-          },
-          params: {
-              email: userDetails().email,
-          }
+            },
+            params: {
+                email: userDetails().email,
+            }
         }
-      }
+    }
 
 
       const authenticate = () => {
@@ -130,7 +129,7 @@ const LeaseUpload = () => {
                 <Form target="_blank" action={`http://localhost:5000/api/landlord/createLease/`} method="POST" encType="multipart/form-data">
                     <VStack align="flex-start" alignItems="center">
                     <Heading marginTop="4">Lease Upload</Heading>
-                    <Form >
+                    <Form>
                         <FormControl marginTop="1em" alignItems="center" width="26em">
                             <FormLabel >
                                 Floor *
