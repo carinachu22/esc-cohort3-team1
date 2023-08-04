@@ -22,6 +22,31 @@ export default function ViewTicketPage() {
   console.log('ID', ticketID)
   console.log("userdetails", userDetails);
   const authenticated = useIsAuthenticated();
+
+  const convertStatus = (status) => {
+    if (status === 'tenant_ticket_created'){
+        return 'Created'
+    } else if (status === 'landlord_ticket_rejected'){
+        return 'Rejected By Landlord'
+    } else if (status === 'landlord_ticket_approved'){
+        return 'Approved By Landlord'
+    } else if (status === 'landlord_quotation_sent'){
+        return 'Quotation Sent By Landlord'
+    } else if (status === 'ticket_quotation_approved'){
+        return 'Quotation Approved By Tenant'
+    } else if (status === 'ticket_quotation_rejected'){
+        return 'Quotation Rejected By Tenant'
+    } else if (status === 'landlord_started_work'){
+        return 'Work Started By Landlord'
+    } else if (status === 'landlord_completed_work'){
+        return 'Work Completed By Landlord'
+    } else if (status === 'ticket_work_rejected') {
+        return 'Work Rejected by Tenant'
+    } else if (status === 'landlord_ticket_closed' || status === 'tenant_feedback_given'){
+        return "Closed"
+    }
+  }
+
   const GetServiceTickets = (userDetails) => {
     if (userDetails() === undefined){
         return;
@@ -86,7 +111,7 @@ export default function ViewTicketPage() {
         // console.log('tickets[0].request_description',tickets[0].request_description)
         var tenantComment = tickets[0].request_description;
         var category = tickets[0].ticket_type;
-        setstatus(tickets[0].status)
+        setstatus(convertStatus(tickets[0].status))
         var timesubmitted = tickets[0].submitted_date_time;
         var floor = tickets[0].floor;
         var unit_number = tickets[0].unit_number;
