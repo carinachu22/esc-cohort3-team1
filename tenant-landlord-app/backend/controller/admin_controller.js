@@ -177,8 +177,16 @@ export const controllerForgotPasswordAdmin = (req, res) => {
         transporter.sendMail(mailOptions, function (error, info) {
             if (error) {
                 console.log(error);
+                return res.json({
+                    success: 0,
+                    message: "Error sending email."
+                })
             } else {
-                console.log("Email sent: " + info.response);
+                console.log('Email sent: ' + info.response);
+                return res.status(200).json({
+                    success: 1,
+                    message: "Reset password link sent to your email."
+                })
             }
         });
         ///// nodemailer feature ends here /////
