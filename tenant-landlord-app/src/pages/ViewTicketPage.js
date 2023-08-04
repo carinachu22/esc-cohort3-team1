@@ -85,7 +85,7 @@ export default function ViewTicketPage() {
         // console.log('tickets[0]',tickets[0])
         // console.log('tickets[0].request_description',tickets[0].request_description)
         var tenantComment = tickets[0].request_description;
-        var category = tickets[0].request_type;
+        var category = tickets[0].ticket_type;
         setstatus(tickets[0].status)
         var timesubmitted = tickets[0].submitted_date_time;
         var floor = tickets[0].floor;
