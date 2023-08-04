@@ -79,7 +79,7 @@ const LoginPage = () => {
                         token: response.data.token,
                         expiresIn: 60,
                         tokenType: "Bearer",
-                        authState: {email: values.email, type: "landlord", role: `${response.data.role}`}
+                        authState: {email: values.email, type: "landlord", role: `${response.data.role}`, building: `${response.data.building}`}
                     });
                     console.log(response.data.message);
                     navigateToDashboard();
@@ -94,13 +94,14 @@ const LoginPage = () => {
                     "http://localhost:5000/api/tenant/login",
                     values
                 )
+                console.log(response)
                 if (response.data.message === "Login successfully"){
                     console.log(response.data.message);
                     signIn({
                         token: response.data.token,
                         expiresIn: 60,
                         tokenType: "Bearer",
-                        authState: {email: values.email, type: "tenant"}
+                        authState: {email: values.email, type: "tenant", building: `${response.data.building}`}
                     });
                     navigateToDashboard();
                 }

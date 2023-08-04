@@ -51,6 +51,7 @@ export const controllerLoginTenant = (req, res) => {
         success: 1,
         message: "Login successfully",
         token: jsontoken,
+        building: results[0].public_building_id
       });
     } else {
       res.json({
