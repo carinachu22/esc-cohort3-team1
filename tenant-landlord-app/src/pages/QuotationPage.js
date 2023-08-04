@@ -7,7 +7,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import NavigationBar from '../components/NavigationBar.js';
 import { SelectedTicketContext } from '../components/SelectedTicketContext.js';
 import axios from 'axios';
-import { useAuthHeader } from 'react-auth-kit';
+import { useAuthHeader, useIsAuthenticated } from 'react-auth-kit';
 
 
 function QuotationPage() {
@@ -19,12 +19,16 @@ function QuotationPage() {
     const toast = useToast();
     const token = useAuthHeader();
     const location = useLocation();
-    const { ticketID } = location.state;
+    var ticketID;
+    if (location.state != null){
+      ticketID = location.state.ticketID;
+    }
     console.log('ID', ticketID)
 
     const navigateToViewTicketPage =  (ticketID) => {
         navigate('/pages/ViewTicketPage/', { state: { ticketID } } );
       }
+    const authenticated = useIsAuthenticated();
 
     const handleApprove = () => {
         const config = {
@@ -33,7 +37,8 @@ function QuotationPage() {
             }
         }
         const values = {
-            quotation_accepted_by_tenant: 1
+            quotation_accepted_by_tenant: 1,
+            ticket_id : ticketID
         }
         toast({
         title: "Quotation approved.",
@@ -44,7 +49,7 @@ function QuotationPage() {
         position: "top",
         });
         axios.patch(
-            `http://localhost:5000/api/tenant/quotationApproval/${ticketID}`,
+            `http://localhost:5000/api/tenant/quotationApproval/`,
             values,
             config
         )
@@ -58,7 +63,8 @@ function QuotationPage() {
             }
         }
         const values = {
-            quotation_accepted_by_tenant: 0
+            quotation_accepted_by_tenant: 0,
+            ticket_id : ticketID
         }
         toast({
         title: "Quotation rejected.",
@@ -69,7 +75,7 @@ function QuotationPage() {
         position: "top",
         });
         axios.patch(
-            `http://localhost:5000/api/tenant/quotationApproval/${ticketID}`,
+            `http://localhost:5000/api/tenant/quotationApproval/`,
             values,
             config
         )
@@ -77,7 +83,8 @@ function QuotationPage() {
     };
 
     useEffect(() => {
-        fetch(`http://localhost:5000/api/tenant/getQuotation/?id=${ticketID}`,{
+        const encodedticketID = encodeURIComponent(ticketID);
+        fetch(`http://localhost:5000/api/tenant/getQuotation/?id=${encodedticketID}`,{
             headers:{
               Authorization: `${token()}`
             }
@@ -94,6 +101,20 @@ function QuotationPage() {
             // Handle error
           });
       }, []);
+    // Ensure that user is authenticated for all renders
+    const authenticate = () => {
+        // Check if still autenticated based on react auth kit
+        if (!authenticated()){
+            console.log("Not authenticated, redirecting.")
+            navigate('/')
+            return false
+        } else {
+            return true
+        }
+    }
+    useEffect(() => {
+        authenticate()
+    })
 
     return (
         <>
@@ -102,7 +123,7 @@ function QuotationPage() {
             <Heading mb={5} textAlign="center">Job Quote for Ticket: {ticketName}</Heading>
             <Box display="flex" flexDirection="column" justifyContent="center" minHeight="50vh">
                 {pdfUrl && <iframe src={pdfUrl} width="100%" height="600px" />}
-            <Checkbox isChecked={isCheckboxChecked} onChange={(e) => setCheckboxChecked(e.target.checked)}>
+            <Checkbox id="quotationCheckbox" isChecked={isCheckboxChecked} onChange={(e) => setCheckboxChecked(e.target.checked)}>
                 I have read and agree to the terms 
             </Checkbox>
             <Box display="flex" justifyContent="space-around" m={1} p={1}>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import { useFormik } from "formik";
 import axios, { AxiosError } from "axios";
@@ -25,13 +25,18 @@ const TenantCreationPage = () => {
     const token = useAuthHeader();
     const userDetails = useAuthUser();
     const toast = useToast();
+    const authenticated = useIsAuthenticated();
 
-    const config = {
-        headers: {
-          Authorization: `${token()}`
-        },
-        params: {
-            email: userDetails().email
+    var config
+
+      if (authenticated()){
+        config = {
+          headers: {
+            Authorization: `${token()}`
+          },
+          params: {
+              email: userDetails().email,
+          }
         }
       }
 
@@ -122,6 +127,20 @@ const TenantCreationPage = () => {
     });
 
 
+    // Ensure that user is authenticated for all renders
+    const authenticate = () => {
+        // Check if still autenticated based on react auth kit
+        if (!authenticated()){
+            console.log("Not authenticated, redirecting.")
+            navigate('/')
+            return false
+        } else {
+            return true
+        }
+    }
+    useEffect(() => {
+        authenticate()
+    })
 
 
     /////// code below uses Chakra styling ////////

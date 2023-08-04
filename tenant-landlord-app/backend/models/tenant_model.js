@@ -377,6 +377,31 @@ export const getLeaseByTenant = (id, callBack) => {
   )
 }
 
+/**
+ * get lease details using tenant's email
+ * @param {*} email 
+ * @param {*} callBack 
+ */
+export const getLeaseByTenantEmail = (tenantEmail, callBack) => {
+  pool.query(
+    `
+    SELECT *
+    FROM LEASE LEFT JOIN TENANT_USER ON LEASE.tenant_user_id = TENANT_USER.tenant_user_id
+    WHERE email = ?
+    `,
+    [
+      tenantEmail
+    ],
+    (error, results, fields) => {
+      if (error) {
+        callBack(error);
+      } else {
+        callBack(null, results)
+      }
+    }
+  )
+}
+
 export const updateTenantLease = (publicLeaseID, tenantID, callBack) => {
   pool.query(
     `

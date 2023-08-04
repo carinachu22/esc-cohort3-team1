@@ -1,9 +1,9 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import axios from "axios";
 import { Helmet } from "react-helmet";
 import { Formik, Form } from 'formik'; // Import Formik components
 
-import { useAuthHeader } from "react-auth-kit";
+import { useAuthHeader, useIsAuthenticated } from "react-auth-kit";
 
 import {
   Box,
@@ -28,8 +28,12 @@ const QuotationUpload = () => {
   const navigate = useNavigate();
   const toast = useToast();
   const location = useLocation();
-  const { ticketID } = location.state;
+  var ticketID;
+  if (location.state != null){
+    ticketID = location.state.ticketID;
+  }
   console.log('ID', ticketID)
+  const authenticated = useIsAuthenticated();
 
   const retrieveFile = () => {
     console.log(selectedTicket);
@@ -42,7 +46,11 @@ const QuotationUpload = () => {
             responseType: "blob"
         }
     }
-    fetch(`http://localhost:5000/api/landlord/getQuotation/?id=${selectedTicket.id}`,
+    const encodedticketID = encodeURIComponent(ticketID);
+    fetch(`http://localhost:5000/api/landlord/getQuotation/?id=${encodedticketID}`,{
+    headers:{
+      Authorization: `${token()}`
+    }}
     ) // Replace with the actual backend URL serving the PDF
       .then((response) => response.blob())
       .then((data) => {
@@ -55,6 +63,20 @@ const QuotationUpload = () => {
         // Handle error
       })
     }
+    // Ensure that user is authenticated for all renders
+    const authenticate = () => {
+      // Check if still autenticated based on react auth kit
+      if (!authenticated()){
+          console.log("Not authenticated, redirecting.")
+          navigate('/')
+          return false
+      } else {
+          return true
+      }
+  }
+  useEffect(() => {
+      authenticate()
+  })
 
     const navigateToViewTicketPage =  (ticketID) => {
       navigate('/pages/ViewTicketPage/', { state: { ticketID } } );
@@ -75,10 +97,13 @@ const QuotationUpload = () => {
               formData.append("files", values.files); // Access files through form values
               try {
                 const response = await axios.post(
-                  `http://localhost:5000/api/landlord/uploadQuotation/${ticketID}`,
+                  `http://localhost:5000/api/landlord/uploadQuotation/`,
                   formData,
                   {
-                    params: { 'api-version': '3.0' },
+                    params: { 
+                      'api-version': '3.0',
+                      ticket_id: ticketID
+                  },
                     headers: {
                       "Content-Type": "multipart/form-data",
                       Authorization: `${token()}`

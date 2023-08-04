@@ -41,14 +41,14 @@ router.get("/getLease", checkTenantToken, controllerGetLeaseByTenant);
 router.get("/getQuotation/", checkTenantToken, controllerGetQuotation);
 
 router.post("/createTicket", checkTenantToken, controllerCreateTicket);
-router.patch("/quotationApproval/:id", checkTenantToken, controllerQuotationApproval);
+router.patch("/quotationApproval/", checkTenantToken, controllerQuotationApproval);
 
 router.get("/getTickets",checkTenantToken, controllerGetTickets);
-router.get("/getTicketById/:id", checkTenantToken, controllerGetTicketById);
+router.get("/getTicketById/", checkTenantToken, controllerGetTicketById);
 router.get("/getTicketsByStatus/:status",checkTenantToken, controllerGetTicketsByStatus);
 
-router.patch("/addFeedbackRating/:id", checkTenantToken, controllerAddFeedbackRating);
-router.patch("/addFeedbackText/:id", checkTenantToken, controllerAddFeedbackText);
+router.patch("/addFeedbackRating/", checkTenantToken, controllerAddFeedbackRating);
+router.patch("/addFeedbackText/", checkTenantToken, controllerAddFeedbackText);
 
-router.patch("/closeTicketStatus/:id", checkTenantToken, controllerCloseTicketStatus);
+router.patch("/closeTicketStatus/", checkTenantToken, controllerCloseTicketStatus);
 export default router;
