@@ -9,8 +9,8 @@ const config = {
     testEnvironment: 'node',
     setupFiles: ['dotenv/config'],
     maxWorkers: 1,
-    // globalSetup: process.env.SETUP_FILE,
-    // globalTeardown: process.env.TEARDOWN_FILE
+    // collectCoverage: true,
+    coverageReporters: ["text"], // can add "html if want"
   };
   
 
