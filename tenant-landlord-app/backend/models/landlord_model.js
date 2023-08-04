@@ -390,29 +390,29 @@ export const getTicketsByStatus = (status, callBack) => {
  * @param {*} data  status(string)
  * @param {*} callBack 
  */
-export const updateQuotation = (id, data, callBack) => {
-  const status = "landlord_quotation_sent";
-  if (statuses.includes(status)) {
-    console.log("id", id)
-    pool.query(
-      `
-      UPDATE SERVICE_REQUEST
-      SET  status = ?
-      WHERE public_service_request_id = ?
-      `,
-      [status, id],
-      (error, results, fields) => {
-        if (error) {
-          callBack(error);
-        } else {
-          callBack(null, results);
-        }
-      }
-    );
-  } else {
-    callBack("invalid status")
-  }
-};
+// export const updateQuotation = (id, data, callBack) => {
+//   const status = "landlord_quotation_sent";
+//   if (statuses.includes(status)) {
+//     console.log("id", id)
+//     pool.query(
+//       `
+//       UPDATE SERVICE_REQUEST
+//       SET  status = ?
+//       WHERE public_service_request_id = ?
+//       `,
+//       [status, id],
+//       (error, results, fields) => {
+//         if (error) {
+//           callBack(error);
+//         } else {
+//           callBack(null, results);
+//         }
+//       }
+//     );
+//   } else {
+//     callBack("invalid status")
+//   }
+// };
 
 /**
  * upload quotation's path in the file system

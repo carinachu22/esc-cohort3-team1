@@ -5,7 +5,7 @@ import {
   controllerGetTickets,
   controllerGetTicketById,
   controllerGetTicketsByStatus,
-  controllerUpdateQuotation,
+  //controllerUpdateQuotation,
   controllerResetPasswordLandlord,
   controllerResetPasswordPageLandlord,
   controllerForgotPasswordLandlord,
@@ -19,9 +19,9 @@ import {
   controllerUploadLease,
   controllerGetLease,
   controllerCreateLease,
-  controllerGetLeaseByLandlord,
+  //controllerGetLeaseByLandlord,
   controllerDeleteLease,
-  controllerUpdateLease,
+  //controllerUpdateLease,
   controllerGetLeaseDetails,
   controllerGetLandlordAccounts,
   controllerGetLandlordDetails,
@@ -75,10 +75,10 @@ router.post("/uploadLease/", checkLandlordToken, upload.single('files'), control
 router.get("/getLease/", checkLandlordToken, controllerGetLease);
 
 router.post("/createLease", checkLandlordToken, upload.single('files'), controllerCreateLease);
-router.get("/getLeaseByLandlord", checkLandlordToken, controllerGetLeaseByLandlord);
+//router.get("/getLeaseByLandlord", checkLandlordToken, controllerGetLeaseByLandlord);
 router.get("/getLeaseDetails", checkLandlordToken, controllerGetLeaseDetails);
 router.patch("/deleteLease", checkLandlordToken, controllerDeleteLease)
-router.patch("/updateLease", checkLandlordToken, controllerUpdateLease)
+//router.patch("/updateLease", checkLandlordToken, controllerUpdateLease)
 
 router.get("/getTickets", checkLandlordToken, controllerGetTickets);
 router.get("/getTicketsByType", checkLandlordToken, controllerGetTicketsByType);
@@ -87,7 +87,7 @@ router.get("/getTicketsByStatus/:status", checkLandlordToken, controllerGetTicke
 
 router.get("/getQuotation/", checkLandlordToken, controllerGetQuotation);
 router.post("/uploadQuotation/", checkLandlordToken, upload.single('files'), controllerUploadQuotation);
-router.patch("/updateQuotation/:id", checkLandlordToken, controllerUpdateQuotation);
+//router.patch("/updateQuotation/:id", checkLandlordToken, controllerUpdateQuotation);
 
 router.patch("/ticketApproval/", checkLandlordToken, controllerTicketApproval);
 router.patch("/ticketWork/", checkLandlordToken, controllerTicketWork);

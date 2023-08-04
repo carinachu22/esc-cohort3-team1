@@ -5,7 +5,7 @@ import {
   getTickets,
   getTicketById,
   getTicketsByStatus,
-  updateQuotation,
+  //updateQuotation,
   getLandlordById,
   updateLandlordPassword,
   uploadQuotation,
@@ -20,9 +20,9 @@ import {
   deleteTenantByEmail,
   getLandlordUserId,
   createLease,
-  getLeaseByLandlord,
+  //getLeaseByLandlord,
   deleteLease,
-  updateLease,
+  //updateLease,
   getLeaseDetails,
   getBuildingID,
   uploadLease,
@@ -643,26 +643,26 @@ export const controllerGetTicketsByStatus = (req, res) => {
  * @param {*} req  status
  * @param {*} res 
  */
-export const controllerUpdateQuotation = (req, res) => {
-  const id = req.params.id;
-  const body = req.body;
-  updateQuotation(id, body, (err, results) => {
-    if (err) {
-      console.log(err);
-      return;
-    }
-    if (!results) {
-      return res.json({
-        success: 0,
-        message: "Failed to update user",
-      });
-    }
-    return res.status(200).json({
-      success: 1,
-      data: "updated successfully!",
-    });
-  });
-};
+// export const controllerUpdateQuotation = (req, res) => {
+//   const id = req.params.id;
+//   const body = req.body;
+//   updateQuotation(id, body, (err, results) => {
+//     if (err) {
+//       console.log(err);
+//       return;
+//     }
+//     if (!results) {
+//       return res.json({
+//         success: 0,
+//         message: "Failed to update user",
+//       });
+//     }
+//     return res.status(200).json({
+//       success: 1,
+//       data: "updated successfully!",
+//     });
+//   });
+// };
 
 /**
  * store quotation in file system and its path in mysql database
@@ -1078,37 +1078,37 @@ export const controllerCreateLease = (req,res) => {
  * {email}
  * @param {json} res 
  */
-export const controllerGetLeaseByLandlord = (req,res) => {
-  let landlordID = "";
-  getLandlordUserId(req.body.email, (err, results) => {
-    if (err) {
-      console.log(err)
-      return
-    } if (!results) {
-      return res.json({
-        success:0,
-        message: "landlord not registered."
-      })
-    } else {
-      landlordID = results.landlord_user_id;
-      // console.log(landlordID)
-      getLeaseByLandlord(landlordID, (err, results) => {
-        if (err) {
-          console.log(err);
-          return res.status(500).json({
-            success: 0,
-            message: "Database connection error"
-          });
-        } else {
-          return res.status(200).json({
-            success:1,
-            data: results
-          });
-        };
-      })
-    }
-  })
-}
+// export const controllerGetLeaseByLandlord = (req,res) => {
+//   let landlordID = "";
+//   getLandlordUserId(req.body.email, (err, results) => {
+//     if (err) {
+//       console.log(err)
+//       return
+//     } if (!results) {
+//       return res.json({
+//         success:0,
+//         message: "landlord not registered."
+//       })
+//     } else {
+//       landlordID = results.landlord_user_id;
+//       // console.log(landlordID)
+//       getLeaseByLandlord(landlordID, (err, results) => {
+//         if (err) {
+//           console.log(err);
+//           return res.status(500).json({
+//             success: 0,
+//             message: "Database connection error"
+//           });
+//         } else {
+//           return res.status(200).json({
+//             success:1,
+//             data: results
+//           });
+//         };
+//       })
+//     }
+//   })
+// }
 
 export const controllerDeleteLease = (req,res) => {
   deleteLease(req.body.public_lease_id, (err,results) => {
@@ -1126,61 +1126,61 @@ export const controllerDeleteLease = (req,res) => {
   })
 }
 
-export const controllerUpdateLease = (req, res) => {
-  let landlordID = "";
-  let tenantID = "";
-  getLandlordUserId(req.body.landlord_email, (err,results) => {
-    if (err) {
-      console.log(err);
-      return;
-    } if (!results) {
-      return res.json({
-        success : 0,
-        message: "landlord not registered."
-      })
-    } else {
-      landlordID = results.landlord_user_id;
-      // console.log(landlordID)
-      getTenantUserId(req.body.tenant_email, (err, results) => {
-        if (err) {
-          console.log(err)
-          return
-        } if (!results) {
-          return res.json({
-            success:0,
-            message: "tenant not registered."
-          })
-        } else {
-          tenantID = results.tenant_user_id;
-          // console.log(tenantID)
-          updateLease(landlordID, tenantID, req.body, (err, results) => {
-            if (err) {
-              console.log(err);
-              return res.status(500).json({
-                success: 0,
-                message: "Database connection error"
-              });
-            } else {
-              updateTenantLease(req.body.tenant_email,req.body.new_public_lease_id, (err,results) => {
-                if (err) {
-                  console.log(err);
-                  return res.status(500).json({
-                    success: 0,
-                    message: "Database connection error"
-                  })
-                } 
-              });
-              return res.status(200).json({
-                success:1,
-                data: results
-              });
-            };
-          })
-        }
-      })
-    }
-  })
-}
+// export const controllerUpdateLease = (req, res) => {
+//   let landlordID = "";
+//   let tenantID = "";
+//   getLandlordUserId(req.body.landlord_email, (err,results) => {
+//     if (err) {
+//       console.log(err);
+//       return;
+//     } if (!results) {
+//       return res.json({
+//         success : 0,
+//         message: "landlord not registered."
+//       })
+//     } else {
+//       landlordID = results.landlord_user_id;
+//       // console.log(landlordID)
+//       getTenantUserId(req.body.tenant_email, (err, results) => {
+//         if (err) {
+//           console.log(err)
+//           return
+//         } if (!results) {
+//           return res.json({
+//             success:0,
+//             message: "tenant not registered."
+//           })
+//         } else {
+//           tenantID = results.tenant_user_id;
+//           // console.log(tenantID)
+//           updateLease(landlordID, tenantID, req.body, (err, results) => {
+//             if (err) {
+//               console.log(err);
+//               return res.status(500).json({
+//                 success: 0,
+//                 message: "Database connection error"
+//               });
+//             } else {
+//               updateTenantLease(req.body.tenant_email,req.body.new_public_lease_id, (err,results) => {
+//                 if (err) {
+//                   console.log(err);
+//                   return res.status(500).json({
+//                     success: 0,
+//                     message: "Database connection error"
+//                   })
+//                 } 
+//               });
+//               return res.status(200).json({
+//                 success:1,
+//                 data: results
+//               });
+//             };
+//           })
+//         }
+//       })
+//     }
+//   })
+// }
 
 export const controllerGetLeaseDetails = (req,res) => {
   const query = req.query;
