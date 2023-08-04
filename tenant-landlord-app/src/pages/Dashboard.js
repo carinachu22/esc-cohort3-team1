@@ -77,10 +77,20 @@ export default function Dashboard() {
                 }
                 // If user is a landlord, use landlord API call
                 if (type === 'landlord'){
-                    response = await axios.get(
-                        "http://localhost:5000/api/landlord/getTicketsByType",
-                        config
-                    )
+                    const role = userDetails().role;
+                    console.log("role: ", role);
+                    if (role === "staff"){
+                        response = await axios.get(
+                            "http://localhost:5000/api/landlord/getTicketsByType",
+                            config
+                        )
+                    }
+                    else if (role === 'supervisor'){
+                        response = await axios.get(
+                            "http://localhost:5000/api/landlord/getTickets",
+                            config
+                        )
+                    }
                 }
                 // If user is a tenant, use tenant API call 
                 else if (type === 'tenant'){ 

@@ -122,6 +122,17 @@ const AccountManagement = () => {
 
   }
 
+  const displayTable = () => {
+    const type = userDetails().type;
+    const email = userDetails().email;
+    if (type === "landlord"){
+      const role = userDetails().role;
+      if (role === "supervisor"){
+        {AccountManagementTable(() => APIDeleteAllLandlords(email), "Landlord", landlordAccounts, landlordRole)}
+      }
+    }
+  }
+
 
   /**
    * get all tenant accounts under the same building as the landlord user
@@ -395,8 +406,8 @@ const AccountManagement = () => {
       {NavigationBar()}
       
       {AccountManagementTable(() => APIDeleteAllTenants(config.params.email), "Tenant", tenantAccounts)}
-      {AccountManagementTable(() => APIDeleteAllLandlords(config.params.email), "Landlord", landlordAccounts, landlordRole)}
-
+      {/* {AccountManagementTable(() => APIDeleteAllLandlords(config.params.email), "Landlord", landlordAccounts, landlordRole)} */}
+      {displayTable()}
       
     </ChakraProvider>
 
