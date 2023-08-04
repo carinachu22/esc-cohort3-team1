@@ -259,13 +259,13 @@ export default function TicketList() {
 
     // Combine filtering and searching
     const getFilteredTickets = () => {
-        const filtered_tikcets = (searchTickets(
+        const filtered_tickets = (searchTickets(
             filterTickets(tickets, filterOption),
             searchInput, searchType
             ))
-        console.log(filtered_tikcets)
-        if (filtered_tikcets != null){
-        setFilteredTickets(filtered_tikcets.map((ticket, index) => (
+        console.log(filtered_tickets)
+        if (filtered_tickets != null){
+        setFilteredTickets(filtered_tickets.map((ticket, index) => (
             <div key={index+1}>
             <AccordionItem>
                 <AccordionButton justifyContent="space-between">
