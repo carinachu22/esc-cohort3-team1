@@ -293,7 +293,7 @@ export default function TicketList() {
                         {index+1}
                         </Box>
                         <Box textAlign='left' width='34vw'>
-                        {ticket.email}
+                        {ticket.landlord_email}
                         </Box>
                         <Box textAlign='left' width='20vw'>
                         {ticket.ticket_type}
