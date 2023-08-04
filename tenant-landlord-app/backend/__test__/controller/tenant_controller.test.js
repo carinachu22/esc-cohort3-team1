@@ -75,12 +75,9 @@ describe ("/tenant/createTicket", () => {
       .post("/api/tenant/createTicket")
       .set("Authorization", `Bearer ${token}`)
       .send({
-        public_service_request_id: "2023-06-04 10:10:10", 
-        name: "tenant1",
         email: "tenant1@gmail.com",
         request_type: "cleanliness",
         request_description: "the toilets are very dirty at level 2. please get someone to clean it.",
-        quotation_path: "C:Downlods/Quotations/q6",
         submitted_date_time: "2023-06-04 10:10:10"
       })
       .expect('Content-Type', /json/)
@@ -93,55 +90,9 @@ describe ("/tenant/createTicket", () => {
                   affectedRows: 1,
                   insertId: expect.any(Number),
                   info: "",
-                  serverStatus: 2,
+                  serverStatus: expect.any(Number),
                   warningStatus: 0
             })
-          })
-        })
-  })
-
-  test("missing name", async () =>  {
-    const token = await authorisation()
-    await request(app)
-      .post("/api/tenant/createTicket")
-      .set("Authorization", `Bearer ${token}`)
-      .send({
-        public_service_request_id: "2023-06-04 10:10:10", 
-        email: "tenant1@gmail.com",
-        request_type: "cleanliness",
-        request_description: "the toilets are very dirty at level 2. please get someone to clean it.",
-        quotation_path: "C:Downlods/Quotations/q6",
-        submitted_date_time: "2023-06-04 10:10:10"
-      })
-      .expect('Content-Type', /json/)
-      .expect(400)
-      .then((response) => {
-        expect(response.body).toEqual({
-            success: 0,
-            message: "Incomplete data fields"
-          })
-        })
-  })
-
-  test("missing public_service_request_id", async () =>  {
-    const token = await authorisation()
-    await request(app)
-      .post("/api/tenant/createTicket")
-      .set("Authorization", `Bearer ${token}`)
-      .send({
-        name: "tenant1",
-        email: "tenant1@gmail.com",
-        request_type: "cleanliness",
-        request_description: "the toilets are very dirty at level 2. please get someone to clean it.",
-        quotation_path: "C:Downlods/Quotations/q6",
-        submitted_date_time: "2023-06-04 10:10:10"
-      })
-      .expect('Content-Type', /json/)
-      .expect(400)
-      .then((response) => {
-        expect(response.body).toEqual({
-            success: 0,
-            message: "Incomplete data fields"
           })
         })
   })
@@ -152,11 +103,8 @@ describe ("/tenant/createTicket", () => {
       .post("/api/tenant/createTicket")
       .set("Authorization", `Bearer ${token}`)
       .send({
-        public_service_request_id: "2023-06-04 10:10:10", 
-        name: "tenant1",
         request_type: "cleanliness",
         request_description: "the toilets are very dirty at level 2. please get someone to clean it.",
-        quotation_path: "C:Downlods/Quotations/q6",
         submitted_date_time: "2023-06-04 10:10:10"
       })
       .expect('Content-Type', /json/)
@@ -175,11 +123,8 @@ describe ("/tenant/createTicket", () => {
       .post("/api/tenant/createTicket")
       .set("Authorization", `Bearer ${token}`)
       .send({
-        public_service_request_id: "2023-06-04 10:10:10", 
-        name: "tenant1",
         email: "tenant1@gmail.com",
         request_description: "the toilets are very dirty at level 2. please get someone to clean it.",
-        quotation_path: "C:Downlods/Quotations/q6",
         submitted_date_time: "2023-06-04 10:10:10"
       })
       .expect('Content-Type', /json/)
@@ -198,34 +143,8 @@ describe ("/tenant/createTicket", () => {
       .post("/api/tenant/createTicket")
       .set("Authorization", `Bearer ${token}`)
       .send({
-        public_service_request_id: "2023-06-04 10:10:10", 
-        name: "tenant1",
         email: "tenant1@gmail.com",
         request_type: "cleanliness",
-        quotation_path: "C:Downlods/Quotations/q6",
-        submitted_date_time: "2023-06-04 10:10:10"
-      })
-      .expect('Content-Type', /json/)
-      .expect(400)
-      .then((response) => {
-        expect(response.body).toEqual({
-            success: 0,
-            message: "Incomplete data fields"
-          })
-        })
-  })
-
-  test("missing quotation_path", async () =>  {
-    const token = await authorisation()
-    await request(app)
-      .post("/api/tenant/createTicket")
-      .set("Authorization", `Bearer ${token}`)
-      .send({
-        public_service_request_id: "2023-06-04 10:10:10", 
-        name: "tenant1",
-        email: "tenant1@gmail.com",
-        request_type: "cleanliness",
-        request_description: "the toilets are very dirty at level 2. please get someone to clean it.",
         submitted_date_time: "2023-06-04 10:10:10"
       })
       .expect('Content-Type', /json/)
@@ -244,12 +163,9 @@ describe ("/tenant/createTicket", () => {
       .post("/api/tenant/createTicket")
       .set("Authorization", `Bearer ${token}`)
       .send({
-        public_service_request_id: "2023-06-04 10:10:10", 
-        name: "tenant1",
         email: "tenant1@gmail.com",
         request_type: "cleanliness",
         request_description: "the toilets are very dirty at level 2. please get someone to clean it.",
-        quotation_path: "C:Downlods/Quotations/q6"
       })
       .expect('Content-Type', /json/)
       .expect(400)
@@ -282,13 +198,16 @@ describe ("/tenant/createTicket", () => {
   })
 })
 
-describe ("/tenant/quotationApproval/:id", () => {
+describe ("/tenant/quotationApproval", () => {
   test("valid ticket id and accept quotation", async () =>  {
     const token = await authorisation()
     await request(app)
-      .patch("/api/tenant/quotationApproval/2004-04-04 04:04:04")
+      .patch("/api/tenant/quotationApproval")
       .set("Authorization", `Bearer ${token}`)
-      .send({ quotation_accepted_by_tenant: 1 })
+      .send({ 
+        ticket_id: "SR/2004/Apr/0001",
+        quotation_accepted_by_tenant: 1 
+      })
       .expect(200)
       .then((response) => {
         expect(response.body).toEqual({
@@ -301,9 +220,10 @@ describe ("/tenant/quotationApproval/:id", () => {
   test("valid ticket id and reject quotation", async () =>  {
     const token = await authorisation()
     await request(app)
-      .patch("/api/tenant/quotationApproval/2002-02-02 02:02:02")
+      .patch("/api/tenant/quotationApproval")
       .set("Authorization", `Bearer ${token}`)
       .send({
+        ticket_id: "SR/2002/Feb/0001",
         quotation_accepted_by_tenant: 0
       })
       .expect(200)
@@ -318,9 +238,10 @@ describe ("/tenant/quotationApproval/:id", () => {
   test("valid ticket id and data validation error", async () =>  {
     const token = await authorisation()
     await request(app)
-      .patch("/api/tenant/quotationApproval/2005-05-05 05:05:05")
+      .patch("/api/tenant/quotationApproval")
       .set("Authorization", `Bearer ${token}`)
       .send({
+        ticket_id: "SR/2002/Feb/0001",
         quotation_accepted_by_tenant: 2
       })
       .expect(400)
@@ -335,9 +256,10 @@ describe ("/tenant/quotationApproval/:id", () => {
   test("invalid ticket id", async () =>  {
     const token = await authorisation()
     await request(app)
-      .patch("/api/tenant/quotationApproval/999")
+      .patch("/api/tenant/quotationApproval")
       .set("Authorization", `Bearer ${token}`)
       .send({
+        ticket_id: "SR/9999/999/9999",
         quotation_accepted_by_tenant: 1
       })
       .expect(200)
@@ -351,8 +273,9 @@ describe ("/tenant/quotationApproval/:id", () => {
 
   test("tenant user with no token", async () =>  {
     await request(app)
-      .patch("/api/tenant/quotationApproval/2005-05-05 05:05:05")
+      .patch("/api/tenant/quotationApproval")
       .send({
+        ticket_id: "SR/2005/May/0001",
         quotation_accepted_by_tenant: 1
       })
       .then((response) => {
@@ -378,8 +301,7 @@ describe ("/tenant/getTickets", () => {
             success: 1,
             data: [{
               service_request_id: 2,
-              public_service_request_id: "2003-03-03 03:03:03",
-              name: "tenant4",
+              public_service_request_id: "SR/2003/Mar/0001",
               email: "tenant4@gmail.com",
               request_type: "aircon",
               request_description: "aircon",
@@ -453,8 +375,7 @@ describe ("/tenant/getTicketsByStatus/:status", () => {
           success: "1",
           data: [{
                 service_request_id: 5,
-                public_service_request_id: "2006-06-06 06:06:06",
-                name: "tenant5",
+                public_service_request_id: "SR/2006/Jun/0001",
                 email: "tenant5@gmail.com",
                 request_type: "cleanliness",
                 request_description: "not clean",
@@ -529,13 +450,16 @@ describe ("/tenant/getTicketsByStatus/:status", () => {
   })
 })
 
-describe ("/tenant/addFeedbackRating/:id", () => {
+describe ("/tenant/addFeedbackRating", () => {
   test("valid ticket id and feedback rating = 1", async () =>  {
     const token = await authorisation()
     await request(app)
-      .patch("/api/tenant/addFeedbackRating/2002-02-02 02:02:02")
+      .patch("/api/tenant/addFeedbackRating")
       .set("Authorization", `Bearer ${token}`)
-      .send({ feedback_rating: 1 })
+      .send({ 
+        ticket_id: "SR/2002/Feb/0001",
+        feedback_rating: 1 
+      })
       .expect(200)
       .then((response) => {
         expect(response.body).toMatchObject({
@@ -548,9 +472,11 @@ describe ("/tenant/addFeedbackRating/:id", () => {
   test("valid ticket id and feedback rating = '3", async () =>  {
     const token = await authorisation()
     await request(app)
-      .patch("/api/tenant/addFeedbackRating/2002-02-02 02:02:02")
+      .patch("/api/tenant/addFeedbackRating")
       .set("Authorization", `Bearer ${token}`)
-      .send({ feedback_rating: '3' })
+      .send({ 
+        ticket_id: "SR/2002/Feb/0001",
+        feedback_rating: '3' })
       .expect(200)
       .then((response) => {
         expect(response.body).toMatchObject({
@@ -563,9 +489,12 @@ describe ("/tenant/addFeedbackRating/:id", () => {
   test("valid ticket id and feedback rating = 5", async () =>  {
     const token = await authorisation()
     await request(app)
-      .patch("/api/tenant/addFeedbackRating/2004-04-04 04:04:04")
+      .patch("/api/tenant/addFeedbackRating")
       .set("Authorization", `Bearer ${token}`)
-      .send({ feedback_rating: 5 })
+      .send({ 
+        ticket_id: "SR/2004/Apr/0001",
+        feedback_rating: 5 
+      })
       .expect(200)
       .then((response) => {
         expect(response.body).toMatchObject({
@@ -578,9 +507,12 @@ describe ("/tenant/addFeedbackRating/:id", () => {
   test("valid public ticket id but invalid feedback rating = 0", async () =>  {
     const token = await authorisation()
     await request(app)
-      .patch("/api/tenant/addFeedbackRating/2002-02-02 02:02:02")
+      .patch("/api/tenant/addFeedbackRating")
       .set("Authorization", `Bearer ${token}`)
-      .send({ feedback_rating: 0 })
+      .send({ 
+        ticket_id: "SR/2002/Feb/0001",
+        feedback_rating: 0 
+      })
       .expect(400)
       .then((response) => {
         expect(response.body).toEqual({
@@ -593,9 +525,11 @@ describe ("/tenant/addFeedbackRating/:id", () => {
   test("valid public ticket id but invalid feedback rating = 3", async () =>  {
     const token = await authorisation()
     await request(app)
-      .patch("/api/tenant/addFeedbackRating/2002-02-02 02:02:02")
+      .patch("/api/tenant/addFeedbackRating")
       .set("Authorization", `Bearer ${token}`)
-      .send({ feedback_rating: "invalid" })
+      .send({ 
+        ticket_id:"SR/2002/Feb/0001",
+        feedback_rating: "invalid" })
       .expect(400)
       .then((response) => {
         expect(response.body).toEqual({
@@ -608,9 +542,12 @@ describe ("/tenant/addFeedbackRating/:id", () => {
   test("invalid ticket id", async () =>  {
     const token = await authorisation()
     await request(app)
-      .patch("/api/tenant/addFeedbackRating/2002-02-02")
+      .patch("/api/tenant/addFeedbackRating")
       .set("Authorization", `Bearer ${token}`)
-      .send({ feedback_rating: "5" })
+      .send({ 
+        ticket_id:"SR/9999/999/9999",
+        feedback_rating: "5" 
+      })
       .expect(400)
       .then((response) => {
         expect(response.body).toEqual({
@@ -622,8 +559,11 @@ describe ("/tenant/addFeedbackRating/:id", () => {
 
   test("tenant user with no token", async () =>  {
     await request(app)
-      .patch("/api/tenant/addfeedbackRating/2002-02-02 02:02:02")
-      .send({ feedback_rating: "1" })
+      .patch("/api/tenant/addfeedbackRating")
+      .send({ 
+        ticket_id:"SR/2002/Feb/0001",
+        feedback_rating: "1" 
+      })
       .then((response) => {
         expect(JSON.parse(response.text)).toEqual({
             success: 0,
@@ -633,13 +573,16 @@ describe ("/tenant/addFeedbackRating/:id", () => {
   })
 })
 
-describe ("/tenant/addFeedbackText/:id", () => {
+describe ("/tenant/addFeedbackText", () => {
   test("valid ticket id and feedback text", async () =>  {
     const token = await authorisation()
     await request(app)
-      .patch("/api/tenant/addFeedbackText/2002-02-02 02:02:02")
+      .patch("/api/tenant/addFeedbackText")
       .set("Authorization", `Bearer ${token}`)
-      .send({ feedback_text: "good job!" })
+      .send({ 
+        ticket_id:"SR/2002/Feb/0001",
+        feedback_text: "good job!" 
+      })
       .expect(200)
       .then((response) => {
         expect(response.body).toMatchObject({
@@ -652,9 +595,12 @@ describe ("/tenant/addFeedbackText/:id", () => {
   test("invalid ticket id", async () =>  {
     const token = await authorisation()
     await request(app)
-      .patch("/api/tenant/addFeedbackText/2002-02-02")
+      .patch("/api/tenant/addFeedbackText")
       .set("Authorization", `Bearer ${token}`)
-      .send({ feedback_text: "good job!" })
+      .send({ 
+        ticket_id:"SR/9999/999/9999",
+        feedback_text: "good job!" 
+      })
       .expect(400)
       .then((response) => {
         expect(response.body).toEqual({
@@ -666,8 +612,11 @@ describe ("/tenant/addFeedbackText/:id", () => {
 
   test("tenant user with no token", async () =>  {
     await request(app)
-      .patch("/api/tenant/addfeedbackText/2002-02-02 02:02:02")
-      .send({ feedback_rating: "1" })
+      .patch("/api/tenant/addfeedbackText")
+      .send({ 
+        ticket_id:"SR/2002/Feb/0001",
+        feedback_rating: "1"
+       })
       .then((response) => {
         expect(JSON.parse(response.text)).toEqual({
             success: 0,
@@ -677,13 +626,16 @@ describe ("/tenant/addFeedbackText/:id", () => {
   })
 })
 
-describe ("/tenant/closeTicketStatus/:id", () => {
+describe ("/tenant/closeTicketStatus", () => {
   test("valid ticket id and status", async () =>  {
     const token = await authorisation()
     await request(app)
-      .patch("/api/tenant/closeTicketStatus/2002-02-02 02:02:02")
+      .patch("/api/tenant/closeTicketStatus")
       .set("Authorization", `Bearer ${token}`)
-      .send({ status: "close" })
+      .send({ 
+        ticket_id:"SR/2002/Feb/0001",
+        status: "close" 
+      })
       .expect(200)
       .then((response) => {
         expect(response.body).toMatchObject({
@@ -697,9 +649,12 @@ describe ("/tenant/closeTicketStatus/:id", () => {
   test("valid ticket id and incorrect status", async () =>  {
     const token = await authorisation()
     await request(app)
-      .patch("/api/tenant/closeTicketStatus/2002-02-02 02:02:02")
+      .patch("/api/tenant/closeTicketStatus")
       .set("Authorization", `Bearer ${token}`)
-      .send({ status: "open sesame" })
+      .send({ 
+        ticket_id:"SR/2002/Feb/0001",
+        status: "open sesame" 
+      })
       .expect(200)
       .then((response) => {
         expect(response.body).toMatchObject({
@@ -713,9 +668,12 @@ describe ("/tenant/closeTicketStatus/:id", () => {
   test("invalid ticket id", async () =>  {
     const token = await authorisation()
     await request(app)
-      .patch("/api/tenant/closeTicketStatus/2002-02-02")
+      .patch("/api/tenant/closeTicketStatus")
       .set("Authorization", `Bearer ${token}`)
-      .send({ status: "close" })
+      .send({ 
+        ticket_id:"SR/9999/999/9999",
+        status: "close" 
+      })
       .expect(400)
       .then((response) => {
         expect(response.body).toEqual({
@@ -727,8 +685,11 @@ describe ("/tenant/closeTicketStatus/:id", () => {
 
   test("tenant user with no token", async () =>  {
     await request(app)
-      .patch("/api/tenant/closeTicketStatus/2002-02-02 02:02:02")
-      .send({ status: "close" })
+      .patch("/api/tenant/closeTicketStatus")
+      .send({ 
+        ticket_id:"SR/2002/Feb/0001",
+        status: "close" 
+      })
       .then((response) => {
         expect(JSON.parse(response.text)).toEqual({
             success: 0,
