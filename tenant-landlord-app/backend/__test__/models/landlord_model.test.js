@@ -24,7 +24,8 @@ import {
     deleteLease,
     updateLease,
     uploadLease,
-    getLeasePath
+    getLeasePath,
+    getLeaseDetails
 } from '../../models/landlord_model.js';
 import setup from '../setup.js';
 import teardown from '../teardown.js';
@@ -913,41 +914,18 @@ describe("testing getTicketsById() in landlord model", () => {
     })
 })
 
-// //TODO: getLeaseByLandlord
-// describe("Testing getLeaseByLandlord() in landlord model", () => {
-//     test ("Test calling getLeaseByLandlord() on valid landlord id",(done) => {
-//         getLeaseByLandlord(4, (err, results) => {
-//             if (err){
-//                 console.log("ERROR",err)
-//             }
-//             const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
-//             expect(rowsChanged).toBe(1);
-//             done();
-//         })
-//     });
-//     test ("Test calling getLeaseByLandlord() on an invalid landlord id",(done) => {
-//         getLeaseByLandlord(999, (err, results) => {
-//             if (err){
-//                 console.log("ERROR",err)
-//             }
-//             const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
-//             expect(rowsChanged).toBe(0);
-//             done();
-//         })
-//     });
-// })
+describe("testing getLeaseDetails() in landlord model", () => {
+    test("test calling getLeaseDetails() with valid tenant id", (done) => {
+        getLeaseDetails(4, (err,results) => {
+            expect(results.length).toBe(1)
+            done()
+        })
+    })
 
-
-// TODO: updateLandlord
-
-//TODO: deleteLandlord
-
-//TODO: getQuotation
-
-//TODO: getLeaseDetails
-
-//TODO: deleteLease
-
-//TODO: getLease
-
-//TODO: getBuildings
+    test("test calling getLeaseDetails() with invalid tenant id", (done) => {
+        getLeaseDetails(999, (err,results) => {
+            expect(results.length).toBe(0)
+            done()
+        })
+    })
+})

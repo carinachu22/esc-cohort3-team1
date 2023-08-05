@@ -979,7 +979,7 @@ export const controllerGetLeaseDetails = (req,res) => {
     return res.status(200).json({
       success: 1,
       message: "successfully retrieve lease details",
-      data: results
+      data: results[0]
     });
   })
 }

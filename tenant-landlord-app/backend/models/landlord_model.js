@@ -646,6 +646,7 @@ export const getLeaseByLandlord = (id, callBack) => {
       if (error) {
         callBack(error);
       } else {
+        console.log(results)
         callBack(null,results);
       }
     }
@@ -660,7 +661,7 @@ export const getLeaseDetails = (tenant_user_id, callBack) => {
       if(error){
         callBack(error);
       }
-      return callBack(null, results[0]);
+      return callBack(null, results);
     }
   );
 }
