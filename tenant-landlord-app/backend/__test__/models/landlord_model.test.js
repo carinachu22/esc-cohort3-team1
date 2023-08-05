@@ -219,7 +219,8 @@ describe("testing createLandlord() in landlord model", () => {
             password: '$2b$10$BIJTkvtOrkrKhl/juVKCauVhPwqChMNbayD3DazrMBi6H6gsgVlrS',
         }
         createLandlord(data, (err, results) => {
-            expect(err).toBe("missing data entry!");
+            const rowsChanged = JSON.parse(JSON.stringify(results)).affectedRows
+            expect(rowsChanged).toBe(1);
             done();
         })
     });

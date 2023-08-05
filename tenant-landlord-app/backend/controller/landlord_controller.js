@@ -50,6 +50,12 @@ import { send } from "process";
 export const controllerCreateLandlord = (req, res) => {
   const body = req.body;
   const email = body.email;
+  if (!email || !body.password) {
+    return res.status(400).json({
+      success: 0,
+      message: "missing data entry!"
+    })
+  }
   getLandlordByEmail(body.email, (err, result) => {
     if (result.length === 0) {
       const salt = genSaltSync(10);
@@ -59,7 +65,7 @@ export const controllerCreateLandlord = (req, res) => {
           console.log(err);
           return res.status(500).json({
             success: 0,
-            message: "Database connection error",
+            message: err,
           });
         }
         return res.status(200).json({

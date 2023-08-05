@@ -8,11 +8,14 @@ const statuses = ["tenant_ticket_created", "landlord_ticket_rejected", "landlord
  * @param {*} callBack 
  */
 export const createLandlord = (data, callBack) => {
-  if (data.email && data.password && data.ticket_type) {
+  if (data.email && data.password) {
     pool.query(
       `SELECT * FROM landlord_user WHERE email = ?`,
       [data.email],
       (error, results) => {
+        if(error){
+          callBack(error)
+        }
         if (results.length > 0) {
           callBack("landlord user already exists")
         } else {
