@@ -82,6 +82,7 @@ export const recoverTenantAccount = (id, callBack) => {
       if(error){
         callBack(error);
       }
+      console.log(results)
       return callBack(null, results[0]);
     }
   );
@@ -158,7 +159,7 @@ export const getTicketsByStatus = (email, status, callBack) => {
 
 /**
  * Ticket Creation
- * @param {*} data email, request_type, request_description, quptation_path, submitted_date_time(Date Type)
+ * @param {*} data email, request_type, request_description, submitted_date_time(Date Type)
  * @param {*} floor
  * @param {*} unit_number
  * @param {*} callBack 
@@ -192,6 +193,7 @@ export const createTicket = (data, floor, unit_number,  callBack) => {
           console.log(error)
           callBack(error);
         } else {
+          console.log(results)
           callBack(null,results);
         }
       }
