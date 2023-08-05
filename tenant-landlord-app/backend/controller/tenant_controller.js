@@ -288,13 +288,11 @@ export const controllerGetTicketsByStatus = (req, res) => {
     } else {
       getTicketsByStatus(email, status, (err,results) => {
         if (err === "invalid status") {
-          console.log(err);
           return res.status(400).json({
             success: 0,
             message: `${err}`
           });
         } else if (err) {
-          console.log(err)
           return res.status(500).json({
             success: 0,
             message: "Database connection error"
@@ -392,7 +390,6 @@ export const controllerAddFeedbackRating = (req, res) => {
       }
       addFeedbackRating(id, feedback_rating, (err, results) => {
         if (err) {
-          console.log(err);
           if (err === "data validation error") {
             return res.status(400).json({
               success: 0,
