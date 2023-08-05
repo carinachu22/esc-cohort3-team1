@@ -22,7 +22,8 @@ import {
     getLandlordUserId,
     getLeaseByLandlord,
     deleteLease,
-    updateLease
+    updateLease,
+    uploadLease
 } from '../../models/landlord_model.js';
 import setup from '../setup.js';
 import teardown from '../teardown.js';
@@ -679,6 +680,57 @@ describe("testing createLease() in landlord model", () => {
     })
 })
 
+describe("testing uploadLease() in landlord model", () => {
+    ytest("test calling uploadLease() with valid inputs", (done) => {
+        const data = {
+            filepath: ":Content/Documents/lease_details/9",
+            publicLeaseID: "2016-01-20 18:16:15"
+        }
+        uploadLease(data, (err, results) => {
+            if (err) {
+                console.log("ERROR", err)
+            }
+            const changedRows = JSON.parse(JSON.stringify(results)).changedRows
+            expect(changedRows).toBe(1)
+            done()
+        })
+    })
+
+    test("test calling uploadLease() with invalid public lease id", (done) => {
+        const data = {
+            filepath: ":Content/Documents/lease_details/9",
+            publicLeaseID: "9999-99-99 99:99:99"
+        }
+        uploadLease(data, (err, results) => {
+            if (err) {
+                console.log("ERROR", err)
+            }
+            const changedRows = JSON.parse(JSON.stringify(results)).changedRows
+            expect(changedRows).toBe(0)
+            done()
+        })
+    })
+
+    test("test calling uploadLease() with missing pdf path", (done) => {
+        const data = {
+            publicLeaseID: "2016-01-20 18:16:15"
+        }
+        uploadLease(data, (err, results) => {
+            expect(err).toBe("missing data entry!")
+            done()
+        })
+    })
+
+    test("test calling uploadLease() with missing public lease id", (done) => {
+        const data = {
+            filepath: ":Content/Documents/lease_details/9",
+        }
+        uploadLease(data, (err, results) => {
+            expect(err).toBe("missing data entry!")
+            done()
+        })
+    })
+})
 
 // //TODO: getLeaseByLandlord
 // describe("Testing getLeaseByLandlord() in landlord model", () => {
@@ -712,8 +764,6 @@ describe("testing createLease() in landlord model", () => {
 //TODO: getTicketsById
 
 //TODO: getQuotation
-
-//TODO: uploadLease
 
 //TODO: getLeaseDetails
 

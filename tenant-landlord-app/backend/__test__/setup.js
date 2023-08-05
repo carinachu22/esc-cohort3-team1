@@ -106,7 +106,8 @@ export default async function setup() {
                         (5,'2007-11-20 11:11:11',5,3,'6','100',':Content/Documents/lease_details/5'),
                         (6,'2004-01-20 11:11:11',6,3,'1','50',':Content/Documents/lease_details/6'),
                         (7,'2017-11-20 17:16:15',7,5,'3','100',':Content/Documents/lease_details/7'),
-                        (8,'2014-01-20 17:16:15',8,5,'7','50',':Content/Documents/lease_details/8');
+                        (8,'2014-01-20 17:16:15',8,5,'7','50',':Content/Documents/lease_details/8'),
+                        (9,'2016-01-20 18:16:15',9,5,'2','150',NULL);
     
             `);
         

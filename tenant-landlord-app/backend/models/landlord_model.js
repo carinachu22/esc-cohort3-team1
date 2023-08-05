@@ -567,24 +567,28 @@ export const createLease = (publicLeaseID, landlordID, tenantID, data, callBack)
  * @param {*} callBack 
  */
 export const uploadLease = ({filepath, publicLeaseID}, callBack) => {
-  pool.query(
-    `
-    UPDATE lease
-    SET pdf_path = ?
-    WHERE public_lease_id = ?
-    `,
-    [
-      filepath,
-      publicLeaseID
-    ],
-    (error, results, fields) => {
-      if (error) {
-        callBack(error);
-      } else {
-        callBack(null,results);
+  if (filepath && publicLeaseID) {
+    pool.query(
+      `
+      UPDATE lease
+      SET pdf_path = ?
+      WHERE public_lease_id = ?
+      `,
+      [
+        filepath,
+        publicLeaseID
+      ],
+      (error, results, fields) => {
+        if (error) {
+          callBack(error);
+        } else {
+          callBack(null,results);
+        }
       }
-    }
-  )
+    )
+  } else {
+    callBack("missing data entry!")
+  }  
 }
 
 
