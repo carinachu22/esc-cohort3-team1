@@ -888,3 +888,29 @@ export const getBuildingID = (email, callBack) => {
     }
   );
 }
+
+/**
+ * set landlord_email in service_request table
+ * @param {*} landlordEmail 
+ * @param {*} callBack 
+ */
+export const assignLandlord = (landlordEmail, ticketID, callBack) => {
+  pool.query(
+    `
+    UPDATE service_request
+    SET landlord_email = ?
+    WHERE public_service_request_id = ?
+    `,
+    [
+      landlordEmail,
+      ticketID
+    ],
+    (error, results, fields) => {
+      if (error) {
+        callBack(error);
+      } else {
+        callBack(null, results[0]);
+      }
+    }
+  );
+}

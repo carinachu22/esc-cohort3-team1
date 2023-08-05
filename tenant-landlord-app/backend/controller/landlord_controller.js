@@ -29,7 +29,8 @@ import {
     getLeasePath,
     getLandlordAccounts,
     recoverLandlordAccount,
-    getTicketsByType
+    getTicketsByType,
+    assignLandlord
 
 } from "../models/landlord_model.js";
 import { 
@@ -71,7 +72,6 @@ export const controllerCreateLandlord = (req, res) => {
         console.log("creating landlord");
             //get building id of the user creating this landlord account
             getBuildingID(user_email, (err, results) => {
-                console.log("results", results)
                 if (err) {
                 console.log(err);
                 return;
@@ -867,7 +867,6 @@ export const controllerGetLandlordAccounts = (req, res) => {
             const public_building_id = results[0].public_building_id;
             // console.log(public_building_id)
             getLandlordAccounts(public_building_id, ticket_type, (err, results) => {
-                console.log("results", results);
                     if (err) {
                     console.log(err);
                     return;
@@ -1197,6 +1196,27 @@ export const controllerGetLeaseDetails = (req,res) => {
         return res.status(200).json({
             success: 1,
             message: "successfully retrieve lease details",
+            data: results
+        });
+    })
+}
+
+export const controllerAssignLandlord = (req, res) => {
+    const {landlordEmail, ticketID} = req.query;
+    console.log("landlord email", landlordEmail);
+    console.log("ticket id", ticketID);
+    assignLandlord(landlordEmail, ticketID, (err, results) => {
+        console.log("landlord assigned", results)
+        if (err){
+            console.log(err);
+            return res.status(500).json({
+                success: 0,
+                message: "Database connection error",
+            });
+        }
+        return res.status(200).json({
+            success: 1,
+            message: "successfully assigned landlord",
             data: results
         });
     })

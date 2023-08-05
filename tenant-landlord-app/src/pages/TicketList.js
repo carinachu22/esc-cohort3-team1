@@ -118,8 +118,6 @@ export default function TicketList() {
         const type = userDetails().type;
         const buildingID = userDetails().building;
         const email = userDetails().email;
-        const tickets_list = [];
-        const landlord_list = ["landlord1@gmail.com", "landlord2@gmail.com"];
         let response;
 
         //get landlord accounts
@@ -180,13 +178,12 @@ export default function TicketList() {
                     console.log("Error: ", err);
                 }
             }
-        }
-        
-
+        }     
 
         // Initialise promise
-        APIGetTickets(type).then(async function(result){
+        const refreshTickets = async () => { APIGetTickets(type).then(async function(result){
             //console.log('result',result)
+            const tickets_list = [];
             // Naive data validation
             if (result !== undefined){
                 for (let i=0;i<result.length;i++){
@@ -276,7 +273,8 @@ export default function TicketList() {
                                 View Details & Actions
                             </Button>
                             <Box display="inline" marginLeft="3em">
-                                <DropDownMenu items={landlordAccounts[index]}/>
+                                {/* for the parameter type, if landlord is a staff then type === "assign to self", if user is an admin or landlord then type === "assign staff" */}
+                                <DropDownMenu items={landlordAccounts[index]} type={userDetails().role === "staff" ? "Assign To Self" : "Assign Staff"} ticketID={ticket.public_service_request_id} refreshParent={refreshTickets}/>
                             </Box>
                         </AccordionPanel>
                     </AccordionItem>
@@ -293,7 +291,7 @@ export default function TicketList() {
                         {index+1}
                         </Box>
                         <Box textAlign='left' width='34vw'>
-                        {ticket.landlord_email}
+                        {ticket.landlord_email ? ticket.landlord_email : "Unassigned"}
                         </Box>
                         <Box textAlign='left' width='20vw'>
                         {ticket.ticket_type}
@@ -312,8 +310,8 @@ export default function TicketList() {
                         Request Type: {ticket.ticket_type} <br></br>
                         Request Description: {ticket.request_description} <br></br>
                         Status: {convertStatus(ticket.status)} <br></br>
-                        Landlord Assigned: {ticket.landlord_email}<br></br>
-                        </Box>
+                        Landlord Assigned: {ticket.landlord_email ? ticket.landlord_email : "Unassigned"}<br></br>
+                        </Box> 
                         <Box width='50vw'>
                             <Stepper index={checkStep(ticket.status)}>
                                 {steps.map((step, index) => (
@@ -348,7 +346,9 @@ export default function TicketList() {
             // Update states to be accessed in return
             console.log("tickets html", tickets_html)
             setFilteredTickets(tickets_html);
-        })
+        }) }
+
+        refreshTickets()
     }
     const filterTickets = (tickets, status) => {
         if (status === "") {

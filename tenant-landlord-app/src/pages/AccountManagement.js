@@ -65,7 +65,7 @@ const AccountManagement = () => {
     const signIn = useSignIn();
     const [tenantAccounts, setTenantAccounts] = useState(null)
     const [landlordAccounts, setLandlordAccounts] = useState(null)
-    const [landlordRole, setLandlordRole] = useState(null);
+    //const [landlordRole, setLandlordRole] = useState(null);
 
     const token = useAuthHeader();
     const userDetails = useAuthUser();
@@ -111,16 +111,16 @@ const AccountManagement = () => {
      * @param {*} email 
      * @returns 
      */
-    const getLandlordRole = async (email) => {
-        const response = await axios.get(
-        "http://localhost:5000/api/landlord/getLandlordDetails?landlordEmail=" + email,
-        config
-        )
-        const role = response.data.data.role;
-        console.log("role: ", role);
-        setLandlordRole(role);
+    // const getLandlordRole = async (email) => {
+    //     const response = await axios.get(
+    //     "http://localhost:5000/api/landlord/getLandlordDetails?landlordEmail=" + email,
+    //     config
+    //     )
+    //     const role = response.data.data.role;
+    //     console.log("role: ", role);
+    //     setLandlordRole(role);
 
-    }
+    // }
 
     // const displayTable = () => {
     //   const type = userDetails().type;
@@ -382,12 +382,12 @@ const AccountManagement = () => {
 
     useEffect(() => {
         if (authenticate()){
-        getLandlordRole(config.params.email);
-        GetTenantAccounts();
-        GetLandlordAccounts();}
+            //await getLandlordRole(config.params.email);
+            GetTenantAccounts();
+            console.log(userDetails().role)
+            if(userDetails().role === 'admin' || userDetails().role === 'supervisor') GetLandlordAccounts();
         }
-        ,
-    []);
+    },[]);
 
     // Ensure that user is authenticated for all renders
     useEffect(() => {
@@ -401,9 +401,8 @@ const AccountManagement = () => {
         {NavigationBar()}
         
         {AccountManagementTable(() => APIDeleteAllTenants(config.params.email), "Tenant", tenantAccounts)}
-        {AccountManagementTable(() => APIDeleteAllLandlords(config.params.email), "Landlord", landlordAccounts, landlordRole)}
+        {(userDetails().role === 'admin' || userDetails().role === 'supervisor') ? AccountManagementTable(() => APIDeleteAllLandlords(config.params.email), "Landlord", landlordAccounts) : null}
 
-        
         </ChakraProvider>
 
 
