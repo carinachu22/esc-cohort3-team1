@@ -82,7 +82,6 @@ export const recoverTenantAccount = (id, callBack) => {
       if(error){
         callBack(error);
       }
-      console.log(results)
       return callBack(null, results[0]);
     }
   );
@@ -190,10 +189,8 @@ export const createTicket = (data, floor, unit_number,  callBack) => {
       ],
       (error, results, fields) => {
         if (error) {
-          console.log(error)
           callBack(error);
         } else {
-          console.log(results)
           callBack(null,results);
         }
       }

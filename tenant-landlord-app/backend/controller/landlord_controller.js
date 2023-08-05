@@ -52,7 +52,6 @@ export const controllerCreateLandlord = (req, res) => {
   const email = body.email;
   getLandlordByEmail(body.email, (err, result) => {
     if (result.length === 0) {
-      console.log(body);
       const salt = genSaltSync(10);
       body.password = hashSync(body.password, salt);
       createLandlord(body, (err, results) => {
@@ -87,7 +86,6 @@ export const controllerCreateLandlord = (req, res) => {
  */
 export const controllerLoginLandlord = (req, res) => {
   const body = req.body;
-  console.log(body.email);
   getLandlordByEmail(body.email, (err, results) => {
     if (err) {
       console.log(err);
@@ -98,9 +96,7 @@ export const controllerLoginLandlord = (req, res) => {
         message: "Invalid email or password",
       });
     } else {
-      console.log(body.password, results[0].password);
       const password_check = compareSync(body.password, results[0].password);
-      console.log(password_check);
       if (password_check) {
         results[0].password = undefined;
         const jsontoken = jwt.sign({ result: results[0] }, "qwe1234", {
@@ -112,7 +108,6 @@ export const controllerLoginLandlord = (req, res) => {
           token: jsontoken,
         });
       } else {
-        console.log(results[0]);
         res.json({
           success: 0,
           message: "Invalid email or password",
@@ -131,7 +126,6 @@ export const controllerLoginLandlord = (req, res) => {
  */
 export const controllerForgotPasswordLandlord = (req, res) => {
   const body = req.body;
-  console.log(body.email);
   getLandlordByEmail(body.email, (err, result) => {
     if (err) {
       console.log(err);
@@ -191,9 +185,7 @@ export const controllerForgotPasswordLandlord = (req, res) => {
  */
 export const controllerResetPasswordPageLandlord = async (req, res) => {
   const {id, jsontoken} = req.params;
-  console.log(req.params);
   getLandlordById(id, (err, result) => {
-    console.log(result);
     if (err) {
       console.log(err);
     }
@@ -226,14 +218,11 @@ export const controllerResetPasswordPageLandlord = async (req, res) => {
  */
 export const controllerResetPasswordLandlord = async (req, res) => {
   const {id, jsontoken} = req.params;
-  console.log({id, jsontoken});
   var {password, confirmPassword} = req.body;
-  console.log({password, confirmPassword});
   const salt = genSaltSync(10);
   password = hashSync(password, salt);
 
   getLandlordById(id, (err, result) => {
-    console.log(results);
     if (err) {
       console.log(err);
     }
@@ -248,7 +237,6 @@ export const controllerResetPasswordLandlord = async (req, res) => {
     try {
       const verify = jwt.verify(jsontoken, secret);
       updateLandlordPassword({password, id}, (err, results) => {
-        console.log({password, id})
         if (err) {
           console.log(err);
           return res.status(500).json({
@@ -275,15 +263,12 @@ export const controllerCreateTenant = (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
   const landlordEmail = req.body.landlordEmail;
-  console.log("landlordEmail", landlordEmail);
   const salt = genSaltSync(10);
   const password_hashed = hashSync(password, salt);
   //check if email already exist in database,
   //only create new tenant account if the email is unique
   getTenantByEmail(email, (err, results) => {
-    console.log(results);
     if (results.length == 0){
-      console.log("creating tenant");
       //get building id of landlord
       getBuildingID(landlordEmail, (err, results) => {
         if (err) {
@@ -291,7 +276,6 @@ export const controllerCreateTenant = (req, res) => {
           return;
         } else {
           const public_building_id = results.public_building_id;
-          console.log(public_building_id)
           //create tenant account
           createTenant(email, password_hashed, public_building_id, (err, results) => {
             if (err) {
@@ -310,10 +294,7 @@ export const controllerCreateTenant = (req, res) => {
         }
       });
     } else if (results[0].deleted_date != null){
-        console.log(results);
         const id = results[0].tenant_user_id;
-        console.log("recovering");
-        console.log("id: ", id);
         recoverTenantAccount(id, (err, results) => {
           if (err) {
             console.log(err);
@@ -329,8 +310,6 @@ export const controllerCreateTenant = (req, res) => {
           });
         })
       } else{
-        console.log("tenant creation failed")
-        console.log(results)
         return res.status(200).json({
           success: 0,
           message: "Duplicate email entry",
@@ -381,9 +360,7 @@ export const controllerDeleteAllTenants = (req, res) => {
 
 export const controllerDeleteTenantByEmail = (req, res) => {
   const body = req.body;
-  console.log(body);
   const {email} = body;
-  console.log(email);
   const currentDate = new Date();
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth() + 1;
@@ -508,19 +485,13 @@ export const controllerUpdateQuotation = (req, res) => {
  */
 export const controllerUploadQuotation = (req, res) => {
   const id = req.query.ticket_id;
-  //console.log(req)
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "content-type");
   const files = req.file;
-
-  console.log(files);
-
   const filepath = files.path;
-  console.log(filepath);
 
   // get quotation's path in file system and store it in mysql database
   uploadQuotation({filepath, id}, (err, results) => {
-    console.log('uploadQuotation results', results)
     if (err) {
       console.log(err);
       return;
@@ -543,7 +514,6 @@ export const controllerUploadQuotation = (req, res) => {
 
 export const controllerGetQuotation = (req, res) => {
   const id = req.query.id;
-  console.log('id in controller', id)
   getQuotationPath(id, (err, result) => {
     if (err) {
       console.log(err);
@@ -557,7 +527,6 @@ export const controllerGetQuotation = (req, res) => {
     } else {
       const results = result[0]
       var filepath = results.quotation_path;
-      console.log(filepath);
       if (filepath == null){
         res.send("No quotation uploaded yet!")
         return
@@ -565,7 +534,6 @@ export const controllerGetQuotation = (req, res) => {
       }
       fs.readFile(filepath, (err, data) => {
         if (err) {
-          console.log('error')
           console.error(err);
           res.status(500).send("Internal Server Error");
           return;
@@ -592,9 +560,7 @@ export const controllerGetQuotation = (req, res) => {
  */
 export const controllerTicketApproval = (req, res) => {
   const id = req.body.ticket_id;
-  console.log(req.body.ticket_id);
   const quotationRequired = req.body.quotation_required;
-  console.log(quotationRequired);
   const body = req.body;
   let status;
   if (body.ticket_approved_by_landlord === 1) {
@@ -628,7 +594,6 @@ export const controllerTicketApproval = (req, res) => {
  */
 export const controllerTicketWork = (req, res) => {
   const id = req.body.ticket_id;
-  console.log(id)
   let status;
   if (req.body.ticket_work_status === 1) {
     status = "landlord_started_work"
@@ -657,16 +622,13 @@ export const controllerTicketWork = (req, res) => {
 export const controllerGetTenantAccounts = (req, res) => {
   const query = req.query;
   const {landlordEmail} = query;
-  console.log("email", landlordEmail);
   getBuildingID(landlordEmail, (err, results) => {
     if (err) {
       console.log(err);
       return;
     } else {
       const public_building_id = results.public_building_id;
-      console.log(public_building_id)
       getTenantAccounts(public_building_id, (err, results) => {
-        // console.log(results);
         if (err) {
           console.log(err);
           return;
@@ -693,18 +655,12 @@ export const controllerUploadLease = (req, res) => {
   res.header("Access-Control-Allow-Headers", "content-type");
 
   const files = req.file;
-  console.log(files);
   const filepath = files.path;
-  console.log(filepath);
   const floor = req.body.floor;
   const unit_number = req.body.unit_number;
-  console.log(floor);
-  console.log(unit_number);
-
 
   // get quotation's path in file system and store it in mysql database
   uploadLease({filepath, id}, (err, results) => {
-    console.log('uploadLease results', results)
     if (err) {
       console.log(err);
       return;
@@ -732,9 +688,7 @@ export const controllerUploadLease = (req, res) => {
  */
 export const controllerGetLease = (req, res) => {
   const query = req.query;
-  console.log(query);
   const {tenantID} = query;
-  console.log('tenantID: ', tenantID);
   getLeasePath(tenantID, (err, results) => {
     if (err) {
       console.log(err);
@@ -747,14 +701,12 @@ export const controllerGetLease = (req, res) => {
       });
     } else {
       var filepath = results[0].pdf_path;
-      console.log(filepath);
       if (filepath == null){
         res.send("No quotation uploaded yet!")
         return
       }
       fs.readFile(filepath, (err, data) => {
         if (err) {
-          console.log('error')
           console.error(err);
           res.status(500).send("Internal Server Error");
           return;
@@ -788,16 +740,11 @@ export const controllerCreateLease = (req,res) => {
   res.header("Access-Control-Allow-Headers", "content-type");
 
   const files = req.file;
-  console.log(files);
   const filepath = files.path;
   const floor = req.body.floor;
   const unit_number = req.body.unit_number;
   const landlordEmail = req.body.landlordEmail;
   const tenantID = req.body.tenantID;
-  console.log("landlordEmail", landlordEmail);
-  console.log("tenantID", tenantID);
-  console.log("floor", floor);
-  console.log("unit_number", unit_number);
   getLandlordUserId(landlordEmail, (err,results) => {
     if (err) {
       console.log(err);
@@ -809,7 +756,6 @@ export const controllerCreateLease = (req,res) => {
       })
     } else {
       const landlordID = results.landlord_user_id;
-      console.log("landlordID", landlordID);
       const publicLeaseID = String(Date.now());
       createLease(publicLeaseID, landlordID, tenantID, req.body, (err, results) => {
         if (err) {
@@ -821,15 +767,12 @@ export const controllerCreateLease = (req,res) => {
         } else {
           // get lease's path in file system and store it in mysql database
           uploadLease({filepath, publicLeaseID}, (err, results) => {
-            console.log('uploadLease results', results)
             if (err) {
               console.log(err);
               return;
             }
           })
           updateTenantLease(publicLeaseID, tenantID, (err,results) => {
-            console.log(publicLeaseID);
-            console.log(tenantID);
             if (err) {
               console.log(err);
               return res.status(500).json({
@@ -870,7 +813,6 @@ export const controllerGetLeaseByLandlord = (req,res) => {
     } else {
       const results = result[0]
       landlordID = results.landlord_user_id;
-      // console.log(landlordID)
       getLeaseByLandlord(landlordID, (err, results) => {
         if (err) {
           console.log(err);
@@ -920,7 +862,6 @@ export const controllerUpdateLease = (req, res) => {
     } else {
       const results = result[0]
       landlordID = results.landlord_user_id;
-      // console.log(landlordID)
       getTenantUserId(req.body.tenant_email, (err, result) => {
         if (err) {
           console.log(err)
@@ -933,7 +874,6 @@ export const controllerUpdateLease = (req, res) => {
         } else {
           const results = result[0]
           tenantID = results.tenant_user_id;
-          // console.log(tenantID)
           updateLease(landlordID, tenantID, req.body, (err, results) => {
             if (err) {
               console.log(err);
@@ -965,9 +905,7 @@ export const controllerUpdateLease = (req, res) => {
 
 export const controllerGetLeaseDetails = (req,res) => {
   const query = req.query;
-  console.log("req query", req.query);
   const tenantUserId = query.id;
-  console.log("user id", tenantUserId);
   getLeaseDetails(tenantUserId, (err,results) => {
     if (err) {
       console.log(err);

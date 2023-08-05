@@ -32,9 +32,8 @@ export const controllerLoginTenant = (req, res) => {
   const body = req.body;
   getTenantByEmail(body.email, (err, results) => {
     if (err) {
-      // console.log(err);
+      console.log(err);
     }
-    console.log(results[0]);
     if (results[0] === undefined) {
       return res.json({
         success: 0,
@@ -66,7 +65,7 @@ export const controllerForgotPasswordTenant = (req, res) => {
   const body = req.body;
   getTenantByEmail(body.email, (err, results) => {
     if (err) {
-      // console.log(err);
+      console.log(err);
     }
     if (!results) {
       return res.json({
@@ -117,7 +116,7 @@ export const controllerResetPasswordPageTenant = async (req, res) => {
   const {id, jsontoken} = req.params;
   getTenantById(id, (err, results) => {
     if (err) {
-      // console.log(err);
+      console.log(err);
     }
     if (!results) {
       return res.json({
@@ -131,7 +130,7 @@ export const controllerResetPasswordPageTenant = async (req, res) => {
       return res.render("ResetPasswordPage", {email: verify.email, status: "not verified"});
       
     } catch (error){
-      // console.log(error);
+      console.log(error);
       res.send("Not Verified!");
     }
   })
@@ -151,7 +150,7 @@ export const controllerResetPasswordTenant = async (req, res) => {
 
   getTenantById(id, (err, result) => {
     if (err) {
-      // console.log(err);
+      console.log(err);
     }
     if (result.length === 0) {
       return res.json({
@@ -165,7 +164,7 @@ export const controllerResetPasswordTenant = async (req, res) => {
       const verify = jwt.verify(jsontoken, secret);
       updateTenantPassword({password, id}, (err, results) => {
         if (err) {
-          // console.log(err);
+          console.log(err);
           return res.status(500).json({
             success: 0,
             message: "Database connection error",
@@ -174,7 +173,7 @@ export const controllerResetPasswordTenant = async (req, res) => {
       })
       res.render("ResetPasswordPage", {email: verify.email, status: "verified"});
     } catch (error){
-      // console.log(error);
+      console.log(error);
     }
   })
 };
@@ -193,12 +192,9 @@ export const controllerCreateTicket = (req, res) => {
     })
   }
   const tenantEmail = req.body.email;
-  console.log("tenantEmail", tenantEmail);
-  console.log("req.body", body);
   getLeaseByTenantEmail(tenantEmail, (err,results) => {
-    console.log("results", results);
     if (err) {
-      // console.log(err);
+      console.log(err);
       return res.status(500).json({
         success: 0,
         message: "Database connection error"
@@ -212,7 +208,6 @@ export const controllerCreateTicket = (req, res) => {
       }
       const floor = results[0].floor;
       const unit_number = results[0].unit_number;
-      console.log("floor", floor);
       createTicket(body, floor, unit_number, (err,results) => {
         if (err) {
           console.log(err);
@@ -254,7 +249,7 @@ export const controllerGetTickets = (req, res) => {
     } else {
       getTicketsByTenant(email, (err,results) => {
         if (err) {
-          // console.log(err);
+          console.log(err);
           return res.status(500).json({
             success: 0,
             message: "Database connection error"
@@ -280,7 +275,7 @@ export const controllerGetTicketsByStatus = (req, res) => {
   const status = req.params.status;
   getTenantByEmail(email, (err,result) => {
     if (err) {
-      // console.log(err)
+      console.log(err)
       return res.status(500).json({
         success: 0,
         message: "Database connection error"
@@ -293,13 +288,13 @@ export const controllerGetTicketsByStatus = (req, res) => {
     } else {
       getTicketsByStatus(email, status, (err,results) => {
         if (err === "invalid status") {
-          // console.log(err);
+          console.log(err);
           return res.status(400).json({
             success: 0,
             message: `${err}`
           });
         } else if (err) {
-          // console.log(err)
+          console.log(err)
           return res.status(500).json({
             success: 0,
             message: "Database connection error"
@@ -319,7 +314,7 @@ export const controllerGetTicketById = (req, res) => {
   const id = req.query.id;
   getTicketById(id, (err, results) => {
     if (err) {
-      // console.log(err);
+      console.log(err);
       return;
     }
     if (results.length === 0) {
@@ -358,7 +353,7 @@ export const controllerQuotationApproval = (req, res) => {
 
   quotationApproval(id, status, (err, results) => {
     if (err) {
-      // console.log(err);
+      console.log(err);
       return;
     }
     if (results.changedRows === 0) {
@@ -397,7 +392,7 @@ export const controllerAddFeedbackRating = (req, res) => {
       }
       addFeedbackRating(id, feedback_rating, (err, results) => {
         if (err) {
-          // console.log(err);
+          console.log(err);
           if (err === "data validation error") {
             return res.status(400).json({
               success: 0,
@@ -449,7 +444,7 @@ export const controllerAddFeedbackRating = (req, res) => {
       }
       addFeedbackText (id, feedback_text, (err, results) => {
         if (err) {
-          // console.log(err);
+          console.log(err);
           return;
         } if (JSON.parse(JSON.stringify(results)).changedRows === 0) {
           return res.json ({
@@ -482,7 +477,7 @@ export const controllerCloseTicketStatus = (req, res) => {
   
   closeTicketStatus (id, status, (err,results) => {
     if (err) {
-      // console.log(err);
+      console.log(err);
       return;
     } if (JSON.parse(JSON.stringify(results)).changedRows === 0) {
       return res.status(400).json ({
@@ -507,7 +502,7 @@ export const controllerGetLeaseByTenant = (req,res) => {
   let tenantID = "";
   getTenantUserId(req.body.email, (err, results) => {
     if (err) {
-      // console.log(err)
+      console.log(err)
       return
     } if (results.length === 0) {
       return res.json({
@@ -518,7 +513,7 @@ export const controllerGetLeaseByTenant = (req,res) => {
       tenantID = results[0].tenant_user_id;
       getLeaseByTenant(tenantID, (err, results) => {
         if (err) {
-          // console.log(err);
+          console.log(err);
           return res.status(500).json({
             success: 0,
             message: "Database connection error"
@@ -538,7 +533,7 @@ export const controllerGetQuotation = (req, res) => {
   const id = req.query.id;
   getQuotationPath(id, (err, results) => {
     if (err) {
-      // console.log(err);
+      console.log(err);
       return;
     }
     if (!results) {
@@ -548,7 +543,6 @@ export const controllerGetQuotation = (req, res) => {
       });
     } else {
       var filepath = results.quotation_path;
-      // console.log(filepath);
       if (filepath == null){
         res.send("No quotation uploaded yet!")
         return
@@ -556,7 +550,6 @@ export const controllerGetQuotation = (req, res) => {
       }
       fs.readFile(filepath, (err, data) => {
         if (err) {
-          // console.log('error')
           console.error(err);
           res.status(500).send("Internal Server Error");
           return;
@@ -570,7 +563,7 @@ export const controllerGetQuotation = (req, res) => {
 
 
       if (err){
-        // return console.log(err);
+        return console.log(err);
       }
     }
   });

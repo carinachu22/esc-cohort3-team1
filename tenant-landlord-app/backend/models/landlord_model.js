@@ -82,7 +82,6 @@ export const getLandlordById = (id, callBack) => {
       if (error) {
         callBack(error);
       } else {
-        // console.log(results);
         callBack(null, results);
       }
     }
@@ -314,7 +313,6 @@ export const getTicketsByStatus = (status, callBack) => {
 export const updateQuotation = (id, callBack) => {
   const status = "landlord_quotation_sent";
   if (statuses.includes(status)) {
-    console.log("id", id)
     pool.query(
       `
       UPDATE SERVICE_REQUEST
@@ -358,7 +356,6 @@ export const uploadQuotation = ({filepath, id}, callBack) => {
         if (error) {
           callBack(error);
         } else {
-          console.log(results)
           callBack(null, results);
         }
       }
@@ -482,7 +479,6 @@ export const ticketWork = (id, status, callBack) => {
           if (error) {
             callBack(error);
           } else {
-            console.log(results)
             callBack(null,results);
           }
         }
@@ -646,7 +642,6 @@ export const getLeaseByLandlord = (id, callBack) => {
       if (error) {
         callBack(error);
       } else {
-        console.log(results)
         callBack(null,results);
       }
     }
@@ -680,10 +675,8 @@ export const deleteLease = (lease_id, callBack) => {
     ],
     (error, results, fields) => {
       if(error){
-        console.log("ERROR", error)
         callBack(error);
       }
-      console.log(results)
       return callBack(null, results);
     }
   );
@@ -730,7 +723,6 @@ export const updateLease = (landlordID, tenantID, data, callBack) => {
         if (error) {
           callBack(error);
         } else {
-          console.log(results)
           callBack(null,results);
         }
       }

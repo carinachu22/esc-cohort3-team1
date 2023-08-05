@@ -43,12 +43,10 @@ describe("Testing getLandlordByEmail() in landlord model", () => {
 
     test ("Test calling getLandlordByEmail() on a valid email",(done) => {
         getLandlordByEmail('landlord1@gmail.com', (err, results) => {
-            // console.log(JSON.parse(JSON.stringify(results)))
             if (err){
                 console.log("ERROR",err)
             }
             const rowsLength = results.length
-            // console.log(rowsLength)
             expect(rowsLength).toBe(1);
             done();
         })
@@ -58,9 +56,7 @@ describe("Testing getLandlordByEmail() in landlord model", () => {
             if (err){
                 console.log("ERROR",err)
             }
-            // console.log(JSON.parse(JSON.stringify(results)))
             const rowsLength = results.length
-            // console.log(rowsLength)
             expect(rowsLength).toBe(0);
             done();
         })
@@ -189,7 +185,6 @@ describe("testing createLandlord() in landlord model", () => {
             if (err){
                 console.log("ERROR",err)
             }
-            console.log(`results ${results}`)
             const rowsChanged = JSON.parse(JSON.stringify(results)).affectedRows
             expect(rowsChanged).toBe(1);
             done();
@@ -248,7 +243,6 @@ describe("Testing deleteAllTenants() in landlord model", () => {
             if (err){
                 console.log("ERROR",err)
             }
-            console.log(`results ${results}`)
             const rowsChanged = JSON.parse(JSON.stringify(results)).affectedRows
             expect(rowsChanged).toBe(2);
             done();
@@ -260,7 +254,6 @@ describe("Testing deleteAllTenants() in landlord model", () => {
             if (err){
                 console.log("ERROR",err)
             }
-            console.log(`results ${results}`)
             const rowsChanged = JSON.parse(JSON.stringify(results)).affectedRows
             expect(rowsChanged).toBe(0);
             done();
@@ -274,7 +267,6 @@ describe("Testing deleteTenantByEmail() in landlord model", () => {
             if (err){
                 console.log("ERROR",err)
             }
-            console.log(`results ${results}`)
             const rowsChanged = JSON.parse(JSON.stringify(results)).affectedRows
             expect(rowsChanged).toBe(1);
             done();
@@ -286,7 +278,6 @@ describe("Testing deleteTenantByEmail() in landlord model", () => {
             if (err){
                 console.log("ERROR",err)
             }
-            console.log(`results ${results}`)
             const rowsChanged = JSON.parse(JSON.stringify(results)).affectedRows
             expect(rowsChanged).toBe(0);
             done();
@@ -305,7 +296,6 @@ describe("testing createTenant() in landlord model", () => {
             if (err){
                 console.log("ERROR",err)
             }
-            console.log(`results ${results}`)
             const rowsChanged = JSON.parse(JSON.stringify(results)).affectedRows
             expect(rowsChanged).toBe(1);
             done();
