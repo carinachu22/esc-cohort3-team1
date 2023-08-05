@@ -672,15 +672,17 @@ export const getLeaseDetails = (tenant_user_id, callBack) => {
  */
 export const deleteLease = (lease_id, callBack) => {
   pool.query(
-    'DELETE lease where public_lease_id = ?',
+    'DELETE FROM lease WHERE public_lease_id = ?',
     [
-      deletedDate,
+      // deletedDate,
       lease_id
     ],
     (error, results, fields) => {
       if(error){
+        console.log("ERROR", error)
         callBack(error);
       }
+      console.log(results)
       return callBack(null, results);
     }
   );

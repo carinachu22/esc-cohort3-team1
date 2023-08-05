@@ -873,6 +873,30 @@ describe("testing getLeasePath() in landlord model", () => {
     });
 })
 
+describe("Testing deleteLease() in landlord model", () => {
+    test("test calling deleteLease() with valid public lease id", (done) => {
+        deleteLease("2007-11-20 11:11:11", (err, results) => {
+            if (err) {
+                console.log("ERROR", err)
+            }
+            const rowsChanged = JSON.parse(JSON.stringify(results)).affectedRows
+            expect(rowsChanged).toBe(1)
+            done()
+        })
+    })
+
+    test("test calling deleteLease() with invalid public lease id", (done) => {
+        deleteLease("9999-99-99 99:99:99", (err, results) => {
+            if (err) {
+                console.log("ERROR", err)
+            }
+            const rowsChanged = JSON.parse(JSON.stringify(results)).affectedRows
+            expect(rowsChanged).toBe(0)
+            done()
+        })
+    })
+})
+
 // //TODO: getLeaseByLandlord
 // describe("Testing getLeaseByLandlord() in landlord model", () => {
 //     test ("Test calling getLeaseByLandlord() on valid landlord id",(done) => {
