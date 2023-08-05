@@ -427,29 +427,33 @@ export const getQuotation = (filepath, callBack) => {
  * @param {*} status 
  * @param {*} callBack 
  */
-export const ticketApproval = (id, quotationRequired, data, status, callBack) => {
-  if (statuses.includes(status)) {
-    pool.query(
-      `
-      UPDATE service_request
-      SET status = ?, quotation_required = ?
-      WHERE public_service_request_id = ?
-      `,
-      [
-        status,
-        quotationRequired,
-        id
-      ],
-      (error, results, fields) => {
-        if (error) {
-          callBack(error);
-        } else {
-          callBack(null,results);
+export const ticketApproval = (id, quotationRequired, status, callBack) => {
+  if (id && quotationRequired && status) {
+    if (statuses.includes(status)) {
+      pool.query(
+        `
+        UPDATE service_request
+        SET status = ?, quotation_required = ?
+        WHERE public_service_request_id = ?
+        `,
+        [
+          status,
+          quotationRequired,
+          id
+        ],
+        (error, results, fields) => {
+          if (error) {
+            callBack(error);
+          } else {
+            callBack(null,results);
+          }
         }
-      }
-    )
+      )
+    } else {
+      callBack("invalid status")
+    }
   } else {
-    callBack("invalid status")
+    callBack("missing data entry!")
   }
 };
 

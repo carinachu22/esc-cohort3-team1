@@ -603,7 +603,7 @@ export const controllerTicketApproval = (req, res) => {
     status = "landlord_ticket_rejected"
   }
 
-  ticketApproval(id, quotationRequired, body, status, (err, results) => {
+  ticketApproval(id, quotationRequired, status, (err, results) => {
     if (err) {
       console.log(err);
       return;

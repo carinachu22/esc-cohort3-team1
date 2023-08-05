@@ -432,6 +432,80 @@ describe("Testing uploadQuotation() in landlord model", () => {
     });
 })
 
+describe("Testing getQuotationPath() in landlord model", () => {
+    test("Test calling getQuotationPath() with valid public ticket id", (done) => {
+        getQuotationPath("SR/2002/Feb/0001", (err,results) => {
+            if (err) {
+                console.log("ERROR",err)
+            }
+            expect(results.length).toBe(1)
+            done()
+        })
+    })
+
+    test("Test calling getQuotationPath() with invalid public ticket id", (done) => {
+        getQuotationPath("SR/9999/999/9999", (err,results) => {
+            if (err) {
+                console.log("ERROR",err)
+            }
+            expect(results.length).toBe(0)
+            done()
+        })
+    })
+})
+
+describe("Testing ticketApproval() in landlord model", () => {
+    test ("Test calling ticketApproval() with valid inputs",(done) => {
+        ticketApproval("SR/2002/Feb/0001", 1, "landlord_ticket_approved", (err, results) => {
+            if (err){
+                console.log("ERROR",err)
+            }
+            const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
+            expect(rowsChanged).toBe(1);
+            done();
+        })
+    });
+
+    test ("Test calling ticketApproval() with invalid public ticket id",(done) => {
+        ticketApproval("SR/9999/999/9999", 1, "landlord_ticket_approved", (err, results) => {
+            if (err){
+                console.log("ERROR",err)
+            }
+            const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
+            expect(rowsChanged).toBe(0);
+            done();
+        })
+    });
+
+    test ("Test calling ticketApproval() with invalid status",(done) => {
+        ticketApproval("SR/2002/Feb/0001", 1, "invalid_status", (err, results) => {
+            expect(err).toBe("invalid status");
+            done();
+        })
+    });
+
+    test ("Test calling ticketApproval() with missing status",(done) => {
+        ticketApproval("SR/2002/Feb/0001", 1, null, (err, results) => {
+            expect(err).toBe("missing data entry!");
+            done();
+        })
+    });
+
+    test ("Test calling ticketApproval() with missing quotation_required",(done) => {
+        ticketApproval("SR/2002/Feb/0001", null, "landlord_ticket_approved", (err, results) => {
+            expect(err).toBe("missing data entry!");
+            done();
+        })
+    });
+
+    test ("Test calling ticketApproval() with missing public ticket id",(done) => {
+        ticketApproval("SR/2002/Feb/0001", 1, null, (err, results) => {
+            expect(err).toBe("missing data entry!");
+            done();
+        })
+    });
+})
+
 // //TODO: getLeaseByLandlord
 // describe("Testing getLeaseByLandlord() in landlord model", () => {
 //     test ("Test calling getLeaseByLandlord() on valid landlord id",(done) => {
@@ -463,11 +537,7 @@ describe("Testing uploadQuotation() in landlord model", () => {
 
 //TODO: getTicketsById
 
-//TODO: getQuotationPath
-
 //TODO: getQuotation
-
-//TODO: ticketApproval
 
 //TODO: ticketWork
 
