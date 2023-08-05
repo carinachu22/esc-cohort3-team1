@@ -367,8 +367,8 @@ describe("testing getTickets() in landlord model", () => {
     });
 })
 
-describe("Testing updateQuotation() in Landlord model", () => {
-    test ("Test calling updateLandlordPassword() on valid public ticket ID",(done) => {
+describe("Testing updateQuotation() in landlord model", () => {
+    test ("Test calling updateQuotation() on valid public ticket ID",(done) => {
         updateQuotation("SR/2002/Feb/0001", (err, results) => {
             if (err){
                 console.log("ERROR",err)
@@ -385,6 +385,48 @@ describe("Testing updateQuotation() in Landlord model", () => {
             }
             const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
             expect(rowsChanged).toBe(0);
+            done();
+        })
+    });
+})
+
+describe("Testing uploadQuotation() in landlord model", () => {
+    test ("Test calling uploadQuotation() on valid public ticket ID",(done) => {
+        const data = {
+            filepath: ":Content/Documents/quotation_details/q3",
+            id: "SR/2002/Feb/0001"
+        }
+        uploadQuotation(data, (err, results) => {
+            if (err){
+                console.log("ERROR",err)
+            }
+            const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
+            expect(rowsChanged).toBe(1);
+            done();
+        })
+    });
+
+    test ("Test calling uploadQuotation() on an invalid public ticket ID",(done) => {
+        const data = {
+            filepath: ":Content/Documents/quotation_details/q3",
+            id: "SR/9999/999/9999"
+        }
+        uploadQuotation(data, (err, results) => {
+            if (err){
+                console.log("ERROR",err)
+            }
+            const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
+            expect(rowsChanged).toBe(0);
+            done();
+        })
+    });
+
+    test ("Test calling uploadQuotation() on valid public ticket ID but missing path",(done) => {
+        const data = {
+            id: "SR/2002/Feb/0001"
+        }
+        uploadQuotation(data, (err, results) => {
+            expect(err).toBe("missing data entry field!");
             done();
         })
     });
@@ -420,8 +462,6 @@ describe("Testing updateQuotation() in Landlord model", () => {
 //TODO: deleteLandlord
 
 //TODO: getTicketsById
-
-//TODO: uploadQuotation
 
 //TODO: getQuotationPath
 

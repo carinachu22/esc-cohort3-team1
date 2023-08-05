@@ -341,26 +341,31 @@ export const updateQuotation = (id, callBack) => {
  * @param {*} callBack 
  */
 export const uploadQuotation = ({filepath, id}, callBack) => {
-  pool.query(
-    `
-    UPDATE service_request
-    SET quotation_path = ?,
-    status = ?
-    WHERE public_service_request_id = ?
-    `,
-    [
-      filepath,
-      "landlord_quotation_sent",
-      id
-    ],
-    (error, results, fields) => {
-      if (error) {
-        callBack(error);
-      } else {
-        callBack(null, results);
+  if (filepath && id) {
+    pool.query(
+      `
+      UPDATE service_request
+      SET quotation_path = ?,
+      status = ?
+      WHERE public_service_request_id = ?
+      `,
+      [
+        filepath,
+        "landlord_quotation_sent",
+        id
+      ],
+      (error, results, fields) => {
+        if (error) {
+          callBack(error);
+        } else {
+          console.log(results)
+          callBack(null, results);
+        }
       }
-    }
-  );
+    );
+  } else {
+    callBack("missing data entry field!")
+  }
 }
 
 
