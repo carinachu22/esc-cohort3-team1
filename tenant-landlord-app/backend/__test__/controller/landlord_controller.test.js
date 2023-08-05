@@ -183,7 +183,7 @@ describe ("/landlord/create", () => {
   })
 })
 
-describe.only("/landlord/createTenant", () => {
+describe("/landlord/createTenant", () => {
   test("non-existing landlord, valid inputs", async () =>  {
     const token = await authorisation()
     await request(app)
@@ -328,15 +328,117 @@ describe.only("/landlord/createTenant", () => {
     })
 });
 
-//TODO: uploadLease
+describe("/getLeaseDetails/", () => {
+  test("valid user id", async () => {
+    const token = await authorisation()
+    await request(app)
+      .get("/api/landlord/getLeaseDetails")
+      .set("Authorization", `Bearer ${token}`)
+      .query({
+        id: 2
+      })
+      .expect('Content-Type', /json/)
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toEqual({
+            success: 1, 
+            message: "successfully retrieve lease details",
+            data: expect.objectContaining(
+              {
+                lease_id: 2,
+                public_lease_id: "2001-02-16 12:01:09",
+                tenant_user_id: 2,
+                landlord_user_id: 1,
+                floor: "02",
+                unit_number: "894",
+                pdf_path: ":Content/Documents/lease_details/2"
+              }
+            )
+        });
+      })
+  })
+
+  test("invalid user id", async () => {
+    const token = await authorisation()
+    await request(app)
+      .get("/api/landlord/getLeaseDetails")
+      .set("Authorization", `Bearer ${token}`)
+      .query({
+        id: 999
+      })
+      .expect('Content-Type', /json/)
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toEqual({
+            success: 1, 
+            message: "successfully retrieve lease details",
+            data: expect.objectContaining(
+              {}
+            )
+        });
+      })
+  })
+})
+
+describe("/deleteLease/", () => {
+  test("valid public lease id", async () => {
+    const token = await authorisation()
+    await request(app)
+      .patch("/api/landlord/deleteLease")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        public_lease_id: "2014-01-20 17:16:15"
+      })
+      .expect('Content-Type', /json/)
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toEqual({
+            success: 1, 
+            message: "deleted successfully"
+        });
+      })
+  })
+
+  test("invalid public lease id", async () => {
+    const token = await authorisation()
+    await request(app)
+      .patch("/api/landlord/deleteLease")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        public_lease_id: "9999-99-99 99:99:99"
+      })
+      .expect('Content-Type', /json/)
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toEqual({
+            success: 1, 
+            message: "deleted successfully"
+        });
+      })
+  })
+
+  test("missing public lease id", async () => {
+    const token = await authorisation()
+    await request(app)
+      .patch("/api/landlord/deleteLease")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        public_lease_id: null
+      })
+      .expect('Content-Type', /json/)
+      .expect(400)
+      .then((response) => {
+        expect(response.body).toEqual({
+            success: 0, 
+            message: "missing data entry!"
+        });
+      })
+  })
+})
 
 //TODO: getLease
 
 //TODO: createLease
-
-//TODO: getLeaseDetails
-
-//TODO: deleteLease
 
 //TODO: getTickets
 

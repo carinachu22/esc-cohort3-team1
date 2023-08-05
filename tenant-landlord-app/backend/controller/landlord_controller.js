@@ -278,7 +278,7 @@ export const controllerCreateTenant = (req, res) => {
       message: "missing data entry!"
     })
   }
-  
+
   const salt = genSaltSync(10);
   const password_hashed = hashSync(password, salt);
   
@@ -675,6 +675,14 @@ export const controllerUploadLease = (req, res) => {
   const filepath = files.path;
   const floor = req.body.floor;
   const unit_number = req.body.unit_number;
+  console.log(`id ${id}, filepath ${filepath}`)
+
+  if (!id || !filepath) {
+    return res.status(400).json({
+      success: 0,
+      message: "missing data entry!"
+    })
+  }
 
   // get quotation's path in file system and store it in mysql database
   uploadLease({filepath, id}, (err, results) => {
@@ -714,7 +722,7 @@ export const controllerGetLease = (req, res) => {
     if (results.length === 0) {
       return res.json({
         success: 0,
-        message: "service ticket not found",
+        message: "tenant user not found",
       });
     } else {
       var filepath = results[0].pdf_path;
@@ -849,6 +857,13 @@ export const controllerGetLeaseByLandlord = (req,res) => {
 }
 
 export const controllerDeleteLease = (req,res) => {
+  console.log(req.body.public_lease_id)
+  if (!req.body.public_lease_id) {
+    return res.status(400).json({
+      success: 0,
+      message: "missing data entry!"
+    })
+  }
   deleteLease(req.body.public_lease_id, (err,results) => {
     if (err) {
       console.log(err);
