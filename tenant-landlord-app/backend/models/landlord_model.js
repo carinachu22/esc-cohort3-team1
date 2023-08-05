@@ -701,35 +701,40 @@ export const deleteLease = (lease_id, callBack) => {
  * @param {*} callBack 
  */
 export const updateLease = (landlordID, tenantID, data, callBack) => {
-  pool.query (
-    `
-    UPDATE lease
-    SET 
-      public_lease_id = ?,
-      tenant_user_id = ?,
-      landlord_user_id = ?,
-      floor = ?, 
-      unit_number = ?, 
-      pdf_path =?
-    WHERE public_lease_id = ?
-    `,
-    [
-      data.new_public_lease_id,
-      tenantID,
-      landlordID,
-      data.floor,
-      data.unit_number,
-      data.pdf_path,
-      data.old_public_lease_id
-    ],
-    (error, results, fields) => {
-      if (error) {
-        callBack(error);
-      } else {
-        callBack(null,results);
+  if (landlordID && tenantID && data.new_public_lease_id && data.floor && data.unit_number && data.old_public_lease_id) {
+    pool.query (
+      `
+      UPDATE lease
+      SET 
+        public_lease_id = ?,
+        tenant_user_id = ?,
+        landlord_user_id = ?,
+        floor = ?, 
+        unit_number = ?, 
+        pdf_path =?
+      WHERE public_lease_id = ?
+      `,
+      [
+        data.new_public_lease_id,
+        tenantID,
+        landlordID,
+        data.floor,
+        data.unit_number,
+        data.pdf_path,
+        data.old_public_lease_id
+      ],
+      (error, results, fields) => {
+        if (error) {
+          callBack(error);
+        } else {
+          console.log(results)
+          callBack(null,results);
+        }
       }
-    }
-  )
+    )
+  } else {
+    callBack("missing data entry!")
+  }
 }
 
 

@@ -681,7 +681,7 @@ describe("testing createLease() in landlord model", () => {
 })
 
 describe("testing uploadLease() in landlord model", () => {
-    ytest("test calling uploadLease() with valid inputs", (done) => {
+    test("test calling uploadLease() with valid inputs", (done) => {
         const data = {
             filepath: ":Content/Documents/lease_details/9",
             publicLeaseID: "2016-01-20 18:16:15"
@@ -732,6 +732,124 @@ describe("testing uploadLease() in landlord model", () => {
     })
 })
 
+describe("Testing updateLease() in landlord model", () => {
+    test ("Test calling updateLease() on valid inputs without pdf of lease",(done) => {
+        const data = {
+            new_public_lease_id: Date.now(),
+            floor: 10,
+            unit_number: 678,
+            pdf_path: null,
+            old_public_lease_id : "2001-02-16 12:01:09"
+        }
+        updateLease(1, 2, data, (err, results) => {
+            if (err){
+                console.log("ERROR",err)
+            }
+            const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
+            expect(rowsChanged).toBe(1);
+            done();
+        })
+    });
+
+    test ("Test calling updateLease() on valid inputs with pdf of lease",(done) => {
+        const data = {
+            new_public_lease_id: Date.now(),
+            floor: 11,
+            unit_number: 778,
+            pdf_path: "Content/Documents/lease_details/10",
+            old_public_lease_id : "2002-03-24 23:01:10"
+        }
+        updateLease(2, 3, data, (err, results) => {
+            if (err){
+                console.log("ERROR",err)
+            }
+            const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
+            expect(rowsChanged).toBe(1);
+            done();
+        })
+    });
+
+    test ("Test calling updateLease() on missing tenant id",(done) => {
+        const data = {
+            new_public_lease_id: Date.now(),
+            floor: 10,
+            unit_number: 678,
+            pdf_path: ":Content/Documents/lease_details/10",
+            old_public_lease_id : "2001-02-16 12:01:09"
+        }
+        updateLease(1, null, data, (err, results) => {
+            expect(err).toBe("missing data entry!");
+            done();
+        })
+    });
+
+    test ("Test calling updateLease() on missing landlord id",(done) => {
+        const data = {
+            new_public_lease_id: Date.now(),
+            floor: 10,
+            unit_number: 678,
+            pdf_path: ":Content/Documents/lease_details/10",
+            old_public_lease_id : "2001-02-16 12:01:09"
+        }
+        updateLease(null, 2, data, (err, results) => {
+            expect(err).toBe("missing data entry!");
+            done();
+        })
+    });
+
+    test ("Test calling updateLease() on missing floor",(done) => {
+        const data = {
+            new_public_lease_id: Date.now(),
+            unit_number: 678,
+            pdf_path: ":Content/Documents/lease_details/10",
+            old_public_lease_id : "2001-02-16 12:01:09"
+        }
+        updateLease(1, 2, data, (err, results) => {
+            expect(err).toBe("missing data entry!");
+            done();
+        })
+    });
+
+    test ("Test calling updateLease() on missing unit_number",(done) => {
+        const data = {
+            new_public_lease_id: Date.now(),
+            floor: 10,
+            pdf_path: ":Content/Documents/lease_details/10",
+            old_public_lease_id : "2001-02-16 12:01:09"
+        }
+        updateLease(1, 2, data, (err, results) => {
+            expect(err).toBe("missing data entry!");
+            done();
+        })
+    });
+
+    test ("Test calling updateLease() on missing new_public_lease_id",(done) => {
+        const data = {
+            unit_number: 678,
+            floor: 10,
+            pdf_path: ":Content/Documents/lease_details/10",
+            old_public_lease_id : "2001-02-16 12:01:09"
+        }
+        updateLease(1, 2, data, (err, results) => {
+            expect(err).toBe("missing data entry!");
+            done();
+        })
+    });
+
+    test ("Test calling updateLease() on missing old_public_lease_id",(done) => {
+        const data = {
+            new_public_lease_id: Date.now(),
+            unit_number: 678,
+            floor: 10,
+            pdf_path: ":Content/Documents/lease_details/10",
+        }
+        updateLease(1, 2, data, (err, results) => {
+            expect(err).toBe("missing data entry!");
+            done();
+        })
+    });
+})
+
 // //TODO: getLeaseByLandlord
 // describe("Testing getLeaseByLandlord() in landlord model", () => {
 //     test ("Test calling getLeaseByLandlord() on valid landlord id",(done) => {
@@ -768,8 +886,6 @@ describe("testing uploadLease() in landlord model", () => {
 //TODO: getLeaseDetails
 
 //TODO: deleteLease
-
-//TODO: updateLease
 
 //TODO: getLeasePath
 
