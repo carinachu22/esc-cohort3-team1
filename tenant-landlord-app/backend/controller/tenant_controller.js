@@ -181,12 +181,12 @@ export const controllerResetPasswordTenant = async (req, res) => {
 
 /**
  * Create Ticket
- * @param {*} req public_service_request_id (eg. 2023-01-01 00:00:00), name, email, request_type, request_description, quptation_path, submitted_date_time(Date Type)
+ * @param {*} req email, request_type, request_description, submitted_date_time(Date Type)
  * @param {*} res 
  */
 export const controllerCreateTicket = (req, res) => {
   const body = req.body;
-  if (!body.public_service_request_id || !body.name || !body.email || !body.request_type || !body.request_description || !body.quotation_path || !body.submitted_date_time) {
+  if ( !body.email || !body.request_type || !body.request_description || !body.submitted_date_time) {
     return res.status(400).json({
       success: 0,
       message: "Incomplete data fields"
