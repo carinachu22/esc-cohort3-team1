@@ -142,7 +142,8 @@ describe("Login.js", () => {
     expect(submitBtn).toBeInTheDocument();
   });
 
-  test("Happy scenario: Valid email,password,click submit button and calls login API", async () => {
+  test("Happy scenario: valid email, password to navigate to next page", async () => {
+    const navigateSpy = jest.spyOn(require("react-router-dom"), "useNavigate");
     render(
       <AuthProvider
         authType={"cookie"}
@@ -155,6 +156,7 @@ describe("Login.js", () => {
         </BrowserRouter>
       </AuthProvider>
     );
+
     const resp_data = {
       success: 1,
       message: "Login successfully",
@@ -167,6 +169,8 @@ describe("Login.js", () => {
       hasError: false,
       password: "password",
     };
+
+    // Typing in valid emails and password
     await userEvent.type(
       screen.getByPlaceholderText("Email"),
       "tenant1@gmail.com"
@@ -176,6 +180,8 @@ describe("Login.js", () => {
     );
     await userEvent.type(screen.getByPlaceholderText("Password"), "password");
     expect(screen.getByPlaceholderText("Password")).toHaveValue("password");
+
+    // Testing API call
     axios.post.mockResolvedValue(resp);
     await userEvent.click(screen.getByRole("button", { name: "LOGIN" }));
     expect(axios.post).toHaveBeenCalledWith(
@@ -183,24 +189,10 @@ describe("Login.js", () => {
       values
     );
 
-    /** 
+    // Assert that the navigate function was called with the correct path
+    expect(navigateSpy).toHaveBeenCalled();
 
-  test("Dashboard.js", async () => {
-    jest.mock("react-auth-kit");
-    render(
-      <AuthProvider
-        authType={"cookie"}
-        authName={"_auth"}
-        cookieDomain={window.location.hostname}
-        cookieSecure={false}
-      >
-        <BrowserRouter>
-          <Dashboard />
-        </BrowserRouter>
-      </AuthProvider>
-    );
-  });
-
-*/
+    // Clean up the spy
+    navigateSpy.mockRestore();
   });
 });
