@@ -178,7 +178,7 @@ describe("Testing getLandlordUserId() in landlord model", () => {
 describe("testing createLandlord() in landlord model", () => {
     test ("Test calling createLandlord() with valid values",(done) => {
         const data = {
-            email: 'landlord4@gmail.com',
+            email: 'landlord6@gmail.com',
             password: '$2b$10$BIJTkvtOrkrKhl/juVKCauVhPwqChMNbayD3DazrMBi6H6gsgVlrS',
             ticket_type: 'cleanliness'
         }
@@ -206,7 +206,7 @@ describe("testing createLandlord() in landlord model", () => {
 
     test ("Test calling createLandlord() with missing password",(done) => {
         const data = {
-            email: 'landlord4@gmail.com',
+            email: 'landlord6@gmail.com',
             ticket_type: 'cleanliness'
         }
         createLandlord(data, (err, results) => {
@@ -217,7 +217,7 @@ describe("testing createLandlord() in landlord model", () => {
 
     test ("Test calling createLandlord() with missing ticket_type",(done) => {
         const data = {
-            email: 'landlord4@gmail.com',
+            email: 'landlord6@gmail.com',
             password: '$2b$10$BIJTkvtOrkrKhl/juVKCauVhPwqChMNbayD3DazrMBi6H6gsgVlrS',
         }
         createLandlord(data, (err, results) => {
@@ -296,7 +296,7 @@ describe("testing createTenant() in landlord model", () => {
         const data = {
             email: 'tenant10@gmail.com',
             password: '$2b$10$BIJTkvtOrkrKhl/juVKCauVhPwqChMNbayD3DazrMBi6H6gsgVlrS',
-            public_building_id: 'CWP'
+            public_building_id: 'EPM'
         }
         createTenant(data.email, data.password, data.public_building_id, (err, results) => {
             if (err){
@@ -312,7 +312,7 @@ describe("testing createTenant() in landlord model", () => {
     test ("Test calling createTenant() with missing email",(done) => {
         const data = {
             password: '$2b$10$BIJTkvtOrkrKhl/juVKCauVhPwqChMNbayD3DazrMBi6H6gsgVlrS',
-            public_building_id: "CWP"
+            public_building_id: "EPM"
         }
         createTenant(data.email, data.password, data.public_building_id, (err, results) => {
             expect(err).toBe("missing data entry!");
@@ -323,7 +323,7 @@ describe("testing createTenant() in landlord model", () => {
     test ("Test calling createTenant() with missing password",(done) => {
         const data = {
             email: 'tenant10@gmail.com',
-            public_building_id: "CWP"
+            public_building_id: "EPM"
         }
         createTenant(data.email, data.password, data.public_building_id, (err, results) => {
             expect(err).toBe("missing data entry!");
@@ -346,7 +346,7 @@ describe("testing createTenant() in landlord model", () => {
         const data = {
             email: 'tenant1@gmail.com',
             password: '$2b$10$BIJTkvtOrkrKhl/juVKCauVhPwqChMNbayD3DazrMBi6H6gsgVlrS',
-            public_building_id: "CWP"
+            public_building_id: "EPM"
         }
         createTenant(data.email, data.password, data.public_building_id, (err, results) => {
             expect(err).toBe("tenant user already exists");
@@ -551,6 +551,48 @@ describe("Tesing ticketWork() in landlord model", () => {
     })
 })
 
+describe("testing getTenantAccounts() in landlord model", () => {
+    test ("Test calling getTenantAccounts() with valid building id that has tenants",(done) => {
+        getTenantAccounts("TM1", (err, results) => {
+            if (err){
+                console.log("ERROR",err)
+            }
+            expect(results.length).toBe(2);
+            done();
+        })
+    });
+
+    test ("Test calling getTenantAccounts() with valid building id with one DELETED account",(done) => {
+        getTenantAccounts("FC", (err, results) => {
+            if (err){
+                console.log("ERROR",err)
+            }
+            expect(results.length).toBe(1);
+            done();
+        })
+    });
+
+    test ("Test calling getTenantAccounts() with building with no tenant",(done) => {
+        getTenantAccounts("CWP", (err, results) => {
+            if (err){
+                console.log("ERROR",err)
+            }
+            expect(results.length).toBe(0);
+            done();
+        })
+    });
+
+    test ("Test calling getTenantAccounts() with invalid public building id",(done) => {
+        getTenantAccounts("CCP", (err, results) => {
+            if (err){
+                console.log("ERROR",err)
+            }
+            expect(results.length).toBe(0);
+            done();
+        })
+    });
+})
+
 // //TODO: getLeaseByLandlord
 // describe("Testing getLeaseByLandlord() in landlord model", () => {
 //     test ("Test calling getLeaseByLandlord() on valid landlord id",(done) => {
@@ -583,8 +625,6 @@ describe("Tesing ticketWork() in landlord model", () => {
 //TODO: getTicketsById
 
 //TODO: getQuotation
-
-//TODO: getTenantAccounts
 
 //TODO:createLease
 

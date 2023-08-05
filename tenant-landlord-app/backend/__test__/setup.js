@@ -29,13 +29,15 @@ export default async function setup() {
         );
         await pool.promise().query(`
             INSERT INTO tenant_user
-            (email,password,public_building_id,public_lease_id)
-            VALUES  ("tenant1@gmail.com","${hash_password}", "RC", NULL),
-                    ("tenant2@gmail.com","${hash_password}", "FC", "2001-01-01 00:00:00"),
-                    ("tenant3@gmail.com","${hash_password}", "CWP", "2001-02-16 12:01:09"),
-                    ("tenant4@gmail.com","${hash_password}", "FC", "2002-03-24 23:01:10"),
-                    ("tenant5@gmail.com","${hash_password}", "CWP", "2002-10-30 10:10:10"),
-                    ("tenant6@gmail.com","${hash_password}", "RC", "2003-10-30 11:11:11");
+            (email,password,public_building_id,public_lease_id,deleted_date)
+            VALUES  ("tenant1@gmail.com","${hash_password}", "RC", NULL, NULL),
+                    ("tenant2@gmail.com","${hash_password}", "FC", "2001-01-01 00:00:00", "2011-01-01 01:01:01"),
+                    ("tenant3@gmail.com","${hash_password}", "CWP", "2001-02-16 12:01:09", "2022-02-02 02:02:02"),
+                    ("tenant4@gmail.com","${hash_password}", "FC", "2002-03-24 23:01:10", NULL),
+                    ("tenant5@gmail.com","${hash_password}", "CWP", "2002-10-30 10:10:10", "2022-02-02 02:02:02"),
+                    ("tenant6@gmail.com","${hash_password}", "RC", "2003-10-30 11:11:11", NULL),
+                    ("tenant7@gmail.com","${hash_password}", "TM1", "2017-11-20 17:16:15", NULL),
+                    ("tenant8@gmail.com","${hash_password}", "TM1", "2014-01-20 17:16:15", NULL);
         `);
 
         //        CREATE TEMPORARY TABLE landlord_user table
@@ -50,7 +52,9 @@ export default async function setup() {
             (email,password,public_building_id,ticket_type)
             VALUES  ('landlord1@gmail.com',"${hash_password}", "RC", "cleanliness"),
                     ('landlord2@gmail.com',"${hash_password}", "FC", "horticulture"),
-                    ('landlord3@gmail.com',"${hash_password}", "CWP", "aircon");
+                    ('landlord3@gmail.com',"${hash_password}", "CWP", "aircon"),
+                    ('landlord4@gmail.com',"${hash_password}", "EPM", "security"),
+                    ('landlord5@gmail.com',"${hash_password}", "TM1", "cleanliness");
         `);
 
         //        CREATE TEMPORARY TABLE admin_user table
@@ -80,7 +84,9 @@ export default async function setup() {
             (public_building_id,building_name,address,postal_code)
             VALUES  ('RC','Raffles City','252 North Bridge Rd',179103),
                     ('FC','Funan City','107 North Bridge Rd',179103),
-                    ('CWP','Causeway Point','1 Woodlands Square',738099);
+                    ('CWP','Causeway Point','1 Woodlands Square',738099),
+                    ('EPM','East Point Mall','3 Simei Street 6',528833),
+                    ('TM1','Tampines One','10 Tampines Central 1',529536);
         `);
 
             //        CREATE TEMPORARY TABLE lease table
@@ -97,7 +103,9 @@ export default async function setup() {
                         (3,'2002-03-24 23:01:10',3,2,'12','921',':Content/Documents/lease_details/3'),
                         (4,'2002-10-30 10:10:10',4,3,'10','30',':Content/Documents/lease_details/4'),
                         (5,'2007-11-20 11:11:11',5,3,'6','100',':Content/Documents/lease_details/5'),
-                        (6,'2004-01-20 11:11:11',6,3,'1','50',':Content/Documents/lease_details/6');
+                        (6,'2004-01-20 11:11:11',6,3,'1','50',':Content/Documents/lease_details/6'),
+                        (7,'2017-11-20 17:16:15',7,5,'3','100',':Content/Documents/lease_details/7'),
+                        (8,'2014-01-20 17:16:15',8,5,'7','50',':Content/Documents/lease_details/8');
     
             `);
         
