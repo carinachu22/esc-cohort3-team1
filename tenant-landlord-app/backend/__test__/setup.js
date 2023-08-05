@@ -37,7 +37,8 @@ export default async function setup() {
                     ("tenant5@gmail.com","${hash_password}", "CWP", "2002-10-30 10:10:10", "2022-02-02 02:02:02"),
                     ("tenant6@gmail.com","${hash_password}", "RC", "2003-10-30 11:11:11", NULL),
                     ("tenant7@gmail.com","${hash_password}", "TM1", "2017-11-20 17:16:15", NULL),
-                    ("tenant8@gmail.com","${hash_password}", "TM1", "2014-01-20 17:16:15", NULL);
+                    ("tenant8@gmail.com","${hash_password}", "TM1", "2014-01-20 17:16:15", NULL),
+                    ("tenant9@gmail.com","${hash_password}", "TM1", NULL, NULL);
         `);
 
         //        CREATE TEMPORARY TABLE landlord_user table

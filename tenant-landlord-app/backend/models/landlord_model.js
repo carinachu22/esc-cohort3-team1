@@ -531,28 +531,32 @@ export const getTenantAccounts = (public_building_id, callBack) => {
  * @param {*} callBack 
  */
 export const createLease = (publicLeaseID, landlordID, tenantID, data, callBack) => {
-  pool.query (
-    `
-    INSERT INTO lease
-    (public_lease_id, tenant_user_id, landlord_user_id, floor, unit_number)
-    VALUES (?,?,?,?,?)
-    `,
-    [
-      publicLeaseID,
-      tenantID,
-      landlordID,
-      data.floor,
-      data.unit_number,
-      data.pdf_path
-    ],
-    (error, results, fields) => {
-      if (error) {
-        callBack(error);
-      } else {
-        callBack(null,results);
+  if (publicLeaseID && landlordID && tenantID && data.floor && data.unit_number) {
+    pool.query (
+      `
+      INSERT INTO lease
+      (public_lease_id, tenant_user_id, landlord_user_id, floor, unit_number)
+      VALUES (?,?,?,?,?)
+      `,
+      [
+        publicLeaseID,
+        tenantID,
+        landlordID,
+        data.floor,
+        data.unit_number,
+        data.pdf_path
+      ],
+      (error, results, fields) => {
+        if (error) {
+          callBack(error);
+        } else {
+          callBack(null,results);
+        }
       }
-    }
-  )
+    )
+  } else {
+    callBack("missing data entry!")
+  }
 }
 
 

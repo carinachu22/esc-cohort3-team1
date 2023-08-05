@@ -557,7 +557,7 @@ describe("testing getTenantAccounts() in landlord model", () => {
             if (err){
                 console.log("ERROR",err)
             }
-            expect(results.length).toBe(2);
+            expect(results.length).toBe(3);
             done();
         })
     });
@@ -593,6 +593,93 @@ describe("testing getTenantAccounts() in landlord model", () => {
     });
 })
 
+describe("testing createLease() in landlord model", () => {
+    test("Test calling createLease() with valid inputs, no lease path", (done) => {
+        const data = {
+            floor: 10,
+            unit_number: 100
+        }
+        createLease("2023-01-01 01:01:01", 5, 9, data, (err, results) => {
+            if (err) {
+                console.log("ERROR", err)
+            }
+            const rowsChanged = JSON.parse(JSON.stringify(results)).affectedRows
+            expect(rowsChanged).toBe(1);
+            done();
+        })
+    })
+
+    test("Test calling createLease() with valid inputs, with lease path", (done) => {
+        const data = {
+            floor: 10,
+            unit_number: 100,
+            pdf_path: ":Content/Documents/lease_details/9"
+        }
+        createLease("2023-01-01 01:01:01", 5, 9, data, (err, results) => {
+            if (err) {
+                console.log("ERROR", err)
+            }
+            const rowsChanged = JSON.parse(JSON.stringify(results)).affectedRows
+            expect(rowsChanged).toBe(1);
+            done();
+        })
+    })
+
+    test("Test calling createLease() with missing public lease id", (done) => {
+        const data = {
+            floor: 10,
+            unit_number: 100
+        }
+        createLease(null, 5, 9, data, (err, results) => {
+            expect(err).toBe("missing data entry!");
+            done();
+        })
+    })
+
+    test("Test calling createLease() with missing tenant id", (done) => {
+        const data = {
+            floor: 10,
+            unit_number: 100
+        }
+        createLease("2023-01-01 01:01:01", 5, null, data, (err, results) => {
+            expect(err).toBe("missing data entry!");
+            done();
+        })
+    })
+
+    test("Test calling createLease() with floor", (done) => {
+        const data = {
+            unit_number: 100
+        }
+        createLease("2023-01-01 01:01:01", 5, 9, data, (err, results) => {
+            expect(err).toBe("missing data entry!");
+            done();
+        })
+    })
+
+    test("Test calling createLease() with missing unit number", (done) => {
+        const data = {
+            floor: 10,
+        }
+        createLease("2023-01-01 01:01:01", 5, 9, data, (err, results) => {
+            expect(err).toBe("missing data entry!");
+            done();
+        })
+    })
+
+    test("Test calling createLease() with missing landlord id", (done) => {
+        const data = {
+            floor: 10,
+            unit_number: 100
+        }
+        createLease("2023-01-01 01:01:01", null, 9, data, (err, results) => {
+            expect(err).toBe("missing data entry!");
+            done();
+        })
+    })
+})
+
+
 // //TODO: getLeaseByLandlord
 // describe("Testing getLeaseByLandlord() in landlord model", () => {
 //     test ("Test calling getLeaseByLandlord() on valid landlord id",(done) => {
@@ -625,8 +712,6 @@ describe("testing getTenantAccounts() in landlord model", () => {
 //TODO: getTicketsById
 
 //TODO: getQuotation
-
-//TODO:createLease
 
 //TODO: uploadLease
 
