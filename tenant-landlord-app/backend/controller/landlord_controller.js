@@ -484,7 +484,7 @@ export const controllerGetTicketsByStatus = (req, res) => {
 export const controllerUpdateQuotation = (req, res) => {
   const id = req.params.id;
   const body = req.body;
-  updateQuotation(id, body, (err, results) => {
+  updateQuotation(id, (err, results) => {
     if (err) {
       console.log(err);
       return;
