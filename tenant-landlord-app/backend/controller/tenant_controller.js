@@ -536,13 +536,13 @@ export const controllerGetQuotation = (req, res) => {
       console.log(err);
       return;
     }
-    if (!results) {
+    if (results.lenth === 0) {
       return res.json({
         success: 0,
         message: "service ticket not found",
       });
     } else {
-      var filepath = results.quotation_path;
+      var filepath = results[0].quotation_path;
       if (filepath == null){
         res.send("No quotation uploaded yet!")
         return

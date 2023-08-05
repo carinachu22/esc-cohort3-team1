@@ -11,7 +11,10 @@ import {
     closeTicketStatus, 
     getTenantUserId,
     getLeaseByTenant,
-    updateTenantLease 
+    updateTenantLease, 
+    recoverTenantAccount,
+    getTicketById,
+    getQuotationPath
 } from '../../models/tenant_model.js';
 import setup from '../setup.js';
 import teardown from '../teardown.js';
@@ -194,7 +197,6 @@ describe("Testing createTicket() in tenant model", () => {
             if (err){
                 console.log("ERROR",err)
             }
-            console.log(`results ${results}`)
             const rowsChanged = JSON.parse(JSON.stringify(results)).affectedRows
             expect(rowsChanged).toBe(1);
             done();
@@ -400,3 +402,68 @@ describe("Testing updateTenantLease() in tenant model", () => {
         })
     });
 })
+
+describe("Testing recoverTenantAccount() in tenant model", () => {
+    test ("Test calling recoverTenantAccount() on valid tenant id",(done) => {
+        recoverTenantAccount(3, (err, results) => {
+            if (err){
+                console.log("ERROR",err)
+            }
+            const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
+            expect(rowsChanged).toBe(1);
+            done();
+        })
+    });
+    test ("Test calling recoverTenantAccount() on an invalid tenant id",(done) => {
+       recoverTenantAccount(999, (err, results) => {
+            if (err){
+                console.log("ERROR",err)
+            }
+            const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
+            expect(rowsChanged).toBe(0);
+            done();
+        })
+    });
+})
+
+describe("testing getTicketById() in tenant model", () => {
+    test("test calling getTicketById() with valid public ticket id", (done) => {
+        getTicketById("SR/2003/Mar/0001", (err,results) => {
+            expect(results.length).toBe(1)
+            done()
+        })
+    })
+
+    test("test calling getTicketsById() with invalid public ticket id", (done) => {
+        getTicketById("SR/9999/999/9999", (err,results) => {
+            expect(results.length).toBe(0)
+            done()
+        })
+    })
+})
+
+describe("Testing getQuotationPath() in tenant model", () => {
+    test("Test calling getQuotationPath() with valid public ticket id", (done) => {
+        getQuotationPath("SR/2003/Mar/0001", (err,results) => {
+            if (err) {
+                console.log("ERROR",err)
+            }
+            expect(results.length).toBe(1)
+            done()
+        })
+    })
+
+    test("Test calling getQuotationPath() with invalid public ticket id", (done) => {
+        getQuotationPath("SR/9999/999/9999", (err,results) => {
+            if (err) {
+                console.log("ERROR",err)
+            }
+            expect(results.length).toBe(0)
+            done()
+        })
+    })
+})
+
+// TODO: getLeaseByTenantEmail
+
+// TODO: getQuotation

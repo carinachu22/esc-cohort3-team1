@@ -889,7 +889,7 @@ describe("Testing deleteLease() in landlord model", () => {
     })
 })
 
-describe("testing getTicketsById() in landlord model", () => {
+describe("testing getTicketById() in landlord model", () => {
     test("test calling getTicketsById() with valid public ticket id", (done) => {
         getTicketById("SR/2002/Feb/0001", (err,results) => {
             expect(results.length).toBe(1)

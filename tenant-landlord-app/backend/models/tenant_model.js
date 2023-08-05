@@ -82,7 +82,7 @@ export const recoverTenantAccount = (id, callBack) => {
       if(error){
         callBack(error);
       }
-      return callBack(null, results[0]);
+      return callBack(null, results);
     }
   );
 }
@@ -442,7 +442,7 @@ export const updateTenantLease = (publicLeaseID, tenantID, callBack) => {
       if (error) {
         callBack(error);
       } else {
-        callBack(null, results[0]);
+        callBack(null, results);
       }
     }
   );
