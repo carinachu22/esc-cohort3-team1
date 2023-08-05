@@ -57,6 +57,7 @@ const LoginPage = () => {
 
   const navigateToDashboard = () => {
     console.log("In navigate to dashboard() ");
+    console.log("Navigate is ", navigate("/pages/Dashboard"));
     navigate("/pages/Dashboard");
     console.log("In navigated to dashboard() ");
   };
