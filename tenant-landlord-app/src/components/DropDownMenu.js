@@ -8,6 +8,7 @@ import {
     MenuOptionGroup,
     MenuDivider,
     Button,
+    useToast
   } from '@chakra-ui/react'
 
 
@@ -29,6 +30,7 @@ export default function DropDownMenu(items){
   const [error, setError] = useState("");
   console.log('items', items)
   const [selectedItem, setSelectedItem] = useState("")
+  const toast = useToast();
 
   //click event for button to call different APIs
   const onButtonClick = async (event) => {
@@ -57,6 +59,22 @@ export default function DropDownMenu(items){
     console.log(response)
     if(response.status === 200){
       items.refreshParent()
+      toast({
+        title: "Ticket assigned to " + selectedItem,
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+        })
+    }
+    else {
+      toast({
+        title: "Unable to assign ticket!",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+        })
     }
     //return response
 

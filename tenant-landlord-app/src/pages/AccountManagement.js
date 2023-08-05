@@ -338,7 +338,6 @@ const AccountManagement = () => {
                 {account.public_building_id}
                 </Box>
                 </HStack>
-                <AccordionIcon width='2em'/>
                 <Box  >
                     <Popup trigger={<IconButton size='sm' icon={<DeleteIcon />} />} position="left center">
                     <FormControl>
@@ -352,16 +351,7 @@ const AccountManagement = () => {
                     </Popup>
                 </Box>
             </AccordionButton>
-            <AccordionPanel>
-                <HStack spacing='24vw'>
-                <Box>
-                Lease ID:  <br></br>
-                Floor:  <br></br>
-                Unit:  <br></br>
-                </Box>
-                </HStack>
-                <br></br>
-            </AccordionPanel>
+
         </AccordionItem>
         </Box>
         );
