@@ -506,6 +506,51 @@ describe("Testing ticketApproval() in landlord model", () => {
     });
 })
 
+describe("Tesing ticketWork() in landlord model", () => {
+    test("Test ticketWork() with valid inputs", (done) => {
+        ticketWork("SR/2003/Mar/0001", "landlord_started_work", (err,results) => {
+            if (err) {
+                console.log("ERROR",err)
+            }
+            const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
+            expect(rowsChanged).toBe(1);
+            done();
+        })
+    })
+
+    test("Test ticketWork() with invalid public ticket id", (done) => {
+        ticketWork("SR/9999/999/9999", "landlord_started_work", (err,results) => {
+            if (err) {
+                console.log("ERROR",err)
+            }
+            const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
+            expect(rowsChanged).toBe(0);
+            done();
+        })
+    })
+
+    test("Test ticketWork() with invalid status", (done) => {
+        ticketWork("SR/2003/Mar/0001", "invalid_status", (err,results) => {
+            expect(err).toBe("invalid status");
+            done();
+        })
+    })
+
+    test("Test ticketWork() with missing status", (done) => {
+        ticketWork("SR/2003/Mar/0001", null, (err,results) => {
+            expect(err).toBe("missing data entry!");
+            done();
+        })
+    })
+
+    test("Test ticketWork() with missing public ticket id", (done) => {
+        ticketWork(null, "landlord_started_work", (err,results) => {
+            expect(err).toBe("missing data entry!");
+            done();
+        })
+    })
+})
+
 // //TODO: getLeaseByLandlord
 // describe("Testing getLeaseByLandlord() in landlord model", () => {
 //     test ("Test calling getLeaseByLandlord() on valid landlord id",(done) => {
@@ -538,8 +583,6 @@ describe("Testing ticketApproval() in landlord model", () => {
 //TODO: getTicketsById
 
 //TODO: getQuotation
-
-//TODO: ticketWork
 
 //TODO: getTenantAccounts
 

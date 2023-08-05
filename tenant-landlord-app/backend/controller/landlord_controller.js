@@ -636,7 +636,7 @@ export const controllerTicketWork = (req, res) => {
     status = "landlord_completed_work"
   }
 
-  ticketWork(id, req.body, status, (err, results) => {
+  ticketWork(id, status, (err, results) => {
     if (err) {
       console.log(err);
       return;
