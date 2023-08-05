@@ -23,7 +23,8 @@ import {
     getLeaseByLandlord,
     deleteLease,
     updateLease,
-    uploadLease
+    uploadLease,
+    getLeasePath
 } from '../../models/landlord_model.js';
 import setup from '../setup.js';
 import teardown from '../teardown.js';
@@ -850,6 +851,28 @@ describe("Testing updateLease() in landlord model", () => {
     });
 })
 
+describe("testing getLeasePath() in landlord model", () => {
+    test ("Test calling getLeasePath() with valid tenant id",(done) => {
+        getLeasePath(1, (err, results) => {
+            if (err){
+                console.log("ERROR",err)
+            }
+            expect(results.length).toBe(1);
+            done();
+        })
+    });
+
+    test ("Test calling getLeasePath() with invalid tenant id",(done) => {
+        getLeasePath(999, (err, results) => {
+            if (err){
+                console.log("ERROR",err)
+            }
+            expect(results.length).toBe(0);
+            done();
+        })
+    });
+})
+
 // //TODO: getLeaseByLandlord
 // describe("Testing getLeaseByLandlord() in landlord model", () => {
 //     test ("Test calling getLeaseByLandlord() on valid landlord id",(done) => {
@@ -886,8 +909,6 @@ describe("Testing updateLease() in landlord model", () => {
 //TODO: getLeaseDetails
 
 //TODO: deleteLease
-
-//TODO: getLeasePath
 
 //TODO: getLease
 
