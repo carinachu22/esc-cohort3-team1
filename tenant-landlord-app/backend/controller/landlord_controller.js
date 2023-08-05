@@ -269,8 +269,19 @@ export const controllerCreateTenant = (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
   const landlordEmail = req.body.landlordEmail;
+
+  // data validation
+  if (!email || !password || !landlordEmail) {
+    console.log("data validation")
+    return res.status(400).json({
+      success: 0,
+      message: "missing data entry!"
+    })
+  }
+  
   const salt = genSaltSync(10);
   const password_hashed = hashSync(password, salt);
+  
   //check if email already exist in database,
   //only create new tenant account if the email is unique
   getTenantByEmail(email, (err, results) => {

@@ -75,7 +75,7 @@ describe ("/landlord/create", () => {
       .post("/api/landlord/create")
       .set("Authorization", `Bearer ${token}`)
       .send({
-        email: "landlord6@gmail.com",
+        email: "landlord8@gmail.com",
         password: "password",
         ticket_type: "cleanliness"
       })
@@ -182,6 +182,151 @@ describe ("/landlord/create", () => {
       });
   })
 })
+
+describe.only("/landlord/createTenant", () => {
+  test("non-existing landlord, valid inputs", async () =>  {
+    const token = await authorisation()
+    await request(app)
+      .post("/api/landlord/createTenant")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        email: 'tenant12@gmail.com',
+        password: 'password',
+        landlordEmail: 'landlord2@gmail.com'
+      })
+      .expect('Content-Type', /json/)
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toEqual({
+           success: 1, 
+           message: "created successfully",
+           data: expect.objectContaining({
+                  fieldCount: 0,
+                 affectedRows: 1,
+                 insertId: expect.any(Number),
+                 info: "",
+                 serverStatus: expect.any(Number),
+                 warningStatus: 0
+            })
+        });
+     })
+  })
+
+  test("existing active tenant", async () =>  {
+    const token = await authorisation()
+    await request(app)
+      .post("/api/landlord/createTenant")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        email: 'tenant6@gmail.com',
+        password: 'password',
+        landlordEmail: 'landlord2@gmail.com'
+      })
+      .expect('Content-Type', /json/)
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toEqual({
+            success: 0, 
+            message: "Duplicate email entry",
+            data: expect.arrayContaining([
+              {
+                deleted_date: null,
+                email: "tenant6@gmail.com",
+                password: "$2b$10$BIJTkvtOrkrKhl/juVKCauVhPwqChMNbayD3DazrMBi6H6gsgVlrS",
+                public_building_id: "RC",
+                public_lease_id: "2003-10-30 11:11:11",
+                tenant_user_id: 6
+              }
+            ])
+        });
+      })
+  })
+
+  test("existing deleted tenant (account recovery test)", async () =>  {
+    const token = await authorisation()
+    await request(app)
+      .post("/api/landlord/createTenant")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        email: 'tenant7@gmail.com',
+        password: 'password',
+        landlordEmail: 'landlord2@gmail.com'
+      })
+      .expect('Content-Type', /json/)
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toEqual({
+            success: 0, 
+            message: "Duplicate email entry",
+            data:  expect.arrayContaining([
+              {
+                deleted_date: null,
+                email: "tenant7@gmail.com",
+                password: "$2b$10$BIJTkvtOrkrKhl/juVKCauVhPwqChMNbayD3DazrMBi6H6gsgVlrS",
+                public_building_id: "TM1",
+                public_lease_id: "2017-11-20 17:16:15",
+                tenant_user_id: 7
+              }
+            ])
+        });
+      })
+  })
+
+  test("missing tenant email", async () =>  {
+    const token = await authorisation()
+    await request(app)
+      .post("/api/landlord/createTenant")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        password: 'password',
+        landlordEmail: 'landlord2@gmail.com'
+      })
+      .expect('Content-Type', /json/)
+      .expect(400)
+      .then((response) => {
+        expect(response.body).toEqual({
+            success: 0, 
+            message: "missing data entry!",
+          })
+      });
+  })
+
+  test("missing password", async () =>  {
+    const token = await authorisation()
+    await request(app)
+      .post("/api/landlord/createTenant")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        email: 'tenant12@gmail.com',
+        landlordEmail: 'landlord2@gmail.com'
+      })
+      .then((response) => {
+        expect(response.body).toEqual({
+           success: 0, 
+           message: "missing data entry!",
+        })
+    });
+  })
+
+  test("missing landlord email", async () =>  {
+    const token = await authorisation()
+    await request(app)
+      .post("/api/landlord/createTenant")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        email: 'tenant12@gmail.com',
+        password: 'password'
+      })
+      .expect('Content-Type', /json/)
+      .expect(400)
+      .then((response) => {
+         expect(response.body).toEqual({
+            success: 0, 
+            message: "missing data entry!",
+          })
+      });
+    })
+});
 
 //TODO: uploadLease
 

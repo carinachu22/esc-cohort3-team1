@@ -215,7 +215,7 @@ describe("testing createLandlord() in landlord model", () => {
 
     test ("Test calling createLandlord() with missing ticket_type",(done) => {
         const data = {
-            email: 'landlord6@gmail.com',
+            email: 'landlord9@gmail.com',
             password: '$2b$10$BIJTkvtOrkrKhl/juVKCauVhPwqChMNbayD3DazrMBi6H6gsgVlrS',
         }
         createLandlord(data, (err, results) => {
