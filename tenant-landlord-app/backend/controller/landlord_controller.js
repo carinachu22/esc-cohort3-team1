@@ -9,7 +9,6 @@ import {
   getLandlordById,
   updateLandlordPassword,
   uploadQuotation,
-  getQuotation,
   getQuotationPath,
   ticketApproval,
   ticketWork,
@@ -18,7 +17,7 @@ import {
   deleteTenantByEmail,
   getLandlordUserId,
   createLease,
-  getLeaseByLandlord,
+  // getLeaseByLandlord,
   deleteLease,
   updateLease,
   getLeaseDetails,
@@ -847,43 +846,43 @@ export const controllerCreateLease = (req,res) => {
   })
 }
 
-/**
- * 
- * @param {object} req 
- * {email}
- * @param {json} res 
- */
-export const controllerGetLeaseByLandlord = (req,res) => {
-  let landlordID = "";
-  getLandlordUserId(req.body.email, (err, result) => {
-    if (err) {
-      console.log(err)
-      return
-    } if (result.length === 0) {
-      return res.json({
-        success:0,
-        message: "landlord not registered."
-      })
-    } else {
-      const results = result[0]
-      landlordID = results.landlord_user_id;
-      getLeaseByLandlord(landlordID, (err, results) => {
-        if (err) {
-          console.log(err);
-          return res.status(500).json({
-            success: 0,
-            message: "Database connection error"
-          });
-        } else {
-          return res.status(200).json({
-            success:1,
-            data: results
-          });
-        };
-      })
-    }
-  })
-}
+// /**
+//  * 
+//  * @param {object} req 
+//  * {email}
+//  * @param {json} res 
+//  */
+// export const controllerGetLeaseByLandlord = (req,res) => {
+//   let landlordID = "";
+//   getLandlordUserId(req.body.email, (err, result) => {
+//     if (err) {
+//       console.log(err)
+//       return
+//     } if (result.length === 0) {
+//       return res.json({
+//         success:0,
+//         message: "landlord not registered."
+//       })
+//     } else {
+//       const results = result[0]
+//       landlordID = results.landlord_user_id;
+//       getLeaseByLandlord(landlordID, (err, results) => {
+//         if (err) {
+//           console.log(err);
+//           return res.status(500).json({
+//             success: 0,
+//             message: "Database connection error"
+//           });
+//         } else {
+//           return res.status(200).json({
+//             success:1,
+//             data: results
+//           });
+//         };
+//       })
+//     }
+//   })
+// }
 
 export const controllerDeleteLease = (req,res) => {
   if (!req.body.public_lease_id) {

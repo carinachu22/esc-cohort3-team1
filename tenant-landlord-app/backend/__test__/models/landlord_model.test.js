@@ -14,18 +14,16 @@ import {
     updateQuotation,
     uploadQuotation,
     getQuotationPath,
-    getQuotation,
     ticketApproval,
     ticketWork,
     getTenantAccounts,
     createLease,
     getLandlordUserId,
-    getLeaseByLandlord,
     deleteLease,
     updateLease,
     uploadLease,
     getLeasePath,
-    getLeaseDetails
+    getLeaseDetails,
 } from '../../models/landlord_model.js';
 import setup from '../setup.js';
 import teardown from '../teardown.js';
@@ -984,3 +982,136 @@ describe("testing getLeaseDetails() in landlord model", () => {
         })
     })
 })
+
+/**
+ * Test landlord model update landlord account
+ */
+describe("Testing updateLandlord() in landlord model", () => {
+    test ("Test calling updateLandlord() on valid and complete inputs",(done) => {
+        const data = {
+            email: "landlord10@gmail.com",
+            password: "$2b$10$BIJTkvtOrkrKhl/juVKCauVhPwqChMNbayD3DazrMBi6H6gsgVlrS",
+            ticket_type: "security",
+            landlord_user_id: 2
+        }
+        updateLandlord(data, (err, results) => {
+            if (err){
+                console.log("ERROR",err)
+            }
+            const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
+            expect(rowsChanged).toBe(1);
+            done();
+        })
+    });
+
+    test ("Test calling updateLandlord() on invalid landlord_user_id",(done) => {
+        const data = {
+            email: "landlord10@gmail.com",
+            password: "$2b$10$BIJTkvtOrkrKhl/juVKCauVhPwqChMNbayD3DazrMBi6H6gsgVlrS",
+            ticket_type: "security",
+            landlord_user_id: 999
+        }
+        updateLandlord(data, (err, results) => {
+            if (err){
+                console.log("ERROR",err)
+            }
+            const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
+            expect(rowsChanged).toBe(0);
+            done();
+        })
+    });
+
+    test ("Test calling updateLandlord() on missing landlord email",(done) => {
+        const data = {
+            password: "$2b$10$BIJTkvtOrkrKhl/juVKCauVhPwqChMNbayD3DazrMBi6H6gsgVlrS",
+            ticket_type: "security",
+            landlord_user_id: 2
+        }
+        updateLandlord(data, (err, results) => {
+            expect(err).toBe("missing data entry!");
+            done();
+        })
+    });
+
+    test ("Test calling updateLandlord() on missing password",(done) => {
+        const data = {
+            email: "landlord10@gmail.com",
+            ticket_type: "security",
+            landlord_user_id: 2
+        }
+        updateLandlord(data, (err, results) => {
+            expect(err).toBe("missing data entry!");
+            done();
+        })
+    });
+
+    test ("Test calling updateLandlord() on missing landlord_user_id",(done) => {
+        const data = {
+            email: "landlord10@gmail.com",
+            password: "$2b$10$BIJTkvtOrkrKhl/juVKCauVhPwqChMNbayD3DazrMBi6H6gsgVlrS",
+            ticket_type: "security",
+        }
+        updateLandlord(data, (err, results) => {
+            expect(err).toBe("missing data entry!");
+            done();
+        })
+    });
+
+    test ("Test calling updateLandlord() on missing ticket type (should pass since not a required field)",(done) => {
+        const data = {
+            email: "landlord10@gmail.com",
+            password: "$2b$10$BIJTkvtOrkrKhl/juVKCauVhPwqChMNbayD3DazrMBi6H6gsgVlrS",
+            landlord_user_id: 2
+        }
+        updateLandlord(data, (err, results) => {
+            if (err){
+                console.log("ERROR",err)
+            }
+            const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
+            expect(rowsChanged).toBe(1);
+            done();
+        })
+    });
+})
+
+/**
+ * Test landlord model delete landlord account
+ */
+describe("Testing deleteLandlord() in landlord model", () => {
+    test ("Test calling deleteLandlord() on valid and complete inputs",(done) => {
+        deleteLandlord(Date.now(), "landlord3@gmail.com", (err, results) => {
+            if (err){
+                console.log("ERROR",err)
+            }
+            const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
+            expect(rowsChanged).toBe(1);
+            done();
+        })
+    });
+
+    test ("Test calling deleteLandlord() on invalid email",(done) => {
+        deleteLandlord(Date.now(), "landlord20@gmail.com", (err, results) => {
+            if (err){
+                console.log("ERROR",err)
+            }
+            const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
+            expect(rowsChanged).toBe(0);
+            done();
+        })
+    });
+
+    test ("Test calling deleteLandlord() with missing deleted date",(done) => {
+        deleteLandlord(null, "landlord2@gmail.com", (err, results) => {
+            expect(err).toBe("missing data entry!");
+            done();
+        })
+    });
+
+    test ("Test calling deleteLandlord() with missing deleted date",(done) => {
+        deleteLandlord(Date.now(), null, (err, results) => {
+            expect(err).toBe("missing data entry!");
+            done();
+        })
+    });
+})
+

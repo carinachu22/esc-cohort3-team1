@@ -122,6 +122,9 @@ export const updateLandlordPassword = ({password, id}, callBack) => {
  * @param {*} callBack 
  */
 export const updateLandlord = (data, callBack) => {
+  if (!data.email || !data.password || !data.landlord_user_id) {
+    return callBack("missing data entry!")
+  }
   pool.query(
     'UPDATE landlord_user SET email=?, password=?, ticket_type=? WHERE landlord_user_id=? ',
     [
@@ -145,6 +148,9 @@ export const updateLandlord = (data, callBack) => {
  * @param {*} callBack 
  */
 export const deleteLandlord = (deletedDate, email, callBack) => {
+  if ( !deletedDate || !email ) {
+    return callBack("missing data entry!")
+  }
   pool.query(
     'UPDATE landlord_user SET deleted_date = ? WHERE email = ?',
     [
@@ -394,29 +400,29 @@ export const getQuotationPath = (id, callBack) => {
   );
 }
 
-/**
- * 
- * @param {*} filepath 
- * @param {*} callBack 
- */
-export const getQuotation = (filepath, callBack) => {
-  pool.query(
-    `
-    SELECT 
-    LOAD_FILE(?)
-    `,
-    [
-      filepath
-    ],
-    (error, results, fields) => {
-      if (error) {
-        callBack(error);
-      } else {
-        callBack(null, results);
-      }
-    }
-  );
-}
+// /**
+//  * 
+//  * @param {*} filepath 
+//  * @param {*} callBack 
+//  */
+// export const getQuotation = (filepath, callBack) => {
+//   pool.query(
+//     `
+//     SELECT 
+//     LOAD_FILE(?)
+//     `,
+//     [
+//       filepath
+//     ],
+//     (error, results, fields) => {
+//       if (error) {
+//         callBack(error);
+//       } else {
+//         callBack(null, results);
+//       }
+//     }
+//   );
+// }
 
 
 /**
@@ -614,42 +620,42 @@ export const getLandlordUserId = (email, callBack) => {
   )
 }
 
-/**
- * 
- * @param {int} id landlord_user_id
- * @param {*} callBack 
- */
-export const getLeaseByLandlord = (id, callBack) => {
-  pool.query(
-    `
-    SELECT 
-      l.floor, 
-      l.unit_number, 
-      b.building_name, 
-      b.address, 
-      b.postal_code, 
-      b.public_building_id, 
-      l.public_lease_id,
-      l.pdf_path,
-      land.email AS landlord_email,
-      t.email AS tenant_email
-    FROM lease l
-    JOIN landlord_user land USING (landlord_user_id)
-    JOIN tenant_user t USING (tenant_user_id)
-    JOIN building b
-      ON b.public_building_id = land.public_building_id
-    WHERE landlord_user_id = ?
-    `,
-    [id],
-    (error, results, fields) => {
-      if (error) {
-        callBack(error);
-      } else {
-        callBack(null,results);
-      }
-    }
-  )
-}
+// /**
+//  * 
+//  * @param {int} id landlord_user_id
+//  * @param {*} callBack 
+//  */
+// export const getLeaseByLandlord = (id, callBack) => {
+//   pool.query(
+//     `
+//     SELECT 
+//       l.floor, 
+//       l.unit_number, 
+//       b.building_name, 
+//       b.address, 
+//       b.postal_code, 
+//       b.public_building_id, 
+//       l.public_lease_id,
+//       l.pdf_path,
+//       land.email AS landlord_email,
+//       t.email AS tenant_email
+//     FROM lease l
+//     JOIN landlord_user land USING (landlord_user_id)
+//     JOIN tenant_user t USING (tenant_user_id)
+//     JOIN building b
+//       ON b.public_building_id = land.public_building_id
+//     WHERE landlord_user_id = ?
+//     `,
+//     [id],
+//     (error, results, fields) => {
+//       if (error) {
+//         callBack(error);
+//       } else {
+//         callBack(null,results);
+//       }
+//     }
+//   )
+// }
 
 export const getLeaseDetails = (tenant_user_id, callBack) => {
   pool.query(
@@ -759,29 +765,30 @@ export const getLeasePath = (tenantID, callBack) => {
   )
 }
 
-/**
- * 
- * @param {*} filepath 
- * @param {*} callBack 
- */
-export const getLease = (filepath, callBack) => {
-  pool.query(
-    `
-    SELECT 
-    LOAD_FILE(?)
-    `,
-    [
-      filepath
-    ],
-    (error, results, fields) => {
-      if (error) {
-        callBack(error);
-      } else {
-        callBack(null, results);
-      }
-    }
-  );
-}
+// /**
+//  * 
+//  * @param {*} filepath 
+//  * @param {*} callBack 
+//  */
+// export const getLease = (filepath, callBack) => {
+//   pool.query(
+//     `
+//     SELECT 
+//     LOAD_FILE(?)
+//     `,
+//     [
+//       filepath
+//     ],
+//     (error, results, fields) => {
+//       if (error) {
+//         callBack(error);
+//       } else {
+//         console.log(results)
+//         callBack(null, results);
+//       }
+//     }
+//   );
+// }
 
 /**
  * get building id of landlord
