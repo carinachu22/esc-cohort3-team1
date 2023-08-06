@@ -447,27 +447,3 @@ export const updateTenantLease = (publicLeaseID, tenantID, callBack) => {
     }
   );
 }
-
-/**
- * 
- * @param {*} filepath 
- * @param {*} callBack 
- */
-export const getQuotation = (filepath, callBack) => {
-  pool.query(
-    `
-    SELECT 
-    LOAD_FILE(?)
-    `,
-    [
-      filepath
-    ],
-    (error, results, fields) => {
-      if (error) {
-        callBack(error);
-      } else {
-        callBack(null, results[0]);
-      }
-    }
-  );
-}

@@ -172,6 +172,9 @@ export const deleteLandlord = (deletedDate, email, callBack) => {
  * @param {*} callBack 
  */
 export const deleteAllTenants = (deletedDate, buildingID, callBack) => {
+  if (!deletedDate || !buildingID) {
+    return callBack("missing data entry!")
+  }
   pool.query(
     'UPDATE tenant_user SET deleted_date = ? WHERE public_building_id = ?',
     [
@@ -193,6 +196,9 @@ export const deleteAllTenants = (deletedDate, buildingID, callBack) => {
  * @param {*} callBack 
  */
 export const deleteTenantByEmail = (deletedDate, email, callBack) => {
+  if (!deletedDate || !email) {
+    return callBack("missing data entry!")
+  }
   pool.query(
     'UPDATE tenant_user SET deleted_date = ? WHERE email = ?',
     [
@@ -219,7 +225,7 @@ export const createTenant = (email, password, public_building_id, callBack) => {
       `SELECT * FROM tenant_user WHERE email = ?`,
       [email],
       (error,results) => {
-        if (results.length > 0){
+        if (results.length > 0 && results.deleted_date == null){
           callBack("tenant user already exists")
         } else if (error) {
           callBack(error)

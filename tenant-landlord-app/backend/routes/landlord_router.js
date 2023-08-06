@@ -5,7 +5,7 @@ import {
   controllerGetTickets,
   controllerGetTicketById,
   controllerGetTicketsByStatus,
-  controllerUpdateQuotation,
+  // controllerUpdateQuotation,
   controllerResetPasswordLandlord,
   controllerResetPasswordPageLandlord,
   controllerForgotPasswordLandlord,
@@ -21,7 +21,7 @@ import {
   controllerCreateLease,
   // controllerGetLeaseByLandlord,
   controllerDeleteLease,
-  controllerUpdateLease,
+  // controllerUpdateLease,
   controllerGetLeaseDetails
 } from "../controller/landlord_controller.js";
 import express from "express";
@@ -86,9 +86,9 @@ router.post("/uploadQuotation/", checkLandlordToken, upload.single('files'), con
 router.patch("/ticketApproval/", checkLandlordToken, controllerTicketApproval);
 router.patch("/ticketWork/", checkLandlordToken, controllerTicketWork);
 
-router.get("/getTenantAccounts/", controllerGetTenantAccounts);
-router.patch("/deleteAllTenants", controllerDeleteAllTenants);
-router.patch("/deleteTenantByEmail", controllerDeleteTenantByEmail);
+router.get("/getTenantAccounts/", checkLandlordToken, controllerGetTenantAccounts);
+router.patch("/deleteAllTenants", checkLandlordToken, controllerDeleteAllTenants);
+router.patch("/deleteTenantByEmail", checkLandlordToken, controllerDeleteTenantByEmail);
 
 
 export default router;

@@ -12,7 +12,6 @@ import {
   getTicketById,
   getTenantUserId,
   getLeaseByTenant,
-  getQuotation,
   getQuotationPath,
   getLeaseByTenantEmail
 } from "../models/tenant_model.js";
@@ -194,7 +193,6 @@ export const controllerCreateTicket = (req, res) => {
   const tenantEmail = req.body.email;
   getLeaseByTenantEmail(tenantEmail, (err,results) => {
     if (err) {
-      console.log(err);
       return res.status(500).json({
         success: 0,
         message: "Database connection error"
@@ -210,7 +208,6 @@ export const controllerCreateTicket = (req, res) => {
       const unit_number = results[0].unit_number;
       createTicket(body, floor, unit_number, (err,results) => {
         if (err) {
-          console.log(err);
           return res.status(500).json({
             success: 0,
             message: "Database connection error"
@@ -312,8 +309,10 @@ export const controllerGetTicketById = (req, res) => {
   const id = req.query.id;
   getTicketById(id, (err, results) => {
     if (err) {
-      console.log(err);
-      return;
+      return res.json({
+        success: 0,
+        message: err
+      });
     }
     if (results.length === 0) {
       return res.json({
@@ -351,8 +350,10 @@ export const controllerQuotationApproval = (req, res) => {
 
   quotationApproval(id, status, (err, results) => {
     if (err) {
-      console.log(err);
-      return;
+      return res.json({
+        success: 0,
+        message: err
+      });
     }
     if (results.changedRows === 0) {
       return res.json({
@@ -441,8 +442,10 @@ export const controllerAddFeedbackRating = (req, res) => {
       }
       addFeedbackText (id, feedback_text, (err, results) => {
         if (err) {
-          console.log(err);
-          return;
+          return res.json({
+            success: 0,
+            message: err
+          });
         } if (JSON.parse(JSON.stringify(results)).changedRows === 0) {
           return res.json ({
             success : 0,
@@ -474,8 +477,10 @@ export const controllerCloseTicketStatus = (req, res) => {
   
   closeTicketStatus (id, status, (err,results) => {
     if (err) {
-      console.log(err);
-      return;
+      return res.json({
+        success: 0,
+        message: err
+      });
     } if (JSON.parse(JSON.stringify(results)).changedRows === 0) {
       return res.status(400).json ({
         success : 0,
@@ -497,6 +502,12 @@ export const controllerCloseTicketStatus = (req, res) => {
  */
 export const controllerGetLeaseByTenant = (req,res) => {
   let tenantID = "";
+  if (!req.body.email) {
+    return res.json({
+      success: 0,
+      message: "missing data entry!"
+    })
+  }
   getTenantUserId(req.body.email, (err, results) => {
     if (err) {
       console.log(err)
@@ -528,12 +539,14 @@ export const controllerGetLeaseByTenant = (req,res) => {
 
 export const controllerGetQuotation = (req, res) => {
   const id = req.query.id;
+  if (!id) {
+    return res.send("missing data entry!")
+  }
   getQuotationPath(id, (err, results) => {
     if (err) {
-      console.log(err);
       return;
     }
-    if (results.lenth === 0) {
+    if (results.length === 0) {
       return res.json({
         success: 0,
         message: "service ticket not found",

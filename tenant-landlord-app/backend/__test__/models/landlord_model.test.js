@@ -259,7 +259,7 @@ describe("Testing deleteAllTenants() in landlord model", () => {
                 console.log("ERROR",err)
             }
             const rowsChanged = JSON.parse(JSON.stringify(results)).affectedRows
-            expect(rowsChanged).toBe(2);
+            expect(rowsChanged).toBe(3);
             done();
         })
     })
@@ -271,6 +271,20 @@ describe("Testing deleteAllTenants() in landlord model", () => {
             }
             const rowsChanged = JSON.parse(JSON.stringify(results)).affectedRows
             expect(rowsChanged).toBe(0);
+            done();
+        })
+    })
+
+    test("Test calling deleteAllTenants() with missing deleted date", (done) => {
+        deleteAllTenants(null, 'RC', (err,results) => {
+            expect(err).toBe("missing data entry!");
+            done();
+        })
+    })
+
+    test("Test calling deleteAllTenants() with missing building id", (done) => {
+        deleteAllTenants(Date.now(), null, (err,results) => {
+            expect(err).toBe("missing data entry!");
             done();
         })
     })
@@ -309,7 +323,7 @@ describe("Testing deleteTenantByEmail() in landlord model", () => {
 describe("testing createTenant() in landlord model", () => {
     test ("Test calling createTenant() with valid values",(done) => {
         const data = {
-            email: 'tenant10@gmail.com',
+            email: 'tenant11@gmail.com',
             password: '$2b$10$BIJTkvtOrkrKhl/juVKCauVhPwqChMNbayD3DazrMBi6H6gsgVlrS',
             public_building_id: 'EPM'
         }
@@ -592,7 +606,7 @@ describe("testing getTenantAccounts() in landlord model", () => {
             if (err){
                 console.log("ERROR",err)
             }
-            expect(results.length).toBe(3);
+            expect(results.length).toBe(2);
             done();
         })
     });

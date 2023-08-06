@@ -110,6 +110,27 @@ describe ("/tenant/createTicket", () => {
         })
   })
 
+  test("tenant without a lease", async () =>  {
+    const token = await authorisation()
+    await request(app)
+      .post("/api/tenant/createTicket")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        email: "tenant10@gmail.com",
+        request_type: "cleanliness",
+        request_description: "the toilets are very dirty at level 2. please get someone to clean it.",
+        submitted_date_time: "2023-06-04 10:10:10"
+      })
+      .expect('Content-Type', /json/)
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toEqual({
+            success: 0,
+            message: "You do not have a lease attached. Please contact your landlord."
+          })
+        })
+  })
+
   test("missing email", async () =>  {
     const token = await authorisation()
     await request(app)
@@ -781,3 +802,145 @@ describe ("/tenant/closeTicketStatus", () => {
         })
   })
 })
+
+/**
+ * Test tenant get tickets API
+ */
+describe ("/tenant/getLease", () => {
+
+  test("valid email", async () =>  {
+    const token = await authorisation()
+    await request(app)
+      .get("/api/tenant/getLease")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ email: "tenant3@gmail.com" })
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toMatchObject({
+            success: 1,
+            data: [{
+              floor: '12',
+              unit_number: '921',
+              building_name: 'Causeway Point',
+              address: '1 Woodlands Square',
+              postal_code: 738099,
+              public_building_id: 'CWP',
+              public_lease_id: '2002-03-24 23:01:10',
+              pdf_path: ':Content/Documents/lease_details/3',
+              tenant_email: 'tenant3@gmail.com',
+              landlord_email: 'landlord2@gmail.com'
+            }]
+          })
+        })
+  })
+
+  test("missing email", async () =>  {
+    const token = await authorisation()
+    await request(app)
+      .get("/api/tenant/getLease")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ email: null })
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toMatchObject({
+            success: 0,
+            message: "missing data entry!"
+          })
+        })
+  })
+
+  test("unregistered email", async () =>  {
+    const token = await authorisation()
+    await request(app)
+      .get("/api/tenant/getLease")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ email: "tenant999@gmail.com" })
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toMatchObject({
+            success: 0,
+            message: "tenant not registered."
+          })
+        })
+  })
+  
+  test("tenant user with no token", async () =>  {
+    await request(app)
+      .get("/api/tenant/getLease")
+      .send({
+        email: "hacker@gmail.comm"
+      })
+      .then((response) => {
+        expect(JSON.parse(response.text)).toEqual({
+            success: 0,
+            message: "Access denied: You are unauthorized!",
+          })
+        })
+  })
+})
+
+/**
+ * Test tenant get quotation API
+ */
+describe("/tenant/getQuotation", () => {
+  test("valid service request id", async () => {
+    const token = await authorisation()
+    await request(app)
+      .get(`/api/tenant/getQuotation`)
+      .set("Authorization", `Bearer ${token}`)
+      .query({id: "SR/2004/Apr/0001"})
+      .expect("Content-Type", "application/pdf")
+      .expect("Content-Disposition", "attachment; filename=file.pdf")
+      .expect(200)
+  });
+
+  test("missing service request id", async () => {
+    const token = await authorisation()
+    await request(app)
+      .get(`/api/tenant/getQuotation`)
+      .set("Authorization", `Bearer ${token}`)
+      .query({id: null})
+      .expect(200)
+      .expect("missing data entry!");
+  });
+
+  test("invalid service request id", async () => {
+    const token = await authorisation()
+    await request(app)
+      .get(`/api/tenant/getQuotation`)
+      .set("Authorization", `Bearer ${token}`)
+      .query({id: "SR/9999/999/9999"})
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toMatchObject({
+            success: 0,
+            message: "service ticket not found"
+          })
+        })
+  });
+
+  test("service request id with no quotation", async () => {
+    const token = await authorisation()
+    await request(app)
+      .get(`/api/tenant/getQuotation`)
+      .set("Authorization", `Bearer ${token}`)
+      .query({id: "SR/2002/Feb/0001"})
+      .expect("Content-Type", "text/html; charset=utf-8")
+      .expect(200)
+      .expect("No quotation uploaded yet!")
+  });
+
+  test("tenant user with no token", async () =>  {
+    await request(app)
+      .get("/api/tenant/getQuotation")
+      .query({
+        id: "SR/9999/999/9999"
+      })
+      .then((response) => {
+        expect(JSON.parse(response.text)).toEqual({
+            success: 0,
+            message: "Access denied: You are unauthorized!",
+          })
+        })
+  })
+});

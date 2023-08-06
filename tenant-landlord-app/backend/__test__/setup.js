@@ -15,7 +15,7 @@ export default async function setup() {
             INSERT INTO service_request (public_service_request_id,  email, request_type, request_description, submitted_date_time, status, quotation_path, floor, unit_number)
             VALUES  ('2002-02-02 02:02:02', 'tenant1@gmail.com', 'aircon', 'aircon warm', '2002-02-02 02:02:02', 'tenant_ticket_created', NULL,09,154),
                     ('2003-03-03 03:03:03', 'tenant4@gmail.com', 'aircon', 'aircon', '2003-03-03 03:03:03', 'tenant_ticket_created', NULL,10,30),
-                    ('2004-04-04 04:04:04', 'tenant1@gmail.com', 'cleanliness', 'not clean', '2004-04-04 04:04:04', 'landlord_completed_work',':Content/Documents/quotation_details/q2', 09,154),
+                    ('2004-04-04 04:04:04', 'tenant1@gmail.com', 'cleanliness', 'not clean', '2004-04-04 04:04:04', 'landlord_completed_work','/public/uploads/quotation.pdf', 09,154),
                     ('2005-05-05 05:05:05', 'tenant3@gmail.com', 'horticulture', 'wiltered', '2005-05-05 05:05:05', 'landlord_quotation_sent', ':Content/Documents/quotation_details/q1',12,921),
                     ('2006-06-06 06:06:06', 'tenant5@gmail.com', 'cleanliness', 'not clean', '2006-06-06 06:06:06', 'landlord_completed_work',':Content/Documents/quotation_details/q3',6,100);
         `);
@@ -36,9 +36,10 @@ export default async function setup() {
                     ("tenant4@gmail.com","${hash_password}", "FC", "2002-03-24 23:01:10", NULL),
                     ("tenant5@gmail.com","${hash_password}", "CWP", "2002-10-30 10:10:10", "2022-02-02 02:02:02"),
                     ("tenant6@gmail.com","${hash_password}", "RC", "2003-10-30 11:11:11", NULL),
-                    ("tenant7@gmail.com","${hash_password}", "TM1", "2017-11-20 17:16:15", NULL),
+                    ("tenant7@gmail.com","${hash_password}", "TM1", "2017-11-20 17:16:15", "2023-01-01 00:00:00"),
                     ("tenant8@gmail.com","${hash_password}", "TM1", "2014-01-20 17:16:15", NULL),
-                    ("tenant9@gmail.com","${hash_password}", "TM1", NULL, NULL);
+                    ("tenant9@gmail.com","${hash_password}", "TM1", NULL, NULL),
+                    ("tenant10@gmail.com","${hash_password}", "RC", NULL, NULL);
         `);
 
         //        CREATE TEMPORARY TABLE landlord_user table
@@ -106,7 +107,7 @@ export default async function setup() {
                         (5,'2007-11-20 11:11:11',5,3,'6','100',':Content/Documents/lease_details/5'),
                         (6,'2004-01-20 11:11:11',6,3,'1','50',':Content/Documents/lease_details/6'),
                         (7,'2017-11-20 17:16:15',7,5,'3','100',':Content/Documents/lease_details/7'),
-                        (8,'2014-01-20 17:16:15',8,5,'7','50',':Content/Documents/lease_details/8'),
+                        (8,'2014-01-20 17:16:15',8,5,'7','50',"/public/uploads/lease.pdf"),
                         (9,'2016-01-20 18:16:15',9,5,'2','150',NULL);
     
             `);

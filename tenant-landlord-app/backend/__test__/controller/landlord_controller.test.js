@@ -79,9 +79,9 @@ describe ("/landlord/login", () => {
     })
   })
 
-  /**
-   * Test landlord create landlord account API
-   */
+/**
+ * Test landlord create landlord account API
+ */
 describe ("/landlord/create", () => {
   test("non-existing landlord, valid inputs", async () =>  {
     const token = await authorisation()
@@ -211,6 +211,22 @@ describe ("/landlord/create", () => {
           })
         })
   })
+
+  test("unauthorised landlord", async () => {
+    await request(app)
+      .post("/api/landlord/create")
+      .send({
+        email: "landlord8@gmail.com",
+        password: "password",
+        ticket_type: "cleanliness"
+      })
+      .then((response) => {
+        expect(JSON.parse(response.text)).toEqual({
+            success: 0,
+            message: "Access denied: You are unauthorized!",
+          })
+        })
+  })
 })
 
 /**
@@ -281,7 +297,7 @@ describe("/landlord/createTenant", () => {
       .post("/api/landlord/createTenant")
       .set("Authorization", `Bearer ${token}`)
       .send({
-        email: 'tenant7@gmail.com',
+        email: 'tenant5@gmail.com',
         password: 'password',
         landlordEmail: 'landlord2@gmail.com'
       })
@@ -289,18 +305,19 @@ describe("/landlord/createTenant", () => {
       .expect(200)
       .then((response) => {
         expect(response.body).toEqual({
-            success: 0, 
-            message: "Duplicate email entry",
-            data:  expect.arrayContaining([
+            success: 1, 
+            message: "created successfully",
+            data:  expect.objectContaining(
               {
-                deleted_date: null,
-                email: "tenant7@gmail.com",
-                password: "$2b$10$BIJTkvtOrkrKhl/juVKCauVhPwqChMNbayD3DazrMBi6H6gsgVlrS",
-                public_building_id: "TM1",
-                public_lease_id: "2017-11-20 17:16:15",
-                tenant_user_id: 7
+                "affectedRows": 1,
+                "changedRows": 1,
+                "fieldCount": 0,
+                "info": "Rows matched: 1  Changed: 1  Warnings: 0",
+                "insertId": 0,
+                "serverStatus": 2,
+                "warningStatus": 0,
               }
-            ])
+            )
         });
       })
   })
@@ -632,7 +649,7 @@ describe ("/landlord/getTicketsByStatus/:status", () => {
                 email: "tenant1@gmail.com",
                 request_type: "cleanliness",
                 request_description: "not clean",
-                quotation_path: ":Content/Documents/quotation_details/q2",
+                quotation_path: "/public/uploads/quotation.pdf",
                 submitted_date_time: expect.any(String),
                 completed_date_time: null, 
                 status: "landlord_completed_work",
@@ -753,7 +770,6 @@ describe ("/landlord/ticketApproval", () => {
       })
       .expect(200)
       .then((response) => {
-        console.log(response.body)
         expect(response.body).toMatchObject({
             success: 1,
             data: "updated successfully"
@@ -812,6 +828,22 @@ describe ("/landlord/ticketApproval", () => {
         expect(response.body).toMatchObject({
             success: 0,
             message: "Failed to update user"
+          })
+        })
+  })
+
+  test("unauthorised landlord", async () => {
+    await request(app)
+      .patch("/api/landlord/ticketApproval")
+      .send({ 
+        ticket_id: "SR/2004/Apr/0001",
+        quotation_required: 1,
+        ticket_approved_by_landlord: 1 
+      })
+      .then((response) => {
+        expect(JSON.parse(response.text)).toEqual({
+            success: 0,
+            message: "Access denied: You are unauthorized!",
           })
         })
   })
@@ -908,6 +940,21 @@ describe ("/landlord/ticketWork", () => {
           })
         })
   })
+
+  test("unauthorised landlord", async () => {
+    await request(app)
+      .patch("/api/landlord/ticketWork")
+      .send({ 
+        ticket_id: "SR/2004/Apr/0001",
+        ticket_work_status: 1,
+      })
+      .then((response) => {
+        expect(JSON.parse(response.text)).toEqual({
+            success: 0,
+            message: "Access denied: You are unauthorized!",
+          })
+        })
+  })
 })
 
 /**
@@ -944,4 +991,536 @@ describe ("/landlord/getTenantAccounts", () => {
           })
         })
   })
+
+  test("unauthorised landlord", async () => {
+    await request(app)
+      .get("/api/landlord/getTenantAccounts")
+      .query({landlordEmail: "landlord2@gmail.com"})
+      .then((response) => {
+        expect(JSON.parse(response.text)).toEqual({
+            success: 0,
+            message: "Access denied: You are unauthorized!",
+          })
+        })
+  })
 })
+
+/**
+ * Test landlord delete all tenants in building API
+ */
+describe("/landlord/deleteAllTenants/", () => {
+  test("valid landlord email", async () => {
+    const token = await authorisation()
+    await request(app)
+      .patch("/api/landlord/deleteAllTenants")
+      .set("Authorization", `Bearer ${token}`)
+      .query({
+        landlordEmail: "landlord3@gmail.com"
+      })
+      .expect('Content-Type', /json/)
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toEqual({
+            success: 1, 
+            message: "deleted successfully"
+        });
+      })
+  })
+
+  test("missing landlord email", async () => {
+    const token = await authorisation()
+    await request(app)
+      .patch("/api/landlord/deleteAllTenants")
+      .set("Authorization", `Bearer ${token}`)
+      .query({
+        landlordEmail: null
+      })
+      .expect('Content-Type', /json/)
+      .expect(400)
+      .then((response) => {
+        expect(response.body).toEqual({
+            success: 0, 
+            message: "missing data entry!"
+        });
+      })
+  })
+
+  test("invalid landlord email", async () => {
+    const token = await authorisation()
+    await request(app)
+      .patch("/api/landlord/deleteAllTenants")
+      .set("Authorization", `Bearer ${token}`)
+      .query({
+        landlordEmail: "landlord999@gmail.com"
+      })
+      .expect('Content-Type', /json/)
+      .expect(400)
+      .then((response) => {
+        expect(response.body).toEqual({
+            success: 0, 
+            message: "data validation error"
+        });
+      })
+  })
+
+  test("unauthorised landlord", async () => {
+    await request(app)
+      .patch("/api/landlord/deleteAllTenants")
+      .send({ landlordEmail: "landlord3@gmail.com" })
+      .then((response) => {
+        expect(JSON.parse(response.text)).toEqual({
+            success: 0,
+            message: "Access denied: You are unauthorized!",
+          })
+        })
+  })
+})
+
+/**
+ * Test landlord delete tenant by email
+ */
+describe("/landlord/deleteTenantByEmail/", () => {
+  test("valid tenant email", async () => {
+    const token = await authorisation()
+    await request(app)
+      .patch("/api/landlord/deleteTenantByEmail")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        email: "tenant2@gmail.com"
+      })
+      .expect('Content-Type', /json/)
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toEqual({
+            success: 1, 
+            message: "deleted successfully"
+        });
+      })
+  })
+
+  test("missing tenant email", async () => {
+    const token = await authorisation()
+    await request(app)
+      .patch("/api/landlord/deleteTenantByEmail")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        email: null
+      })
+      .expect('Content-Type', /json/)
+      .expect(400)
+      .then((response) => {
+        expect(response.body).toEqual({
+            success: 0, 
+            message: "missing data entry!"
+        });
+      })
+  })
+
+  test("invalid tenant email", async () => {
+    const token = await authorisation()
+    await request(app)
+      .patch("/api/landlord/deleteTenantByEmail")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        email: "tenant999@gmail.com"
+      })
+      .expect('Content-Type', /json/)
+      .expect(400)
+      .then((response) => {
+        expect(response.body).toEqual({
+            success: 0, 
+            message: "invalid tenant account"
+        });
+      })
+  })
+
+  test("unauthorised landlord", async () => {
+    await request(app)
+      .patch("/api/landlord/deleteTenantByEmail")
+      .send({ email: "tenant3@gmail.com" })
+      .then((response) => {
+        expect(JSON.parse(response.text)).toEqual({
+            success: 0,
+            message: "Access denied: You are unauthorized!",
+          })
+        })
+  })
+})
+
+/**
+ * Test tenant get ticket by id API
+ */
+describe ("/landlord/getTicketById", () => {
+
+  test("valid ticket id", async () =>  {
+    const token = await authorisation()
+    await request(app)
+      .get("/api/landlord/getTicketById")
+      .set("Authorization", `Bearer ${token}`)
+      .query({ id: "SR/2006/Jun/0001" })
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toMatchObject({
+          success: "1",
+          data: {
+            service_request_id: 5,
+            public_service_request_id: 'SR/2006/Jun/0001',
+            email: 'tenant5@gmail.com',
+            request_type: 'cleanliness',
+            request_description: 'not clean',
+            submitted_date_time: "2006-06-05T22:06:06.000Z",
+            completed_date_time: null,
+            status: expect.any(String),
+            feedback_rating: null,
+            feedback_text: null,
+            quotation_path: ':Content/Documents/quotation_details/q3',
+            service_requestcol: null,
+            floor: '6',
+            unit_number: '100',
+            quotation_required: null
+          }
+        })
+      })
+    })
+
+  test("invalid ticket id", async () =>  {
+    const token = await authorisation()
+    await request(app)
+      .get("/api/landlord/getTicketById")
+      .set("Authorization", `Bearer ${token}`)
+      .query({ id: "SR/9999/999/9999" })
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toMatchObject({
+          success: 0,
+          message: "Record not found"
+        })
+      })
+  })
+
+  test("unauthorised landlord", async () => {
+    await request(app)
+      .get("/api/landlord/getTicketById")
+      .query({ id: "SR/2003/Mar/0001" })
+      .then((response) => {
+        expect(JSON.parse(response.text)).toEqual({
+            success: 0,
+            message: "Access denied: You are unauthorized!",
+          })
+        })
+  })
+})
+
+/**
+ * Test tenant upload quotation API
+ */
+describe("/landlord/uploadQuotation", () => {
+  test("valid service request id and filepath", async () => {
+    const token = await authorisation()
+    await request(app)
+      .post(`/api/landlord/uploadQuotation`)
+      .set("Authorization", `Bearer ${token}`)
+      .attach("files", "/public/uploads/SQL-Cheat-Sheet.pdf")
+      .query({ticket_id: "SR/2003/Mar/0001"})
+      .expect(200)
+      .expect({
+        success: 1,
+        data: "updated successfully!"
+      })
+  });
+
+  test("missing service request id", async () => {
+    const token = await authorisation()
+    await request(app)
+      .post(`/api/landlord/uploadQuotation`)
+      .set("Authorization", `Bearer ${token}`)
+      .attach("files", "/public/uploads/SQL-Cheat-Sheet.pdf")
+      .query({ticket_id: null})
+      .expect(200)
+      .expect({
+        success: 0,
+        message: "missing data entry!"
+      });
+  });
+
+  test("invalid service request id", async () => {
+    const token = await authorisation()
+    await request(app)
+      .post(`/api/landlord/uploadQuotation`)
+      .set("Authorization", `Bearer ${token}`)
+      .attach("files", "/public/uploads/SQL-Cheat-Sheet.pdf")
+      .query({ticket_id: "SR/9999/999/9999"})
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toMatchObject({
+            success: 0,
+            message: "Failed to upload file"
+          })
+        })
+  });
+
+  test("tenant user with no token", async () =>  {
+    await request(app)
+      .post("/api/landlord/uploadQuotation")
+      .query({
+        ticket_id: "SR/9999/999/9999"
+      })
+      .then((response) => {
+        expect(JSON.parse(response.text)).toEqual({
+            success: 0,
+            message: "Access denied: You are unauthorized!",
+          })
+        })
+  })
+});
+
+/**
+ * Test landlord get quotation API
+ */
+describe("/landlord/getQuotation", () => {
+  test("valid service request id", async () => {
+    const token = await authorisation()
+    await request(app)
+      .get(`/api/landlord/getQuotation`)
+      .set("Authorization", `Bearer ${token}`)
+      .query({id: "SR/2004/Apr/0001"})
+      .expect("Content-Type", "application/pdf")
+      .expect("Content-Disposition", "attachment; filename=file.pdf")
+      .expect(200)
+  });
+
+  test("missing service request id", async () => {
+    const token = await authorisation()
+    await request(app)
+      .get(`/api/landlord/getQuotation`)
+      .set("Authorization", `Bearer ${token}`)
+      .query({id: null})
+      .expect(200)
+      .expect("missing data entry!");
+  });
+
+  test("invalid service request id", async () => {
+    const token = await authorisation()
+    await request(app)
+      .get(`/api/landlord/getQuotation`)
+      .set("Authorization", `Bearer ${token}`)
+      .query({id: "SR/9999/999/9999"})
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toMatchObject({
+            success: 0,
+            message: "service ticket not found"
+          })
+        })
+  });
+
+  test("service request id with no quotation", async () => {
+    const token = await authorisation()
+    await request(app)
+      .get(`/api/landlord/getQuotation`)
+      .set("Authorization", `Bearer ${token}`)
+      .query({id: "SR/2002/Feb/0001"})
+      .expect("Content-Type", "text/html; charset=utf-8")
+      .expect(200)
+      .expect("No quotation uploaded yet!")
+  });
+
+  test("tenant user with no token", async () =>  {
+    await request(app)
+      .get("/api/landlord/getQuotation")
+      .query({
+        id: "SR/9999/999/9999"
+      })
+      .then((response) => {
+        expect(JSON.parse(response.text)).toEqual({
+            success: 0,
+            message: "Access denied: You are unauthorized!",
+          })
+        })
+  })
+});
+
+/**
+ * Test landlord get lease API
+ */
+describe("/landlord/getlease", () => {
+  test("valid tenant id", async () => {
+    const token = await authorisation()
+    await request(app)
+      .get(`/api/landlord/getLease`)
+      .set("Authorization", `Bearer ${token}`)
+      .query({tenantID: 8})
+      .expect("Content-Type", "application/pdf")
+      .expect("Content-Disposition", "attachment; filename=file.pdf")
+      .expect(200)
+  });
+
+  test("missing tenant id", async () => {
+    const token = await authorisation()
+    await request(app)
+      .get(`/api/landlord/getLease`)
+      .set("Authorization", `Bearer ${token}`)
+      .query({tenantID: null})
+      .expect(200)
+      .expect({
+        success: 0,
+        message: "missing data entry!"
+      });
+  });
+
+  test("invalid tenant id", async () => {
+    const token = await authorisation()
+    await request(app)
+      .get(`/api/landlord/getLease`)
+      .set("Authorization", `Bearer ${token}`)
+      .query({tenantID: 999})
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toMatchObject({
+            success: 0,
+            message: "tenant user not found"
+          })
+        })
+  });
+
+  test("service request id with no lease", async () => {
+    const token = await authorisation()
+    await request(app)
+      .get(`/api/landlord/getLease`)
+      .set("Authorization", `Bearer ${token}`)
+      .query({tenantID: 9})
+      .expect(200)
+      .expect("No lease uploaded yet!")
+  });
+
+  test("landlord user with no token", async () =>  {
+    await request(app)
+      .get("/api/landlord/getLease")
+      .query({
+        tenantID: 1
+      })
+      .then((response) => {
+        expect(JSON.parse(response.text)).toEqual({
+            success: 0,
+            message: "Access denied: You are unauthorized!",
+          })
+        })
+  })
+});
+
+/**
+ * Test landlord create lease API
+ */
+describe("/landlord/createLease", () => {
+  test("valid inputs", async () => {
+    const token = await authorisation()
+    await request(app)
+      .post(`/api/landlord/createLease`)
+      .set("Authorization", `Bearer ${token}`)
+      .attach("files", "/public/uploads/lease.pdf")
+      .field({
+        floor: 10,
+        unit_number: 160,
+        landlordEmail: "landlord5@gmail.com",
+        tenantID: 3
+      })
+      .expect(200)
+      .expect({
+        success:1,
+        message:"updated successfully!"
+      })
+  });
+
+  test("missing floor", async () => {
+    const token = await authorisation()
+    await request(app)
+      .post(`/api/landlord/createLease`)
+      .set("Authorization", `Bearer ${token}`)
+      .attach("files", "/public/uploads/lease.pdf")
+      .field({
+        unit_number: 160,
+        landlordEmail: "landlord5@gmail.com",
+        tenantID: 3
+      })
+      .expect(200)
+      .expect({
+        success:0,
+        message:"missing data entry!"
+      })
+  });
+
+  test("missing unit_number", async () => {
+    const token = await authorisation()
+    await request(app)
+      .post(`/api/landlord/createLease`)
+      .set("Authorization", `Bearer ${token}`)
+      .attach("files", "/public/uploads/lease.pdf")
+      .field({
+        floor: 10,
+        landlordEmail: "landlord5@gmail.com",
+        tenantID: 3
+      })
+      .expect(200)
+      .expect({
+        success:0,
+        message:"missing data entry!"
+      })
+  });
+
+  
+  test("missing landlord email", async () => {
+    const token = await authorisation()
+    await request(app)
+      .post(`/api/landlord/createLease`)
+      .set("Authorization", `Bearer ${token}`)
+      .attach("files", "/public/uploads/lease.pdf")
+      .field({
+        floor: 10,
+        unit_number: 160,
+        tenantID: 3
+      })
+      .expect(200)
+      .expect({
+        success:0,
+        message:"missing data entry!"
+      })
+  });
+
+  test("missing tenant id", async () => {
+    const token = await authorisation()
+    await request(app)
+      .post(`/api/landlord/createLease`)
+      .set("Authorization", `Bearer ${token}`)
+      .attach("files", "/public/uploads/lease.pdf")
+      .field({
+        floor: 10,
+        unit_number: 160,
+        landlordEmail: "landlord5@gmail.com",
+      })
+      .expect(200)
+      .expect({
+        success:0,
+        message:"missing data entry!"
+      })
+  });
+
+  test("invalid landlord email", async () => {
+    const token = await authorisation()
+    await request(app)
+      .post(`/api/landlord/createLease`)
+      .set("Authorization", `Bearer ${token}`)
+      .attach("files", "/public/uploads/lease.pdf")
+      .field({
+        floor: 10,
+        unit_number: 160,
+        landlordEmail: "landlord999@gmail.com",
+        tenantID: 3
+      })
+      .expect(200)
+      .expect({
+        success:0,
+        message:"landlord not registered."
+      })
+  });
+  
+});
