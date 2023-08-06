@@ -14,9 +14,14 @@ const config = {
     coveragePathIgnorePatterns: [
       'models/admin_model.js',
       'controller/admin_controller.js',
-      'router/admin_router.js',
-      'auth/admin_validation.js'
-    ]
+      'routes/admin_router.js',
+      'auth/*.js'
+    ],
+    collectCoverageFrom: [
+      'models/*.js',
+      'controller/*.js',
+      'routes/*.js',
+    ],
   };
   
 
