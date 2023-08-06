@@ -20,7 +20,7 @@ export default function ViewTicketPage() {
         ticketID = location.state.ticketID;
     }
     console.log('ID', ticketID)
-    console.log("userdetails", userDetails);
+    console.log("userdetails", userDetails());
     const authenticated = useIsAuthenticated();
 
     const convertStatus = (status) => {
