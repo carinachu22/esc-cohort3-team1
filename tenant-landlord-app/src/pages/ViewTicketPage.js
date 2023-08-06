@@ -147,7 +147,7 @@ export default function ViewTicketPage() {
   
     useEffect(() => {
         if (authenticate()){
-        GetServiceTickets(userDetails);
+            GetServiceTickets(userDetails);
         if (status === 'completed') {
             navigate('/pages/FeedbackForm');
         } 
