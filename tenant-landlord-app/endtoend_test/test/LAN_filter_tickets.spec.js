@@ -272,13 +272,6 @@ describe('Landlord filter ticket', function () {
       ));
       await click_status.click();
 
-
-
-      // Find ticket
-      // const lastTicket = driver.findElement(By.xpath("//*[@class='chakra-accordion css-0']/div[last()]"));
-      // await driver.executeScript("arguments[0].click();", lastTicket);
-
-      // await driver.manage().setTimeouts({ implicit: 500 });
       await driver.sleep(2000)
       const last_requester = driver.findElement(By.xpath('//*[@id="accordion-button-:r0:"]/div/div[4]'))
       
@@ -302,9 +295,5 @@ describe('Landlord filter ticket', function () {
       await click_status_return.click();
 
   });
-
-
-
-
 
 });
