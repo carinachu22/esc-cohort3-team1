@@ -68,7 +68,7 @@ export const controllerCreateLandlord = (req, res) => {
     getLandlordByEmail(body.email, (err, result) => {
         if (!result) {
         console.log(body);
-        if (body.role === 'staff'){
+        if (body.role !== 'staff'){
             body.ticket_type = null
         }
         const salt = genSaltSync(10);
