@@ -165,21 +165,6 @@ describe('Successful/Usual Service Ticket Workflow', function () {
       const detailsButton = landlord_driver.findElement(By.xpath("//*[@class='chakra-accordion css-0']/div[last()]//button[text()='View Details & Actions']"))
       await landlord_driver.executeScript("arguments[0].click();", detailsButton);
 
-      // // View drop down box
-      // let lastTicket = await landlord_driver.wait(until.elementIsVisible(
-      //   landlord_driver.findElement(By.xpath("//*[@class='chakra-accordion css-0']/div[last()]"))
-      // ));
-      // await landlord_driver.executeScript("arguments[0].click();", lastTicket)
-      // // await landlord_driver.sleep(2000)
-      // // await lastTicket.click()
-      // // await landlord_driver.executeScript("arguments[0].click();", lastTicket)
-
-      // // Click "View Details& Actions" Button
-      // let detailsButton = await landlord_driver.wait(until.elementIsVisible(
-      //   landlord_driver.findElement(By.xpath("//*[@class='chakra-accordion css-0']/div[last()]//button[text()='View Details & Actions']"))
-      // ));
-      // await landlord_driver.executeScript("arguments[0].click();", detailsButton);
-
       // Enter new page
       let currentURL = await landlord_driver.getCurrentUrl();
       assert.equal('http://localhost:3000/pages/ViewTicketPage/', currentURL)

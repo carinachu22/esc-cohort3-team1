@@ -236,37 +236,58 @@ describe('Landlord filter ticket', function () {
 
         await driver.sleep(1000)
 
-        const lastTicket = driver.findElement(By.xpath("//*[@class='chakra-accordion css-0']/div[last()]"))
+        await driver.manage().setTimeouts({ implicit: 500 });
+
+        // Find ticket
+        const lastTicket = driver.findElement(By.xpath("//*[@class='chakra-accordion css-0']/div[last()]"));
         await driver.executeScript("arguments[0].click();", lastTicket);
-        const detailsButton = driver.findElement(By.xpath("//*[@id='accordion-panel-:riu:']/div/div[1]/text()[4]"))
-        const last_text = await driver.executeScript("arguments[0].getText();", detailsButton);
-        assert.equal('tenant1@gmail.com', last_text);
 
-        //*[@id="accordion-panel-:riu:"]/div/div[1]/text()[4]
-        // const lastTicket = await driver.wait(until.elementIsVisible(
-        //     driver.findElement(By.xpath("//*[@id='accordion-button-:r3g:']/div/div[2]"))
-        // ));
-        // await driver.sleep(3000)
-        // await driver.executeScript("window.scrollTo(0,document.body.scrollHeight);");
-        //*[@id="accordion-button-:riu:"]
-        // let requester = await driver.wait(until.elementIsVisible(
-        //     driver.findElement(By.xpath('//*[@id="accordion-button-:riu:"]'))
-        // ))
-        // const last_text = await requester.getText();
-        // assert.equal('tenant1@gmail.com', last_text);
+        await driver.manage().setTimeouts({ implicit: 500 });
 
+        const last_requester = driver.findElement(By.xpath('//*[@id="accordion-button-:r0:"]/div/div[2]'))
+        await driver.sleep(2000)
+        await driver.wait(until.elementIsVisible(last_requester))
+        const text = await last_requester.getText();
 
-        
-        // await driver.sleep(2000)
-        // const last_text = await lastTicket.getText();
-        // assert.equal('tenant1@gmail.com', last_text);
-        // await driver.sleep(3000)
+        assert.equal('tenant1@gmail.com', text);
 
-
-        // const output_text = await filtered_output.getText();
-        // assert(!output_text.includes("tenant4@gmail.com"));
-
+        // Return back to normal
+        let clear_button =  await driver.wait(until.elementIsVisible(
+          landlord_driver.findElement(By.xpath('//*[@id="root"]/div/div/div[2]/div/div/button'))));
+        await clear_button.click();
     });
+
+
+    it('Filter by Status', async function() {
+      let search_requester = await driver.wait(until.elementIsVisible(
+          driver.findElement(By.xpath('//*[@id="root"]/div/div/div[2]/div/input'))
+      ));
+      await driver.sleep(1000)
+      await search_requester.sendKeys("tenant1@gmail.com")
+
+      await driver.sleep(1000)
+
+      await driver.manage().setTimeouts({ implicit: 500 });
+
+      // Find ticket
+      const lastTicket = driver.findElement(By.xpath("//*[@class='chakra-accordion css-0']/div[last()]"));
+      await driver.executeScript("arguments[0].click();", lastTicket);
+
+      await driver.manage().setTimeouts({ implicit: 500 });
+
+      const last_requester = driver.findElement(By.xpath('//*[@id="accordion-button-:r0:"]/div/div[2]'))
+      await driver.sleep(2000)
+      await driver.wait(until.elementIsVisible(last_requester))
+      const text = await last_requester.getText();
+
+      assert.equal('tenant1@gmail.com', text);
+
+      // Return back to normal
+      let clear_button =  await driver.wait(until.elementIsVisible(
+        driver.findElement(By.xpath('//*[@id="root"]/div/div/div[2]/div/div/button'))));
+      await clear_button.click();
+  });
+
 
 
 
