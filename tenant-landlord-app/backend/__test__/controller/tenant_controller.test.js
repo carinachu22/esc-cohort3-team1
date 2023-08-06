@@ -450,6 +450,55 @@ describe ("/tenant/getTicketsByStatus/:status", () => {
   })
 })
 
+describe ("/tenant/getTicketById", () => {
+
+  test("valid ticket id", async () =>  {
+    const token = await authorisation()
+    await request(app)
+      .get("/api/tenant/getTicketById")
+      .set("Authorization", `Bearer ${token}`)
+      .query({ id: "SR/2002/Feb/0001" })
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toMatchObject({
+          success: "1",
+          data: {
+            service_request_id: 1,
+            public_service_request_id: 'SR/2002/Feb/0001',
+            email: 'tenant1@gmail.com',
+            request_type: 'aircon',
+            request_description: 'aircon warm',
+            submitted_date_time: "2002-02-01T18:02:02.000Z",
+            completed_date_time: null,
+            status: 'tenant_ticket_created',
+            feedback_rating: null,
+            feedback_text: null,
+            quotation_path: null,
+            service_requestcol: null,
+            floor: '9',
+            unit_number: '154',
+            quotation_required: null
+          }
+        })
+      })
+    })
+
+  test("invalid ticket id", async () =>  {
+    const token = await authorisation()
+    await request(app)
+      .get("/api/tenant/getTicketById")
+      .set("Authorization", `Bearer ${token}`)
+      .query({ id: "SR/9999/999/9999" })
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toMatchObject({
+          success: 0,
+          message: "Record not found"
+        })
+      })
+  })
+})
+
 describe ("/tenant/addFeedbackRating", () => {
   test("valid ticket id and feedback rating = 1", async () =>  {
     const token = await authorisation()
@@ -698,3 +747,19 @@ describe ("/tenant/closeTicketStatus", () => {
         })
   })
 })
+
+// //TODO: /getLease
+// describe("/getLease", () => {
+//   test("")
+// })
+
+// //TODO: /getQuotation/
+// describe("/getQuotation", () => {
+//   test("")
+// })
+
+//TODO: /forgot-password
+
+//TODO: /reset-password/:id/:jsontoken
+
+//TODO: /reset-password/:id/:jsontoken
