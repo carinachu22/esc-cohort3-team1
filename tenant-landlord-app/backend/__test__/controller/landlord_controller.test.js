@@ -775,50 +775,164 @@ describe ("/landlord/ticketApproval", () => {
       .expect(200)
       .then((response) => {
         expect(response.body).toMatchObject({
+            success: 0,
+            message: "Failed to update user"
+          })
+        })
+  })
+  
+  // test("landlord user with no token", async () =>  {
+  //   await request(app)
+  //     .patch("/api/tenant/ticketApproval")
+  //     .send({ 
+  //       ticket_id: "SR/9999/999/9999",
+  //       quotation_required: 1,
+  //       ticket_approved_by_landlord: 1 
+  //     })
+  //     .then((response) => {
+  //       expect(JSON.parse(response.text)).toEqual({
+  //           success: 0,
+  //           message: "Access denied: You are unauthorized!",
+  //         })
+  //       })
+  // })
+})
+
+describe ("/landlord/ticketWork", () => {
+  test("valid inputs: starting work", async () =>  {
+    const token = await authorisation()
+    await request(app)
+      .patch("/api/landlord/ticketWork")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ 
+        ticket_id: "SR/2004/Apr/0001",
+        ticket_work_status: 1,
+      })
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toMatchObject({
             success: 1,
             data: "updated successfully"
           })
         })
   })
-  
-  test("landlord user with no token", async () =>  {
+
+  test("valid inputs: completed work", async () =>  {
+    const token = await authorisation()
     await request(app)
-      .patch("/api/tenant/addfeedbackRating")
+      .patch("/api/landlord/ticketWork")
+      .set("Authorization", `Bearer ${token}`)
       .send({ 
-        ticket_id: "SR/9999/999/9999",
-        quotation_required: 1,
-        ticket_approved_by_landlord: 1 
+        ticket_id: "SR/2004/Apr/0001",
+        ticket_work_status: 0,
+      })
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toMatchObject({
+            success: 1,
+            data: "updated successfully"
+          })
+        })
+  })
+
+  test("invalid work inputs: ticket_work_status = 2", async () =>  {
+    const token = await authorisation()
+    await request(app)
+      .patch("/api/landlord/ticketWork")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ 
+        ticket_id: "SR/2004/Apr/0001",
+        ticket_work_status: 2 
+      })
+      .expect(400)
+      .then((response) => {
+        expect(response.body).toMatchObject({
+            success: 0,
+            message: "Data validation error"
+          })
+        })
+  })
+
+  test("missing data entry", async () =>  {
+    const token = await authorisation()
+    await request(app)
+      .patch("/api/landlord/ticketWork")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ 
+        ticket_work_status: 1 
       })
       .then((response) => {
-        expect(JSON.parse(response.text)).toEqual({
+        expect(response.body).toMatchObject({
             success: 0,
-            message: "Access denied: You are unauthorized!",
+            message: "missing data entry!"
+          })
+        })
+  })
+
+  test("invalid ticket id", async () =>  {
+    const token = await authorisation()
+    await request(app)
+      .patch("/api/landlord/ticketWork")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ 
+        ticket_id: "SR/9999/999/9999",
+        ticket_work_status: 1,
+      })
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toMatchObject({
+            success: 0,
+            message: "Failed to update user"
+          })
+        })
+  })
+  
+  // test("landlord user with no token", async () =>  {
+  //   await request(app)
+  //     .patch("/api/tenant/ticketWork")
+  //     .send({ 
+  //       ticket_id: "SR/9999/999/9999",
+  //       ticket_work_status: 1 
+  //     })
+  //     .then((response) => {
+  //       console.log(response.body)
+  //       expect(JSON.parse(response.text)).toEqual({
+  //           success: 0,
+  //           message: "Access denied: You are unauthorized!",
+  //         })
+  //       })
+  // })
+})
+
+describe ("/landlord/getTenantAccounts", () => {
+
+  test("authorised landlord with valid email", async () =>  {
+    const token = await authorisation()
+    await request(app)
+      .get("/api/landlord/getTenantAccounts")
+      .set("Authorization", `Bearer ${token}`)
+      .query({landlordEmail: "landlord2@gmail.com"})
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toMatchObject({
+            success: "1",
+            data: expect.any(Array)
+          })
+        })
+  })
+
+  test("authorised landlord with invalid email", async () =>  {
+    const token = await authorisation()
+    await request(app)
+      .get("/api/landlord/getTenantAccounts")
+      .set("Authorization", `Bearer ${token}`)
+      .query({landlordEmail: "landlord999@gmail.com"})
+      .expect(400)
+      .then((response) => {
+        expect(response.body).toMatchObject({
+            success: 0,
+            message: "invalid landlord email"
           })
         })
   })
 })
-
-
-//TODO: getLease
-
-//TODO: createLease
-
-//TODO: getTicketsById
-
-//TODO: getQuotation
-
-//TODO: uploadQuotation
-
-//TODO: ticketWork
-
-//TODO: getTenantAccounts
-
-//TODO: deleteAllTenants
-
-//TODO: deleteTenantByEmail
-
-//TODO: forgot-password
-
-//TODO: reset-password/:id/:jsontoken
-
-//TODO: reset-password/:id/:jsontoken

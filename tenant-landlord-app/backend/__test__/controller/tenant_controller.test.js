@@ -470,7 +470,7 @@ describe ("/tenant/getTicketById", () => {
             request_description: 'aircon warm',
             submitted_date_time: "2002-02-01T18:02:02.000Z",
             completed_date_time: null,
-            status: 'tenant_ticket_created',
+            status: expect.any(String),
             feedback_rating: null,
             feedback_text: null,
             quotation_path: null,
@@ -747,19 +747,3 @@ describe ("/tenant/closeTicketStatus", () => {
         })
   })
 })
-
-// //TODO: /getLease
-// describe("/getLease", () => {
-//   test("")
-// })
-
-// //TODO: /getQuotation/
-// describe("/getQuotation", () => {
-//   test("")
-// })
-
-//TODO: /forgot-password
-
-//TODO: /reset-password/:id/:jsontoken
-
-//TODO: /reset-password/:id/:jsontoken

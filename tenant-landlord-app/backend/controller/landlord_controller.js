@@ -602,7 +602,7 @@ export const controllerTicketApproval = (req, res) => {
         message: `${err}`
       });
     }
-    if (results.length === 0) {
+    if (results.changedRows === 0) {
       return res.json({
         success: 0,
         message: "Failed to update user"
@@ -623,6 +623,12 @@ export const controllerTicketApproval = (req, res) => {
 export const controllerTicketWork = (req, res) => {
   const id = req.body.ticket_id;
   let status;
+  if (req.body.ticket_work_status !== 0 && req.body.ticket_work_status !== 1) {
+    return res.status(400).json({
+      success: 0,
+      message:"Data validation error"
+    })
+  }
   if (req.body.ticket_work_status === 1) {
     status = "landlord_started_work"
   } else if (req.body.ticket_work_status === 0) {
@@ -631,10 +637,12 @@ export const controllerTicketWork = (req, res) => {
 
   ticketWork(id, status, (err, results) => {
     if (err) {
-      console.log(err);
-      return;
+      return res.json({
+        success: 0,
+        message: err
+      });
     }
-    if (results.length === 0) {
+    if (results.changedRows === 0) {
       return res.json({
         success: 0,
         message: "Failed to update user"
@@ -652,14 +660,24 @@ export const controllerGetTenantAccounts = (req, res) => {
   const {landlordEmail} = query;
   getBuildingID(landlordEmail, (err, results) => {
     if (err) {
-      console.log(err);
-      return;
-    } else {
+      return res.json({
+        success: 0,
+        message: err
+      });
+    } else if (!results) {
+      return res.status(400).json({
+        success: 0,
+        message: "invalid landlord email"
+      })
+    }
+    else {
       const public_building_id = results.public_building_id;
       getTenantAccounts(public_building_id, (err, results) => {
         if (err) {
-          console.log(err);
-          return;
+          return res.json({
+            success: 0,
+            message: err
+          })
         } else {
           return res.json({
             success: "1",
