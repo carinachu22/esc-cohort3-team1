@@ -122,7 +122,7 @@ describe("Login.js", () => {
     expect(screen.getByPlaceholderText("Password")).toHaveValue("password");
   });
 
-  test("Submit button click handler called", async () => {
+  test("Login button click handler called", async () => {
     render(
       <AuthProvider
         authType={"cookie"}
@@ -138,8 +138,8 @@ describe("Login.js", () => {
     await userEvent.click(screen.getByRole("button", { name: "LOGIN" }));
 
     //Check if login button is still there - it is :( )
-    const submitBtn = screen.queryByRole("button", { name: "LOGIN" });
-    expect(submitBtn).toBeInTheDocument();
+    const loginBtn = screen.queryByRole("button", { name: "LOGIN" });
+    expect(loginBtn).toBeInTheDocument();
   });
 
   test("Happy scenario: valid email, password to navigate to next page", async () => {
@@ -170,7 +170,7 @@ describe("Login.js", () => {
       password: "password",
     };
 
-    // Typing in valid emails and password
+    // Typing in valid email
     await userEvent.type(
       screen.getByPlaceholderText("Email"),
       "tenant1@gmail.com"
@@ -178,10 +178,12 @@ describe("Login.js", () => {
     expect(screen.getByPlaceholderText("Email")).toHaveValue(
       "tenant1@gmail.com"
     );
+
+    // Typing in valid password
     await userEvent.type(screen.getByPlaceholderText("Password"), "password");
     expect(screen.getByPlaceholderText("Password")).toHaveValue("password");
 
-    // Testing API call
+    // Asserting that login API is called
     axios.post.mockResolvedValue(resp);
     await userEvent.click(screen.getByRole("button", { name: "LOGIN" }));
     expect(axios.post).toHaveBeenCalledWith(
@@ -189,7 +191,7 @@ describe("Login.js", () => {
       values
     );
 
-    // Assert that the navigate function was called with the correct path
+    // Asserting that the navigate function was called with the correct path
     expect(navigateSpy).toHaveBeenCalled();
 
     // Clean up the spy
