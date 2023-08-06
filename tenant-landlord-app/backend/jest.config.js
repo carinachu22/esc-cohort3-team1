@@ -9,8 +9,14 @@ const config = {
     testEnvironment: 'node',
     setupFiles: ['dotenv/config'],
     maxWorkers: 1,
-    // collectCoverage: true,
+    collectCoverage: true,
     coverageReporters: ["text"], // can add "html if want"
+    coveragePathIgnorePatterns: [
+      'models/admin_model.js',
+      'controller/admin_controller.js',
+      'router/admin_router.js',
+      'auth/admin_validation.js'
+    ]
   };
   
 
