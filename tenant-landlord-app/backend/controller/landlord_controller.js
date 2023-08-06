@@ -774,13 +774,13 @@ export const controllerCreateLease = (req,res) => {
     if (err) {
       console.log(err);
       return;
-    } if (result.length === 0) {
+    } if (results.length === 0) {
       return res.json({
         success : 0,
         message: "landlord not registered."
       })
     } else {
-      const landlordID = results.landlord_user_id;
+      const landlordID = results[0].landlord_user_id;
       const publicLeaseID = String(Date.now());
       createLease(publicLeaseID, landlordID, tenantID, req.body, (err, results) => {
         if (err) {
@@ -857,7 +857,6 @@ export const controllerGetLeaseByLandlord = (req,res) => {
 }
 
 export const controllerDeleteLease = (req,res) => {
-  console.log(req.body.public_lease_id)
   if (!req.body.public_lease_id) {
     return res.status(400).json({
       success: 0,
