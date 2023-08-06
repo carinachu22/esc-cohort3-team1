@@ -48,10 +48,6 @@ jest.mock("react-router-dom", () => {
   };
 });
 
-test("Checking generateRandomEmailInput", () => {
-  console.log(generateRandomEmailInput());
-});
-
 test("5 fuzz randomly generated email input", async () => {
   render(
     <AuthProvider
@@ -74,7 +70,7 @@ test("5 fuzz randomly generated email input", async () => {
 
     expect(screen.getByText(/Invalid Email/i)).toBeInTheDocument();
 
-    userEvent.clear(screen.getByPlaceholderText("Email"));
+    await userEvent.clear(screen.getByPlaceholderText("Email"));
   }
 });
 
@@ -99,6 +95,6 @@ test("5 Fuzz valid email input", async () => {
 
     expect(screen.queryByText(/Invalid Email/i)).not.toBeInTheDocument();
 
-    userEvent.clear(screen.getByPlaceholderText("Email"));
+    await userEvent.clear(screen.getByPlaceholderText("Email"));
   }
 });
