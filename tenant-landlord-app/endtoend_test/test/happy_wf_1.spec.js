@@ -8,8 +8,8 @@ describe('Successful/Usual Service Ticket Workflow', function () {
     let landlord_driver
 
     before(async function () {
-    tenant_driver = await new Builder().forBrowser('chrome').build();
-    landlord_driver = await new Builder().forBrowser('chrome').build();
+      tenant_driver = await new Builder().forBrowser('chrome').build();
+      landlord_driver = await new Builder().forBrowser('chrome').build();
     });
 
     after(async () => {await tenant_driver.quit(); await landlord_driver.quit()});
