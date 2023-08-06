@@ -379,7 +379,7 @@ export default function CheckTicket(ticket, userDetails){
     // Allow tenant to close ticket
     // TODO: Allow tenant to reject work
     if (status === 'landlord_completed_work'){
-      if (userDetails().type === 'tenant' && userDetails().email === ticket.landlord_email){
+      if (userDetails().type === 'tenant'){
         return(
             <HStack spacing='5vw'>
                 {view_quotation_html}
