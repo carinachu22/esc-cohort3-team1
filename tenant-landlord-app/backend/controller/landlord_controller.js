@@ -582,16 +582,25 @@ export const controllerTicketApproval = (req, res) => {
   const quotationRequired = req.body.quotation_required;
   const body = req.body;
   let status;
-  if (body.ticket_approved_by_landlord === 1) {
-    status = "landlord_ticket_approved"
-  } else if (body.ticket_approved_by_landlord === 0) {
-    status = "landlord_ticket_rejected"
+  if (body.ticket_approved_by_landlord !== 0 && body.ticket_approved_by_landlord !== 1) {
+    return res.status(400).json({
+      success: 0,
+      message: "Data validation error"
+    })
   }
+  else if (body.ticket_approved_by_landlord === 1) {
+    status = "landlord_ticket_approved"
+  } 
+  else if (body.ticket_approved_by_landlord === 0) {
+    status = "landlord_ticket_rejected"
+  } 
 
   ticketApproval(id, quotationRequired, status, (err, results) => {
     if (err) {
-      console.log(err);
-      return;
+      return res.json({
+        success: 0,
+        message: `${err}`
+      });
     }
     if (results.length === 0) {
       return res.json({

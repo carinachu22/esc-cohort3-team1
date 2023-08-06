@@ -428,7 +428,7 @@ export const getQuotation = (filepath, callBack) => {
  * @param {*} callBack 
  */
 export const ticketApproval = (id, quotationRequired, status, callBack) => {
-  if (id && quotationRequired && status) {
+  if (id && status && (quotationRequired == 0 || quotationRequired == 1)) {
     if (statuses.includes(status)) {
       pool.query(
         `
