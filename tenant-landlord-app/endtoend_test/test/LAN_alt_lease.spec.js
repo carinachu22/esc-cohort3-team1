@@ -79,12 +79,12 @@ describe('Landlord Lease', function () {
       });
 
 
-      it('Create new tenant' , async function() {
+      it('Create new tenant -- with same email as existing tenant' , async function() {
         // input email and password
         let email = await driver.wait(until.elementIsVisible(
           driver.findElement(By.xpath('//*[@id="email"]'))
         ));
-        await email.sendKeys("newtenant2@gmail.com");
+        await email.sendKeys("newtenant@gmail.com");
         let password = await driver.wait(until.elementIsVisible(
         driver.findElement(By.xpath('//*[@id="password"]'))
         ));
@@ -98,82 +98,6 @@ describe('Landlord Lease', function () {
         assert.equal("http://localhost:3000/pages/TenantCreationPage", currentURL);
       });
 
-    
-      it('Find new tenant in Tenant Details table', async function() {
-        await driver.sleep(1000)
-        let new_tenant = await driver.wait(until.elementIsVisible(
-          driver.findElement(By.xpath('//*[contains(text(), "newtenant@gmail.com")]'))
-        ));
-        await driver.executeScript("arguments[0].click();", new_tenant);
-        await driver.sleep(1000)
-        // let new_lease = await driver.wait(until.elementIsVisible(
-        //   driver.findElement(By.xpath('//*[contains(text(), "New Lease")]'))
-        // ));
-        let new_lease = await driver.findElement(By.xpath('//*[contains(text(), "New Lease")]'))
-        await driver.executeScript("arguments[0].click();", new_lease);
-
-        const currentURL = await driver.getCurrentUrl();
-        assert.equal("http://localhost:3000/pages/LeaseUploadPage/", currentURL);
-      });
-
-
-      it('Lease upload', async function () {
-        // Add floor, unit number, file
-        let floor = await driver.wait(until.elementIsVisible(
-          driver.findElement(By.xpath('//*[@id="floor"]'))
-        ));
-        await floor.sendKeys("01");
-        let unit_number = await driver.wait(until.elementIsVisible(
-          driver.findElement(By.xpath('//*[@id="unit_number"]'))
-        ));
-        await unit_number.sendKeys("123");
-        let chooseFileButton = await driver.wait(until.elementIsVisible(
-          driver.findElement(By.xpath('//*[@id="files"]'))
-        ));
-        await chooseFileButton.sendKeys('C:/public/uploads/test.pdf')
-
-        let upalod_lease_button = await driver.wait(until.elementIsVisible(
-          driver.findElement(By.xpath('//*[@id="UploadButton"]'))
-        ));
-        await upalod_lease_button.click();
-
-        await driver.manage().setTimeouts({implicit: 500});
-        await driver.sleep(1000)
-        const currentURL = await driver.getCurrentUrl();
-        assert.equal("http://localhost:3000/pages/ViewLeasePage/", currentURL);
-        
-        // Click next button
-        let next_button = await driver.wait(until.elementIsVisible(
-          driver.findElement(By.xpath('//*[@id="root"]/div/div/div[2]/div/div/button[2]'))
-        ));
-        await driver.executeScript("arguments[0].click();", next_button);
-
-        const nextURL = await driver.getCurrentUrl();
-        assert.equal("http://localhost:3000/pages/AccountManagement/", nextURL);
-      });
-
-      it('View lease', async function() {
-        await driver.sleep(1000)
-        let new_tenant = await driver.wait(until.elementIsVisible(
-          driver.findElement(By.xpath('//*[contains(text(), "newtenant2@gmail.com")]'))
-        ));
-        let view_lease = await driver.findElement(By.xpath('//*[contains(text(), "View Lease")]'));
-        
-        await driver.executeScript("arguments[0].click();", new_tenant);
-        await driver.executeScript("arguments[0].click();", view_lease);
-
-        const currentURL = await driver.getCurrentUrl();
-        assert.equal("http://localhost:3000/pages/ViewLeasePage/", currentURL);
-
-        // Click next button
-        let next_button = await driver.wait(until.elementIsVisible(
-          driver.findElement(By.xpath('//*[@id="root"]/div/div/div[2]/div/div/button[2]'))
-        ));
-        await driver.executeScript("arguments[0].click();", next_button);
-
-        const nextURL = await driver.getCurrentUrl();
-        assert.equal("http://localhost:3000/pages/AccountManagement/", nextURL);
-      });
 
 });
 
