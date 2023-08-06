@@ -57,9 +57,9 @@ const LandlordCreationPage = () => {
             errors.password = "Required";
         }
 
-        if(!values.ticket_type){
-            errors.ticket_type = "Required";
-        }
+        // if(!values.ticket_type){
+        //     errors.ticket_type = "Required";
+        // }
 
         if (userDetails().type === 'admin'){
 
@@ -262,7 +262,7 @@ const LandlordCreationPage = () => {
                                 onChange={formik.handleChange}
                                 
                             />
-                            {formik.errors.ticket_type ? <Box color="red.500" marginBottom="-6">{formik.errors.ticket_type}</Box>: null}
+                            {/* {formik.errors.ticket_type ? <Box color="red.500" marginBottom="-6">{formik.errors.ticket_type}</Box>: null} */}
                         </FormControl>
                         {userDetails() && userDetails().type === 'admin' ?
                         <>
