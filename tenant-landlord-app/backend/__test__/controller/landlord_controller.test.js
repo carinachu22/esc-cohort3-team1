@@ -516,13 +516,95 @@ describe ("/landlord/getTicketById", () => {
   })
 })
 
+describe ("/landlord/getTicketsByStatus/:status", () => {
+
+  test("valid status with service tickets", async () =>  {
+    const token = await authorisation()
+    await request(app)
+      .get("/api/landlord/getTicketsByStatus/landlord_completed_work")
+      .set("Authorization", `Bearer ${token}`)
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toMatchObject({
+          success: "1",
+          data: [{
+                service_request_id: 3,
+                public_service_request_id: "SR/2004/Apr/0001",
+                email: "tenant1@gmail.com",
+                request_type: "cleanliness",
+                request_description: "not clean",
+                quotation_path: ":Content/Documents/quotation_details/q2",
+                submitted_date_time: expect.any(String),
+                completed_date_time: null, 
+                status: "landlord_completed_work",
+                feedback_rating: null,
+                feedback_text: null,
+                floor: '9',
+                unit_number: '154',
+                quotation_required: null
+              }, {
+                service_request_id: 5,
+                public_service_request_id: "SR/2006/Jun/0001",
+                email: "tenant5@gmail.com",
+                request_type: "cleanliness",
+                request_description: "not clean",
+                quotation_path: ":Content/Documents/quotation_details/q3",
+                submitted_date_time: expect.any(String),
+                completed_date_time: null, 
+                status: "landlord_completed_work",
+                feedback_rating: null,
+                feedback_text: null,
+                floor: '6',
+                unit_number: '100',
+                quotation_required: null
+              }]
+          })
+      })
+  })
+
+  test("status without service tickets", async () =>  {
+    const token = await authorisation()
+    await request(app)
+      .get("/api/landlord/getTicketsByStatus/landlord_ticket_rejected")
+      .set("Authorization", `Bearer ${token}`)
+      .then((response) => {
+          expect(response.body).toEqual({
+              success: 0,
+              message: "Record not found"
+            })
+        })
+  })
+
+  test("invalid status", async () =>  {
+    const token = await authorisation()
+    await request(app)
+      .get("/api/landlord/getTicketsByStatus/invalid_status")
+      .set("Authorization", `Bearer ${token}`)
+      .then((response) => {
+        expect(response.body).toEqual({
+            success: 0,
+            message: "invalid status"
+          })
+        })
+  })
+
+  test("unauthorised landlord", async () =>  {
+    await request(app)
+      .get("/api/landlord/getTicketsByStatus/landlord_completed_work")
+      .then((response) => {
+        expect(JSON.parse(response.text)).toEqual({
+            success: 0,
+            message: "Access denied: You are unauthorized!",
+          })
+        })
+  })
+})
+
 //TODO: getLease
 
 //TODO: createLease
 
 //TODO: getTicketsById
-
-//TODO: getTicketsByStatus/:status
 
 //TODO: getQuotation
 

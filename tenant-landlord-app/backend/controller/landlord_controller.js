@@ -453,8 +453,10 @@ export const controllerGetTicketsByStatus = (req, res) => {
   const status = req.params.status;
   getTicketsByStatus(status, (err, results) => {
     if (err) {
-      console.log(err);
-      return;
+      return res.json({
+        success: 0,
+        message: err
+      });
     }
     if (results.length === 0) {
       return res.json({
