@@ -10,7 +10,8 @@ import {
   controllerGetTickets,
   controllerGetAllLandlordAccounts,
   controllerGetAllTenantAccounts,
-  controllerModifyTicket
+  controllerModifyTicket,
+  controllerGetBuildings
 } from "../controller/admin_controller.js";
 import express from "express";
 import { checkAdminToken } from "../auth/admin_validation.js";
@@ -57,6 +58,7 @@ router.get("/reset-password/:id/:jsontoken", controllerResetPasswordPageAdmin);
 router.post("/createLandlord", controllerCreateLandlord);
 router.patch("/deleteLandlordByEmail", controllerDeleteLandlordByEmail);
 router.post("/createBuilding", controllerCreateBuilding);
+router.get("/getBuildings", controllerGetBuildings)
 router.get("/getAllTenantAccounts", controllerGetAllTenantAccounts);
 router.get("/getAllLandlordAccounts", controllerGetAllLandlordAccounts);
 

@@ -89,10 +89,10 @@ export const updateAdminPassword = ({ password, id }, callBack) => {
 export const createLandlord = (data, callBack) => {
   pool.query(
     `
-    INSERT INTO LANDLORD_USER(email, password, ticket_type)
-    VALUES (?, ?, ?)
+    INSERT INTO LANDLORD_USER(email, password, ticket_type, public_building_id, role)
+    VALUES (?, ?, ?, ?, ?)
     `,
-    [data.email, data.password, data.ticket_type],
+    [data.email, data.password, data.ticket_type, data.public_building_id, data.role],
     (error, results, fields) => {
       if (error) {
         callBack(error);
@@ -243,3 +243,20 @@ export const modifyTicket = (data, callBack) => {
         }
     );
 }
+
+export const getBuildings = (callBack) => {
+    let sqlQuery = `
+    SELECT *
+    FROM building
+    `
+    console.log(sqlQuery)
+    pool.query(
+      sqlQuery,
+      (error, results, fields) => {
+        if (error) {
+          callBack(error);
+        }
+        callBack(null, results);
+      }
+    )
+  }

@@ -10,7 +10,8 @@ import {
     getAllTickets,
     getAllLandlordAccounts,
     getAllTenantAccounts,
-    modifyTicket
+    modifyTicket,
+    getBuildings
 } from "../models/admin_model.js";
 import { genSaltSync, hashSync, compareSync } from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -390,3 +391,17 @@ export const controllerModifyTicket = (req, res) => {
         };
     })
 };
+
+export const controllerGetBuildings = (req, res) => {
+    getBuildings((err, results) => {
+        if (err) {
+            console.log(err);
+            return;
+        } else {
+            return res.json({
+                success: "1",
+                data: results,
+            });
+        }
+    });
+}
