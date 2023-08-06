@@ -158,10 +158,10 @@ describe('Successful/Usual Service Ticket Workflow', function () {
 
     
     it('Landlord Select Service Ticket', async function () {
-
+      // Find ticket
       const lastTicket = landlord_driver.findElement(By.xpath("//*[@class='chakra-accordion css-0']/div[last()]"))
       await landlord_driver.executeScript("arguments[0].click();", lastTicket);
-
+      // Click on "details" button
       const detailsButton = landlord_driver.findElement(By.xpath("//*[@class='chakra-accordion css-0']/div[last()]//button[text()='View Details & Actions']"))
       await landlord_driver.executeScript("arguments[0].click();", detailsButton);
 

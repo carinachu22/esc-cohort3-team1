@@ -3,7 +3,7 @@ const chai = require('chai');
 
 const assert = chai.assert;
 
-describe('Successful/Usual Service Ticket Workflow', function () {
+describe('Service Ticket Workflow -- Landlord Rejects Ticket', function () {
     let tenant_driver;
     let landlord_driver
 
@@ -37,7 +37,7 @@ describe('Successful/Usual Service Ticket Workflow', function () {
         // Sign in details: email, password, button
         let email_in = await tenant_driver.wait(until.elementIsVisible(
           tenant_driver.findElement(By.xpath('//*[@id="email"]'))));
-        await email_in.sendKeys('tenant2@gmail.com');
+        await email_in.sendKeys('tenant1@gmail.com');
   
         let pw_in = await tenant_driver.wait(until.elementIsVisible(
           tenant_driver.findElement(By.xpath('//*[@type="password"]'))));
@@ -53,7 +53,7 @@ describe('Successful/Usual Service Ticket Workflow', function () {
         let next_pg = await tenant_driver.wait(until.elementIsVisible(
           tenant_driver.findElement(By.xpath('//*[@id="emailText"]'))));
         let result = await next_pg.getText();
-        assert.equal("Welcome, tenant2@gmail.com", result);
+        assert.equal("Welcome, tenant1@gmail.com", result);
       });
 
 
@@ -74,7 +74,7 @@ describe('Successful/Usual Service Ticket Workflow', function () {
         ));
         await req_type.click();
         let sel_dropdown= await tenant_driver.wait(until.elementIsVisible(
-          tenant_driver.findElement(By.xpath(`//select[@name="requestType"]/option[3]`))
+          tenant_driver.findElement(By.xpath(`//select[@name="requestType"]/option[2]`))
         ));
         await sel_dropdown.click();
   
@@ -82,7 +82,7 @@ describe('Successful/Usual Service Ticket Workflow', function () {
         let description= await tenant_driver.wait(until.elementIsVisible(
           tenant_driver.findElement(By.xpath('//*[@id="tenantComment"]'))
         ));
-        await description.sendKeys("Not Clean, I demand a cleaning robot");
+        await description.sendKeys("Aircon not clean, I demand a cleaning robot");
   
         await tenant_driver.executeScript("window.scrollBy(0,250)", "");
   
@@ -192,21 +192,10 @@ describe('Successful/Usual Service Ticket Workflow', function () {
 
 
     it("Landlord Reject Service Ticket", async function() {
-        //NOTE - The Landlord portal is not opening the right service ticket
-        await landlord_driver.manage().setTimeouts({implicit: 300});
-
-        // let rejectButton = await landlord_driver.wait(until.elementIsVisible(
-        //   landlord_driver.findElement(By.xpath("//*[@id='root']/div/div/div[3]/button[2]"))
-        // ));
-
-        // await landlord_driver.executeScript(`window.scrollBy(0, ${500});`)
-        // await landlord_driver.manage().setTimeouts({implicit: 300});
-        // await rejectButton.click();
-        const rejectButton = tenant_driver.findElement(By.xpath("//*[@id='root']/div/div/div[3]/button[2]"))
-        await tenant_driver.executeScript("arguments[0].click();", rejectButton);
+        const rejectButton = landlord_driver.findElement(By.xpath("//*[@id='root']/div/div/div[3]/button[2]"));
+        await landlord_driver.executeScript("arguments[0].click();", rejectButton);
   
-        await landlord_driver.sleep(100)
-  
+
         currentURL = await landlord_driver.getCurrentUrl();
         assert.equal('http://localhost:3000/pages/TicketList', currentURL)
       });
@@ -232,7 +221,7 @@ describe('Successful/Usual Service Ticket Workflow', function () {
         // Click on "Service Ticket List"
         let signout = await landlord_driver.wait(until.elementIsVisible(
           landlord_driver.findElement(By.xpath('//*[@id="root"]/div/div/div[1]/div[3]/button'))
-        ))
+        ));
         await signout.click();
         await landlord_driver.manage().setTimeouts({implicit: 500});
     
@@ -246,7 +235,7 @@ describe('Successful/Usual Service Ticket Workflow', function () {
         // Click on "Service Ticket List"
         let signout = await tenant_driver.wait(until.elementIsVisible(
           tenant_driver.findElement(By.xpath('//*[@id="root"]/div/div/div[1]/div[3]/button'))
-        ))
+        ));
         await signout.click();
         await tenant_driver.manage().setTimeouts({implicit: 500});
     
