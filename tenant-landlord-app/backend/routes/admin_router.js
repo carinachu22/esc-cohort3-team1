@@ -7,6 +7,8 @@ import {
   controllerForgotPasswordAdmin,
   controllerResetPasswordAdmin,
   controllerResetPasswordPageAdmin,
+  controllerGetAllLandlordAccounts,
+  controllerGetAllTenantAccounts,
 } from "../controller/admin_controller.js";
 import express from "express";
 import { checkAdminToken } from "../auth/admin_validation.js";
@@ -53,6 +55,8 @@ router.get("/reset-password/:id/:jsontoken", controllerResetPasswordPageAdmin);
 router.post("/createLandlord", controllerCreateLandlord);
 router.patch("/deleteLandlordByEmail", controllerDeleteLandlordByEmail);
 router.post("/createBuilding", controllerCreateBuilding);
+router.get("/getAllTenantAccounts", controllerGetAllTenantAccounts);
+router.get("/getAllLandlordAccounts", controllerGetAllLandlordAccounts);
 
 //LANDLORD PRIVILEGES
 

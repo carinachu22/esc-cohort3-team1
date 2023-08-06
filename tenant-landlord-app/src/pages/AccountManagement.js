@@ -140,10 +140,18 @@ const AccountManagement = () => {
      * @returns 
      */
     const APIGetTenantAccounts = async (email) => {
-        const response = await axios.get(
-            "http://localhost:5000/api/landlord/getTenantAccounts?landlordEmail=" + email,
-            config
-        )
+        var response;
+        if (userDetails().type === 'landlord') {
+            response = await axios.get(
+                "http://localhost:5000/api/landlord/getTenantAccounts?landlordEmail=" + email,
+                config
+            )
+        } else if (userDetails().type === 'admin') {
+            response = await axios.get(
+                "http://localhost:5000/api/admin/getAllTenantAccounts",
+                config
+            )
+        }
         console.log("APIGetTenantAccounts", response)
         return response
     }
@@ -155,10 +163,18 @@ const AccountManagement = () => {
      * @returns 
      */
     const APIGetLandlordAccounts = async (email) => {
-        const response = await axios.get(
-            "http://localhost:5000/api/landlord/getLandlordAccounts?landlordEmail=" + email,
-            config
-        )
+        var response;
+        if (userDetails().type === 'landlord') {
+            response = await axios.get(
+                "http://localhost:5000/api/landlord/getLandlordAccounts?landlordEmail=" + email,
+                config
+            )
+        } else if (userDetails().type === 'admin') {
+            response = await axios.get(
+                "http://localhost:5000/api/admin/getAllLandlordAccounts",
+                config
+            )
+        }
         console.log("APIGetLandlordAccounts", response)
         return response
     }

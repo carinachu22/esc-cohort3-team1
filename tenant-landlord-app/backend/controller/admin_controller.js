@@ -7,6 +7,8 @@ import {
     deleteLandlordByEmail,
     createBuilding,
     updateAdminPassword,
+    getAllLandlordAccounts,
+    getAllTenantAccounts,
 } from "../models/admin_model.js";
 import { genSaltSync, hashSync, compareSync } from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -310,3 +312,42 @@ export const controllerCreateBuilding = (req, res) => {
         }
     });
 };
+export const controllerGetAllLandlordAccounts = (req, res) => {
+    const query = req.query;
+    const {landlordEmail, ticket_type} = query;
+    console.log("email", landlordEmail);
+    console.log(ticket_type)
+    getLandlordByEmail(landlordEmail, (err, results) => {
+        console.log(results);
+        if (err) {
+            console.log(err);
+            return;
+        } else {
+            getAllLandlordAccounts((err, results) => {
+                    if (err) {
+                    console.log(err);
+                    return;
+                } else {
+                    return res.json({
+                        success: "1",
+                        data: results,
+                    });
+                }
+            });
+        }
+    });
+};
+
+export const controllerGetAllTenantAccounts = (req, res) => {
+    getAllTenantAccounts((err, results) => {
+        if (err) {
+            console.log(err);
+            return;
+        } else {
+            return res.json({
+                success: "1",
+                data: results,
+            });
+        }
+    });
+}

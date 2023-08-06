@@ -171,3 +171,37 @@ export const createBuilding = (data, callBack) => {
     }
   );
 };
+export const getAllTenantAccounts = (callBack) => {
+    let sqlQuery = `
+        SELECT *
+        FROM tenant_user
+        `
+    console.log(sqlQuery)
+    pool.query(
+        sqlQuery,
+        (error, results, fields) => {
+        if (error) {
+            callBack(error);
+        }
+        callBack(null, results);
+        }
+    )
+}
+
+export const getAllLandlordAccounts = (callBack) => {
+    let sqlQuery = `
+    SELECT *
+    FROM landlord_user
+    `
+    console.log(sqlQuery)
+    pool.query(
+      sqlQuery,
+      (error, results, fields) => {
+        if (error) {
+          callBack(error);
+        }
+        callBack(null, results);
+      }
+    )
+  }
+
