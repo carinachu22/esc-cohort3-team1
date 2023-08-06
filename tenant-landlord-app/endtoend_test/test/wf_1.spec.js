@@ -192,6 +192,7 @@ describe('Successful/Usual Service Ticket Workflow', function () {
 
 
     it("Landlord Reject Service Ticket", async function() {
+        //NOTE - The Landlord portal is not opening the right service ticket
         await landlord_driver.manage().setTimeouts({implicit: 300});
 
         // let rejectButton = await landlord_driver.wait(until.elementIsVisible(
