@@ -376,7 +376,4 @@ describe('Successful/Usual Service Ticket Workflow', function () {
     assert.equal('http://localhost:3000/', currentURL)
   });
 
-
-
-
 });

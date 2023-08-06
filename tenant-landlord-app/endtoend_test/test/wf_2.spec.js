@@ -8,11 +8,12 @@ describe('Successful/Usual Service Ticket Workflow', function () {
     let landlord_driver
 
     before(async function () {
-        tenant_driver = await new Builder().forBrowser('chrome').build();
-        landlord_driver = await new Builder().forBrowser('chrome').build();
+      tenant_driver = await new Builder().forBrowser('chrome').build();
+      landlord_driver = await new Builder().forBrowser('chrome').build();
     });
 
     after(async () => {await tenant_driver.quit(); await landlord_driver.quit()});
+
 
     it('Select Tenant Option', async function () {
         await tenant_driver.get('http://localhost:3000/');
@@ -34,10 +35,11 @@ describe('Successful/Usual Service Ticket Workflow', function () {
     
 
     it('Tenant login', async function () {
+  
         // Sign in details: email, password, button
         let email_in = await tenant_driver.wait(until.elementIsVisible(
           tenant_driver.findElement(By.xpath('//*[@id="email"]'))));
-        await email_in.sendKeys('tenant2@gmail.com');
+        await email_in.sendKeys('tenant1@gmail.com');
   
         let pw_in = await tenant_driver.wait(until.elementIsVisible(
           tenant_driver.findElement(By.xpath('//*[@type="password"]'))));
@@ -53,7 +55,7 @@ describe('Successful/Usual Service Ticket Workflow', function () {
         let next_pg = await tenant_driver.wait(until.elementIsVisible(
           tenant_driver.findElement(By.xpath('//*[@id="emailText"]'))));
         let result = await next_pg.getText();
-        assert.equal("Welcome, tenant2@gmail.com", result);
+        assert.equal("Welcome, tenant1@gmail.com", result);
       });
 
 
@@ -82,7 +84,7 @@ describe('Successful/Usual Service Ticket Workflow', function () {
         let description= await tenant_driver.wait(until.elementIsVisible(
           tenant_driver.findElement(By.xpath('//*[@id="tenantComment"]'))
         ));
-        await description.sendKeys("Floor is muddy");
+        await description.sendKeys("Aircon is making unsettling noises");
   
         await tenant_driver.executeScript("window.scrollBy(0,250)", "");
   
@@ -99,7 +101,6 @@ describe('Successful/Usual Service Ticket Workflow', function () {
         const currentURL = await tenant_driver.getCurrentUrl();
         assert.equal('http://localhost:3000/pages/Dashboard', currentURL)
         });
-
 
     it('Select Landlord Option', async function () {
         await landlord_driver.get('http://localhost:3000/');
@@ -157,18 +158,12 @@ describe('Successful/Usual Service Ticket Workflow', function () {
 
     
     it('Landlord Select Service Ticket', async function () {
-        await landlord_driver.manage().setTimeouts({implicit: 400});
-        await landlord_driver.sleep(2000)
-        // await landlord_driver.executeScript(`window.scrollBy(0, ${3003});`)
-
-        const lastTicket = landlord_driver.findElement(By.xpath("//*[@class='chakra-accordion css-0']/div[last()]"))
-        await landlord_driver.executeScript("arguments[0].click();", lastTicket);
-
-
-        await landlord_driver.sleep(2000)
-
-        const detailsButton = landlord_driver.findElement(By.xpath("//*[@class='chakra-accordion css-0']/div[last()]//button[text()='View Details & Actions']"))
-        await landlord_driver.executeScript("arguments[0].click();", detailsButton);
+      // Find ticket
+      const lastTicket = landlord_driver.findElement(By.xpath("//*[@class='chakra-accordion css-0']/div[last()]"))
+      await landlord_driver.executeScript("arguments[0].click();", lastTicket);
+      // Click on "details" button
+      const detailsButton = landlord_driver.findElement(By.xpath("//*[@class='chakra-accordion css-0']/div[last()]//button[text()='View Details & Actions']"))
+      await landlord_driver.executeScript("arguments[0].click();", detailsButton);
 
       // // View drop down box
       // let lastTicket = await landlord_driver.wait(until.elementIsVisible(
@@ -186,73 +181,197 @@ describe('Successful/Usual Service Ticket Workflow', function () {
       // await landlord_driver.executeScript("arguments[0].click();", detailsButton);
 
       // Enter new page
-        let currentURL = await landlord_driver.getCurrentUrl();
-        assert.equal('http://localhost:3000/pages/ViewTicketPage/', currentURL)
+      let currentURL = await landlord_driver.getCurrentUrl();
+      assert.equal('http://localhost:3000/pages/ViewTicketPage/', currentURL)
     });
 
 
-    it("Landlord Reject Service Ticket", async function() {
-        await landlord_driver.manage().setTimeouts({implicit: 300});
+    it("Landlord Approve Service Ticket", async function() {
+      await tenant_driver.manage().setTimeouts({implicit: 300});
 
-        // let rejectButton = await landlord_driver.wait(until.elementIsVisible(
-        //   landlord_driver.findElement(By.xpath("//*[@id='root']/div/div/div[3]/button[2]"))
-        // ));
+      let quotationCheckbox = await landlord_driver.wait(until.elementIsVisible(
+        landlord_driver.findElement(By.xpath("//*[@id='quotationCheckbox']"))
+      ));
+      let approveButton = await landlord_driver.wait(until.elementIsVisible(
+        landlord_driver.findElement(By.xpath("//button[text()='Approve Ticket']"))
+      ));
 
-        // await landlord_driver.executeScript(`window.scrollBy(0, ${500});`)
-        // await landlord_driver.manage().setTimeouts({implicit: 300});
-        // await rejectButton.click();
-        const rejectButton = tenant_driver.findElement(By.xpath("//*[@id='root']/div/div/div[3]/button[2]"))
-        await tenant_driver.executeScript("arguments[0].click();", rejectButton);
+      await landlord_driver.executeScript("arguments[0].click();", quotationCheckbox);
+      await landlord_driver.executeScript("arguments[0].click();", approveButton);
+
+      await landlord_driver.sleep(100)
+
+      currentURL = await landlord_driver.getCurrentUrl();
+      assert.equal('http://localhost:3000/pages/TicketList', currentURL)
+    });
+
+
+    it('Landlord Upload Quotation', async function () {
+      const lastTicket = landlord_driver.findElement(By.xpath("//*[@class='chakra-accordion css-0']/div[last()]"))
+      await landlord_driver.executeScript("arguments[0].click();", lastTicket);
+      const detailsButton = landlord_driver.findElement(By.xpath("//*[@class='chakra-accordion css-0']/div[last()]//button[text()='View Details & Actions']"))
+      await landlord_driver.executeScript("arguments[0].click();", detailsButton);
+
+      await landlord_driver.manage().setTimeouts({implicit: 300});
+
+      const addQuotationButton = landlord_driver.findElement(By.xpath("//button[text()='View/Add Quotation']"))
+      await landlord_driver.executeScript("arguments[0].click();", addQuotationButton);
+
+      let currentURL = await landlord_driver.getCurrentUrl();
+      assert.equal('http://localhost:3000/pages/QuotationUploadPage/', currentURL)
+
+      const chooseFileButton = landlord_driver.findElement(By.xpath("//input[@id='files']"))
+      await chooseFileButton.sendKeys('C:/public/uploads/test.pdf')
+
+      const uploadButton = landlord_driver.findElement(By.xpath("//button[text()='Upload Quotation']"))
+      await uploadButton.click()
+
+      await landlord_driver.sleep(200)
+      currentURL = await landlord_driver.getCurrentUrl();
+      assert.equal('http://localhost:3000/pages/ViewTicketPage/', currentURL)
   
-        await landlord_driver.sleep(100)
-  
-        currentURL = await landlord_driver.getCurrentUrl();
-        assert.equal('http://localhost:3000/pages/TicketList', currentURL)
-      });
+  });
 
 
-      it('Tenant View Ticket', async function () {
-        await tenant_driver.get('http://localhost:3000/pages/TicketList/');
-    
-        await tenant_driver.manage().setTimeouts({implicit: 300});
-    
-        const lastTicket = tenant_driver.findElement(By.xpath("//*[@class='chakra-accordion css-0']/div[last()]"))
-        await tenant_driver.executeScript("arguments[0].click();", lastTicket);
-        const detailsButton = tenant_driver.findElement(By.xpath("//*[@class='chakra-accordion css-0']/div[last()]//button[text()='View Details & Actions']"))
-        await tenant_driver.executeScript("arguments[0].click();", detailsButton);
-    
-        let currentURL = await tenant_driver.getCurrentUrl();
-        assert.equal('http://localhost:3000/pages/ViewTicketPage/', currentURL)
-      });
-    
-    
-      it('Landlord Sign Out', async function () {
+  it('Tenant View Quotation', async function () {
+    await tenant_driver.get('http://localhost:3000/pages/TicketList/');
 
-        // Click on "Service Ticket List"
-        let signout = await landlord_driver.wait(until.elementIsVisible(
-          landlord_driver.findElement(By.xpath('//*[@id="root"]/div/div/div[1]/div[3]/button'))
-        ))
-        await signout.click();
-        await landlord_driver.manage().setTimeouts({implicit: 500});
+    await tenant_driver.manage().setTimeouts({implicit: 300});
+
+    const lastTicket = tenant_driver.findElement(By.xpath("//*[@class='chakra-accordion css-0']/div[last()]"))
+    await tenant_driver.executeScript("arguments[0].click();", lastTicket);
+    const detailsButton = tenant_driver.findElement(By.xpath("//*[@class='chakra-accordion css-0']/div[last()]//button[text()='View Details & Actions']"))
+    await tenant_driver.executeScript("arguments[0].click();", detailsButton);
+
+    const viewQuotationButton = tenant_driver.findElement(By.xpath("//button[text()='View/Add Quotation']"))
+    await tenant_driver.executeScript("arguments[0].click();", viewQuotationButton);
+
+    let currentURL = await tenant_driver.getCurrentUrl();
+    assert.equal('http://localhost:3000/pages/QuotationPage/', currentURL)
+  });
+
+
+  it('Tenant Reject Quotation', async function () {
+    await tenant_driver.manage().setTimeouts({implicit: 300});
+
+    const approveButton = tenant_driver.findElement(By.xpath("//button[text()='Approve']"))
+    await tenant_driver.executeScript("arguments[0].click();", approveButton);
+
+    await tenant_driver.sleep(200)
+    currentURL = await tenant_driver.getCurrentUrl();
+    assert.equal('http://localhost:3000/pages/TicketList/', currentURL)
+  });
+
+
+  it('Landlord Starts Work', async function () {
+    await landlord_driver.get('http://localhost:3000/pages/TicketList/');
+
+    await tenant_driver.manage().setTimeouts({implicit: 300});
+
+    const lastTicket = landlord_driver.findElement(By.xpath("//*[@class='chakra-accordion css-0']/div[last()]"))
+    await landlord_driver.executeScript("arguments[0].click();", lastTicket);
+    const detailsButton = landlord_driver.findElement(By.xpath("//*[@class='chakra-accordion css-0']/div[last()]//button[text()='View Details & Actions']"))
+    await landlord_driver.executeScript("arguments[0].click();", detailsButton);
+
+    const startWorkButton = landlord_driver.findElement(By.xpath("//button[text()='Start Work']"))
+    await landlord_driver.executeScript("arguments[0].click();", startWorkButton);
+
+    await landlord_driver.sleep(200)
+    let currentURL = await landlord_driver.getCurrentUrl();
+    assert.equal('http://localhost:3000/pages/TicketList', currentURL)
+  });
+
+  it('Landlord Ends Work', async function () {
+    await landlord_driver.get('http://localhost:3000/pages/TicketList/');
+
+    await tenant_driver.manage().setTimeouts({implicit: 300});
+
+    const lastTicket = landlord_driver.findElement(By.xpath("//*[@class='chakra-accordion css-0']/div[last()]"))
+    await landlord_driver.executeScript("arguments[0].click();", lastTicket);
+    const detailsButton = landlord_driver.findElement(By.xpath("//*[@class='chakra-accordion css-0']/div[last()]//button[text()='View Details & Actions']"))
+    await landlord_driver.executeScript("arguments[0].click();", detailsButton);
+
+    const startWorkButton = landlord_driver.findElement(By.xpath("//button[text()='End Work']"))
+    await landlord_driver.executeScript("arguments[0].click();", startWorkButton);
+
+    await landlord_driver.sleep(200)
+    let currentURL = await landlord_driver.getCurrentUrl();
+    assert.equal('http://localhost:3000/pages/TicketList', currentURL)
+  });
+
+  it('Tenant Give Feedback', async function () {
+    await tenant_driver.get('http://localhost:3000/pages/TicketList/');
+
+    await tenant_driver.manage().setTimeouts({implicit: 300});
     
-        // Check if ticket portal is shown
-        const currentURL = await landlord_driver.getCurrentUrl();
-        assert.equal('http://localhost:3000/', currentURL)
-      });
-    
-    
-      it('Tenant Sign Out', async function () {
-        // Click on "Service Ticket List"
-        let signout = await tenant_driver.wait(until.elementIsVisible(
-          tenant_driver.findElement(By.xpath('//*[@id="root"]/div/div/div[1]/div[3]/button'))
-        ))
-        await signout.click();
-        await tenant_driver.manage().setTimeouts({implicit: 500});
-    
-        // Check if ticket portal is shown
-        const currentURL = await tenant_driver.getCurrentUrl();
-        assert.equal('http://localhost:3000/', currentURL)
-      });
-    
+    const lastTicket = tenant_driver.findElement(By.xpath("//*[@class='chakra-accordion css-0']/div[last()]"))
+    await tenant_driver.executeScript("arguments[0].click();", lastTicket);
+    const detailsButton = tenant_driver.findElement(By.xpath("//*[@class='chakra-accordion css-0']/div[last()]//button[text()='View Details & Actions']"))
+    await tenant_driver.executeScript("arguments[0].click();", detailsButton);
+
+    const feedbackButton = tenant_driver.findElement(By.xpath("//button[text()='Close Ticket & Give Feedback']"))
+    await tenant_driver.executeScript("arguments[0].click();", feedbackButton);
+
+    await tenant_driver.sleep(200)
+    let currentURL = await tenant_driver.getCurrentUrl();
+    assert.equal('http://localhost:3000/pages/FeedbackForm/', currentURL)
+
+    const feedbackText = tenant_driver.findElement(By.name('comment'))
+    await feedbackText.sendKeys('Dummy Feedback Comment');
+
+    const feedbackRating = tenant_driver.findElement(By.xpath("//*[@class='chakra-icon css-11w35xc']"))
+    await feedbackRating.click();
+
+    const submitButton = tenant_driver.findElement(By.xpath("//button[text()='Submit']"))
+    await submitButton.click()
+
+    await tenant_driver.sleep(200);
+
+    currentURL = await tenant_driver.getCurrentUrl();
+    assert.equal('http://localhost:3000/pages/dashboard', currentURL)
+  });
+
+
+  it('Landlord View Feedback', async function () {
+    const lastTicket = landlord_driver.findElement(By.xpath("//*[@class='chakra-accordion css-0']/div[last()]"))
+    await landlord_driver.executeScript("arguments[0].click();", lastTicket);
+    const detailsButton = landlord_driver.findElement(By.xpath("//*[@class='chakra-accordion css-0']/div[last()]//button[text()='View Details & Actions']"))
+    await landlord_driver.executeScript("arguments[0].click();", detailsButton);
+
+    let result = await landlord_driver.wait(until.elementIsVisible(
+      landlord_driver.findElement(By.xpath('//*[@id="root"]/div/div/div[3]/div/div[1]/textarea'))
+      ));
+    let feedback = await result.getText();
+    assert.equal("Dummy Feedback Comment", feedback)
+  });
+
+
+  it('Landlord Sign Out', async function () {
+
+    // Click on "Service Ticket List"
+    let signout = await landlord_driver.wait(until.elementIsVisible(
+      landlord_driver.findElement(By.xpath('//*[@id="root"]/div/div/div[1]/div[3]/button'))
+    ))
+    await signout.click();
+    await landlord_driver.manage().setTimeouts({implicit: 500});
+
+    // Check if ticket portal is shown
+    const currentURL = await landlord_driver.getCurrentUrl();
+    assert.equal('http://localhost:3000/', currentURL)
+  });
+
+
+  it('Tenant Sign Out', async function () {
+    // Click on "Service Ticket List"
+    let signout = await tenant_driver.wait(until.elementIsVisible(
+      tenant_driver.findElement(By.xpath('//*[@id="root"]/div/div/div[1]/div[3]/button'))
+    ))
+    await signout.click();
+    await tenant_driver.manage().setTimeouts({implicit: 500});
+
+    // Check if ticket portal is shown
+    const currentURL = await tenant_driver.getCurrentUrl();
+    assert.equal('http://localhost:3000/', currentURL)
+  });
 
 });

@@ -76,7 +76,7 @@ function QuotationPage() {
             values,
             config
         )
-        navigate('/pages/ViewTicketPage')
+        navigateToViewTicketPage
     };
 
     useEffect(() => {
