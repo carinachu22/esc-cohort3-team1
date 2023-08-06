@@ -209,15 +209,33 @@ export default function TicketList() {
             }
 
             if (type === 'landlord') {
-                let landlordAccounts = []
-                for(const ticket of tickets_list){
-                    const accounts = await APIGetLandlordAccounts(ticket.ticket_type)
-                    console.log('accounts', accounts)
-                    let emails = []
-                    for(const staff of accounts){
-                        emails.push(staff.email)
+                var landlordAccounts = []
+                if (userDetails().role === 'supervisor'){
+                    for(const ticket of tickets_list){
+                        const accounts = await APIGetLandlordAccounts(ticket.ticket_type)
+                        console.log('accounts', accounts)
+                        let emails = []
+                        for(const staff of accounts){
+                            emails.push(staff.email)
+                        }
+                        landlordAccounts.push(emails)
                     }
-                    landlordAccounts.push(emails)
+                } else {
+                    for(const ticket of tickets_list){
+                        const accounts = await APIGetLandlordAccounts(ticket.ticket_type)
+                        console.log('accounts', accounts)
+                        let emails = []
+                        for(const staff of accounts){
+                            emails.push(staff.email)
+                        }
+                        let final_emails = []
+                        for(const email of emails){
+                            if (email.includes(userDetails().email)){
+                                final_emails = [userDetails().email]
+                            }
+                        }
+                        landlordAccounts.push(final_emails)
+                    }
                 }
                 console.log('LL accounts', landlordAccounts)
                 console.log(landlordAccounts[0])
