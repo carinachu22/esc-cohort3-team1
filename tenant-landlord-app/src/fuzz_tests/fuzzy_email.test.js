@@ -18,9 +18,9 @@ import {
   generateRandomEmailInput,
   generateValidEmailInput,
 } from "./email_generator";
-
+jest.setTimeout(200000);
 jest.mock("axios");
-// Mock specific hooks from react-auth-kit
+
 jest.mock("react-auth-kit", () => {
   const originalModule = jest.requireActual("react-auth-kit");
   return {
@@ -47,54 +47,59 @@ jest.mock("react-router-dom", () => {
     }),
   };
 });
+describe("Fuzzy testing email", () => {
+  test("100 fuzz randomly generated email input", async () => {
+    render(
+      <AuthProvider
+        authType={"cookie"}
+        authName={"_auth"}
+        cookieDomain={window.location.hostname}
+        cookieSecure={false}
+      >
+        <BrowserRouter>
+          <LoginPage />
+        </BrowserRouter>
+      </AuthProvider>
+    );
 
-test("5 fuzz randomly generated email input", async () => {
-  render(
-    <AuthProvider
-      authType={"cookie"}
-      authName={"_auth"}
-      cookieDomain={window.location.hostname}
-      cookieSecure={false}
-    >
-      <BrowserRouter>
-        <LoginPage />
-      </BrowserRouter>
-    </AuthProvider>
-  );
+    const numTests = 100; // Number of fuzz tests
+    for (let i = 0; i < numTests; i++) {
+      const email = generateRandomEmailInput();
 
-  const numTests = 5; // Number of fuzz tests
-  for (let i = 0; i < numTests; i++) {
-    const email = generateRandomEmailInput();
+      await userEvent.type(screen.getByPlaceholderText("Email"), email);
+      if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email)) {
+        expect(screen.queryByText(/Invalid Email/i)).toBeInTheDocument();
+      } else {
+        expect(screen.queryByText(/Invalid Email/i)).not.toBeInTheDocument();
+      }
 
-    await userEvent.type(screen.getByPlaceholderText("Email"), email);
+      await userEvent.clear(screen.getByPlaceholderText("Email"));
+    }
+  });
 
-    expect(screen.getByText(/Invalid Email/i)).toBeInTheDocument();
+  //Testing valid emails (White box testing)
+  test("100 valid email input", async () => {
+    render(
+      <AuthProvider
+        authType={"cookie"}
+        authName={"_auth"}
+        cookieDomain={window.location.hostname}
+        cookieSecure={false}
+      >
+        <BrowserRouter>
+          <LoginPage />
+        </BrowserRouter>
+      </AuthProvider>
+    );
 
-    await userEvent.clear(screen.getByPlaceholderText("Email"));
-  }
-});
+    const numTests = 100; // Number of fuzz tests
+    for (let i = 0; i < numTests; i++) {
+      const email = generateValidEmailInput();
+      await userEvent.type(screen.getByPlaceholderText("Email"), email);
 
-test("5 Fuzz valid email input", async () => {
-  render(
-    <AuthProvider
-      authType={"cookie"}
-      authName={"_auth"}
-      cookieDomain={window.location.hostname}
-      cookieSecure={false}
-    >
-      <BrowserRouter>
-        <LoginPage />
-      </BrowserRouter>
-    </AuthProvider>
-  );
+      expect(screen.queryByText(/Invalid Email/i)).not.toBeInTheDocument();
 
-  const numTests = 5; // Number of fuzz tests
-  for (let i = 0; i < numTests; i++) {
-    const email = generateValidEmailInput();
-    await userEvent.type(screen.getByPlaceholderText("Email"), email);
-
-    expect(screen.queryByText(/Invalid Email/i)).not.toBeInTheDocument();
-
-    await userEvent.clear(screen.getByPlaceholderText("Email"));
-  }
+      await userEvent.clear(screen.getByPlaceholderText("Email"));
+    }
+  });
 });
