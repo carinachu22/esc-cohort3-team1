@@ -31,4 +31,6 @@ test("Renders Dashboard", () => {
       </BrowserRouter>
     </AuthProvider>
   );
+  const heading = screen.getByText("Service Ticket Portal");
+  expect(heading).toBeInTheDocument();
 });
