@@ -14,6 +14,7 @@ import TenantCreationPage from './TenantCreationPage.js';
 import ViewLeasePage from './ViewLeasePage.js';
 import LeaseUpload from './LeaseUploadPage.js';
 import LandlordCreationPage from './LandlordCreationPage.js';
+import ModifyTicketPage from './ModifyTicketPage.js'
 
 import { Routes, Route } from 'react-router-dom';
 import { ChakraProvider } from "@chakra-ui/react";
@@ -41,6 +42,7 @@ function App() {
             <Route path='/pages/AccountManagement/*' element={<AccountManagement/>} />
             <Route path='/pages/ViewLeasePage/*' element={<ViewLeasePage/>} />
             <Route path='/pages/LeaseUploadPage/*' element={<LeaseUpload/>} />
+            <Route path='/pages/ModifyTicketPage/*' element={<ModifyTicketPage/>} />
           </Routes>
         </div>
       </div>

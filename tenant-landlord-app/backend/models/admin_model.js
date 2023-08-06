@@ -222,3 +222,24 @@ export const getAllLandlordAccounts = (callBack) => {
     )
   }
 
+export const modifyTicket = (data, callBack) => {
+    pool.query(
+        `
+        UPDATE service_request
+        SET ticket_type = ?, request_description = ?, status = ?
+        WHERE public_service_request_id = ?
+        `,
+        [
+        data.ticket_type,
+        data.request_description,
+        data.status,
+        data.public_service_request_id
+        ],
+        (error, results, fields) => {
+          if (error) {
+            callBack(error);
+          }
+          return callBack(null, results);
+        }
+    );
+}

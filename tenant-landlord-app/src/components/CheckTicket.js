@@ -26,15 +26,19 @@ export default function CheckTicket(ticket, userDetails){
     const [isCheckboxChecked, setCheckboxChecked] = useState(false); 
 
     const navigateToQuotationUploadPage =  (ticketID) => {
-      navigate('/pages/QuotationUploadPage/', { state: { ticketID } } );
+        navigate('/pages/QuotationUploadPage/', { state: { ticketID } } );
     }
 
     const navigateToQuotationPage =  (ticketID, status) => {
-      navigate('/pages/QuotationPage/', { state: { ticketID, status } } );
+        navigate('/pages/QuotationPage/', { state: { ticketID, status } } );
     }
 
     const navigateToFeedbackPage =  (ticketID) => {
-      navigate('/pages/FeedbackForm/', { state: { ticketID } } );
+        navigate('/pages/FeedbackForm/', { state: { ticketID } } );
+    }
+
+    const navigateToModifyTicketPage = (ticketID) => {
+        navigate('/pages/ModifyTicketPage/', { state: { ticketID } } );
     }
 
     // Check if user is authenticated
@@ -57,6 +61,25 @@ export default function CheckTicket(ticket, userDetails){
     >
     View/Add Quotation
     </Button>
+
+    const modify_ticket_html = 
+    <Button
+    variant="solid"
+    colorScheme="blue"
+    onClick={() => 
+    navigateToModifyTicketPage(ticket.public_service_request_id, ticket.status)
+    }
+    width="13em"
+    height="3em"
+    marginTop="3em"
+    borderRadius="0.25em"
+    >
+        Modify Ticket
+    </Button>
+
+    if (userDetails().type === 'admin'){
+        return modify_ticket_html
+    }
     
 
     // Check if service ticket has just been created by tenant

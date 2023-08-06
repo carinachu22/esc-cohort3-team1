@@ -10,6 +10,7 @@ import {
   controllerGetTickets,
   controllerGetAllLandlordAccounts,
   controllerGetAllTenantAccounts,
+  controllerModifyTicket
 } from "../controller/admin_controller.js";
 import express from "express";
 import { checkAdminToken } from "../auth/admin_validation.js";
@@ -59,16 +60,18 @@ router.post("/createBuilding", controllerCreateBuilding);
 router.get("/getAllTenantAccounts", controllerGetAllTenantAccounts);
 router.get("/getAllLandlordAccounts", controllerGetAllLandlordAccounts);
 
+router.get("/getTicketById/", controllerGetTicketById);
+router.patch("/modifyTicket", controllerModifyTicket);
+
 //LANDLORD PRIVILEGES
 
 router.post("/createTenant", controllerCreateTenant);
-router.get("/getTicket/:id", controllerGetTicketById);
 router.get("/getTickets", controllerGetTickets);
 router.post("/createTicket", controllerCreateTicket);
 router.patch("/deleteAllTenants", controllerDeleteAllTenants);
 router.patch("/deleteTenantByEmail", controllerDeleteTenantByEmail);
 
 // TODO: Do we want a generic API to patch any fields of a service ticket?
-//router.patch("/updateTicket/:id", controllerUpdateTicket);
+
 
 export default router;

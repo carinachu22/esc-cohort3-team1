@@ -10,6 +10,7 @@ import {
     getAllTickets,
     getAllLandlordAccounts,
     getAllTenantAccounts,
+    modifyTicket
 } from "../models/admin_model.js";
 import { genSaltSync, hashSync, compareSync } from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -369,3 +370,23 @@ export const controllerGetAllTenantAccounts = (req, res) => {
         }
     });
 }
+
+
+export const controllerModifyTicket = (req, res) => {
+    const body = req.body;
+    console.log("req.body", body);
+    modifyTicket(body, (err,results) => {
+        if (err) {
+            console.log(err);
+            return res.status(500).json({
+                success: 0,
+                message: "Database connection error"
+            });
+        } else {
+            return res.status(200).json({
+                success:1,
+                data: results
+            });
+        };
+    })
+};
