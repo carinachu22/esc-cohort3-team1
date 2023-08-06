@@ -74,7 +74,7 @@ describe('Successful/Usual Service Ticket Workflow', function () {
         ));
         await req_type.click();
         let sel_dropdown= await tenant_driver.wait(until.elementIsVisible(
-          tenant_driver.findElement(By.xpath(`//select[@name="requestType"]/option[3]`))
+          tenant_driver.findElement(By.xpath(`//select[@name="requestType"]/option[2]`))
         ));
         await sel_dropdown.click();
   
@@ -82,7 +82,7 @@ describe('Successful/Usual Service Ticket Workflow', function () {
         let description= await tenant_driver.wait(until.elementIsVisible(
           tenant_driver.findElement(By.xpath('//*[@id="tenantComment"]'))
         ));
-        await description.sendKeys("Not Clean, I demand a cleaning robot");
+        await description.sendKeys("Floor is muddy");
   
         await tenant_driver.executeScript("window.scrollBy(0,250)", "");
   
