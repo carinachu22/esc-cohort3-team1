@@ -57,7 +57,7 @@ export const controllerCreateLandlord = (req, res) => {
     console.log(req.body);
     const email = req.body.email;
     const password = req.body.password;
-    const ticketType = req.body.ticketType;
+    const ticketType = req.body.ticket_type;
     const role = "staff";
     const user_email = req.body.user_email;
     console.log("user_email", user_email);
