@@ -57,9 +57,11 @@ const LandlordCreationPage = () => {
             errors.password = "Required";
         }
 
-        // if(!values.ticket_type){
-        //     errors.ticket_type = "Required";
-        // }
+        if (values.role === 'staff'){
+            if(!values.ticket_type){
+                errors.ticket_type = "Required";
+            }
+        }
 
         if (userDetails().type === 'admin'){
 
@@ -219,51 +221,6 @@ const LandlordCreationPage = () => {
                 <form onSubmit={formik.handleSubmit}>
                     <VStack align="flex-start" alignItems="center">
                         <Heading marginTop="4" >Create Staff</Heading>
-                        <FormControl marginTop="6">
-                            <Input
-                                id="email" 
-                                name="email"
-                                type="email" 
-                                variant="filled"
-                                placeholder="Email"
-                                value={formik.values.email}
-                                onChange={formik.handleChange}
-                            />
-                            {formik.errors.email ? <Box color="red.500" marginBottom="-6">{formik.errors.email}</Box>: null}
-                        </FormControl>
-                        <FormControl marginTop="6">
-                            <InputGroup size='md'>
-                                <Input
-                                    id="password"
-                                    name="password" 
-                                    pr='4.5rem'
-                                    type={passwordShown ? "text" : "password"} 
-                                    placeholder="Password"
-                                    variant="filled"
-                                    value={formik.values.password}
-                                    onChange={formik.handleChange}
-                                />
-                                <InputRightElement width="4.5rem">
-                                    <Button h='1.75rem' size='sm' onClick={togglePassword}  variant="unstyled">
-                                        {passwordShown ? 'Hide' : 'Show'}
-                                    </Button>
-                                </InputRightElement>
-                            </InputGroup>
-                            {formik.errors.password ? <Box color="red.500"  marginBottom="-6">{formik.errors.password}</Box>: null}                          
-                        </FormControl>
-                        <FormControl marginTop="6">
-                            <Input
-                                id="ticket_type" 
-                                name="ticket_type"
-                                type="text" 
-                                variant="filled"
-                                placeholder="Ticket Type"
-                                value={formik.values.ticket_type}
-                                onChange={formik.handleChange}
-                                
-                            />
-                            {/* {formik.errors.ticket_type ? <Box color="red.500" marginBottom="-6">{formik.errors.ticket_type}</Box>: null} */}
-                        </FormControl>
                         {userDetails() && userDetails().type === 'admin' ?
                         <>
                         <FormControl marginTop="6">
@@ -297,6 +254,54 @@ const LandlordCreationPage = () => {
                         </FormControl>
                         </>
                         : null }
+                        <FormControl marginTop="6">
+                            <Input
+                                id="email" 
+                                name="email"
+                                type="email" 
+                                variant="filled"
+                                placeholder="Email"
+                                value={formik.values.email}
+                                onChange={formik.handleChange}
+                            />
+                            {formik.errors.email ? <Box color="red.500" marginBottom="-6">{formik.errors.email}</Box>: null}
+                        </FormControl>
+                        <FormControl marginTop="6">
+                            <InputGroup size='md'>
+                                <Input
+                                    id="password"
+                                    name="password" 
+                                    pr='4.5rem'
+                                    type={passwordShown ? "text" : "password"} 
+                                    placeholder="Password"
+                                    variant="filled"
+                                    value={formik.values.password}
+                                    onChange={formik.handleChange}
+                                />
+                                <InputRightElement width="4.5rem">
+                                    <Button h='1.75rem' size='sm' onClick={togglePassword}  variant="unstyled">
+                                        {passwordShown ? 'Hide' : 'Show'}
+                                    </Button>
+                                </InputRightElement>
+                            </InputGroup>
+                            {formik.errors.password ? <Box color="red.500"  marginBottom="-6">{formik.errors.password}</Box>: null}                          
+                        </FormControl>
+                        { formik.values.role === 'supervisor' ? null :
+                        <FormControl marginTop="6">
+                            <Input
+                                id="ticket_type" 
+                                name="ticket_type"
+                                type="text" 
+                                variant="filled"
+                                placeholder="Ticket Type"
+                                value={formik.values.ticket_type}
+                                onChange={formik.handleChange}
+                                
+                            />
+                            {formik.errors.ticket_type ? <Box color="red.500" marginBottom="-6">{formik.errors.ticket_type}</Box>: null} 
+                        </FormControl>
+                        }
+
                         <FormControl marginTop="6" >
                             <Button 
                                 id="loginButton"

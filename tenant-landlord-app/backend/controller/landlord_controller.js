@@ -509,7 +509,7 @@ export const controllerDeleteLandlordByEmail = (req, res) => {
     const body = req.body;
     console.log(body);
     const {email} = body;
-    console.log(email);
+    console.log('???',email);
     const currentDate = new Date();
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth() + 1;
