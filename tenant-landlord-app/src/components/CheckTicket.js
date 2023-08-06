@@ -86,7 +86,7 @@ export default function CheckTicket(ticket, userDetails){
     // Allow landlord to approve or reject ticket
     // Do not allow tenant to do anything
     if (status === 'tenant_ticket_created'){
-        if (userDetails().type === 'landlord'){
+        if (userDetails().type === 'landlord' && userDetails().email === ticket.landlord_email){
             return (
                 <>
                     <Checkbox id="quotationCheckbox" isChecked={isCheckboxChecked} onChange={(e) => setCheckboxChecked(e.target.checked)}>
@@ -183,7 +183,7 @@ export default function CheckTicket(ticket, userDetails){
     // Allow landlord to view/add quotation if quotation is required
     // Else, allow landlord to start work
     if (status === 'landlord_ticket_approved'){
-        if (userDetails().type === 'landlord'){
+        if (userDetails().type === 'landlord' && userDetails().email === ticket.landlord_email){
             if (ticket.quotation_required === 'true' || ticket.quotation_required === "1"){
                 return(
                     <Button
@@ -256,7 +256,7 @@ export default function CheckTicket(ticket, userDetails){
     // Do not allow tenant to do anything
     // Allow landlord to start work
     if (status === 'ticket_quotation_approved'){
-        if (userDetails().type === 'landlord'){
+        if (userDetails().type === 'landlord' && userDetails().email === ticket.landlord_email){
             return(
               <>
               {view_quotation_html}
@@ -305,7 +305,7 @@ export default function CheckTicket(ticket, userDetails){
     // Do not allow tenant to do anything
     // Allow landlord to update quotation
     if (status === 'ticket_quotation_rejected'){
-        if (userDetails().type === 'landlord'){
+        if (userDetails().type === 'landlord' && userDetails().email === ticket.landlord_email){
             return(
                 <Button
                 variant="solid"
@@ -331,7 +331,7 @@ export default function CheckTicket(ticket, userDetails){
     // Allow landlord to end work
     // TODO: Allow tenant to view quotation without approve/reject actions
     if (status === 'landlord_started_work'){
-        if (userDetails().type === 'landlord'){
+        if (userDetails().type === 'landlord' && userDetails().email === ticket.landlord_email){
             return(
                 <>
                 {view_quotation_html}
@@ -379,7 +379,7 @@ export default function CheckTicket(ticket, userDetails){
     // Allow tenant to close ticket
     // TODO: Allow tenant to reject work
     if (status === 'landlord_completed_work'){
-      if (userDetails().type === 'tenant'){
+      if (userDetails().type === 'tenant' && userDetails().email === ticket.landlord_email){
         return(
             <HStack spacing='5vw'>
                 {view_quotation_html}
@@ -437,7 +437,7 @@ export default function CheckTicket(ticket, userDetails){
     // Do not allow tenant to do anything
     // Allow landlord to start work
     if (status === 'ticket_work_rejected'){
-      if (userDetails().type === 'landlord'){
+      if (userDetails().type === 'landlord' && userDetails().email === ticket.landlord_email){
           return(
               <Button
               variant="solid"
