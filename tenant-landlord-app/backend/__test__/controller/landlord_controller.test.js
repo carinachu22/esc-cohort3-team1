@@ -328,7 +328,7 @@ describe("/landlord/createTenant", () => {
     })
 });
 
-describe("/getLeaseDetails/", () => {
+describe("/landlord/getLeaseDetails/", () => {
   test("valid user id", async () => {
     const token = await authorisation()
     await request(app)
@@ -380,7 +380,7 @@ describe("/getLeaseDetails/", () => {
   })
 })
 
-describe("/deleteLease/", () => {
+describe("/landlord/deleteLease/", () => {
   test("valid public lease id", async () => {
     const token = await authorisation()
     await request(app)
@@ -436,11 +436,89 @@ describe("/deleteLease/", () => {
   })
 })
 
+describe ("/landlord/getTickets", () => {
+
+  test("authorised landlord", async () =>  {
+    const token = await authorisation()
+    await request(app)
+      .get("/api/landlord/getTickets")
+      .set("Authorization", `Bearer ${token}`)
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toMatchObject({
+            success: "1",
+            data: expect.any(Array)
+          })
+        })
+  })
+
+  test("unauthorised landlord", async () =>  {
+    await request(app)
+      .get("/api/landlord/getTickets")
+      .query({
+        email: "hacker@gmail.comm"
+      })
+      .then((response) => {
+        expect(JSON.parse(response.text)).toEqual({
+            success: 0,
+            message: "Access denied: You are unauthorized!",
+          })
+        })
+  })
+})
+
+describe ("/landlord/getTicketById", () => {
+
+  test("valid ticket id", async () =>  {
+    const token = await authorisation()
+    await request(app)
+      .get("/api/landlord/getTicketById")
+      .set("Authorization", `Bearer ${token}`)
+      .query({ id: "SR/2003/Mar/0001" })
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toMatchObject({
+          success: "1",
+          data: {
+            service_request_id: 2,
+            public_service_request_id: 'SR/2003/Mar/0001',
+            email: 'tenant4@gmail.com',
+            request_type: 'aircon',
+            request_description: 'aircon',
+            submitted_date_time: "2003-03-02T19:03:03.000Z",
+            completed_date_time: null,
+            status: 'tenant_ticket_created',
+            feedback_rating: null,
+            feedback_text: null,
+            quotation_path: null,
+            service_requestcol: null,
+            floor: '10',
+            unit_number: '30',
+            quotation_required: null
+          }
+        })
+      })
+    })
+
+  test("invalid ticket id", async () =>  {
+    const token = await authorisation()
+    await request(app)
+      .get("/api/landlord/getTicketById")
+      .set("Authorization", `Bearer ${token}`)
+      .query({ id: "SR/9999/999/9999" })
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toMatchObject({
+          success: 0,
+          message: "Record not found"
+        })
+      })
+  })
+})
+
 //TODO: getLease
 
 //TODO: createLease
-
-//TODO: getTickets
 
 //TODO: getTicketsById
 
