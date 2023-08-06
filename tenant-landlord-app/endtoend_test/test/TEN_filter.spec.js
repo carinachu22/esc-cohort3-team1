@@ -145,33 +145,25 @@ describe('Tenant Filter Tickets', function () {
 
 
     it('check ticket type filter', async function() {
+      // await tenant_driver.sleep(1000);
       await tenant_driver.get('http://localhost:3000/pages/TicketList');
   
-
       let search_requester = await tenant_driver.wait(until.elementIsVisible(
           tenant_driver.findElement(By.xpath('//*[@id="root"]/div/div/div[3]/div/input'))
       ));
-      await tenant_driver.sleep(1000)
       await search_requester.sendKeys("Cleanliness");
 
-
-      await tenant_driver.manage().setTimeouts({ implicit: 500 });
-
-      // Find ticket
-      // const lastTicket = tenant_driver.findElement(By.xpath("//*[@class='chakra-accordion css-0']/div[last()]"));
-      // await tenant_driver.executeScript("arguments[0].click();", lastTicket);
-
-
-      // const last_requester = await tenant_
-      let last_requester = await tenant_driver.wait(until.elementIsVisible(tenant_driver.findElement(By.xpath('//*[@id="accordion-button-:r0:"]/div/div[3]'))))
+      let last_requester = await tenant_driver.wait(until.elementIsVisible(
+        tenant_driver.findElement(By.xpath('//*[@id="accordion-button-:r0:"]/div/div[3]'))
+        ));
       const text = await last_requester.getText();
 
       assert.equal('Cleanliness', text);
 
       // Return back to normal
-      // let clear_button =  await tenant_driver.wait(until.elementIsVisible(
-      //   tenant_driver.findElement(By.xpath('//*[@id="root"]/div/div/div[3]/div/div/button'))));
-      // await clear_button.click();
+      let clear_button =  await tenant_driver.wait(until.elementIsVisible(
+        tenant_driver.findElement(By.xpath('//*[@id="root"]/div/div/div[3]/div/div/button'))));
+      await clear_button.click();
     });
 
 
