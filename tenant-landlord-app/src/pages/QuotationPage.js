@@ -76,7 +76,7 @@ function QuotationPage() {
             values,
             config
         )
-        navigateToViewTicketPage
+        navigateToViewTicketPage(ticketID)
     };
 
     useEffect(() => {
