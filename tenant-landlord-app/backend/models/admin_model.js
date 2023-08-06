@@ -192,6 +192,7 @@ export const getAllTenantAccounts = (callBack) => {
     let sqlQuery = `
         SELECT *
         FROM tenant_user
+        WHERE deleted_date IS NULL 
         `
     console.log(sqlQuery)
     pool.query(
@@ -209,6 +210,7 @@ export const getAllLandlordAccounts = (callBack) => {
     let sqlQuery = `
     SELECT *
     FROM landlord_user
+    WHERE deleted_date IS NULL
     `
     console.log(sqlQuery)
     pool.query(
