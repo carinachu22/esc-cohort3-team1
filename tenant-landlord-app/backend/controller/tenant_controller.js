@@ -324,7 +324,7 @@ export const controllerGetTicketById = (req, res) => {
       console.log(results)
       return res.json({
         success: "1",
-        data: results,
+        data: results[0],
       });
     }
   });

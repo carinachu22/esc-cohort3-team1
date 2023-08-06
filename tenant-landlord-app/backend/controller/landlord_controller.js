@@ -438,7 +438,7 @@ export const controllerGetTicketById = (req, res) => {
     } else {
       return res.json({
         success: "1",
-        data: results,
+        data: results[0],
       });
     }
   });
