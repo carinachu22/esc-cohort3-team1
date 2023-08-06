@@ -321,7 +321,6 @@ export const controllerGetTicketById = (req, res) => {
         message: "Record not found",
       });
     } else {
-      console.log(results)
       return res.json({
         success: "1",
         data: results[0],
