@@ -375,7 +375,7 @@ const AccountManagement = () => {
             //await getLandlordRole(config.params.email);
             GetTenantAccounts();
             console.log(userDetails().role)
-            if(userDetails().role === 'admin' || userDetails().role === 'supervisor') GetLandlordAccounts();
+            if(userDetails().type === 'admin' || userDetails().role === 'supervisor') GetLandlordAccounts();
         }
     },[]);
 
@@ -391,7 +391,7 @@ const AccountManagement = () => {
         {NavigationBar()}
         
         {AccountManagementTable(() => APIDeleteAllTenants(config.params.email), "Tenant", tenantAccounts)}
-        {(userDetails().role === 'admin' || userDetails().role === 'supervisor') ? AccountManagementTable(() => APIDeleteAllLandlords(config.params.email), "Landlord", landlordAccounts) : null}
+        {(userDetails().type === 'admin' || userDetails().role === 'supervisor') ? AccountManagementTable(() => APIDeleteAllLandlords(config.params.email), "Landlord", landlordAccounts) : null}
 
         </ChakraProvider>
 
