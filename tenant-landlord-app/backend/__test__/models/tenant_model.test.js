@@ -19,13 +19,15 @@ import {
 import setup from '../setup.js';
 import teardown from '../teardown.js';
 
-beforeAll(async () => {
-    await setup();
-});
-afterAll(async () => {
-    await teardown();
-});
+/**
+ * Setting up and tearing down of database
+ */
+beforeAll(async () => { await setup(); });
+afterAll(async () => { await teardown(); });
 
+/**
+ * Test tenant model get tenant by email
+ */
 describe("Testing getTenantByEmail() in tenant model", () => {
     test ("Test calling getTenantByEmail() on a valid email",(done) => {
         getTenantByEmail('tenant1@gmail.com', (err, results) => {
@@ -49,6 +51,9 @@ describe("Testing getTenantByEmail() in tenant model", () => {
     });
 })
 
+/**
+ * Test tenant model get tenant by tenant user id
+ */
 describe("Testing getTenantById() in tenant model", () => {
     test ("Test calling getTenantById() on a valid tenant ID",(done) => {
         getTenantById(1, (err, results) => {
@@ -72,6 +77,9 @@ describe("Testing getTenantById() in tenant model", () => {
     });
 })
 
+/**
+ * Test tenant model update tenantpassword
+ */
 describe("Testing updateTenantPassword() in tenant model", () => {
     test ("Test calling updateTenantPassword() on valid tenant ID",(done) => {
         const data = {
@@ -103,6 +111,9 @@ describe("Testing updateTenantPassword() in tenant model", () => {
     });
 })
 
+/**
+ * Test tenant model get tickets by tenant email
+ */
 describe ("Testing getTicketsByTenant() in tenant model", () => {
     test ("Test calling getTicketsByTenant() on a valid email with no tickets", (done) => {
         getTicketsByTenant('tenant6@gmail.com', (err, results) => {
@@ -140,6 +151,9 @@ describe ("Testing getTicketsByTenant() in tenant model", () => {
     })
 })
 
+/**
+ * Test tenant model get tickets by status
+ */
 describe ("Testing getTicketsByStatus() in tenant model", () => {
     test ("Test calling getTicketsByStatus() on a valid email & valid status", (done) => {
         getTicketsByStatus('tenant1@gmail.com', 'landlord_completed_work', (err, results) => {
@@ -182,6 +196,9 @@ describe ("Testing getTicketsByStatus() in tenant model", () => {
     })
 })
 
+/**
+ * Test tenant model create ticket
+ */
 describe("Testing createTicket() in tenant model", () => {
     test ("Test calling createTicket() with valid values",(done) => {
         var currentdate = new Date(); 
@@ -204,6 +221,9 @@ describe("Testing createTicket() in tenant model", () => {
     });
 })
 
+/**
+ * Test tenant modelupdate tenant's approval on quotation
+ */
 describe("Testing quotationApproval() in tenant model", () => {
     test ("Test calling quotationApproval() on a valid service ticket ID & valid value",(done) => {
         quotationApproval("SR/2004/Apr/0001", 'ticket_quotation_approved', (err, results) => {
@@ -234,6 +254,9 @@ describe("Testing quotationApproval() in tenant model", () => {
 
 })
 
+/**
+ * Test tenant model update feedback rating
+ */
 describe("Testing addFeedbackRating() in tenant model", () => {
     test ("Test calling addFeedBackRating() on a valid service ticket ID & valid value",(done) => {
         addFeedbackRating("SR/2002/Feb/0001", 4, (err, results) => {
@@ -278,6 +301,9 @@ describe("Testing addFeedbackRating() in tenant model", () => {
 
 })
 
+/**
+ * Test tenant model update feedback text
+ */
 describe("Testing addFeedbackText() in tenant model", () => {
     test ("Test calling addFeedbackText() on a valid service ticket ID",(done) => {
         addFeedbackText("SR/2003/Mar/0001", "good job", (err, results) => {
@@ -301,6 +327,9 @@ describe("Testing addFeedbackText() in tenant model", () => {
     });
 })
 
+/**
+ * Test tenant model update ticket status to close ticket
+ */
 describe("Testing closeTicketStatus() in tenant model", () => {
     test ("Test calling closeTicketStatus() on a valid service ticket ID & valid value",(done) => {
         closeTicketStatus("SR/2002/Feb/0001", 'landlord_ticket_closed', (err, results) => {
@@ -330,6 +359,9 @@ describe("Testing closeTicketStatus() in tenant model", () => {
     });
 })
 
+/**
+ * Test tenant model get tenant user id
+ */
 describe("Testing getTenantUserId() in tenant model", () => {
     test ("Test calling getTenantUserId() on a valid email",(done) => {
         getTenantUserId("tenant1@gmail.com", (err, results) => {
@@ -353,6 +385,9 @@ describe("Testing getTenantUserId() in tenant model", () => {
     });
 })
 
+/**
+ * Test tenant model get lease by tenant id
+ */
 describe("Testing getLeaseByTenant() in tenant model", () => {
     test ("Test calling getLeaseByTenant() on a valid tenant ID",(done) => {
         getLeaseByTenant(3, (err, results) => {
@@ -376,6 +411,9 @@ describe("Testing getLeaseByTenant() in tenant model", () => {
     });
 })
 
+/**
+ * Test tenant model update tenant lease
+ */
 describe("Testing updateTenantLease() in tenant model", () => {
     test ("Test calling updateTenantLease() on valid tenant email",(done) => {
         var currentdate = new Date(); 
@@ -403,6 +441,9 @@ describe("Testing updateTenantLease() in tenant model", () => {
     });
 })
 
+/**
+ * Test tenant model recover tenant account
+ */
 describe("Testing recoverTenantAccount() in tenant model", () => {
     test ("Test calling recoverTenantAccount() on valid tenant id",(done) => {
         recoverTenantAccount(3, (err, results) => {
@@ -426,6 +467,9 @@ describe("Testing recoverTenantAccount() in tenant model", () => {
     });
 })
 
+/**
+ * Test tenant model get ticket by id
+ */
 describe("testing getTicketById() in tenant model", () => {
     test("test calling getTicketById() with valid public ticket id", (done) => {
         getTicketById("SR/2003/Mar/0001", (err,results) => {
@@ -442,6 +486,9 @@ describe("testing getTicketById() in tenant model", () => {
     })
 })
 
+/**
+ * Test tenant model get quotation path
+ */
 describe("Testing getQuotationPath() in tenant model", () => {
     test("Test calling getQuotationPath() with valid public ticket id", (done) => {
         getQuotationPath("SR/2003/Mar/0001", (err,results) => {
@@ -463,7 +510,3 @@ describe("Testing getQuotationPath() in tenant model", () => {
         })
     })
 })
-
-// TODO: getLeaseByTenantEmail
-
-// TODO: getQuotation

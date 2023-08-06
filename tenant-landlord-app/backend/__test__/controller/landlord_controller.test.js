@@ -4,6 +4,11 @@ import setup from '../setup.js';
 import teardown from '../teardown.js';
 import jwt from "jsonwebtoken";
 
+
+/**
+ * Mock authorisation
+ * @returns token after authentication
+ */
 async function authorisation() {
   const userData = {
     email: 'landlord1@gmail.com',
@@ -13,9 +18,15 @@ async function authorisation() {
   return jsontoken;
 }
 
+/**
+ * Setting up and tearing down of database
+ */
 beforeAll(async () => { await setup(); });
 afterAll(async () => { await teardown(); });
 
+/**
+ * Test landlord login API
+ */
 describe ("/landlord/login", () => {
     test("valid email and password credentials", async () =>  {
       await request(app)
@@ -68,6 +79,9 @@ describe ("/landlord/login", () => {
     })
   })
 
+  /**
+   * Test landlord create landlord account API
+   */
 describe ("/landlord/create", () => {
   test("non-existing landlord, valid inputs", async () =>  {
     const token = await authorisation()
@@ -199,6 +213,9 @@ describe ("/landlord/create", () => {
   })
 })
 
+/**
+ * Test landlord create tenant account API
+ */
 describe("/landlord/createTenant", () => {
   test("non-existing landlord, valid inputs", async () =>  {
     const token = await authorisation()
@@ -360,6 +377,9 @@ describe("/landlord/createTenant", () => {
   })
 });
 
+/**
+ * Test landlord getting lease details API
+ */
 describe("/landlord/getLeaseDetails/", () => {
   test("valid user id", async () => {
     const token = await authorisation()
@@ -423,6 +443,9 @@ describe("/landlord/getLeaseDetails/", () => {
   })
 })
 
+/**
+ * Test landlord delete lease API
+ */
 describe("/landlord/deleteLease/", () => {
   test("valid public lease id", async () => {
     const token = await authorisation()
@@ -491,6 +514,9 @@ describe("/landlord/deleteLease/", () => {
   })
 })
 
+/**
+ * Test landlord get tickets API
+ */
 describe ("/landlord/getTickets", () => {
 
   test("authorised landlord", async () =>  {
@@ -522,6 +548,9 @@ describe ("/landlord/getTickets", () => {
   })
 })
 
+/**
+ * Test landlord get ticket by public ticket id API
+ */
 describe ("/landlord/getTicketById", () => {
 
   test("valid ticket id", async () =>  {
@@ -583,6 +612,9 @@ describe ("/landlord/getTicketById", () => {
     })
 })
 
+/**
+ * Test landlord get ticket by ticket status API
+ */
 describe ("/landlord/getTicketsByStatus/:status", () => {
 
   test("valid status with service tickets", async () =>  {
@@ -667,6 +699,9 @@ describe ("/landlord/getTicketsByStatus/:status", () => {
   })
 })
 
+/**
+ * Test landlord approving ticket API
+ */
 describe ("/landlord/ticketApproval", () => {
   test("valid approval inputs: approved and need quotation", async () =>  {
     const token = await authorisation()
@@ -780,24 +815,11 @@ describe ("/landlord/ticketApproval", () => {
           })
         })
   })
-  
-  // test("landlord user with no token", async () =>  {
-  //   await request(app)
-  //     .patch("/api/tenant/ticketApproval")
-  //     .send({ 
-  //       ticket_id: "SR/9999/999/9999",
-  //       quotation_required: 1,
-  //       ticket_approved_by_landlord: 1 
-  //     })
-  //     .then((response) => {
-  //       expect(JSON.parse(response.text)).toEqual({
-  //           success: 0,
-  //           message: "Access denied: You are unauthorized!",
-  //         })
-  //       })
-  // })
 })
 
+/**
+ * Test landlord starting/completing work on ticket API
+ */
 describe ("/landlord/ticketWork", () => {
   test("valid inputs: starting work", async () =>  {
     const token = await authorisation()
@@ -886,24 +908,11 @@ describe ("/landlord/ticketWork", () => {
           })
         })
   })
-  
-  // test("landlord user with no token", async () =>  {
-  //   await request(app)
-  //     .patch("/api/tenant/ticketWork")
-  //     .send({ 
-  //       ticket_id: "SR/9999/999/9999",
-  //       ticket_work_status: 1 
-  //     })
-  //     .then((response) => {
-  //       console.log(response.body)
-  //       expect(JSON.parse(response.text)).toEqual({
-  //           success: 0,
-  //           message: "Access denied: You are unauthorized!",
-  //         })
-  //       })
-  // })
 })
 
+/**
+ * Test landlord get tenant accounts API
+ */
 describe ("/landlord/getTenantAccounts", () => {
 
   test("authorised landlord with valid email", async () =>  {

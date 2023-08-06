@@ -4,6 +4,10 @@ import setup from '../setup.js';
 import teardown from '../teardown.js';
 import jwt from "jsonwebtoken";
 
+/**
+ * Mock authorisation
+ * @returns token after authentication
+ */
 async function authorisation() {
   const userData = {
     email: 'tenant1@gmail.com',
@@ -13,9 +17,15 @@ async function authorisation() {
   return jsontoken;
 }
 
+/**
+ * Setting up and tearing down of database
+ */
 beforeAll(async () => { await setup(); });
 afterAll(async () => { await teardown(); });
 
+/**
+ * Test tenant login API
+ */
 describe ("/tenant/login", () => {
   test("valid email and password credentials", async () =>  {
     await request(app)
@@ -68,6 +78,9 @@ describe ("/tenant/login", () => {
   })
 })
 
+/**
+ * Test tenant create ticket API
+ */
 describe ("/tenant/createTicket", () => {
   test("valid and complete inputs", async () =>  {
     const token = await authorisation()
@@ -198,6 +211,9 @@ describe ("/tenant/createTicket", () => {
   })
 })
 
+/**
+ * Test tenant approval of quotation API
+ */
 describe ("/tenant/quotationApproval", () => {
   test("valid ticket id and accept quotation", async () =>  {
     const token = await authorisation()
@@ -287,6 +303,9 @@ describe ("/tenant/quotationApproval", () => {
   })
 })
 
+/**
+ * Test tenant get tickets API
+ */
 describe ("/tenant/getTickets", () => {
 
   test("valid tenant email with service tickets", async () =>  {
@@ -361,6 +380,9 @@ describe ("/tenant/getTickets", () => {
   })
 })
 
+/**
+ * Test tenant get tickets by status API
+ */
 describe ("/tenant/getTicketsByStatus/:status", () => {
 
   test("valid tenant email and status with service tickets", async () =>  {
@@ -450,6 +472,9 @@ describe ("/tenant/getTicketsByStatus/:status", () => {
   })
 })
 
+/**
+ * Test tenant get ticket by id API
+ */
 describe ("/tenant/getTicketById", () => {
 
   test("valid ticket id", async () =>  {
@@ -499,6 +524,9 @@ describe ("/tenant/getTicketById", () => {
   })
 })
 
+/**
+ * Test tenant add feedback rating API
+ */
 describe ("/tenant/addFeedbackRating", () => {
   test("valid ticket id and feedback rating = 1", async () =>  {
     const token = await authorisation()
@@ -622,6 +650,9 @@ describe ("/tenant/addFeedbackRating", () => {
   })
 })
 
+/**
+ * Test tenant add feedback text API
+ */
 describe ("/tenant/addFeedbackText", () => {
   test("valid ticket id and feedback text", async () =>  {
     const token = await authorisation()
@@ -675,6 +706,9 @@ describe ("/tenant/addFeedbackText", () => {
   })
 })
 
+/**
+ * Test tenant close ticket API
+ */
 describe ("/tenant/closeTicketStatus", () => {
   test("valid ticket id and status", async () =>  {
     const token = await authorisation()

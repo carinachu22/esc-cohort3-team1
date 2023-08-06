@@ -30,15 +30,15 @@ import {
 import setup from '../setup.js';
 import teardown from '../teardown.js';
 
-beforeAll(async () => {
-    await setup();
-});
+/**
+ * Setting up and tearing down of database
+ */
+beforeAll(async () => { await setup(); });
+afterAll(async () => { await teardown(); });
 
-afterAll(async () => {
-    await teardown();
-});
-
-
+/**
+ * Test landlord model get landlord by email
+ */
 describe("Testing getLandlordByEmail() in landlord model", () => {
 
     test ("Test calling getLandlordByEmail() on a valid email",(done) => {
@@ -61,10 +61,11 @@ describe("Testing getLandlordByEmail() in landlord model", () => {
             done();
         })
     });
-
-
 })
 
+/**
+ * Test landlord model get tickets by status
+ */
 describe ("Testing getTicketsByStatus() in landlord model", () => {
 
     test ("Test calling getTicketsByStatus() on a status not available", (done) => {
@@ -97,6 +98,9 @@ describe ("Testing getTicketsByStatus() in landlord model", () => {
     })
 })
 
+/**
+ * Test landlord model get landlord by landlord user id
+ */
 describe("Testing getLandlordById() in landlord model", () => {
     test ("Test calling getLandlordById() on a valid landlord ID",(done) => {
         getLandlordById(1, (err, results) => {
@@ -120,6 +124,9 @@ describe("Testing getLandlordById() in landlord model", () => {
     });
 })
 
+/**
+ * Test landlord model update landlord password
+ */
 describe("Testing updateLandlordPassword() in landlord model", () => {
     test ("Test calling updateLandlordPassword() on valid landlord ID",(done) => {
         const data = {
@@ -151,6 +158,9 @@ describe("Testing updateLandlordPassword() in landlord model", () => {
     });
 })
 
+/**
+ * Test landlord model get landlord user id
+ */
 describe("Testing getLandlordUserId() in landlord model", () => {
     test ("Test calling getLandlordUserId() on a valid email",(done) => {
         getLandlordUserId("landlord1@gmail.com", (err, results) => {
@@ -174,6 +184,9 @@ describe("Testing getLandlordUserId() in landlord model", () => {
     });
 })
 
+/**
+ * Test landlord model create landlord account
+ */
 describe("testing createLandlord() in landlord model", () => {
     test ("Test calling createLandlord() with valid values",(done) => {
         const data = {
@@ -238,6 +251,9 @@ describe("testing createLandlord() in landlord model", () => {
     });
 })
 
+/**
+ * Test landlord model delete all tenant accounts in the building
+ */
 describe("Testing deleteAllTenants() in landlord model", () => {
     test("Test calling deleteAllTenants() with valid public building id", (done) => {
         deleteAllTenants(Date.now(), 'RC', (err,results) => {
@@ -262,6 +278,9 @@ describe("Testing deleteAllTenants() in landlord model", () => {
     })
 })
 
+/**
+ * Test landlord model delete tenant by email
+ */
 describe("Testing deleteTenantByEmail() in landlord model", () => {
     test("Test calling deletetenantByEmail() with valid email", (done) => {
         deleteTenantByEmail(Date.now(), 'tenant1@gmail.com', (err,results) => {
@@ -286,6 +305,9 @@ describe("Testing deleteTenantByEmail() in landlord model", () => {
     })
 })
 
+/**
+ * Test landlord model create tenant account
+ */
 describe("testing createTenant() in landlord model", () => {
     test ("Test calling createTenant() with valid values",(done) => {
         const data = {
@@ -349,6 +371,9 @@ describe("testing createTenant() in landlord model", () => {
     });
 })
 
+/**
+ * Test landlord model get tickets
+ */
 describe("testing getTickets() in landlord model", () => {
     test ("Test calling getTickets()",(done) => {
         getTickets((err, results) => {
@@ -361,6 +386,9 @@ describe("testing getTickets() in landlord model", () => {
     });
 })
 
+/**
+ * Test landlord model update quotation
+ */
 describe("Testing updateQuotation() in landlord model", () => {
     test ("Test calling updateQuotation() on valid public ticket ID",(done) => {
         updateQuotation("SR/2002/Feb/0001", (err, results) => {
@@ -384,6 +412,9 @@ describe("Testing updateQuotation() in landlord model", () => {
     });
 })
 
+/**
+ * Test landlord model upload quotation
+ */
 describe("Testing uploadQuotation() in landlord model", () => {
     test ("Test calling uploadQuotation() on valid public ticket ID",(done) => {
         const data = {
@@ -426,6 +457,9 @@ describe("Testing uploadQuotation() in landlord model", () => {
     });
 })
 
+/**
+ * Test landlord model get quotation path
+ */
 describe("Testing getQuotationPath() in landlord model", () => {
     test("Test calling getQuotationPath() with valid public ticket id", (done) => {
         getQuotationPath("SR/2002/Feb/0001", (err,results) => {
@@ -448,6 +482,9 @@ describe("Testing getQuotationPath() in landlord model", () => {
     })
 })
 
+/**
+ * Test landlord model update landlord's approval/rejection of ticket
+ */
 describe("Testing ticketApproval() in landlord model", () => {
     test ("Test calling ticketApproval() with valid inputs",(done) => {
         ticketApproval("SR/2002/Feb/0001", 1, "landlord_ticket_approved", (err, results) => {
@@ -500,6 +537,9 @@ describe("Testing ticketApproval() in landlord model", () => {
     });
 })
 
+/**
+ * Test landlord model update landlord's work status on ticket
+ */
 describe("Tesing ticketWork() in landlord model", () => {
     test("Test ticketWork() with valid inputs", (done) => {
         ticketWork("SR/2003/Mar/0001", "landlord_started_work", (err,results) => {
@@ -545,6 +585,9 @@ describe("Tesing ticketWork() in landlord model", () => {
     })
 })
 
+/**
+ * Test landlord model get tenant accounts in building
+ */
 describe("testing getTenantAccounts() in landlord model", () => {
     test ("Test calling getTenantAccounts() with valid building id that has tenants",(done) => {
         getTenantAccounts("TM1", (err, results) => {
@@ -587,6 +630,9 @@ describe("testing getTenantAccounts() in landlord model", () => {
     });
 })
 
+/**
+ * Test landlord model create lease
+ */
 describe("testing createLease() in landlord model", () => {
     test("Test calling createLease() with valid inputs, no lease path", (done) => {
         const data = {
@@ -673,6 +719,9 @@ describe("testing createLease() in landlord model", () => {
     })
 })
 
+/**
+ * Test landlord model upload lease
+ */
 describe("testing uploadLease() in landlord model", () => {
     test("test calling uploadLease() with valid inputs", (done) => {
         const data = {
@@ -725,6 +774,9 @@ describe("testing uploadLease() in landlord model", () => {
     })
 })
 
+/**
+ * Test landlord model update lease
+ */
 describe("Testing updateLease() in landlord model", () => {
     test ("Test calling updateLease() on valid inputs without pdf of lease",(done) => {
         const data = {
@@ -843,6 +895,9 @@ describe("Testing updateLease() in landlord model", () => {
     });
 })
 
+/**
+ * Test landlord model get lease path to the pdf of lease
+ */
 describe("testing getLeasePath() in landlord model", () => {
     test ("Test calling getLeasePath() with valid tenant id",(done) => {
         getLeasePath(1, (err, results) => {
@@ -865,6 +920,9 @@ describe("testing getLeasePath() in landlord model", () => {
     });
 })
 
+/**
+ * Test landlord model delete lease
+ */
 describe("Testing deleteLease() in landlord model", () => {
     test("test calling deleteLease() with valid public lease id", (done) => {
         deleteLease("2007-11-20 11:11:11", (err, results) => {
@@ -889,6 +947,9 @@ describe("Testing deleteLease() in landlord model", () => {
     })
 })
 
+/**
+ * Test landlord model get ticket by id
+ */
 describe("testing getTicketById() in landlord model", () => {
     test("test calling getTicketsById() with valid public ticket id", (done) => {
         getTicketById("SR/2002/Feb/0001", (err,results) => {
@@ -905,6 +966,9 @@ describe("testing getTicketById() in landlord model", () => {
     })
 })
 
+/**
+ * Test landlord model get lease details
+ */
 describe("testing getLeaseDetails() in landlord model", () => {
     test("test calling getLeaseDetails() with valid tenant id", (done) => {
         getLeaseDetails(4, (err,results) => {
