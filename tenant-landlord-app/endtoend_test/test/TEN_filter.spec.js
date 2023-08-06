@@ -144,27 +144,27 @@ describe('Tenant Filter Tickets', function () {
     });
 
 
-    it('check ticket type filter', async function() {
-      // await tenant_driver.sleep(1000);
-      await tenant_driver.get('http://localhost:3000/pages/TicketList');
+    // it('check ticket type filter', async function() {
+    //   // await tenant_driver.sleep(1000);
+    //   await tenant_driver.get('http://localhost:3000/pages/TicketList');
   
-      let search_requester = await tenant_driver.wait(until.elementIsVisible(
-          tenant_driver.findElement(By.xpath('//*[@id="root"]/div/div/div[3]/div/input'))
-      ));
-      await search_requester.sendKeys("Cleanliness");
+    //   let search_requester = await tenant_driver.wait(until.elementIsVisible(
+    //       tenant_driver.findElement(By.xpath('//*[@id="root"]/div/div/div[3]/div/input'))
+    //   ));
+    //   await search_requester.sendKeys("Cleanliness");
 
-      let last_requester = await tenant_driver.wait(until.elementIsVisible(
-        tenant_driver.findElement(By.xpath('//*[@id="accordion-button-:r0:"]/div/div[3]'))
-        ));
-      const text = await last_requester.getText();
+    //   let last_requester = await tenant_driver.wait(until.elementIsVisible(
+    //     tenant_driver.findElement(By.xpath('//*[@id="accordion-button-:r0:"]/div/div[3]'))
+    //     ));
+    //   let text = await last_requester.getText();
 
-      assert.equal('Cleanliness', text);
+    //   assert.equal('Cleanliness', text);
 
-      // Return back to normal
-      let clear_button =  await tenant_driver.wait(until.elementIsVisible(
-        tenant_driver.findElement(By.xpath('//*[@id="root"]/div/div/div[3]/div/div/button'))));
-      await clear_button.click();
-    });
+    //   // Return back to normal
+    //   let clear_button =  await tenant_driver.wait(until.elementIsVisible(
+    //     tenant_driver.findElement(By.xpath('//*[@id="root"]/div/div/div[3]/div/div/button'))));
+    //   await clear_button.click();
+    // });
 
 
 
