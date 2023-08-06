@@ -52,6 +52,7 @@ export default function TicketList() {
     const [searchInput, setSearchInput] = useState("");
     const [searchType, setSearchType] = useState("");
     const [filterOption, setFilterOption] = useState("");
+    const [filterBuildingOption, setFilterBuildingOption] = useState("");
     const [filteredTickets, setFilteredTickets] = useState([]);
     const [landlordAccounts, setLandlordAccounts] = useState([])
     var tickets_html
@@ -165,6 +166,11 @@ export default function TicketList() {
                 } else if (type === 'tenant'){ 
                     response = await axios.get(
                         "http://localhost:5000/api/tenant/getTickets",
+                        config
+                    )
+                } else if (type === 'admin'){ 
+                    response = await axios.get(
+                        "http://localhost:5000/api/admin/getTickets",
                         config
                     )
                 }
@@ -342,6 +348,68 @@ export default function TicketList() {
                 </AccordionItem>
                 </div>
             );
+            } else if (type === 'admin') {
+                // Convert every ticket fetched to HTML to be shown on the left
+                tickets_html = tickets_list.map((ticket, index) => 
+                <div key={index+1}>
+                <AccordionItem>
+                    <AccordionButton justifyContent="space-between">
+                        <HStack spacing='24px' width="100%">
+                        <Box textAlign='left' width="16vw">
+                        {index+1}
+                        </Box>
+                        <Box textAlign='left' width='34vw'>
+                        {ticket.landlord_email ? ticket.landlord_email : "Unassigned"}
+                        </Box>
+                        <Box textAlign='left' width='20vw'>
+                        {ticket.ticket_type}
+                        </Box>
+                        <Box textAlign='left' width='18vw'>
+                        {convertStatus(ticket.status)}
+                        </Box>
+                        </HStack>
+                        <AccordionIcon />
+                    </AccordionButton>
+                    <AccordionPanel>
+                        <HStack spacing='24vw'>
+                        <Box>
+                        Service Request ID: {ticket.public_service_request_id} <br></br>
+                        Email: {ticket.email} <br></br>
+                        Request Type: {ticket.ticket_type} <br></br>
+                        Request Description: {ticket.request_description} <br></br>
+                        Status: {convertStatus(ticket.status)} <br></br>
+                        Landlord Assigned: {ticket.landlord_email ? ticket.landlord_email : "Unassigned"}<br></br>
+                        </Box> 
+                        <Box width='50vw'>
+                            <Stepper index={checkStep(ticket.status)}>
+                                {steps.map((step, index) => (
+                                    <Step key={index}>
+                                    <StepIndicator>
+                                        <StepStatus
+                                        complete={<StepIcon />}
+                                        incomplete={<StepNumber />}
+                                        active={<StepNumber />}
+                                        />
+                                    </StepIndicator>
+
+                                    <Box flexShrink='0'>
+                                        <StepTitle width='6vw'>{step.title}</StepTitle>
+                                    </Box>
+
+                                    <StepSeparator />
+                                    </Step>
+                                ))}
+                                </Stepper>
+                        </Box>
+                        </HStack>
+                        <br></br>
+                        <Button onClick={() => navigateToViewTicketPage(ticket.public_service_request_id)} bgColor='blue.500' color='white' _hover={{bg: 'blue.800'}}>
+                            View Details & Actions
+                        </Button>
+                    </AccordionPanel>
+                </AccordionItem>
+                </div>
+            );
             }
             // Update states to be accessed in return
             console.log("tickets html", tickets_html)
@@ -350,12 +418,17 @@ export default function TicketList() {
 
         refreshTickets()
     }
-    const filterTickets = (tickets, status) => {
-        if (status === "") {
+    const filterTickets = (tickets, status, building) => {
+        // If no filtering provided
+        if (status === "" && building === "") {
             return tickets;
         }
-        return tickets.filter((ticket) => convertStatus(ticket.status) === status);
-        };
+        // If execution reaches here, means either status or building is not empty
+        if (status != ""){
+            return tickets.filter((ticket) => convertStatus(ticket.status) === status);
+        }
+        // TODO: Find a way to sort tickets by building
+    };
         
     // Function to search tickets based on the search input
     const searchTickets = (tickets, searchInput, searchType) => {
@@ -372,11 +445,10 @@ export default function TicketList() {
         navigate('/pages/ViewTicketPage/', { state: { ticketID } } );
       }
     
-
     // Combine filtering and searching
     const getFilteredTickets = () => {
         const filtered_tickets = (searchTickets(
-            filterTickets(tickets, filterOption),
+            filterTickets(tickets, filterOption, filterBuildingOption),
             searchInput, searchType
             ))
         console.log('filtered tickets', filtered_tickets)
@@ -465,15 +537,6 @@ export default function TicketList() {
     }, [filterOption, searchInput, searchType]);
 
 
-    //console.log("Authenticated.")
-    // Warning from react comes from the below block
-    // This is because the number of hooks called before and after loading is different
-    // If promise is not yet fulfilled, wait
-    /*
-    if (isLoading){
-        return<div className="App">Loading...</div>;
-    }*/
-
     // Ensure that user is authenticated for all renders
     const authenticate = () => {
         // Check if still autenticated based on react auth kit
@@ -536,7 +599,6 @@ export default function TicketList() {
                 <option value="Approved">Approved</option>
                 <option value="Completed">Completed</option>
                 <option value="Closed">Closed</option>
-                {/* Add more filter options as needed */}
             </Select>
             </Box>
                 <TableContainer>
@@ -545,7 +607,7 @@ export default function TicketList() {
                 <Tr>
                     <Th> No. </Th>
                     <Th> 
-                        {userDetails().type === 'tenant' ? "Assigned To" : "Requester"} 
+                        {userDetails().type === 'tenant' || userDetails().type === 'admin' ? "Assigned To" : "Requester"} 
                     </Th>
                     <Th> Type </Th>
                     <Th> Status </Th>

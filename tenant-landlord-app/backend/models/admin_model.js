@@ -171,6 +171,23 @@ export const createBuilding = (data, callBack) => {
     }
   );
 };
+
+export const getAllTickets = (callBack) => {
+    pool.query(
+      `
+      SELECT *
+      FROM service_request
+      `,
+      (error, results, fields) => {
+        if (error) {
+          callBack(error);
+        } else {
+          callBack(null, results);
+        }
+      }
+    );
+  };
+
 export const getAllTenantAccounts = (callBack) => {
     let sqlQuery = `
         SELECT *

@@ -7,6 +7,7 @@ import {
     deleteLandlordByEmail,
     createBuilding,
     updateAdminPassword,
+    getAllTickets,
     getAllLandlordAccounts,
     getAllTenantAccounts,
 } from "../models/admin_model.js";
@@ -312,6 +313,23 @@ export const controllerCreateBuilding = (req, res) => {
         }
     });
 };
+
+
+export const controllerGetTickets = (req, res) => {
+    getAllTickets((err, results) => {
+        if (err) {
+            console.log(err);
+            return;
+        } else {
+        return res.json({
+            success: "1",
+            data: results,
+        });
+        }
+    });
+}
+
+
 export const controllerGetAllLandlordAccounts = (req, res) => {
     const query = req.query;
     const {landlordEmail, ticket_type} = query;

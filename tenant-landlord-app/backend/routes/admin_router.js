@@ -7,6 +7,7 @@ import {
   controllerForgotPasswordAdmin,
   controllerResetPasswordAdmin,
   controllerResetPasswordPageAdmin,
+  controllerGetTickets,
   controllerGetAllLandlordAccounts,
   controllerGetAllTenantAccounts,
 } from "../controller/admin_controller.js";
@@ -14,7 +15,7 @@ import express from "express";
 import { checkAdminToken } from "../auth/admin_validation.js";
 import multer from "multer";
 import {
-  controllerGetTickets,
+  
   controllerGetTicketById,
   controllerCreateTenant,
   controllerDeleteAllTenants,
