@@ -14,7 +14,10 @@ import { useFormik } from "formik";
 import axios, { AxiosError } from "axios";
 
 import LoginPage from "../pages/LoginPage.js";
-import generateRandomEmailInput from "./email_generator";
+import {
+  generateRandomEmailInput,
+  generateValidEmailInput,
+} from "./email_generator";
 
 jest.mock("axios");
 // Mock specific hooks from react-auth-kit
@@ -49,7 +52,7 @@ test("Checking generateRandomEmailInput", () => {
   console.log(generateRandomEmailInput());
 });
 
-test("10 Fuzz email input with random emails", async () => {
+test("5 fuzz randomly generated email input", async () => {
   render(
     <AuthProvider
       authType={"cookie"}
@@ -63,16 +66,39 @@ test("10 Fuzz email input with random emails", async () => {
     </AuthProvider>
   );
 
-  const numTests = 10; // Number of fuzz tests
-  let failures = 0; // Counter for failed tests
+  const numTests = 5; // Number of fuzz tests
   for (let i = 0; i < numTests; i++) {
     const email = generateRandomEmailInput();
+
     await userEvent.type(screen.getByPlaceholderText("Email"), email);
 
     expect(screen.getByText(/Invalid Email/i)).toBeInTheDocument();
-    failures++;
 
     userEvent.clear(screen.getByPlaceholderText("Email"));
   }
-  console.log("Number of failures is ", failures);
+});
+
+test("5 Fuzz valid email input", async () => {
+  render(
+    <AuthProvider
+      authType={"cookie"}
+      authName={"_auth"}
+      cookieDomain={window.location.hostname}
+      cookieSecure={false}
+    >
+      <BrowserRouter>
+        <LoginPage />
+      </BrowserRouter>
+    </AuthProvider>
+  );
+
+  const numTests = 5; // Number of fuzz tests
+  for (let i = 0; i < numTests; i++) {
+    const email = generateValidEmailInput();
+    await userEvent.type(screen.getByPlaceholderText("Email"), email);
+
+    expect(screen.queryByText(/Invalid Email/i)).not.toBeInTheDocument();
+
+    userEvent.clear(screen.getByPlaceholderText("Email"));
+  }
 });

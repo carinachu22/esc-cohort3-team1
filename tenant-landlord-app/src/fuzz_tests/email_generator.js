@@ -1,5 +1,52 @@
 //This file exports the generateRandomEmailInput, which can be used for UI testing
-// When we run this file, it tests the validate function itself
+
+const generateRandomEmailInput = () => {
+  const randomLength = Math.floor(Math.random() * 20) + 1;
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789._%+-@";
+
+  let input = "";
+  for (let i = 0; i < randomLength; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    input += characters.charAt(randomIndex);
+  }
+  return input;
+};
+
+const generateValidEmailInput = () => {
+  const generateRandomString = (mode, length) => {
+    let characters = "";
+    if (mode === "local") {
+      characters =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789._%+-";
+    } else if (mode === "domain") {
+      characters =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-";
+    } else if (mode === "topdomain") {
+      characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    }
+
+    let result = "";
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      result += characters.charAt(randomIndex);
+    }
+    return result;
+  };
+
+  const localPart = generateRandomString("local", 6); // 6 characters for local-part
+  const domainName = generateRandomString("domain", 6); // 6 characters for domain name
+  const topLevelDomain = generateRandomString("topdomain", 3); // 3 characters for TLD
+
+  return `${localPart}@${domainName}.${topLevelDomain}`;
+};
+
+export { generateRandomEmailInput, generateValidEmailInput };
+
+//////////////////// Commented out section tests the validate function itself//////////////////////
+
+/** 
+// Perform fuzz testing  on email with the validate() function in LoginPage.js 
 
 //validate function
 const validate = (values) => {
@@ -17,22 +64,7 @@ const validate = (values) => {
 
   return errors;
 };
-const generateRandomEmailInput = () => {
-  const randomLength = Math.floor(Math.random() * 20) + 1;
-  const characters =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789._%+-@";
 
-  let input = "";
-  for (let i = 0; i < randomLength; i++) {
-    const randomIndex = Math.floor(Math.random() * characters.length);
-    input += characters.charAt(randomIndex);
-  }
-  return input;
-};
-export default generateRandomEmailInput;
-
-/** 
-// Perform fuzz testing  on email
 const numTests = 20; // Number of tests to run
 let failures = 0; // Counter for failed tests
 
