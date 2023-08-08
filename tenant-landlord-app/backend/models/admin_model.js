@@ -224,6 +224,35 @@ export const getAllLandlordAccounts = (callBack) => {
     )
   }
 
+
+/**
+ * recover landlord account by setting the deleted_date to NULL
+ * @param {*} id 
+ * @param {*} callBack 
+ */
+export const recoverLandlordAccount = (data, id, callBack) => {
+  pool.query(
+    `
+    UPDATE landlord_user 
+    SET deleted_date = NULL, password = ?, ticket_type = ?, public_building_id = ?, role = ?
+    WHERE landlord_user_id = ?
+    `,
+    [
+      data.password,
+      data.ticket_type,
+      data.public_building_id,
+      data.role,
+      id
+    ],
+    (error, results, fields) => {
+      if(error){
+        callBack(error);
+      }
+      return callBack(null, results);
+    }
+  );
+}
+
 export const modifyTicket = (data, callBack) => {
     pool.query(
         `
