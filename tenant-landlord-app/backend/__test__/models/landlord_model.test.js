@@ -699,7 +699,7 @@ describe("testing createLease() in landlord model", () => {
         })
     })
 
-    test("Test calling createLease() with floor", (done) => {
+    test("Test calling createLease() missing floor", (done) => {
         const data = {
             unit_number: 100
         }
@@ -1121,7 +1121,7 @@ describe("Testing deleteLandlord() in landlord model", () => {
         })
     });
 
-    test ("Test calling deleteLandlord() with missing deleted date",(done) => {
+    test ("Test calling deleteLandlord() with missing landlord email",(done) => {
         deleteLandlord(Date.now(), null, (err, results) => {
             expect(err).toBe("missing data entry!");
             done();

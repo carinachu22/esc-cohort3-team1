@@ -215,12 +215,9 @@ describe ("/tenant/createTicket", () => {
     await request(app)
       .post("/api/tenant/createTicket")
       .send({
-        public_service_request_id: "2023-06-04 10:10:10", 
-        name: "tenant1",
-        email: "tenant1@gmail.com",
+        email: "tenant10@gmail.com",
         request_type: "cleanliness",
         request_description: "the toilets are very dirty at level 2. please get someone to clean it.",
-        quotation_path: "C:Downlods/Quotations/q6",
         submitted_date_time: "2023-06-04 10:10:10"
       })
       .then((response) => {
@@ -620,7 +617,7 @@ describe ("/tenant/addFeedbackRating", () => {
         })
   })
 
-  test("valid public ticket id but invalid feedback rating = 3", async () =>  {
+  test("valid public ticket id but invalid feedback rating = 'invalid", async () =>  {
     const token = await authorisation()
     await request(app)
       .patch("/api/tenant/addFeedbackRating")

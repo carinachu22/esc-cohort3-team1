@@ -280,14 +280,8 @@ describe("Testing addFeedbackRating() in tenant model", () => {
     });
     test ("Test calling addFeedBackRating() on a valid service ticket ID & invalid value",(done) => {
         addFeedbackRating("SR/2003/Mar/0001", 6, (err, results) => {
-            if (err) {
-                // Error is reported through the callback
-                expect(err).toBeTruthy(); // Use any appropriate assertion to check the error
-                done(); // Call done() to indicate that the test is complete
-              } else {
-                // No error occurred, you can add further assertions for success case here if needed
-                done.fail(new Error("Expected error but got success")); // Fail the test since error was expected
-              }
+            expect(err).toBe("data validation error")
+            done();
         })
     });
     test ("Test calling addFeedBackRating() on an invalid service ticket ID & invalid value",(done) => {

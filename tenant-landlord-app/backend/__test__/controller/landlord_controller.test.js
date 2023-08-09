@@ -1259,7 +1259,7 @@ describe("/landlord/uploadQuotation", () => {
         })
   });
 
-  test("tenant user with no token", async () =>  {
+  test("unauthorised landlord", async () =>  {
     await request(app)
       .post("/api/landlord/uploadQuotation")
       .query({
@@ -1325,7 +1325,7 @@ describe("/landlord/getQuotation", () => {
       .expect("No quotation uploaded yet!")
   });
 
-  test("tenant user with no token", async () =>  {
+  test("unauthorised landlord", async () =>  {
     await request(app)
       .get("/api/landlord/getQuotation")
       .query({
