@@ -1,5 +1,10 @@
+// These lines make "require" available
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
 const { By, Builder, Browser, until } = require("selenium-webdriver");
 const chai = require("chai");
+import setup from "../setup.js"
+import teardown from "../teardown.js";
 
 const assert = chai.assert;
 
@@ -8,6 +13,7 @@ describe("Service Ticket Workflow -- Tenant Rejects Quotation", function () {
   let landlord_driver;
 
   before(async function () {
+    await setup()
     tenant_driver = await new Builder().forBrowser("chrome").build();
     landlord_driver = await new Builder().forBrowser("chrome").build();
   });
@@ -15,6 +21,7 @@ describe("Service Ticket Workflow -- Tenant Rejects Quotation", function () {
   after(async () => {
     await tenant_driver.quit();
     await landlord_driver.quit();
+    await teardown()
   });
 
   it("Select Tenant Option", async function () {
@@ -302,7 +309,7 @@ describe("Service Ticket Workflow -- Tenant Rejects Quotation", function () {
 
     await landlord_driver.sleep(100);
 
-    currentURL = await landlord_driver.getCurrentUrl();
+    let currentURL = await landlord_driver.getCurrentUrl();
     assert.equal("http://localhost:3000/pages/TicketList", currentURL);
   });
 
@@ -389,7 +396,7 @@ describe("Service Ticket Workflow -- Tenant Rejects Quotation", function () {
 
     await tenant_driver.manage().setTimeouts({ implicit: 200 });
 
-    currentURL = await tenant_driver.getCurrentUrl();
+    let currentURL = await tenant_driver.getCurrentUrl();
     assert.equal("http://localhost:3000/pages/ViewTicketPage/", currentURL);
   });
 
@@ -488,7 +495,7 @@ describe("Service Ticket Workflow -- Tenant Rejects Quotation", function () {
     await tenant_driver.executeScript("arguments[0].click();", approveButton);
 
     await tenant_driver.sleep(200);
-    currentURL = await landlord_driver.getCurrentUrl();
+    let currentURL = await landlord_driver.getCurrentUrl();
     assert.equal("http://localhost:3000/pages/ViewTicketPage/", currentURL);
   });
 
@@ -590,7 +597,7 @@ describe("Service Ticket Workflow -- Tenant Rejects Quotation", function () {
     await submitButton.click();
 
     await tenant_driver.manage().setTimeouts({ implicit: 2000 });
-    await tenant_driver.sleep(1000);
+    await tenant_driver.sleep(2000);
 
     currentURL = await tenant_driver.getCurrentUrl();
     assert.equal("http://localhost:3000/pages/dashboard", currentURL);

@@ -1,5 +1,11 @@
+// These lines make "require" available
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
 const { By, Builder, Browser, until } = require("selenium-webdriver");
 const chai = require("chai");
+import setup from "../setup.js"
+import teardown from "../teardown.js";
+
 
 const assert = chai.assert;
 
@@ -8,6 +14,7 @@ describe("Service Ticket Workflow -- Landlord Rejects Ticket", function () {
   let landlord_driver;
 
   before(async function () {
+    await setup()
     tenant_driver = await new Builder().forBrowser("chrome").build();
     landlord_driver = await new Builder().forBrowser("chrome").build();
   });
@@ -15,6 +22,7 @@ describe("Service Ticket Workflow -- Landlord Rejects Ticket", function () {
   after(async () => {
     await tenant_driver.quit();
     await landlord_driver.quit();
+    await teardown()
   });
 
   it("Select Tenant Option", async function () {
@@ -284,7 +292,7 @@ describe("Service Ticket Workflow -- Landlord Rejects Ticket", function () {
     );
     await landlord_driver.executeScript("arguments[0].click();", rejectButton);
 
-    currentURL = await landlord_driver.getCurrentUrl();
+    let currentURL = await landlord_driver.getCurrentUrl();
     assert.equal("http://localhost:3000/pages/TicketList", currentURL);
   });
 

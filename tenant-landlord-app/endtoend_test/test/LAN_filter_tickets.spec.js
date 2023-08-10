@@ -1,5 +1,11 @@
+// These lines make "require" available
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
 const { By, Builder, Browser, until } = require('selenium-webdriver');
 const chai = require('chai');
+import setup from "../setup.js"
+import teardown from "../teardown.js";
+
 
 // Use Chai assertion styles (e.g., "assert.equal")
 const assert = chai.assert;
@@ -9,11 +15,16 @@ describe('Landlord filter ticket', function () {
     let tenant_driver;
 
     before(async function () {
+        await setup()
         driver = await new Builder().forBrowser('chrome').build();
         tenant_driver = await new Builder().forBrowser('chrome').build();
     });
 
-    after(async () => {await tenant_driver.quit(); await driver.quit()});
+    after(async () => {
+        await tenant_driver.quit();
+        await driver.quit();
+        await teardown()
+      });
 
     it('Set up for testing -- tenant1@gmail.com', async function() {
         await tenant_driver.get('http://localhost:3000/');

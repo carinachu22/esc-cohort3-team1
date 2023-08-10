@@ -1,5 +1,11 @@
+// These lines make "require" available
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
 const {By, Builder, Browser, until, Key} = require('selenium-webdriver');
 const chai = require('chai');
+import setup from "../setup.js"
+import teardown from "../teardown.js";
+
 
 
 // Use Chai assertion styles (e.g., "assert.equal")
@@ -10,11 +16,11 @@ describe('Unusual Login --Tenant', function () {
     let tenant_driver;
 
     before(async function () {
+        await setup()
         tenant_driver = await new Builder().forBrowser('chrome').build();
-        chrome_driver = await new Builder().forBrowser('chrome').build();
     });
 
-    after(async () =>  {await tenant_driver.quit(); await chrome_driver.quit()});
+    after(async () =>  {await tenant_driver.quit();await teardown()});
     
     it('Select Tenant Option', async function () {
         await tenant_driver.get('http://localhost:3000/');
@@ -84,7 +90,7 @@ describe('Unusual Login --Tenant', function () {
 
         await tenant_driver.manage().setTimeouts({ implicit: 100 });
 
-        currentURL = await tenant_driver.getCurrentUrl();
+        let currentURL = await tenant_driver.getCurrentUrl();
         assert.equal('http://localhost:3000/pages/ForgotPasswordPage', currentURL)
 
     });

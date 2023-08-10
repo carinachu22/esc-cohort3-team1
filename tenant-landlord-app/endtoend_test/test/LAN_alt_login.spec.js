@@ -1,16 +1,24 @@
+// These lines make "require" available
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
 const {By, Builder, Browser, until, Key} = require('selenium-webdriver');
 const chai = require('chai');
+import setup from "../setup.js"
+import teardown from "../teardown.js";
+
 
 const assert = chai.assert;
 // TODO - change to explitcit when have time
+
 describe('Unusual Login --Landlord', function () {
     let landlord_driver;
 
     before(async function () {
+        await setup()
         landlord_driver = await new Builder().forBrowser('chrome').build();
     });
 
-    after(async () =>  await landlord_driver.quit());
+    after(async () =>  {await landlord_driver.quit();await teardown()});
     
     it('Select Landlord Option', async function () {
         await landlord_driver.get('http://localhost:3000/');
@@ -78,7 +86,7 @@ describe('Unusual Login --Landlord', function () {
 
         await landlord_driver.manage().setTimeouts({ implicit: 100 });
 
-        currentURL = await landlord_driver.getCurrentUrl();
+        let currentURL = await landlord_driver.getCurrentUrl();
         assert.equal('http://localhost:3000/pages/ForgotPasswordPage', currentURL)
 
     })

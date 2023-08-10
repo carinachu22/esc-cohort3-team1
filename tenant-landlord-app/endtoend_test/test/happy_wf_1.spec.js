@@ -1,3 +1,6 @@
+// These lines make "require" available
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
 const {
   By,
   Builder,
@@ -6,14 +9,18 @@ const {
   checkedLocator,
 } = require("selenium-webdriver");
 const chai = require("chai");
+import setup from "../setup.js"
+import teardown from "../teardown.js";
 
 const assert = chai.assert;
+
 
 describe("Successful Service Ticket Workflow (with quotation)", function () {
   var tenant_driver;
   var landlord_driver;
 
   before(async function () {
+    await setup()
     tenant_driver = await new Builder().forBrowser("chrome").build();
     landlord_driver = await new Builder().forBrowser("chrome").build();
   });
@@ -21,6 +28,7 @@ describe("Successful Service Ticket Workflow (with quotation)", function () {
   after(async () => {
     await tenant_driver.quit();
     await landlord_driver.quit();
+    await teardown()
   });
 
   it("Select Tenant Option", async function () {
@@ -310,7 +318,7 @@ describe("Successful Service Ticket Workflow (with quotation)", function () {
 
     await landlord_driver.sleep(100);
 
-    currentURL = await landlord_driver.getCurrentUrl();
+    let currentURL = await landlord_driver.getCurrentUrl();
     assert.equal("http://localhost:3000/pages/TicketList", currentURL);
   });
 
@@ -413,7 +421,7 @@ describe("Successful Service Ticket Workflow (with quotation)", function () {
     await tenant_driver.executeScript("arguments[0].click();", approveButton);
 
     await tenant_driver.sleep(2000);
-    currentURL = await landlord_driver.getCurrentUrl();
+    let currentURL = await landlord_driver.getCurrentUrl();
     assert.equal("http://localhost:3000/pages/ViewTicketPage/", currentURL);
   });
 
@@ -519,7 +527,7 @@ describe("Successful Service Ticket Workflow (with quotation)", function () {
     await tenant_driver.manage().setTimeouts({ implicit: 2000 });
     await tenant_driver.sleep(3000);
 
-    nextURL = await tenant_driver.getCurrentUrl();
+    let nextURL = await tenant_driver.getCurrentUrl();
     assert.equal("http://localhost:3000/pages/dashboard", nextURL);
 
     await tenant_driver.manage().setTimeouts({ implicit: 2000 });

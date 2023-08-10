@@ -1,5 +1,11 @@
+// These lines make "require" available
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
 const { By, Builder, Browser, until } = require("selenium-webdriver");
 const chai = require("chai");
+import setup from "../setup.js"
+import teardown from "../teardown.js";
+
 
 const assert = chai.assert;
 
@@ -8,11 +14,13 @@ describe("Tenant Filter Tickets", function () {
   var landlord_driver;
 
   before(async function () {
+    await setup()
     tenant_driver = await new Builder().forBrowser("chrome").build();
   });
 
   after(async () => {
     await tenant_driver.quit();
+    await teardown()
   });
 
   it("Select Tenant Option", async function () {
