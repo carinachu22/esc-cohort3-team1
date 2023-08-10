@@ -12,7 +12,6 @@ import {
     getTicketById,
     getTenantUserId,
     getLeaseByTenant,
-    // getQuotation,
     getQuotationPath,
     getLeaseByTenantEmail,
     rejectTicketWork

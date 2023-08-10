@@ -8,7 +8,12 @@ const statuses = ["tenant_ticket_created", "landlord_ticket_rejected", "landlord
  * @param {*} callBack 
  */
 export const createLandlord = (data, callBack) => {
-  if (data.email && data.password) {
+  if (data.email && data.password && data.role) {
+    const email = data.email
+    const password = data.password
+    const role = data.role
+    const ticket_type = data.ticket_type
+    const public_building_id = data.public_building_id
     pool.query(
       `SELECT * FROM landlord_user WHERE email = ?`,
       [data.email],
@@ -17,6 +22,7 @@ export const createLandlord = (data, callBack) => {
           callBack(error)
         }
         if (results.length > 0) {
+          console.log(results)
           callBack("landlord user already exists")
         } else {
           pool.query(
@@ -34,6 +40,8 @@ export const createLandlord = (data, callBack) => {
             (error, results, fields) => {
               if (error) {
                 callBack(error);
+              } else {
+                callBack(null, results)
               }
             })
           }
@@ -147,7 +155,7 @@ export const updateLandlordPassword = ({password, id}, callBack) => {
  * @param {*} callBack 
  */
 export const updateLandlord = (data, callBack) => {
-  if (!data.email || !data.password || !data.landlord_user_id) {
+  if (!data.email || !data.password || !data.landlord_user_id || !data.role) {
     return callBack("missing data entry!")
   }
   pool.query(
@@ -424,35 +432,6 @@ export const getTicketsByStatus = (status, callBack) => {
     callBack("invalid status")
   }
 };
-
-/**
- * Update quotation
- * @param {*} id public_service_request_id (YYYY-MM-DD 00:00:00)
- * @param {*} callBack 
- */
-// export const updateQuotation = (id, data, callBack) => {
-//   const status = "landlord_quotation_sent";
-//   if (statuses.includes(status)) {
-//     console.log("id", id)
-//     pool.query(
-//       `
-//       UPDATE SERVICE_REQUEST
-//       SET  status = ?
-//       WHERE public_service_request_id = ?
-//       `,
-//       [status, id],
-//       (error, results, fields) => {
-//         if (error) {
-//           callBack(error);
-//         } else {
-//           callBack(null, results);
-//         }
-//       }
-//     );
-//   } else {
-//     callBack("invalid status")
-//   }
-// };
 
 /**
  * upload quotation's path in the file system

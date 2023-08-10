@@ -11,7 +11,6 @@ import {
     getTickets,
     getTicketById,
     getTicketsByStatus,
-    updateQuotation,
     uploadQuotation,
     getQuotationPath,
     ticketApproval,
@@ -190,7 +189,8 @@ describe("testing createLandlord() in landlord model", () => {
         const data = {
             email: 'landlord6@gmail.com',
             password: '$2b$10$BIJTkvtOrkrKhl/juVKCauVhPwqChMNbayD3DazrMBi6H6gsgVlrS',
-            ticket_type: 'cleanliness'
+            ticket_type: 'cleanliness',
+            role: 'supervisor'
         }
         createLandlord(data, (err, results) => {
             if (err){
@@ -205,7 +205,8 @@ describe("testing createLandlord() in landlord model", () => {
     test ("Test calling createLandlord() with missing email",(done) => {
         const data = {
             password: '$2b$10$BIJTkvtOrkrKhl/juVKCauVhPwqChMNbayD3DazrMBi6H6gsgVlrS',
-            ticket_type: 'cleanliness'
+            ticket_type: 'cleanliness',
+            role:'supervisor'
         }
         createLandlord(data, (err, results) => {
             expect(err).toBe("missing data entry!");
@@ -216,7 +217,8 @@ describe("testing createLandlord() in landlord model", () => {
     test ("Test calling createLandlord() with missing password",(done) => {
         const data = {
             email: 'landlord6@gmail.com',
-            ticket_type: 'cleanliness'
+            ticket_type: 'cleanliness',
+            role: 'supervisor'
         }
         createLandlord(data, (err, results) => {
             expect(err).toBe("missing data entry!");
@@ -228,6 +230,7 @@ describe("testing createLandlord() in landlord model", () => {
         const data = {
             email: 'landlord9@gmail.com',
             password: '$2b$10$BIJTkvtOrkrKhl/juVKCauVhPwqChMNbayD3DazrMBi6H6gsgVlrS',
+            role: 'supervisor'
         }
         createLandlord(data, (err, results) => {
             const rowsChanged = JSON.parse(JSON.stringify(results)).affectedRows
@@ -236,11 +239,24 @@ describe("testing createLandlord() in landlord model", () => {
         })
     });
 
+    test ("Test calling createLandlord() with missing role",(done) => {
+        const data = {
+            email: 'landlord9@gmail.com',
+            password: '$2b$10$BIJTkvtOrkrKhl/juVKCauVhPwqChMNbayD3DazrMBi6H6gsgVlrS',
+            ticket_type: 'cleanliness',
+        }
+        createLandlord(data, (err, results) => {
+            expect(err).toBe("missing data entry!");
+            done();
+        })
+    });
+
     test ("Test calling createLandlord() with duplicate email",(done) => {
         const data = {
             email: 'landlord1@gmail.com',
             password: '$2b$10$BIJTkvtOrkrKhl/juVKCauVhPwqChMNbayD3DazrMBi6H6gsgVlrS',
-            ticket_type: 'horticuture'
+            ticket_type: 'horticuture',
+            role: 'supervisor'
         }
         createLandlord(data, (err, results) => {
             expect(err).toBe("landlord user already exists");
@@ -388,37 +404,11 @@ describe("testing createTenant() in landlord model", () => {
  */
 describe("testing getTickets() in landlord model", () => {
     test ("Test calling getTickets()",(done) => {
-        getTickets((err, results) => {
+        getTickets("RC",(err, results) => {
             if (err){
                 console.log("ERROR",err)
             }
-            expect(results.length).toBe(5);
-            done();
-        })
-    });
-})
-
-/**
- * Test landlord model update quotation
- */
-describe("Testing updateQuotation() in landlord model", () => {
-    test ("Test calling updateQuotation() on valid public ticket ID",(done) => {
-        updateQuotation("SR/2002/Feb/0001", (err, results) => {
-            if (err){
-                console.log("ERROR",err)
-            }
-            const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
-            expect(rowsChanged).toBe(1);
-            done();
-        })
-    });
-    test ("Test calling updateQuotation() on an invalid public ticket ID",(done) => {
-        updateQuotation("SR/9999/999/9999", (err, results) => {
-            if (err){
-                console.log("ERROR",err)
-            }
-            const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
-            expect(rowsChanged).toBe(0);
+            expect(results.length).toBe(2);
             done();
         })
     });
@@ -1006,7 +996,8 @@ describe("Testing updateLandlord() in landlord model", () => {
             email: "landlord10@gmail.com",
             password: "$2b$10$BIJTkvtOrkrKhl/juVKCauVhPwqChMNbayD3DazrMBi6H6gsgVlrS",
             ticket_type: "security",
-            landlord_user_id: 2
+            landlord_user_id: 2,
+            role: "supervisor"
         }
         updateLandlord(data, (err, results) => {
             if (err){
@@ -1023,7 +1014,8 @@ describe("Testing updateLandlord() in landlord model", () => {
             email: "landlord10@gmail.com",
             password: "$2b$10$BIJTkvtOrkrKhl/juVKCauVhPwqChMNbayD3DazrMBi6H6gsgVlrS",
             ticket_type: "security",
-            landlord_user_id: 999
+            landlord_user_id: 999,
+            role: "supervisor"
         }
         updateLandlord(data, (err, results) => {
             if (err){
@@ -1039,7 +1031,8 @@ describe("Testing updateLandlord() in landlord model", () => {
         const data = {
             password: "$2b$10$BIJTkvtOrkrKhl/juVKCauVhPwqChMNbayD3DazrMBi6H6gsgVlrS",
             ticket_type: "security",
-            landlord_user_id: 2
+            landlord_user_id: 2,
+            role: "supervisor"
         }
         updateLandlord(data, (err, results) => {
             expect(err).toBe("missing data entry!");
@@ -1051,7 +1044,8 @@ describe("Testing updateLandlord() in landlord model", () => {
         const data = {
             email: "landlord10@gmail.com",
             ticket_type: "security",
-            landlord_user_id: 2
+            landlord_user_id: 2,
+            role: "supervisor"
         }
         updateLandlord(data, (err, results) => {
             expect(err).toBe("missing data entry!");
@@ -1064,6 +1058,21 @@ describe("Testing updateLandlord() in landlord model", () => {
             email: "landlord10@gmail.com",
             password: "$2b$10$BIJTkvtOrkrKhl/juVKCauVhPwqChMNbayD3DazrMBi6H6gsgVlrS",
             ticket_type: "security",
+            role: "supervisor"
+        }
+        updateLandlord(data, (err, results) => {
+            expect(err).toBe("missing data entry!");
+            done();
+        })
+    });
+
+    test ("Test calling updateLandlord() on missing role",(done) => {
+        const data = {
+            email: "landlord10@gmail.com",
+            password: "$2b$10$BIJTkvtOrkrKhl/juVKCauVhPwqChMNbayD3DazrMBi6H6gsgVlrS",
+            ticket_type: "security",
+            landlord_user_id: 2,
+
         }
         updateLandlord(data, (err, results) => {
             expect(err).toBe("missing data entry!");
@@ -1075,7 +1084,8 @@ describe("Testing updateLandlord() in landlord model", () => {
         const data = {
             email: "landlord10@gmail.com",
             password: "$2b$10$BIJTkvtOrkrKhl/juVKCauVhPwqChMNbayD3DazrMBi6H6gsgVlrS",
-            landlord_user_id: 2
+            landlord_user_id: 2,
+            role: "supervisor"
         }
         updateLandlord(data, (err, results) => {
             if (err){
