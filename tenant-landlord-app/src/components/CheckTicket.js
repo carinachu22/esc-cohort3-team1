@@ -168,6 +168,7 @@ export default function CheckTicket(ticket, userDetails) {
                 {
                   ticket_approved_by_landlord: 0,
                   ticket_id: id,
+                  quotation_required: isCheckboxChecked ? 1 : 0,
                 },
                 {
                   headers: {
