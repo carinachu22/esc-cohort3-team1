@@ -238,7 +238,7 @@ describe('Service Ticket Workflow -- Tenant Rejects Quotation', function () {
       const uploadButton = landlord_driver.findElement(By.xpath("//button[text()='Upload Quotation']"))
       await uploadButton.click()
 
-      await landlord_driver.sleep(200)
+      await landlord_driver.sleep(2000)
       currentURL = await landlord_driver.getCurrentUrl();
       assert.equal('http://localhost:3000/pages/ViewTicketPage/', currentURL)
   
