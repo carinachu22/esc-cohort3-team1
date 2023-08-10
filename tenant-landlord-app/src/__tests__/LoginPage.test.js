@@ -46,7 +46,7 @@ jest.mock("react-router-dom", () => {
 });
 
 describe("Login.js", () => {
-  test("Email,Password, login btn features are present", () => {
+  test("Email,Password, login button features are present", () => {
     render(
       <AuthProvider
         authType={"cookie"}
