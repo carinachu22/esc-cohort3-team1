@@ -37,7 +37,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "NODE_ENV=test jest --config jest.config.js",
+    "test": "NODE_ENV=test jest src --forceExit --config jest.config.js & jest backend --forceExit --config jest.config.js & mocha endtoend_test/test --serial --timeout 10000",
     "eject": "react-scripts eject"
   },
   "browserslist": {
