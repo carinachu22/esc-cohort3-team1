@@ -1,7 +1,7 @@
 import React from "react";
 import { useFormik } from "formik";
 import axios, {AxiosError} from "axios";
-import { useLocation } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 
 import {
     Box,
@@ -16,6 +16,7 @@ import {
 const ForgotPasswordPage = () => {
     const location = useLocation();
     const { role } = location.state.state;
+    const navigate = useNavigate();
     console.log(role);
 
     const validate = values => {
@@ -35,8 +36,9 @@ const ForgotPasswordPage = () => {
     const onSubmit = async (values) => {
         console.log("Values: ", values);
         try{
+            var response
             if(role === "landlord"){
-                const response = await axios.post(
+                response = await axios.post(
                     //api to be added
                     "http://localhost:5000/api/landlord/forgot-password",
                     values
@@ -47,18 +49,19 @@ const ForgotPasswordPage = () => {
                 }
             }
             if(role === "tenant"){
-                const response = await axios.post(
+                response = await axios.post(
                     //api to be added
                     "http://localhost:5000/api/tenant/forgot-password",
                     values
                 )
+                console.log(response)
                 if (response.data.message === "User does not exist!"){
                     console.log(response.data.message);
                     formik.errors.hasError = true;
                 }
             }
             if(role === "admin"){
-                const response = await axios.post(
+                response = await axios.post(
                     //api to be added
                     "http://localhost:5000/api/admin/forgot-password",
                     values
@@ -67,6 +70,9 @@ const ForgotPasswordPage = () => {
                     console.log(response.data.message);
                     formik.errors.hasError = true;
                 }
+            }
+            if (response.data.success === 1) {
+                navigate('/')
             }
 
         } catch (err){
@@ -121,7 +127,7 @@ const ForgotPasswordPage = () => {
                                 > 
                                 Send Link
                             </Button>
-                            {formik.errors.hasError ? <Box color="red.500" id="errorMessage" marginBottom="-6" >Invalid email or password</Box>: null}
+                            {formik.errors.hasError ? <Box color="red.500" id="errorMessage" marginBottom="-6" >User does not exist!</Box>: null}
                         </FormControl>
                         
                     </VStack>

@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Helmet } from "react-helmet";
 import { Formik, Form } from 'formik'; // Import Formik components
@@ -6,24 +6,21 @@ import { Formik, Form } from 'formik'; // Import Formik components
 import { useAuthHeader, useIsAuthenticated } from "react-auth-kit";
 
 import {
-  Box,
-  Button,
-  Flex,
-  FormControl,
-  Input,
-  VStack,
-  Heading,
-  useToast
+    Box,
+    Button,
+    Flex,
+    FormControl,
+    Input,
+    VStack,
+    Heading,
+    useToast
 } from "@chakra-ui/react";
-
-import { SelectedTicketContext } from '../components/SelectedTicketContext.js';
 import { useNavigate, useLocation } from "react-router-dom";
 
 import NavigationBar from "../components/NavigationBar.js";
 
 const QuotationUpload = () => {
   const [pdfUrl, setPdfUrl] = useState('');
-  const { selectedTicket, setSelectedTicket } = useContext(SelectedTicketContext);
   const token = useAuthHeader();
   const navigate = useNavigate();
   const toast = useToast();
@@ -36,13 +33,12 @@ const QuotationUpload = () => {
   const authenticated = useIsAuthenticated();
 
   const retrieveFile = () => {
-    console.log(selectedTicket);
     const config = {
         headers: {
             Authorization: `${token()}`
         },
         params: {
-            id: selectedTicket.id,
+            id: ticketID,
             responseType: "blob"
         }
     }
@@ -65,24 +61,24 @@ const QuotationUpload = () => {
     }
     // Ensure that user is authenticated for all renders
     const authenticate = () => {
-      // Check if still autenticated based on react auth kit
-      if (!authenticated()){
-          console.log("Not authenticated, redirecting.")
-          navigate('/')
-          return false
-      } else {
-          return true
-      }
-  }
-  useEffect(() => {
-      authenticate()
-  })
+        // Check if still autenticated based on react auth kit
+        if (!authenticated()){
+            console.log("Not authenticated, redirecting.")
+            navigate('/')
+            return false
+        } else {
+            return true
+        }
+    }
+    useEffect(() => {
+        authenticate()
+    })
 
     const navigateToViewTicketPage =  (ticketID) => {
       navigate('/pages/ViewTicketPage/', { state: { ticketID } } );
     }
 
-  return (
+    return (
     <>
       {NavigationBar()}
       <Flex align="center" justify="center" h="100vh" w="100%">
@@ -126,7 +122,7 @@ const QuotationUpload = () => {
             }}
           >
             {({ handleSubmit, setFieldValue }) => ( // Use Formik's handleSubmit and setFieldValue
-              <Form target="_blank" action={`http://localhost:5000/api/landlord/uploadQuotation/${selectedTicket.id}`} method="POST" encType="multipart/form-data">
+              <Form target="_blank" action={`http://localhost:5000/api/landlord/uploadQuotation/${ticketID}`} method="POST" encType="multipart/form-data">
                 <VStack align="flex-start" alignItems="center">
                   <Heading marginTop="4">Quotation Upload</Heading>
                   <FormControl marginTop="6">

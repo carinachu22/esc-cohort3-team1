@@ -5,7 +5,7 @@ import {
   controllerGetTickets,
   controllerGetTicketById,
   controllerGetTicketsByStatus,
-  // controllerUpdateQuotation,
+  //controllerUpdateQuotation,
   controllerResetPasswordLandlord,
   controllerResetPasswordPageLandlord,
   controllerForgotPasswordLandlord,
@@ -19,10 +19,16 @@ import {
   controllerUploadLease,
   controllerGetLease,
   controllerCreateLease,
-  // controllerGetLeaseByLandlord,
+  //controllerGetLeaseByLandlord,
   controllerDeleteLease,
-  // controllerUpdateLease,
-  controllerGetLeaseDetails
+  //controllerUpdateLease,
+  controllerGetLeaseDetails,
+  controllerGetLandlordAccounts,
+  controllerGetLandlordDetails,
+  controllerDeleteAllLandlords,
+  controllerDeleteLandlordByEmail,
+  controllerGetTicketsByType,
+  controllerAssignLandlord
 } from "../controller/landlord_controller.js";
 import express from "express";
 import { checkLandlordToken } from "../auth/landlord_validation.js";
@@ -70,25 +76,32 @@ router.post("/uploadLease/", checkLandlordToken, upload.single('files'), control
 router.get("/getLease/", checkLandlordToken, controllerGetLease);
 
 router.post("/createLease", checkLandlordToken, upload.single('files'), controllerCreateLease);
-// router.get("/getLeaseByLandlord", checkLandlordToken, controllerGetLeaseByLandlord);
+//router.get("/getLeaseByLandlord", checkLandlordToken, controllerGetLeaseByLandlord);
 router.get("/getLeaseDetails", checkLandlordToken, controllerGetLeaseDetails);
 router.patch("/deleteLease", checkLandlordToken, controllerDeleteLease)
-// router.patch("/updateLease", checkLandlordToken, controllerUpdateLease)
+//router.patch("/updateLease", checkLandlordToken, controllerUpdateLease)
 
 router.get("/getTickets", checkLandlordToken, controllerGetTickets);
+router.get("/getTicketsByType", checkLandlordToken, controllerGetTicketsByType);
 router.get("/getTicketById/", checkLandlordToken, controllerGetTicketById);
 router.get("/getTicketsByStatus/:status", checkLandlordToken, controllerGetTicketsByStatus);
 
 router.get("/getQuotation/", checkLandlordToken, controllerGetQuotation);
 router.post("/uploadQuotation/", checkLandlordToken, upload.single('files'), controllerUploadQuotation);
-// router.patch("/updateQuotation/:id", checkLandlordToken, controllerUpdateQuotation);
+//router.patch("/updateQuotation/:id", checkLandlordToken, controllerUpdateQuotation);
 
 router.patch("/ticketApproval/", checkLandlordToken, controllerTicketApproval);
 router.patch("/ticketWork/", checkLandlordToken, controllerTicketWork);
+router.patch("/assignLandlord", controllerAssignLandlord);
 
 router.get("/getTenantAccounts/", checkLandlordToken, controllerGetTenantAccounts);
 router.patch("/deleteAllTenants", checkLandlordToken, controllerDeleteAllTenants);
 router.patch("/deleteTenantByEmail", checkLandlordToken, controllerDeleteTenantByEmail);
+
+router.get("/getLandlordAccounts", controllerGetLandlordAccounts);
+router.get("/getLandlordDetails", checkLandlordToken, controllerGetLandlordDetails);
+router.patch("/deleteAllLandlords", controllerDeleteAllLandlords);
+router.patch("/deleteLandlordByEmail", controllerDeleteLandlordByEmail);
 
 
 export default router;

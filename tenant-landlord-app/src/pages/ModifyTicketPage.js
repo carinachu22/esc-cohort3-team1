@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Heading, Textarea, Input } from '@chakra-ui/react';
+import { Box, Heading, Textarea, Input, useToast, Select, Button } from '@chakra-ui/react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthUser, useAuthHeader, useIsAuthenticated } from 'react-auth-kit';
 import { useFormik } from 'formik';
@@ -8,13 +8,27 @@ import axios, { AxiosError } from 'axios';
 import NavigationBar from '../components/NavigationBar.js';
 import CheckTicket from '../components/CheckTicket.js';
 
-export default function ViewTicketPage() {
+/**
+ * 1. Gets details of ticket by ID
+ * 2. Captures changes to details through inputs
+ * 3. Modifies ticket on button click
+ */
+
+export default function ModifyTicketPage() {
     const navigate = useNavigate();
     const token = useAuthHeader();
     const userDetails = useAuthUser();
+    const [ticketType, setTicketType] = useState('');           // Initialise state to contain selected ticket type
+    const [additionalHeading, setAdditionalHeading] = useState('');
+    const [tenantComment, setTenantComment] = useState('');     // Initialise state to contain comment text
+    const [showOtherInput, setShowOtherInput] = useState(false);    // Initialise state to check if "Others" text field should be shown
+    const [otherRequestType, setOtherRequestType] = useState('');   // Initialise state to contain "Others" request type
+    const [ticketDateTime, setTicketDateTime] = useState('');
+    const [publicServiceRequestID, setPublicRequestID] = useState('')
     const [status, setstatus] = useState('');
     const [ticket, setTicket] = useState('');
     const location = useLocation();
+    const toast = useToast();
     var ticketID;
     if (location.state != null){
         ticketID = location.state.ticketID;
@@ -47,6 +61,17 @@ export default function ViewTicketPage() {
         }
     }
 
+    
+    const handleRequestTypeChange = (event) => {
+        const selectedType = event.target.value;
+        setTicketType(selectedType);
+        setShowOtherInput(selectedType === 'Others');
+    };
+
+    const handleOtherRequestTypeChange = (event) => {
+        setOtherRequestType(event.target.value);
+    };
+
     const GetServiceTickets = (userDetails) => {
         if (userDetails() === undefined){
             return;
@@ -69,23 +94,10 @@ export default function ViewTicketPage() {
                         id: ticketID
                     }
                 }
-                if (type === 'landlord'){
-                    response = await axios.get(
-                    `http://localhost:5000/api/landlord/getTicketById/`,
-                        // console.log(`http://localhost:5000/api/landlord/getTicketById/${selectedTicket}`),
-                        config
-                    )
-                } else if (type === 'tenant'){ 
-                    response = await axios.get(
-                    `http://localhost:5000/api/tenant/getTicketById/`,
-                        config
-                    )
-                } else if (type === 'admin'){
-                    response = await axios.get(
-                        `http://localhost:5000/api/admin/getTicketById/`,
-                        config
-                    )
-                }
+                response = await axios.get(
+                    `http://localhost:5000/api/admin/getTicketById/`,
+                    config
+                )
                 console.log("got response:")
                 console.log(response);
                 return response.data.data;
@@ -106,25 +118,19 @@ export default function ViewTicketPage() {
     ticket.then(function(result){
         console.log('result',result)
         // Naive data validation
-        // console.log('result',result)
-        // console.log(result !== undefined)
         if (result !== undefined){
             tickets.push(result);
         }   
         console.log('tickets',tickets)
-        // console.log('tickets[0]',tickets[0])
-        // console.log('tickets[0].request_description',tickets[0].request_description)
         var tenantComment = tickets[0].request_description;
         var category = tickets[0].ticket_type;
+        setPublicRequestID(tickets[0].public_service_request_id)
         setstatus(convertStatus(tickets[0].status))
         var timesubmitted = tickets[0].submitted_date_time;
         var floor = tickets[0].floor;
         var unit_number = tickets[0].unit_number;
+        setTicketDateTime(tickets[0].submitted_date_time)
         setTicket(tickets[0])
-        // console.log('tenantComment', tenantComment);
-        // console .log('category', category);
-        // console.log('status', status);
-        // console.log('timesubmitted', timesubmitted);
         formik.setValues({
           floor: floor,
           unit_number: unit_number,
@@ -133,7 +139,6 @@ export default function ViewTicketPage() {
           status: status,
           timesubmitted: timesubmitted,
         });
-        // console.log('formik', formik.values);
     })
 }
 
@@ -148,6 +153,61 @@ export default function ViewTicketPage() {
         },
         onSubmit: {},
     });
+
+    // Initialise function to call API with modified ticket details
+    const handleModifyTicket = async () => {
+
+        try {
+            // Initialise config header to pass token and other params through API call
+            const config = {
+                headers: {
+                    Authorization: `${token()}`,
+                },
+            };
+            var values = {}                 
+            // Initialise values object to hold ticket deatils
+            // Set values based on ticket type
+            if (ticketType === 'Others' ){
+                values = {
+                    public_service_request_id: publicServiceRequestID,
+                    ticket_type: ticketType + ' - ' + otherRequestType,
+                    request_description: formik.values.tenantComment,
+                    status: formik.values.status,
+                };
+            } else {
+                values = {
+                    public_service_request_id: publicServiceRequestID,
+                    ticket_type: ticketType,
+                    request_description: formik.values.tenantComment,
+                    status: formik.values.status,
+                };
+            }
+            console.log(values['ticket_type'])
+            console.log(values['ticket_type'].slice(0,6))
+            const response1 = await axios.patch(
+                'http://localhost:5000/api/admin/modifyTicket',
+                values,
+                config
+            );
+            console.log('got response of modifying ticket:');
+            console.log(response1);
+            toast({
+                title: "Ticket Modified",
+                description: "Ticket has been modified.",
+                status: "success",
+                duration: 5000,
+                isClosable: true,
+                position: "top",
+            });
+            navigate(-1); // Navigate back to viewing tikcet
+        } catch (err) {
+            // Standard error catching
+            if (err && err instanceof AxiosError) {
+                console.log('Error: ', err);
+            } else if (err && err instanceof Error) {
+                console.log('Error: ', err);
+            }      
+        }};
 
   
     useEffect(() => {
@@ -205,28 +265,54 @@ export default function ViewTicketPage() {
             value={formik.values.floor}
             onChange={formik.handleChange}
           />
-          <Heading as="h5" size="lg" marginBottom="1em">
-            Category Of Request
-          </Heading>
-          <Textarea 
-            readOnly
-            name="category"
-            placeholder="Enter category"
-            value={formik.values.category}
-            onChange={formik.handleChange}
-            marginBottom="1em"
-          />
-          <Heading as="h5" size="lg"  marginBottom="1em">
-            Status
-          </Heading>
-          <Textarea 
-            readOnly
-            name="category"
-            placeholder="Enter category"
-            value={formik.values.status}
-            onChange={formik.handleChange}
-            marginBottom="1em"
-          />
+        {/* Comment Box 1 */}
+        <Box flex="1" marginRight="2em">
+            <Heading as="h5" size="lg" marginBottom="1em">
+                Request Type
+            </Heading>
+            <Select
+                name="requestType"
+                placeholder="Select request type"
+                value={ticketType}
+                onChange={handleRequestTypeChange}
+                marginBottom="2em"
+            >
+            <option value="Aircon">Aircon</option>
+            <option value="Cleanliness">Cleanliness</option>
+            <option value="Admin">Admin</option>
+            <option value="Others">Others</option>
+            </Select>
+            {showOtherInput && (
+            <Input
+              name="otherRequestType"
+              placeholder="Enter other request type"
+              value={otherRequestType}
+              onChange={handleOtherRequestTypeChange}
+              marginBottom="1em"
+            />
+          )}
+        </Box>
+            <Heading as="h5" size="lg"  marginBottom="1em">
+                Status
+            </Heading>
+            <Select
+                name="status"
+                placeholder="Select ticket status"
+                value={formik.values.status}
+                onChange={formik.handleChange}
+                marginBottom="1em"
+            >
+            <option value="tenant_ticket_created">Created</option>
+            <option value="landlord_ticket_rejected">Rejected By Landlord</option>
+            <option value="landlord_ticket_approved">Approved By Landlord</option>
+            <option value="landlord_quotation_sent">Quotation Sent By Landlord</option>
+            <option value="ticket_quotation_approved">Quotation Approved By Tenant</option>
+            <option value="ticket_quotation_rejected">Quotation Rejected By Tenant</option>
+            <option value="landlord_started_work">Work Started By Landlord</option>
+            <option value="landlord_completed_work">Work Completed By Landlord</option>
+            <option value="ticket_work_rejected">Work Rejected By Tenant</option>
+            <option value="landlord_ticket_close">Closed</option>
+            </Select>
         </Box>
 
         {/* Comment Box 2 */}
@@ -245,7 +331,6 @@ export default function ViewTicketPage() {
             Description
           </Heading>
           <Textarea 
-            readOnly
             name="tenantComment"
             placeholder="Enter your comment"
             value={formik.values.tenantComment}
@@ -259,7 +344,6 @@ export default function ViewTicketPage() {
           <Input
             name="Submitted time"
             value={formik.values.timesubmitted}
-            isReadOnly
             marginBottom="2em"
           />
         </Box>
@@ -269,7 +353,19 @@ export default function ViewTicketPage() {
 
     </Box>
     <Box className='bottom container' justifyContent="center" display="flex">
-    {CheckTicket(ticket, userDetails)}
+        <Button
+        variant="solid"
+        colorScheme="blue"
+        onClick={() => 
+        handleModifyTicket(ticket.public_service_request_id, ticket.status)
+        }
+        width="13em"
+        height="3em"
+        marginTop="3em"
+        borderRadius="0.25em"
+        >
+            Confirm Changes
+        </Button>
     </Box>
     </>
   );

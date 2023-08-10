@@ -12,7 +12,8 @@ import {
   controllerResetPasswordTenant,
   controllerGetTicketById,
   controllerGetLeaseByTenant,
-  controllerGetQuotation
+  controllerGetQuotation,
+  controllerRejectTicketWork
 } from "../controller/tenant_controller.js";
 import express from "express";
 import { checkTenantToken } from "../auth/tenant_validation.js";
@@ -49,6 +50,7 @@ router.get("/getTicketsByStatus/:status",checkTenantToken, controllerGetTicketsB
 
 router.patch("/addFeedbackRating/", checkTenantToken, controllerAddFeedbackRating);
 router.patch("/addFeedbackText/", checkTenantToken, controllerAddFeedbackText);
-
 router.patch("/closeTicketStatus/", checkTenantToken, controllerCloseTicketStatus);
+
+router.patch("/rejectTicketWork/", checkTenantToken, controllerRejectTicketWork)
 export default router;

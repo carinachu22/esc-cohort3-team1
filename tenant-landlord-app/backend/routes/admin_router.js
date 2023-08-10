@@ -7,12 +7,17 @@ import {
   controllerForgotPasswordAdmin,
   controllerResetPasswordAdmin,
   controllerResetPasswordPageAdmin,
+  controllerGetTickets,
+  controllerGetAllLandlordAccounts,
+  controllerGetAllTenantAccounts,
+  controllerModifyTicket,
+  controllerGetBuildings
 } from "../controller/admin_controller.js";
 import express from "express";
 import { checkAdminToken } from "../auth/admin_validation.js";
 import multer from "multer";
 import {
-  controllerGetTickets,
+  
   controllerGetTicketById,
   controllerCreateTenant,
   controllerDeleteAllTenants,
@@ -50,20 +55,25 @@ router.post("/forgot-password", controllerForgotPasswordAdmin);
 router.post("/reset-password/:id/:jsontoken", controllerResetPasswordAdmin);
 router.get("/reset-password/:id/:jsontoken", controllerResetPasswordPageAdmin);
 
-router.post("/createLandlord", checkAdminToken, controllerCreateLandlord);
-router.patch("/deleteLandlordByEmail", checkAdminToken, controllerDeleteLandlordByEmail);
-router.post("/createBuilding", checkAdminToken, controllerCreateBuilding);
+router.post("/createLandlord", controllerCreateLandlord);
+router.patch("/deleteLandlordByEmail", controllerDeleteLandlordByEmail);
+router.post("/createBuilding", controllerCreateBuilding);
+router.get("/getBuildings", controllerGetBuildings)
+router.get("/getAllTenantAccounts", controllerGetAllTenantAccounts);
+router.get("/getAllLandlordAccounts", controllerGetAllLandlordAccounts);
+
+router.get("/getTicketById/", controllerGetTicketById);
+router.patch("/modifyTicket", controllerModifyTicket);
 
 //LANDLORD PRIVILEGES
 
-router.post("/createTenant", checkAdminToken, controllerCreateTenant);
-router.get("/getTicket/:id", checkAdminToken, controllerGetTicketById);
-router.get("/getTickets", checkAdminToken, controllerGetTickets);
-router.post("/createTicket", checkAdminToken, controllerCreateTicket);
-router.patch("/deleteAllTenants", checkAdminToken, controllerDeleteAllTenants);
-router.patch("/deleteTenantByEmail", checkAdminToken, controllerDeleteTenantByEmail);
+router.post("/createTenant", controllerCreateTenant);
+router.get("/getTickets", controllerGetTickets);
+router.post("/createTicket", controllerCreateTicket);
+router.patch("/deleteAllTenants", controllerDeleteAllTenants);
+router.patch("/deleteTenantByEmail", controllerDeleteTenantByEmail);
 
 // TODO: Do we want a generic API to patch any fields of a service ticket?
-//router.patch("/updateTicket/:id", controllerUpdateTicket);
+
 
 export default router;
