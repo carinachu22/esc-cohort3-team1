@@ -205,10 +205,11 @@ describe("Testing createTicket() in tenant model", () => {
         const date = currentdate.getFullYear().toString() + '-' + (currentdate.getMonth() + 1).toString() + '-' + currentdate.getDate().toString() + ' ' + currentdate.getHours().toString() + ':' + ('0' + currentdate.getMinutes()).slice(-2) + ':' + currentdate.getSeconds().toString()
         const data = {
             email: 'tenant4@gmail.com',
-            request_type: 'aircon',
+            ticket_type: 'aircon',
             request_description: 'aircon cold',
             submitted_date_time: date,
-            quotation_path: null
+            floor: 9,
+            unit_number: 100
         }
         createTicket(data, 10, 30, (err, results) => {
             if (err){

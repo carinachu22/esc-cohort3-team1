@@ -10,7 +10,7 @@ const config = {
     setupFiles: ['dotenv/config'],
     maxWorkers: 1,
     collectCoverage: true,
-    coverageReporters: ["text"], // can add "html if want"
+    coverageReporters: ["text", "html"], // can add "html if want"
     coveragePathIgnorePatterns: [
       'models/admin_model.js',
       'controller/admin_controller.js',

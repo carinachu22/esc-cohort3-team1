@@ -12,12 +12,12 @@ export default async function setup() {
             TRUNCATE service_request;`
         );
         await pool.promise().query(`
-            INSERT INTO service_request (public_service_request_id,  email, request_type, request_description, submitted_date_time, status, quotation_path, floor, unit_number)
-            VALUES  ('2002-02-02 02:02:02', 'tenant1@gmail.com', 'aircon', 'aircon warm', '2002-02-02 02:02:02', 'tenant_ticket_created', NULL,09,154),
-                    ('2003-03-03 03:03:03', 'tenant4@gmail.com', 'aircon', 'aircon', '2003-03-03 03:03:03', 'tenant_ticket_created', NULL,10,30),
-                    ('2004-04-04 04:04:04', 'tenant1@gmail.com', 'cleanliness', 'not clean', '2004-04-04 04:04:04', 'landlord_completed_work','/public/uploads/quotation.pdf', 09,154),
-                    ('2005-05-05 05:05:05', 'tenant3@gmail.com', 'horticulture', 'wiltered', '2005-05-05 05:05:05', 'landlord_quotation_sent', ':Content/Documents/quotation_details/q1',12,921),
-                    ('2006-06-06 06:06:06', 'tenant5@gmail.com', 'cleanliness', 'not clean', '2006-06-06 06:06:06', 'landlord_completed_work',':Content/Documents/quotation_details/q3',6,100);
+            INSERT INTO service_request (public_service_request_id,  email, ticket_type, request_description, submitted_date_time, status, quotation_path, floor, unit_number)
+            VALUES  ('SR/2002/Feb/0001', 'tenant1@gmail.com', 'aircon', 'aircon warm', '2002-02-02 02:02:02', 'tenant_ticket_created', NULL,09,154 ),
+                    ('SR/2003/Mar/0001', 'tenant4@gmail.com', 'aircon', 'aircon', '2003-03-03 03:03:03', 'tenant_ticket_created', NULL,10,30),
+                    ('SR/2004/Apr/0001', 'tenant1@gmail.com', 'cleanliness', 'not clean', '2004-04-04 04:04:04', 'landlord_completed_work','/public/uploads/quotation.pdf', 09,154),
+                    ('SR/2005/May/0001', 'tenant3@gmail.com', 'horticulture', 'wiltered', '2005-05-05 05:05:05', 'landlord_quotation_sent', ':Content/Documents/quotation_details/q1',12,921),
+                    ('SR/2006/Jun/0001', 'tenant5@gmail.com', 'cleanliness', 'not clean', '2006-06-06 06:06:06', 'landlord_completed_work',':Content/Documents/quotation_details/q3',6,100);
         `);
 
         //        CREATE TEMPORARY TABLE tenant_user table
@@ -51,12 +51,12 @@ export default async function setup() {
         );
         await pool.promise().query(`
             INSERT INTO landlord_user
-            (email,password,public_building_id,ticket_type)
-            VALUES  ('landlord1@gmail.com',"${hash_password}", "RC", "cleanliness"),
-                    ('landlord2@gmail.com',"${hash_password}", "FC", "horticulture"),
-                    ('landlord3@gmail.com',"${hash_password}", "CWP", "aircon"),
-                    ('landlord4@gmail.com',"${hash_password}", "EPM", "security"),
-                    ('landlord5@gmail.com',"${hash_password}", "TM1", "cleanliness");
+            (email,password,public_building_id,ticket_type, role)
+            VALUES  ('landlord1@gmail.com',"${hash_password}", "RC", "cleanliness", 'staff'),
+                    ('landlord2@gmail.com',"${hash_password}", "FC", "horticulture", 'staff'),
+                    ('landlord3@gmail.com',"${hash_password}", "CWP", "aircon", 'staff'),
+                    ('landlord4@gmail.com',"${hash_password}", "EPM", "security", 'staff'),
+                    ('landlord5@gmail.com',"${hash_password}", "TM1", "cleanliness", 'staff');
         `);
 
         //        CREATE TEMPORARY TABLE admin_user table
