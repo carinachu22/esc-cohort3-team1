@@ -23,6 +23,8 @@ run all tests in ../endtoend_test:
 ```
 npm test
 ```
+In mochawesome-report:
+Look at mochawesome-report.html at live server
 
 
 ## Selenium Documentation
