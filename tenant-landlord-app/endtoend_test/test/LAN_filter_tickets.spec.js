@@ -58,7 +58,7 @@ describe('Landlord filter ticket', function () {
         ));
         await req_type.click();
         let sel_dropdown= await tenant_driver.wait(until.elementIsVisible(
-          tenant_driver.findElement(By.xpath(`//select[@name="requestType"]/option[2]`))
+          tenant_driver.findElement(By.xpath(`//select[@name="requestType"]/option[3]`))
         ));
         await sel_dropdown.click();
     
@@ -135,7 +135,7 @@ describe('Landlord filter ticket', function () {
         ));
         await req_type.click();
         let sel_dropdown= await tenant_driver.wait(until.elementIsVisible(
-          tenant_driver.findElement(By.xpath(`//select[@name="requestType"]/option[2]`))
+          tenant_driver.findElement(By.xpath(`//select[@name="requestType"]/option[3]`))
         ));
         await sel_dropdown.click();
     
