@@ -5,7 +5,7 @@ import axios, { AxiosError } from "axios";
 import NavigationBar from '../components/NavigationBar.js';
 
 // Import React and hooks
-import { useAuthUser, useAuthHeader, useSignOut, useIsAuthenticated } from 'react-auth-kit';
+import { useAuthUser, useAuthHeader, useIsAuthenticated } from 'react-auth-kit';
 
 import {
     Box,
@@ -17,7 +17,8 @@ import {
     InputRightElement,
     VStack,
     Heading,
-    useToast
+    useToast,
+    Select
 } from "@chakra-ui/react";
 
 const LandlordCreationPage = () => {
@@ -26,7 +27,7 @@ const LandlordCreationPage = () => {
     const userDetails = useAuthUser();
     const toast = useToast();
     const authenticated = useIsAuthenticated();
-    const type = userDetails().type;
+    const [buildingOptionsHTML, setBuildingOptionsHTML] = useState("")
 
 
     var config
@@ -56,8 +57,21 @@ const LandlordCreationPage = () => {
             errors.password = "Required";
         }
 
-        if(!values.ticketType){
-            errors.ticketType = "Required";
+        if (values.role === 'staff'){
+            if(!values.ticket_type){
+                errors.ticket_type = "Required";
+            }
+        }
+
+        if (userDetails().type === 'admin'){
+
+            if(!values.public_building_id){
+                errors.public_building_id = "Required";
+            }
+
+            if(!values.role){
+                errors.role = "Required";
+            }
         }
 
         return errors;
@@ -71,6 +85,26 @@ const LandlordCreationPage = () => {
         setPasswordShown(!passwordShown)
     }
 
+    const BuildingOptions = async () => {
+        try {
+          const response = await axios.get(
+            "http://localhost:5000/api/admin/getBuildings",
+            config
+          );
+          const building_list = response.data.data; // Assuming the response data is an array of buildings
+          console.log(building_list);
+          const temp_html = building_list.map((building) => (
+            <option key={building.public_building_id} value={building.public_building_id}>
+              {building.public_building_id}
+            </option>
+          ));
+          setBuildingOptionsHTML(temp_html)
+        } catch (error) {
+          console.error("Error fetching building options:", error);
+          return null;
+        }
+      };
+
     const navigateToAccountManagement = () => {
         navigate('/pages/AccountManagement');
     };
@@ -79,25 +113,49 @@ const LandlordCreationPage = () => {
         console.log("Values: ", values);
 
         try{
-            const response = await axios.post(
-                //api to be added
-                "http://localhost:5000/api/landlord/create",
-                values,
-                config
-            )
-            console.log("response", response);
-            if (response.data.message === "created successfully"){
-                navigateToAccountManagement();
-            } else if (response.data.message === "Duplicate email entry"){
-                toast({
-                    title: "Email already exist!",
-                    description: "Please register with a different email",
-                    status: "success",
-                    colorScheme: "red",
-                    duration: 3000,
-                    isClosable: true,
-                    position: "top",
-                    })
+            var response;
+            if (userDetails().type != "admin") {
+                response = await axios.post(
+                    //api to be added
+                    "http://localhost:5000/api/landlord/create",
+                    values,
+                    config
+                )
+                console.log("response", response);
+                if (response.data.message === "created successfully"){
+                    navigateToAccountManagement();
+                } else if (response.data.message === "Duplicate email entry"){
+                    toast({
+                        title: "Email already exist!",
+                        description: "Please register with a different email",
+                        status: "success",
+                        colorScheme: "red",
+                        duration: 3000,
+                        isClosable: true,
+                        position: "top",
+                        })
+                }
+            } else {
+                response = await axios.post(
+                    //api to be added
+                    "http://localhost:5000/api/admin/createLandlord",
+                    values,
+                    config
+                )
+                console.log("response", response);
+                if (response.data.message === "created successfully"){
+                    navigateToAccountManagement();
+                } else if (response.data.message === "Duplicate email entry"){
+                    toast({
+                        title: "Email already exist!",
+                        description: "Please register with a different email",
+                        status: "success",
+                        colorScheme: "red",
+                        duration: 3000,
+                        isClosable: true,
+                        position: "top",
+                        })
+                }
             }
         } catch (err){
             if (err && err instanceof AxiosError) {
@@ -114,9 +172,11 @@ const LandlordCreationPage = () => {
     const formik = useFormik({
         initialValues: {
             email: "",
-            user_email: config.params.email,
+            user_email: "",
             password: "",
-            ticketType: "",
+            ticket_type: "",
+            public_building_id: "",
+            role: "",
             hasError: false
         },
         onSubmit,
@@ -135,6 +195,18 @@ const LandlordCreationPage = () => {
             return true
         }
     }
+
+    useEffect(() => {
+        async function fetchData(){
+            if (authenticate()){
+                await BuildingOptions();
+                formik.values.user_email = config.params.email
+            }
+        }
+        fetchData()
+    },
+    [])
+
     useEffect(() => {
         authenticate()
     })
@@ -149,6 +221,39 @@ const LandlordCreationPage = () => {
                 <form onSubmit={formik.handleSubmit}>
                     <VStack align="flex-start" alignItems="center">
                         <Heading marginTop="4" >Create Staff</Heading>
+                        {userDetails() && userDetails().type === 'admin' ?
+                        <>
+                        <FormControl marginTop="6">
+                            <Select
+                                id="building" 
+                                name="public_building_id"
+                                type="text" 
+                                variant="filled"
+                                placeholder="Building ID"
+                                value={formik.values.public_building_id}
+                                onChange={formik.handleChange}
+                            >
+                            {buildingOptionsHTML}
+                            {formik.errors.public_building_id ? <Box color="red.500" marginBottom="-6">{formik.errors.public_building_id}</Box>: null}
+                            </Select>
+                        </FormControl>
+                        <FormControl marginTop="6">
+                            <Select
+                                id="role" 
+                                name="role"
+                                type="text" 
+                                variant="filled"
+                                placeholder="Role"
+                                value={formik.values.role}
+                                onChange={formik.handleChange}
+                            >
+                            <option value="staff">Staff</option>
+                            <option value="supervisor">Supervisor</option>
+                            {formik.errors.role ? <Box color="red.500" marginBottom="-6">{formik.errors.public_building_id}</Box>: null}
+                            </Select>
+                        </FormControl>
+                        </>
+                        : null }
                         <FormControl marginTop="6">
                             <Input
                                 id="email" 
@@ -181,19 +286,22 @@ const LandlordCreationPage = () => {
                             </InputGroup>
                             {formik.errors.password ? <Box color="red.500"  marginBottom="-6">{formik.errors.password}</Box>: null}                          
                         </FormControl>
+                        { formik.values.role === 'supervisor' ? null :
                         <FormControl marginTop="6">
                             <Input
-                                id="ticketType" 
-                                name="ticketType"
+                                id="ticket_type" 
+                                name="ticket_type"
                                 type="text" 
                                 variant="filled"
                                 placeholder="Ticket Type"
-                                value={formik.values.ticketType}
+                                value={formik.values.ticket_type}
                                 onChange={formik.handleChange}
                                 
                             />
-                            {formik.errors.ticketType ? <Box color="red.500" marginBottom="-6">{formik.errors.ticketType}</Box>: null}
+                            {formik.errors.ticket_type ? <Box color="red.500" marginBottom="-6">{formik.errors.ticket_type}</Box>: null} 
                         </FormControl>
+                        }
+
                         <FormControl marginTop="6" >
                             <Button 
                                 id="loginButton"

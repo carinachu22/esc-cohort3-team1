@@ -1,11 +1,13 @@
 import { useNavigate, Navigate } from 'react-router-dom';
 
 // Import React and hooks
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuthUser, useAuthHeader, useIsAuthenticated } from 'react-auth-kit';
 
 // Import bootstrap for automatic styling
 import "bootstrap/dist/css/bootstrap.min.css";
+
+import DropDownMenu from '../components/DropDownMenu.js';
 
 // Import axios for http requests
 import axios, {AxiosError} from "axios";
@@ -50,7 +52,10 @@ export default function TicketList() {
     const [searchInput, setSearchInput] = useState("");
     const [searchType, setSearchType] = useState("");
     const [filterOption, setFilterOption] = useState("");
-    const [filteredTickets, setFilteredTickets] = useState(null);
+    const [filterBuildingOption, setFilterBuildingOption] = useState("");
+    const [filteredTickets, setFilteredTickets] = useState([]);
+    const [landlordAccounts, setLandlordAccounts] = useState([])
+    var tickets_html
 
 
     const checkStep = (status) => {
@@ -107,13 +112,26 @@ export default function TicketList() {
       ]
 
     // Initialise function for 1. Fetch all service tickets dependent on user type (tenant or landlord)
-    const GetServiceTickets = (userDetails) => {
+    const GetServiceTickets = async (userDetails) => {
         if (userDetails() === undefined){
             return;
         }
         const type = userDetails().type;
-        const tickets_list = [];
+        const buildingID = userDetails().building;
+        const email = userDetails().email;
         let response;
+
+        //get landlord accounts
+        const APIGetLandlordAccounts = async (ticket_type) => {
+            return new Promise((resolve, reject) => {(async () => {
+                const response = await axios.get(
+                    "http://localhost:5000/api/landlord/getLandlordAccounts?landlordEmail=" + email + "&ticket_type=" + ticket_type,
+                )
+                console.log("APIGetTenantAccounts", response)
+                return resolve(response.data.data)
+                })()
+            })
+        }
 
     
         // Initialse function for fetching ALL service tickets if landlord is logged in
@@ -150,9 +168,13 @@ export default function TicketList() {
                         "http://localhost:5000/api/tenant/getTickets",
                         config
                     )
+                } else if (type === 'admin'){ 
+                    response = await axios.get(
+                        "http://localhost:5000/api/admin/getTickets",
+                        config
+                    )
                 }
-                console.log("got response:")
-                console.log(response);
+                console.log("got response:", response.data.data);
                 return response.data.data;
             } catch (err){
                 if (err && err instanceof AxiosError) {
@@ -162,13 +184,12 @@ export default function TicketList() {
                     console.log("Error: ", err);
                 }
             }
-        }
+        }     
 
         // Initialise promise
-        const test_tickets = APIGetTickets(type)
-        // Wait for promise to be fulfilled (fetching tickets from database)
-        test_tickets.then(function(result){
+        const refreshTickets = async () => { APIGetTickets(type).then(async function(result){
             //console.log('result',result)
+            const tickets_list = [];
             // Naive data validation
             if (result !== undefined){
                 for (let i=0;i<result.length;i++){
@@ -178,10 +199,114 @@ export default function TicketList() {
             setTickets(tickets_list);
             //console.log('tickets',tickets)
 
+            const config = {
+                headers: {
+                  Authorization: `${token()}`
+                },
+                params: {
+                    email: userDetails().email
+                }
+            }
 
+            if (type === 'landlord') {
+                var landlordAccounts = []
+                if (userDetails().role === 'supervisor'){
+                    for(const ticket of tickets_list){
+                        const accounts = await APIGetLandlordAccounts(ticket.ticket_type)
+                        console.log('accounts', accounts)
+                        let emails = []
+                        for(const staff of accounts){
+                            emails.push(staff.email)
+                        }
+                        landlordAccounts.push(emails)
+                    }
+                } else {
+                    for(const ticket of tickets_list){
+                        const accounts = await APIGetLandlordAccounts(ticket.ticket_type)
+                        console.log('accounts', accounts)
+                        let emails = []
+                        for(const staff of accounts){
+                            emails.push(staff.email)
+                        }
+                        let final_emails = []
+                        for(const email of emails){
+                            if (email.includes(userDetails().email)){
+                                final_emails = [userDetails().email]
+                            }
+                        }
+                        landlordAccounts.push(final_emails)
+                    }
+                }
+                console.log('LL accounts', landlordAccounts)
+                console.log(landlordAccounts[0])
+                // Convert every ticket fetched to HTML to be shown on the left
+                tickets_html = tickets_list.map((ticket, index) => 
+                    <div key={index+1}>
+                    <AccordionItem>
+                        <AccordionButton justifyContent="space-between">
+                            <HStack spacing='24px' width="100%">
+                            <Box textAlign='left' width="16vw">
+                            {index+1}
+                            </Box>
+                            <Box textAlign='left' width='34vw'>
+                            {ticket.email}
+                            </Box>
+                            <Box textAlign='left' width='20vw'>
+                            {ticket.ticket_type}
+                            </Box>
+                            <Box textAlign='left' width='18vw'>
+                            {convertStatus(ticket.status)}
+                            </Box>
+                            </HStack>
+                            <AccordionIcon />
+                        </AccordionButton>
+                        <AccordionPanel>
+                            <HStack spacing='24vw'>
+                            <Box>
+                            Service Request ID: {ticket.public_service_request_id} <br></br>
+                            Email: {ticket.email} <br></br>
+                            Request Type: {ticket.ticket_type} <br></br>
+                            Request Description: {ticket.request_description} <br></br>
+                            Status: {convertStatus(ticket.status)} <br></br>
+                            Landlord Assigned: {ticket.landlord_email}<br></br>
+                            </Box>
+                            <Box width='50vw'>
+                                <Stepper index={checkStep(ticket.status)}>
+                                    {steps.map((step, index) => (
+                                        <Step key={index}>
+                                        <StepIndicator>
+                                            <StepStatus
+                                            complete={<StepIcon />}
+                                            incomplete={<StepNumber />}
+                                            active={<StepNumber />}
+                                            />
+                                        </StepIndicator>
 
-            // Convert every ticket fetched to HTML to be shown on the left
-            const tickets_html = tickets_list.map((ticket, index) => 
+                                        <Box flexShrink='0'>
+                                            <StepTitle width='6vw'>{step.title}</StepTitle>
+                                        </Box>
+
+                                        <StepSeparator />
+                                        </Step>
+                                    ))}
+                                    </Stepper>
+                            </Box>
+                            </HStack>
+                            <br></br>
+                            <Button onClick={() => navigateToViewTicketPage(ticket.public_service_request_id)} bgColor='blue.500' color='white' _hover={{bg: 'blue.800'}}>
+                                View Details & Actions
+                            </Button>
+                            <Box display="inline" marginLeft="3em">
+                                {/* for the parameter type, if landlord is a staff then type === "assign to self", if user is an admin or landlord then type === "assign staff" */}
+                                <DropDownMenu items={landlordAccounts[index]} type={userDetails().role === "staff" ? "Assign To Self" : "Assign Staff"} ticketID={ticket.public_service_request_id} refreshParent={refreshTickets}/>
+                            </Box>
+                        </AccordionPanel>
+                    </AccordionItem>
+                    </div>
+                );
+            } else if (type === 'tenant') {
+                // Convert every ticket fetched to HTML to be shown on the left
+                tickets_html = tickets_list.map((ticket, index) => 
                 <div key={index+1}>
                 <AccordionItem>
                     <AccordionButton justifyContent="space-between">
@@ -190,7 +315,7 @@ export default function TicketList() {
                         {index+1}
                         </Box>
                         <Box textAlign='left' width='34vw'>
-                        {ticket.email}
+                        {ticket.landlord_email ? ticket.landlord_email : "Unassigned"}
                         </Box>
                         <Box textAlign='left' width='20vw'>
                         {ticket.ticket_type}
@@ -209,8 +334,8 @@ export default function TicketList() {
                         Request Type: {ticket.ticket_type} <br></br>
                         Request Description: {ticket.request_description} <br></br>
                         Status: {convertStatus(ticket.status)} <br></br>
-                        Landlord Assigned: {ticket.landlord_email}<br></br>
-                        </Box>
+                        Landlord Assigned: {ticket.landlord_email ? ticket.landlord_email : "Unassigned"}<br></br>
+                        </Box> 
                         <Box width='50vw'>
                             <Stepper index={checkStep(ticket.status)}>
                                 {steps.map((step, index) => (
@@ -241,16 +366,87 @@ export default function TicketList() {
                 </AccordionItem>
                 </div>
             );
+            } else if (type === 'admin') {
+                // Convert every ticket fetched to HTML to be shown on the left
+                tickets_html = tickets_list.map((ticket, index) => 
+                <div key={index+1}>
+                <AccordionItem>
+                    <AccordionButton justifyContent="space-between">
+                        <HStack spacing='24px' width="100%">
+                        <Box textAlign='left' width="16vw">
+                        {index+1}
+                        </Box>
+                        <Box textAlign='left' width='34vw'>
+                        {ticket.landlord_email ? ticket.landlord_email : "Unassigned"}
+                        </Box>
+                        <Box textAlign='left' width='20vw'>
+                        {ticket.ticket_type}
+                        </Box>
+                        <Box textAlign='left' width='18vw'>
+                        {convertStatus(ticket.status)}
+                        </Box>
+                        </HStack>
+                        <AccordionIcon />
+                    </AccordionButton>
+                    <AccordionPanel>
+                        <HStack spacing='24vw'>
+                        <Box>
+                        Service Request ID: {ticket.public_service_request_id} <br></br>
+                        Email: {ticket.email} <br></br>
+                        Request Type: {ticket.ticket_type} <br></br>
+                        Request Description: {ticket.request_description} <br></br>
+                        Status: {convertStatus(ticket.status)} <br></br>
+                        Landlord Assigned: {ticket.landlord_email ? ticket.landlord_email : "Unassigned"}<br></br>
+                        </Box> 
+                        <Box width='50vw'>
+                            <Stepper index={checkStep(ticket.status)}>
+                                {steps.map((step, index) => (
+                                    <Step key={index}>
+                                    <StepIndicator>
+                                        <StepStatus
+                                        complete={<StepIcon />}
+                                        incomplete={<StepNumber />}
+                                        active={<StepNumber />}
+                                        />
+                                    </StepIndicator>
+
+                                    <Box flexShrink='0'>
+                                        <StepTitle width='6vw'>{step.title}</StepTitle>
+                                    </Box>
+
+                                    <StepSeparator />
+                                    </Step>
+                                ))}
+                                </Stepper>
+                        </Box>
+                        </HStack>
+                        <br></br>
+                        <Button onClick={() => navigateToViewTicketPage(ticket.public_service_request_id)} bgColor='blue.500' color='white' _hover={{bg: 'blue.800'}}>
+                            View Details & Actions
+                        </Button>
+                    </AccordionPanel>
+                </AccordionItem>
+                </div>
+            );
+            }
             // Update states to be accessed in return
+            console.log("tickets html", tickets_html)
             setFilteredTickets(tickets_html);
-        })
+        }) }
+
+        refreshTickets()
     }
-    const filterTickets = (tickets, status) => {
-        if (status === "") {
+    const filterTickets = (tickets, status, building) => {
+        // If no filtering provided
+        if (status === "" && building === "") {
             return tickets;
         }
-        return tickets.filter((ticket) => convertStatus(ticket.status) === status);
-        };
+        // If execution reaches here, means either status or building is not empty
+        if (status != ""){
+            return tickets.filter((ticket) => convertStatus(ticket.status) === status);
+        }
+        // TODO: Find a way to sort tickets by building
+    };
         
     // Function to search tickets based on the search input
     const searchTickets = (tickets, searchInput, searchType) => {
@@ -267,14 +463,13 @@ export default function TicketList() {
         navigate('/pages/ViewTicketPage/', { state: { ticketID } } );
       }
     
-
     // Combine filtering and searching
     const getFilteredTickets = () => {
         const filtered_tickets = (searchTickets(
-            filterTickets(tickets, filterOption),
+            filterTickets(tickets, filterOption, filterBuildingOption),
             searchInput, searchType
             ))
-        console.log(filtered_tickets)
+        console.log('filtered tickets', filtered_tickets)
         if (filtered_tickets != null){
         setFilteredTickets(filtered_tickets.map((ticket, index) => (
             <div key={index+1}>
@@ -337,17 +532,17 @@ export default function TicketList() {
         )))}
     }
 
-        
-    
-
-
     // This is to ensure that the GET request only happens once on page load
     // This will update the tickets state
     useEffect(() => {
-        if (authenticate()){
-            GetServiceTickets(userDetails);
-        }},
-        [])
+        async function fetchData(){
+            if (authenticate()){
+                await GetServiceTickets(userDetails);
+            }
+        }
+        fetchData()
+    },
+    [])
 
     useEffect(() => {
         // Function to handle filtering and searching whenever filterOption or searchInput changes
@@ -359,15 +554,6 @@ export default function TicketList() {
         handleFilterAndSearch();
     }, [filterOption, searchInput, searchType]);
 
-
-    //console.log("Authenticated.")
-    // Warning from react comes from the below block
-    // This is because the number of hooks called before and after loading is different
-    // If promise is not yet fulfilled, wait
-    /*
-    if (isLoading){
-        return<div className="App">Loading...</div>;
-    }*/
 
     // Ensure that user is authenticated for all renders
     const authenticate = () => {
@@ -431,7 +617,6 @@ export default function TicketList() {
                 <option value="Approved">Approved</option>
                 <option value="Completed">Completed</option>
                 <option value="Closed">Closed</option>
-                {/* Add more filter options as needed */}
             </Select>
             </Box>
                 <TableContainer>
@@ -440,7 +625,7 @@ export default function TicketList() {
                 <Tr>
                     <Th> No. </Th>
                     <Th> 
-                        {userDetails().type === 'tenant' ? "Assigned To" : "Requester"} 
+                        {userDetails().type === 'tenant' || userDetails().type === 'admin' ? "Assigned To" : "Requester"} 
                     </Th>
                     <Th> Type </Th>
                     <Th> Status </Th>

@@ -127,24 +127,28 @@ export default function Dashboard() {
             if (result !== undefined){
                 // For each ticket, push to the temp_tickets array
                 // Then, check the status of the ticket and increment the appropriate counter based on user type
+                var temp_needAction = 0;
+                var temp_waitAction = 0;
                 for (let i=0;i<result.length;i++){
                     temp_tickets.push(result[i]);
                     if (userDetails().type === 'tenant'){
                         if (tenant_need_action.includes(result[i].status)){
-                            setNeedAction(needAction+1);
+                            temp_needAction += 1
                         }
                         else if (tenant_wait_action.includes(result[i].status)){
-                            setWaitAction(waitAction+1);
+                            temp_waitAction += 1
                         }
                     } else if (userDetails().type === 'landlord'){
                         if (landlord_need_action.includes(result[i].status)){
-                            setNeedAction(needAction+1);
+                            temp_needAction += 1
                         }
                         else if (landlord_wait_action.includes(result[i].status)){
-                            setWaitAction(waitAction+1);
+                            temp_waitAction += 1
                         }
                     }
                 }
+                setNeedAction(temp_needAction)
+                setWaitAction(temp_waitAction)
                 // Set state so that tickets.length can be read in the render
                 setTickets(temp_tickets)
             }   

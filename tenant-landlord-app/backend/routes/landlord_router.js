@@ -27,7 +27,8 @@ import {
   controllerGetLandlordDetails,
   controllerDeleteAllLandlords,
   controllerDeleteLandlordByEmail,
-  controllerGetTicketsByType
+  controllerGetTicketsByType,
+  controllerAssignLandlord
 } from "../controller/landlord_controller.js";
 import express from "express";
 import { checkLandlordToken } from "../auth/landlord_validation.js";
@@ -91,6 +92,7 @@ router.post("/uploadQuotation/", checkLandlordToken, upload.single('files'), con
 
 router.patch("/ticketApproval/", checkLandlordToken, controllerTicketApproval);
 router.patch("/ticketWork/", checkLandlordToken, controllerTicketWork);
+router.patch("/assignLandlord", controllerAssignLandlord);
 
 router.get("/getTenantAccounts/", controllerGetTenantAccounts);
 router.patch("/deleteAllTenants", controllerDeleteAllTenants);

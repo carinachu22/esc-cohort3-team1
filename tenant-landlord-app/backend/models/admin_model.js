@@ -89,10 +89,10 @@ export const updateAdminPassword = ({ password, id }, callBack) => {
 export const createLandlord = (data, callBack) => {
   pool.query(
     `
-    INSERT INTO LANDLORD_USER(email, password, ticket_type)
-    VALUES (?, ?, ?)
+    INSERT INTO LANDLORD_USER(email, password, ticket_type, public_building_id, role)
+    VALUES (?, ?, ?, ?, ?)
     `,
-    [data.email, data.password, data.ticket_type],
+    [data.email, data.password, data.ticket_type, data.public_building_id, data.role],
     (error, results, fields) => {
       if (error) {
         callBack(error);
@@ -171,3 +171,123 @@ export const createBuilding = (data, callBack) => {
     }
   );
 };
+
+export const getAllTickets = (callBack) => {
+    pool.query(
+      `
+      SELECT *
+      FROM service_request
+      `,
+      (error, results, fields) => {
+        if (error) {
+          callBack(error);
+        } else {
+          callBack(null, results);
+        }
+      }
+    );
+  };
+
+export const getAllTenantAccounts = (callBack) => {
+    let sqlQuery = `
+        SELECT *
+        FROM tenant_user
+        WHERE deleted_date IS NULL 
+        `
+    console.log(sqlQuery)
+    pool.query(
+        sqlQuery,
+        (error, results, fields) => {
+        if (error) {
+            callBack(error);
+        }
+        callBack(null, results);
+        }
+    )
+}
+
+export const getAllLandlordAccounts = (callBack) => {
+    let sqlQuery = `
+    SELECT *
+    FROM landlord_user
+    WHERE deleted_date IS NULL
+    `
+    console.log(sqlQuery)
+    pool.query(
+      sqlQuery,
+      (error, results, fields) => {
+        if (error) {
+          callBack(error);
+        }
+        callBack(null, results);
+      }
+    )
+  }
+
+
+/**
+ * recover landlord account by setting the deleted_date to NULL
+ * @param {*} id 
+ * @param {*} callBack 
+ */
+export const recoverLandlordAccount = (data, id, callBack) => {
+  pool.query(
+    `
+    UPDATE landlord_user 
+    SET deleted_date = NULL, password = ?, ticket_type = ?, public_building_id = ?, role = ?
+    WHERE landlord_user_id = ?
+    `,
+    [
+      data.password,
+      data.ticket_type,
+      data.public_building_id,
+      data.role,
+      id
+    ],
+    (error, results, fields) => {
+      if(error){
+        callBack(error);
+      }
+      return callBack(null, results);
+    }
+  );
+}
+
+export const modifyTicket = (data, callBack) => {
+    pool.query(
+        `
+        UPDATE service_request
+        SET ticket_type = ?, request_description = ?, status = ?
+        WHERE public_service_request_id = ?
+        `,
+        [
+        data.ticket_type,
+        data.request_description,
+        data.status,
+        data.public_service_request_id
+        ],
+        (error, results, fields) => {
+          if (error) {
+            callBack(error);
+          }
+          return callBack(null, results);
+        }
+    );
+}
+
+export const getBuildings = (callBack) => {
+    let sqlQuery = `
+    SELECT *
+    FROM building
+    `
+    console.log(sqlQuery)
+    pool.query(
+      sqlQuery,
+      (error, results, fields) => {
+        if (error) {
+          callBack(error);
+        }
+        callBack(null, results);
+      }
+    )
+  }

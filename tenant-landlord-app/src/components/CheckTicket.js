@@ -3,7 +3,7 @@ import { useAuthHeader, useIsAuthenticated } from "react-auth-kit";
 import { useNavigate } from "react-router-dom"
 import React, {useState} from "react"
 
-import { Box, Button, Textarea, useToast, Heading, Stack, Icon, Checkbox, HStack } from '@chakra-ui/react';
+import { Box, Button, Textarea, useToast, Heading, Stack, Icon, Checkbox, HStack, VStack } from '@chakra-ui/react';
 import { IoIosStarOutline, IoIosStar } from 'react-icons/io/index.esm.js';
 
 /**
@@ -26,15 +26,19 @@ export default function CheckTicket(ticket, userDetails){
     const [isCheckboxChecked, setCheckboxChecked] = useState(false); 
 
     const navigateToQuotationUploadPage =  (ticketID) => {
-      navigate('/pages/QuotationUploadPage/', { state: { ticketID } } );
+        navigate('/pages/QuotationUploadPage/', { state: { ticketID } } );
     }
 
-    const navigateToQuotationPage =  (ticketID) => {
-      navigate('/pages/QuotationPage/', { state: { ticketID } } );
+    const navigateToQuotationPage =  (ticketID, status) => {
+        navigate('/pages/QuotationPage/', { state: { ticketID, status } } );
     }
 
     const navigateToFeedbackPage =  (ticketID) => {
-      navigate('/pages/FeedbackForm/', { state: { ticketID } } );
+        navigate('/pages/FeedbackForm/', { state: { ticketID } } );
+    }
+
+    const navigateToModifyTicketPage = (ticketID) => {
+        navigate('/pages/ModifyTicketPage/', { state: { ticketID } } );
     }
 
     // Check if user is authenticated
@@ -43,11 +47,46 @@ export default function CheckTicket(ticket, userDetails){
         return
     }
 
+    const view_quotation_html = 
+    <Button
+    variant="solid"
+    colorScheme="blue"
+    onClick={() => 
+    navigateToQuotationPage(ticket.public_service_request_id, ticket.status)
+    }
+    width="13em"
+    height="3em"
+    marginTop="3em"
+    borderRadius="0.25em"
+    >
+    View/Add Quotation
+    </Button>
+
+    const modify_ticket_html = 
+    <Button
+    variant="solid"
+    colorScheme="blue"
+    onClick={() => 
+    navigateToModifyTicketPage(ticket.public_service_request_id, ticket.status)
+    }
+    width="13em"
+    height="3em"
+    marginTop="3em"
+    borderRadius="0.25em"
+    >
+        Modify Ticket
+    </Button>
+
+    if (userDetails().type === 'admin'){
+        return modify_ticket_html
+    }
+    
+
     // Check if service ticket has just been created by tenant
     // Allow landlord to approve or reject ticket
     // Do not allow tenant to do anything
     if (status === 'tenant_ticket_created'){
-        if (userDetails().type === 'landlord'){
+        if (userDetails().type === 'landlord' && userDetails().email === ticket.landlord_email){
             return (
                 <>
                     <Checkbox id="quotationCheckbox" isChecked={isCheckboxChecked} onChange={(e) => setCheckboxChecked(e.target.checked)}>
@@ -144,7 +183,7 @@ export default function CheckTicket(ticket, userDetails){
     // Allow landlord to view/add quotation if quotation is required
     // Else, allow landlord to start work
     if (status === 'landlord_ticket_approved'){
-        if (userDetails().type === 'landlord'){
+        if (userDetails().type === 'landlord' && userDetails().email === ticket.landlord_email){
             if (ticket.quotation_required === 'true' || ticket.quotation_required === "1"){
                 return(
                     <Button
@@ -153,7 +192,7 @@ export default function CheckTicket(ticket, userDetails){
                     onClick={() => {if (userDetails().type === 'landlord'){
                     navigateToQuotationUploadPage(ticket.public_service_request_id)}
                     else{
-                    navigateToQuotationPage(ticket.public_service_request_id)
+                    navigateToQuotationPage(ticket.public_service_request_id, ticket.status)
                     }}}
                     width="13em"
                     height="3em"
@@ -209,21 +248,7 @@ export default function CheckTicket(ticket, userDetails){
     // Allow landlord to also view (or update) quotation
     if (status === 'landlord_quotation_sent'){
         return(
-            <Button
-            variant="solid"
-            colorScheme="blue"
-            onClick={() => {if (userDetails().type === 'landlord'){
-            navigateToQuotationUploadPage(ticket.public_service_request_id)}
-            else{
-            navigateToQuotationPage(ticket.public_service_request_id)
-            }}}
-            width="13em"
-            height="3em"
-            marginTop="3em"
-            borderRadius="0.25em"
-            >
-            View/Add Quotation
-            </Button>
+            view_quotation_html
         )
     }
 
@@ -231,8 +256,10 @@ export default function CheckTicket(ticket, userDetails){
     // Do not allow tenant to do anything
     // Allow landlord to start work
     if (status === 'ticket_quotation_approved'){
-        if (userDetails().type === 'landlord'){
+        if (userDetails().type === 'landlord' && userDetails().email === ticket.landlord_email){
             return(
+              <>
+              {view_quotation_html}
                 <Button
                 variant="solid"
                 colorScheme="blue"
@@ -267,9 +294,10 @@ export default function CheckTicket(ticket, userDetails){
                 >
                 Start Work
                 </Button>
+                </>
             )
         } else {
-            return
+            return view_quotation_html
         }
     }
 
@@ -277,7 +305,7 @@ export default function CheckTicket(ticket, userDetails){
     // Do not allow tenant to do anything
     // Allow landlord to update quotation
     if (status === 'ticket_quotation_rejected'){
-        if (userDetails().type === 'landlord'){
+        if (userDetails().type === 'landlord' && userDetails().email === ticket.landlord_email){
             return(
                 <Button
                 variant="solid"
@@ -285,7 +313,7 @@ export default function CheckTicket(ticket, userDetails){
                 onClick={() => {if (userDetails().type === 'landlord'){
                 navigateToQuotationUploadPage(ticket.public_service_request_id)}
                 else{
-                navigateToQuotationPage(ticket.public_service_request_id)
+                navigateToQuotationPage(ticket.public_service_request_id, ticket.status)
                 }}}
                 width="13em"
                 height="3em"
@@ -303,8 +331,10 @@ export default function CheckTicket(ticket, userDetails){
     // Allow landlord to end work
     // TODO: Allow tenant to view quotation without approve/reject actions
     if (status === 'landlord_started_work'){
-        if (userDetails().type === 'landlord'){
+        if (userDetails().type === 'landlord' && userDetails().email === ticket.landlord_email){
             return(
+                <>
+                {view_quotation_html}
                 <Button
                   variant="solid"
                   colorScheme="blue"
@@ -338,9 +368,10 @@ export default function CheckTicket(ticket, userDetails){
                 >
                   End Work
                 </Button>
+                </>
             )
         } else {
-            return
+            return view_quotation_html
         }
     }
 
@@ -351,6 +382,7 @@ export default function CheckTicket(ticket, userDetails){
       if (userDetails().type === 'tenant'){
         return(
             <HStack spacing='5vw'>
+                {view_quotation_html}
             <Button
             variant="solid"
             colorScheme="blue"
@@ -397,7 +429,7 @@ export default function CheckTicket(ticket, userDetails){
           </HStack>
         )
       } else {
-        return
+        return view_quotation_html
       }
     }
 
@@ -405,7 +437,7 @@ export default function CheckTicket(ticket, userDetails){
     // Do not allow tenant to do anything
     // Allow landlord to start work
     if (status === 'ticket_work_rejected'){
-      if (userDetails().type === 'landlord'){
+      if (userDetails().type === 'landlord' && userDetails().email === ticket.landlord_email){
           return(
               <Button
               variant="solid"
@@ -443,7 +475,7 @@ export default function CheckTicket(ticket, userDetails){
               </Button>
           )
       } else {
-          return
+          return view_quotation_html
       }
   }
 
@@ -461,10 +493,12 @@ export default function CheckTicket(ticket, userDetails){
         />
       ));
       return(
+        <VStack>
+        {view_quotation_html}
         <Box display="flex" flexDirection="column" justifyContent="flex-start" minHeight="100vh">
-          <Box mb={2} width="50%" margin="0 auto">
+          <Box mb={2} width="50vw" margin="0 auto">
             <Heading as="h4" align="center" marginBottom="1.5em">
-              Please leave your feedback
+              Feedback:
             </Heading>
             <Textarea isDisabled
               name="comment"
@@ -480,6 +514,7 @@ export default function CheckTicket(ticket, userDetails){
             </Stack>
           </Box>
       </Box>
+      </VStack>
       )
     }
 

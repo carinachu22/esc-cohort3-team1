@@ -29,14 +29,14 @@ const TenantCreationPage = () => {
 
     var config
     if (authenticated()){
-    config = {
-        headers: {
-        Authorization: `${token()}`
-        },
-        params: {
-            email: userDetails().email,
+        config = {
+            headers: {
+            Authorization: `${token()}`
+            },
+            params: {
+                email: userDetails().email,
+            }
         }
-    }
     }
 
     
