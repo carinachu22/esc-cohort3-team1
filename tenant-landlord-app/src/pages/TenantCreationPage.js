@@ -28,17 +28,16 @@ const TenantCreationPage = () => {
     const authenticated = useIsAuthenticated();
 
     var config
-
-      if (authenticated()){
+    if (authenticated()){
         config = {
-          headers: {
+            headers: {
             Authorization: `${token()}`
-          },
-          params: {
-              email: userDetails().email,
-          }
+            },
+            params: {
+                email: userDetails().email,
+            }
         }
-      }
+    }
 
     
 
@@ -69,15 +68,6 @@ const TenantCreationPage = () => {
     const navigateToAccountManagement = () => {
         navigate('/pages/AccountManagement');
     };
-
-    const APIGetBuildingID = async (email) => {
-        const response = await axios.get(
-            "http://localhost:5000/api/landlord/getTenantAccounts?landlordEmail=" + email,
-            config
-        )
-        console.log("APIGetBuildingID", response)
-        return response
-    }
 
     const onSubmit = async (values) => {
         console.log("Values: ", values);
@@ -199,7 +189,6 @@ const TenantCreationPage = () => {
                             </Button>
                             {formik.errors.hasError ? <Box color="red.500" id="errorMessage" marginBottom="-6" >Invalid email or password</Box>: null}
                         </FormControl>
-                        
                     </VStack>
                 </form>
             </Box>

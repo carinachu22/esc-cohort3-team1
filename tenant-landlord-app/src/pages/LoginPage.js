@@ -28,7 +28,7 @@ const LoginPage = () => {
   if (location.state != null) {
     role = location.state.role;
   }
-  //console.log("The role is ", role);
+  console.log(role);
 
   const validate = (values) => {
     let errors = {};
@@ -56,10 +56,7 @@ const LoginPage = () => {
   };
 
   const navigateToDashboard = () => {
-    console.log("In navigate to dashboard() ");
-    console.log("Navigate is ", navigate("/pages/Dashboard"));
     navigate("/pages/Dashboard");
-    console.log("In navigated to dashboard() ");
   };
 
   const navigateToForgotPasswordPage = (role) => {
@@ -82,7 +79,12 @@ const LoginPage = () => {
             token: response.data.token,
             expiresIn: 60,
             tokenType: "Bearer",
-            authState: { email: values.email, type: "landlord" },
+            authState: {
+              email: values.email,
+              type: "landlord",
+              role: `${response.data.role}`,
+              building: `${response.data.building}`,
+            },
           });
           console.log(response.data.message);
           navigateToDashboard();
@@ -95,13 +97,18 @@ const LoginPage = () => {
           "http://localhost:5000/api/tenant/login",
           values
         );
+        console.log(response);
         if (response.data.message === "Login successfully") {
           console.log(response.data.message);
           signIn({
             token: response.data.token,
             expiresIn: 60,
             tokenType: "Bearer",
-            authState: { email: values.email, type: "tenant" },
+            authState: {
+              email: values.email,
+              type: "tenant",
+              building: `${response.data.building}`,
+            },
           });
           navigateToDashboard();
         } else if (response.data.message === "Invalid email or password") {
@@ -113,14 +120,14 @@ const LoginPage = () => {
           "http://localhost:5000/api/admin/login",
           values
         );
-        signIn({
-          token: response.data.token,
-          expiresIn: 60,
-          tokenType: "Bearer",
-          authState: { email: values.email, type: "admin" },
-        });
         if (response.data.message === "Login successfully") {
           console.log(response.data.message);
+          signIn({
+            token: response.data.token,
+            expiresIn: 60,
+            tokenType: "Bearer",
+            authState: { email: values.email, type: "admin" },
+          });
           navigateToDashboard();
         } else if (response.data.message === "Invalid email or password") {
           formik.errors.hasError = true;

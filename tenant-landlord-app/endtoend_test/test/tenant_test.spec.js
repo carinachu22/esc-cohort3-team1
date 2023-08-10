@@ -26,8 +26,8 @@ const assert = chai.assert;
         await driver.manage().setTimeouts({implicit: 500});
 
         // In Tenant Login Page
-        let result =  await driver.findElement(By.xpath("//*[@id='root']/div/div/div/div/form/div/h2")).isDisplayed();
-        assert.equal(true, result)
+        let result = await driver.findElement(By.xpath("//*[@id='root']/div/div/div/div/form/div/h2")).getText();
+        assert.equal("Welcome tenant!", result);
 
       });
   

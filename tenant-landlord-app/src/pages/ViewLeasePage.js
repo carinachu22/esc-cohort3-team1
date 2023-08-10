@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { Box, Button, useToast, Heading } from '@chakra-ui/react';
+import React, { useEffect, useState } from 'react';
+import { Box, Button, Heading } from '@chakra-ui/react';
 import { ArrowBackIcon, ArrowForwardIcon } from '@chakra-ui/icons';
 import { useNavigate , useLocation } from 'react-router-dom';
 
@@ -22,42 +22,41 @@ function ViewLeasePage() {
 
     const navigateToAccountManagement = () => {
       navigate('/pages/AccountManagement/');
-  }
+    }
 
     useEffect(() => {
-      if (authenticate()){
-      fetch(`http://localhost:5000/api/landlord/getLease/?tenantID=${tenantID}`, {
-        headers:{
-          Authorization: `${token()}`
-        }
-      }
-      ) 
+        if (authenticate()){
+        fetch(`http://localhost:5000/api/landlord/getLease/?tenantID=${tenantID}`, {
+            headers:{
+                Authorization: `${token()}`
+            }
+        }) 
         .then((response) => response.blob())
         .then((data) => {
-          console.log('data',data)
-          const pdfBlobUrl = URL.createObjectURL(data);
-          setPdfUrl(pdfBlobUrl);
+            console.log('data',data)
+            const pdfBlobUrl = URL.createObjectURL(data);
+            setPdfUrl(pdfBlobUrl);
         })
         .catch((error) => {
-          console.error(error);
-          // Handle error
+            console.error(error);
+            // Handle error
         });
     }}, []);
 
     // Ensure that user is authenticated for all renders
     const authenticate = () => {
-      // Check if still autenticated based on react auth kit
-      if (!authenticated()){
-          console.log("Not authenticated, redirecting.")
-          navigate('/')
-          return false
-      } else {
-          return true
-      }
-  }
-  useEffect(() => {
-      authenticate()
-  })
+        // Check if still autenticated based on react auth kit
+        if (!authenticated()){
+            console.log("Not authenticated, redirecting.")
+            navigate('/')
+            return false
+        } else {
+            return true
+        }
+    }
+    useEffect(() => {
+        authenticate()
+    })
 
 
     return (
