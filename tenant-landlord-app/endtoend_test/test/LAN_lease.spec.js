@@ -102,13 +102,11 @@ describe('Landlord Lease', function () {
       it('Find new tenant in Tenant Details table', async function() {
         await driver.sleep(1000)
         let new_tenant = await driver.wait(until.elementIsVisible(
-          driver.findElement(By.xpath('//*[contains(text(), "newtenant@gmail.com")]'))
+          driver.findElement(By.xpath('//*[contains(text(), "newtenant2@gmail.com")]'))
         ));
         await driver.executeScript("arguments[0].click();", new_tenant);
         await driver.sleep(1000)
-        // let new_lease = await driver.wait(until.elementIsVisible(
-        //   driver.findElement(By.xpath('//*[contains(text(), "New Lease")]'))
-        // ));
+
         let new_lease = await driver.findElement(By.xpath('//*[contains(text(), "New Lease")]'))
         await driver.executeScript("arguments[0].click();", new_lease);
 

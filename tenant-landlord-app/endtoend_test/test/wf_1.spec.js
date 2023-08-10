@@ -156,38 +156,42 @@ describe('Service Ticket Workflow -- Landlord Rejects Ticket', function () {
     });
 
     
-    it('Landlord Select Service Ticket', async function () {
-        await landlord_driver.manage().setTimeouts({implicit: 400});
-        await landlord_driver.sleep(2000)
-        // await landlord_driver.executeScript(`window.scrollBy(0, ${3003});`)
+    it('Landlord Select Service Ticket (Dropdown)', async function () {
+      // Find ticket
+      await landlord_driver.manage().setTimeouts({implicit: 3000});
+      const lastTicket = landlord_driver.findElement(By.xpath("//*[@class='chakra-accordion css-0']/div[last()]/div/button"))
+      await landlord_driver.executeScript("arguments[0].click();", lastTicket);
+    });
 
-        const lastTicket = landlord_driver.findElement(By.xpath("//*[@class='chakra-accordion css-0']/div[last()]"))
-        await landlord_driver.executeScript("arguments[0].click();", lastTicket);
 
+    it('Landlord Self Assign Service Ticket', async function() {
+      await landlord_driver.manage().setTimeouts({implicit: 1000});
+      //await landlord_driver.sleep(2000)
 
-        await landlord_driver.sleep(2000)
+      // Click self assign button
+      const self_assign_button = landlord_driver.findElement(By.xpath('//*[@class="chakra-accordion css-0"]/div[last()]/div/div/div/div/button'))
+      await landlord_driver.executeScript("arguments[0].click();", self_assign_button);
+      await landlord_driver.manage().setTimeouts({implicit: 2000});
+      
+      // Click landlord
+      const landlord_button = landlord_driver.findElement(By.xpath('//*[@class="chakra-accordion css-0"]/div[last()]//button[text()="landlord1@gmail.com"]'))
+      await landlord_driver.executeScript("arguments[0].click();", landlord_button);
+      await landlord_driver.sleep(2000)
 
-        const detailsButton = landlord_driver.findElement(By.xpath("//*[@class='chakra-accordion css-0']/div[last()]//button[text()='View Details & Actions']"))
-        await landlord_driver.executeScript("arguments[0].click();", detailsButton);
+      // Click confirm assignment
+      const cfm_assignment = landlord_driver.findElement(By.xpath('//*[@class="chakra-accordion css-0"]/div[last()]//button[text()="Confirm Assignment"]'))
+      await landlord_driver.executeScript("arguments[0].click();", cfm_assignment);
+      await landlord_driver.manage().setTimeouts({implicit: 1000});
+      await landlord_driver.sleep(2000)
 
-      // // View drop down box
-      // let lastTicket = await landlord_driver.wait(until.elementIsVisible(
-      //   landlord_driver.findElement(By.xpath("//*[@class='chakra-accordion css-0']/div[last()]"))
-      // ));
-      // await landlord_driver.executeScript("arguments[0].click();", lastTicket)
-      // // await landlord_driver.sleep(2000)
-      // // await lastTicket.click()
-      // // await landlord_driver.executeScript("arguments[0].click();", lastTicket)
-
-      // // Click "View Details& Actions" Button
-      // let detailsButton = await landlord_driver.wait(until.elementIsVisible(
-      //   landlord_driver.findElement(By.xpath("//*[@class='chakra-accordion css-0']/div[last()]//button[text()='View Details & Actions']"))
-      // ));
-      // await landlord_driver.executeScript("arguments[0].click();", detailsButton);
+      // Click view details and action
+      const view_details = landlord_driver.findElement(By.xpath('//*[@class="chakra-accordion css-0"]/div[last()]//button[text()="View Details & Actions"]'))
+      await landlord_driver.executeScript("arguments[0].click();", view_details);
+      await landlord_driver.sleep(2000)
 
       // Enter new page
-        let currentURL = await landlord_driver.getCurrentUrl();
-        assert.equal('http://localhost:3000/pages/ViewTicketPage/', currentURL)
+      let currentURL = await landlord_driver.getCurrentUrl();
+      assert.equal('http://localhost:3000/pages/ViewTicketPage/', currentURL)
     });
 
 

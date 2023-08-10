@@ -1,11 +1,11 @@
-const {By, Builder, Browser, until} = require('selenium-webdriver');
+const {By, Builder, Browser, until, checkedLocator} = require('selenium-webdriver');
 const chai = require('chai');
 
 const assert = chai.assert;
 
-describe('Successful/Usual Service Ticket Workflow', function () {
-    let tenant_driver;
-    let landlord_driver
+describe('Successful Service Ticket Workflow (with quotation)', function () {
+    var tenant_driver;
+    var landlord_driver
 
     before(async function () {
       tenant_driver = await new Builder().forBrowser('chrome').build();
@@ -157,13 +157,38 @@ describe('Successful/Usual Service Ticket Workflow', function () {
     });
 
     
-    it('Landlord Select Service Ticket', async function () {
+    it('Landlord Select Service Ticket (Dropdown)', async function () {
       // Find ticket
-      const lastTicket = landlord_driver.findElement(By.xpath("//*[@class='chakra-accordion css-0']/div[last()]"))
+      await landlord_driver.manage().setTimeouts({implicit: 3000});
+      const lastTicket = landlord_driver.findElement(By.xpath("//*[@class='chakra-accordion css-0']/div[last()]/div/button"))
       await landlord_driver.executeScript("arguments[0].click();", lastTicket);
-      // Click on "details" button
-      const detailsButton = landlord_driver.findElement(By.xpath("//*[@class='chakra-accordion css-0']/div[last()]//button[text()='View Details & Actions']"))
-      await landlord_driver.executeScript("arguments[0].click();", detailsButton);
+    });
+
+    
+    it('Landlord Self Assign Service Ticket', async function() {
+      await landlord_driver.manage().setTimeouts({implicit: 1000});
+      //await landlord_driver.sleep(2000)
+
+      // Click self assign button
+      const self_assign_button = landlord_driver.findElement(By.xpath('//*[@class="chakra-accordion css-0"]/div[last()]/div/div/div/div/button'))
+      await landlord_driver.executeScript("arguments[0].click();", self_assign_button);
+      await landlord_driver.manage().setTimeouts({implicit: 2000});
+      
+      // Click landlord
+      const landlord_button = landlord_driver.findElement(By.xpath('//*[@class="chakra-accordion css-0"]/div[last()]//button[text()="landlord1@gmail.com"]'))
+      await landlord_driver.executeScript("arguments[0].click();", landlord_button);
+      await landlord_driver.sleep(2000)
+
+      // Click confirm assignment
+      const cfm_assignment = landlord_driver.findElement(By.xpath('//*[@class="chakra-accordion css-0"]/div[last()]//button[text()="Confirm Assignment"]'))
+      await landlord_driver.executeScript("arguments[0].click();", cfm_assignment);
+      await landlord_driver.manage().setTimeouts({implicit: 1000});
+      await landlord_driver.sleep(2000)
+
+      // Click view details and action
+      const view_details = landlord_driver.findElement(By.xpath('//*[@class="chakra-accordion css-0"]/div[last()]//button[text()="View Details & Actions"]'))
+      await landlord_driver.executeScript("arguments[0].click();", view_details);
+      await landlord_driver.sleep(2000)
 
       // Enter new page
       let currentURL = await landlord_driver.getCurrentUrl();
@@ -253,7 +278,7 @@ describe('Successful/Usual Service Ticket Workflow', function () {
   it('Landlord Starts Work', async function () {
     await landlord_driver.get('http://localhost:3000/pages/TicketList/');
 
-    await tenant_driver.manage().setTimeouts({implicit: 300});
+    await landlord_driver.manage().setTimeouts({implicit: 600});
 
     const lastTicket = landlord_driver.findElement(By.xpath("//*[@class='chakra-accordion css-0']/div[last()]"))
     await landlord_driver.executeScript("arguments[0].click();", lastTicket);
@@ -271,7 +296,7 @@ describe('Successful/Usual Service Ticket Workflow', function () {
   it('Landlord Ends Work', async function () {
     await landlord_driver.get('http://localhost:3000/pages/TicketList/');
 
-    await tenant_driver.manage().setTimeouts({implicit: 300});
+    await landlord_driver.manage().setTimeouts({implicit: 600});
 
     const lastTicket = landlord_driver.findElement(By.xpath("//*[@class='chakra-accordion css-0']/div[last()]"))
     await landlord_driver.executeScript("arguments[0].click();", lastTicket);
@@ -281,7 +306,7 @@ describe('Successful/Usual Service Ticket Workflow', function () {
     const startWorkButton = landlord_driver.findElement(By.xpath("//button[text()='End Work']"))
     await landlord_driver.executeScript("arguments[0].click();", startWorkButton);
 
-    await landlord_driver.sleep(200)
+    await landlord_driver.sleep(200);
     let currentURL = await landlord_driver.getCurrentUrl();
     assert.equal('http://localhost:3000/pages/TicketList', currentURL)
   });
@@ -289,7 +314,7 @@ describe('Successful/Usual Service Ticket Workflow', function () {
   it('Tenant Give Feedback', async function () {
     await tenant_driver.get('http://localhost:3000/pages/TicketList/');
 
-    await tenant_driver.manage().setTimeouts({implicit: 300});
+    await tenant_driver.manage().setTimeouts({implicit: 600});
     
     const lastTicket = tenant_driver.findElement(By.xpath("//*[@class='chakra-accordion css-0']/div[last()]"))
     await tenant_driver.executeScript("arguments[0].click();", lastTicket);
@@ -299,7 +324,8 @@ describe('Successful/Usual Service Ticket Workflow', function () {
     const feedbackButton = tenant_driver.findElement(By.xpath("//button[text()='Close Ticket & Give Feedback']"))
     await tenant_driver.executeScript("arguments[0].click();", feedbackButton);
 
-    await tenant_driver.sleep(200)
+    await tenant_driver.manage().setTimeouts({implicit: 2000});
+
     let currentURL = await tenant_driver.getCurrentUrl();
     assert.equal('http://localhost:3000/pages/FeedbackForm/', currentURL)
 
@@ -309,24 +335,29 @@ describe('Successful/Usual Service Ticket Workflow', function () {
     const feedbackRating = tenant_driver.findElement(By.xpath("//*[@class='chakra-icon css-11w35xc']"))
     await feedbackRating.click();
 
+    await tenant_driver.manage().setTimeouts({implicit: 1000});
+
     const submitButton = tenant_driver.findElement(By.xpath("//button[text()='Submit']"))
     await submitButton.click()
 
-    await tenant_driver.sleep(200);
+    await tenant_driver.manage().setTimeouts({implicit: 2000});
+    await tenant_driver.sleep(3000)
 
-    currentURL = await tenant_driver.getCurrentUrl();
-    assert.equal('http://localhost:3000/pages/dashboard', currentURL)
+    nextURL = await tenant_driver.getCurrentUrl();
+    assert.equal('http://localhost:3000/pages/dashboard', nextURL)
+
+    await tenant_driver.manage().setTimeouts({implicit: 2000});
   });
 
 
   it('Landlord View Feedback', async function () {
-    const lastTicket = landlord_driver.findElement(By.xpath("//*[@class='chakra-accordion css-0']/div[last()]"))
+    const lastTicket = landlord_driver.findElement(By.xpath("//*[@class='chakra-accordion css-0']/div[last()]/div/button"))
     await landlord_driver.executeScript("arguments[0].click();", lastTicket);
     const detailsButton = landlord_driver.findElement(By.xpath("//*[@class='chakra-accordion css-0']/div[last()]//button[text()='View Details & Actions']"))
     await landlord_driver.executeScript("arguments[0].click();", detailsButton);
 
     let result = await landlord_driver.wait(until.elementIsVisible(
-      landlord_driver.findElement(By.xpath('//*[@id="root"]/div/div/div[3]/div/div[1]/textarea'))
+      landlord_driver.findElement(By.xpath('//*[@id="root"]/div/div/div[3]/div/div/div[1]/textarea'))
       ));
     let feedback = await result.getText();
     assert.equal("Dummy Feedback Comment", feedback)

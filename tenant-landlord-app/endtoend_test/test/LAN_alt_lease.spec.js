@@ -84,7 +84,7 @@ describe('Landlord Lease', function () {
         let email = await driver.wait(until.elementIsVisible(
           driver.findElement(By.xpath('//*[@id="email"]'))
         ));
-        await email.sendKeys("newtenant@gmail.com");
+        await email.sendKeys("tenant1@gmail.com");
         let password = await driver.wait(until.elementIsVisible(
         driver.findElement(By.xpath('//*[@id="password"]'))
         ));

@@ -258,7 +258,7 @@ describe('Landlord filter ticket', function () {
     });
 
 
-    it('Filter by Status', async function() {
+    it('Filter by Status (Created)', async function() {
       let search_requester = await driver.wait(until.elementIsVisible(
           driver.findElement(By.xpath('//*[@id="root"]/div/div/div[4]/div/select'))
       ));
@@ -294,6 +294,20 @@ describe('Landlord filter ticket', function () {
       ));
       await click_status_return.click();
 
-  });
+    });
+
+    it('Landlord Sign Out', async function () {
+
+      // Click on "Service Ticket List"
+      let signout = await driver.wait(until.elementIsVisible(
+        driver.findElement(By.xpath('//*[@id="root"]/div/div/div[1]/div[3]/button'))
+      ))
+      await signout.click();
+      await driver.manage().setTimeouts({implicit: 500});
+
+      // Check if ticket portal is shown
+      const currentURL = await driver.getCurrentUrl();
+      assert.equal('http://localhost:3000/', currentURL)
+    });
 
 });
