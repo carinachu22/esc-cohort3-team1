@@ -21,7 +21,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
 app.listen(process.env.APP_PORT, () => {
-  console.log(`Server is working on PORT: `, process.env.APP_PORT);
+  // console.log(`Server is working on PORT: `, process.env.APP_PORT);
 });
 
 app.get("/api", (req, res) => {

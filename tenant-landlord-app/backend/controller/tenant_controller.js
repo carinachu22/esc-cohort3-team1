@@ -12,7 +12,6 @@ import {
     getTicketById,
     getTenantUserId,
     getLeaseByTenant,
-    getQuotation,
     getQuotationPath,
     getLeaseByTenantEmail,
     rejectTicketWork
@@ -203,6 +202,12 @@ export const controllerCreateTicket = (req, res) => {
     const tenantEmail = req.body.email;
     console.log("tenantEmail", tenantEmail);
     console.log("req.body", body);
+    if ( !body.email || !body.ticket_type || !body.request_description || !body.submitted_date_time) {
+      return res.status(400).json({
+        success: 0,
+        message: "Incomplete data fields"
+      })
+    }
     getLeaseByTenantEmail(tenantEmail, (err,results) => {
         console.log("results", results);
         if (err) {
@@ -245,21 +250,36 @@ export const controllerCreateTicket = (req, res) => {
  * @param {*} res 
  */
 export const controllerGetTickets = (req, res) => {
-    const email = req.query.email;
-    getTicketsByTenant(email, (err,results) => {
+  const email = req.query.email;
+  getTenantByEmail(email, (err,result) => {
+    if (err) {
+      return res.status(500).json({
+        success: 0,
+        message: "internal server error"
+      })
+    }
+    if (result.length === 0) {
+      return res.status(400).json({
+        success: 0,
+        message: "User not found"
+      })
+    } else {
+      getTicketsByTenant(email, (err,results) => {
         if (err) {
-            console.log(err);
-            return res.status(500).json({
-                success: 0,
-                message: "Database connection error"
-            });
+          console.log(err);
+          return res.status(500).json({
+            success: 0,
+            message: "Database connection error"
+          });
         } else {
-            return res.json({
-                success: "1",
-                data: results,
-            });
+          return res.json({
+            success: 1,
+            data: results,
+          });
         }
-    });
+      });
+    }
+  })
 };
 
 /**
@@ -268,22 +288,41 @@ export const controllerGetTickets = (req, res) => {
  * @param {*} res 
  */
 export const controllerGetTicketsByStatus = (req, res) => {
-    const email = req.body.email;
-    const status = req.params.status;
-    getTicketsByStatus(email, status, (err,results) => {
-        if (err) {
-            console.log(err);
-            return res.status(500).json({
-                success: 0,
-                message: "Database connection error"
-            });
+  const email = req.body.email;
+  const status = req.params.status;
+  getTenantByEmail(email, (err,result) => {
+    if (err) {
+      console.log(err)
+      return res.status(500).json({
+        success: 0,
+        message: "Database connection error"
+      })
+    } else if (result.length === 0) {
+      return res.status(400).json({
+        success: 0,
+        message: "User not found"
+      })
+    } else {
+      getTicketsByStatus(email, status, (err,results) => {
+        if (err === "invalid status") {
+          return res.status(400).json({
+            success: 0,
+            message: `${err}`
+          });
+        } else if (err) {
+          return res.status(500).json({
+            success: 0,
+            message: "Database connection error"
+          });
         } else {
-            return res.json({
-                success: "1",
-                data: results,
-            });
+          return res.json({
+            success: "1",
+            data: results,
+          });
         }
-    });
+      });
+    }
+  })
 };
 
 export const controllerGetTicketById = (req, res) => {
@@ -293,7 +332,7 @@ export const controllerGetTicketById = (req, res) => {
             console.log(err);
             return;
         }
-        if (!results) {
+        if (results.length === 0) {
             return res.json({
                 success: 0,
                 message: "Record not found",
@@ -301,7 +340,7 @@ export const controllerGetTicketById = (req, res) => {
         } else {
             return res.json({
                 success: "1",
-                data: results,
+                data: results[0],
             });
         }
     });
@@ -313,32 +352,39 @@ export const controllerGetTicketById = (req, res) => {
  * @param {*} res 
  */
 export const controllerQuotationApproval = (req, res) => {
-    const id = req.body.ticket_id;
-    const body = req.body;
-    let status;
-    if (body.quotation_accepted_by_tenant === 1) {
-        status = "ticket_quotation_approved"
-    } else if (body.quotation_accepted_by_tenant === 0) {
-        status = "ticket_quotation_rejected"
-    }
-
-    quotationApproval(id, status, (err, results) => {
-        if (err) {
-            console.log(err);
-            return;
-        }
-        if (!results) {
-            return res.json({
-                success: 0,
-                message: "Failed to update user"
-            })
-        }
-        return res.status(200).json({
-            success: 1,
-            data: "updated successfully"
-        })
+  const id = req.body.ticket_id;
+  const body = req.body;
+  let status;
+  if (body.quotation_accepted_by_tenant === 1) {
+    status = "ticket_quotation_approved"
+  } else if (body.quotation_accepted_by_tenant === 0) {
+    status = "ticket_quotation_rejected"
+  } else {
+    return res.status(400).json({
+      success: 0,
+      message: "Data validation error"
     })
-}
+  }
+
+  quotationApproval(id, status, (err, results) => {
+    if (err) {
+      return res.json({
+        success: 0,
+        message: err
+      });
+    }
+    if (results.changedRows === 0) {
+      return res.json({
+        success: 0,
+        message: "Failed to update quotation"
+      })
+    }
+    return res.status(200).json({
+      success: 1,
+      data: "updated successfully"
+    })
+  })
+  }
 
 /**
  * Add Feedback Rating, params: public_service_request_id (YYYY-MM-DD 00:00:00)
@@ -346,23 +392,49 @@ export const controllerQuotationApproval = (req, res) => {
  * @param {*} res 
  */
 export const controllerAddFeedbackRating = (req, res) => {
-    const id = req.body.ticket_id;
-    const feedback_rating = req.body.feedback_rating; 
-    console.log("feedback_rating", feedback_rating)
-    addFeedbackRating(id, feedback_rating, (err, results) => {
-        if (err) {
-            console.log(err);
-            return;
-        } if (!results) {
-            return res.json ({
-                success : 0,
-                message: "Failed to update user"
-            })
-        } return res.status(200).json({
-            success: 1,
-            data: "updated sucessfully"
+  const id = req.body.ticket_id;
+  const feedback_rating = req.body.feedback_rating; 
+  getTicketById(id, (err,results) => {
+    if (err) {
+      return res.status(500).json({
+        success: 0,
+        message: "internal server error"
+      })
+    } else{
+      if (results.length === 0) {
+        return res.status(400).json({
+          success: 0,
+          message: "service request not found"
         })
+      }
+      addFeedbackRating(id, feedback_rating, (err, results) => {
+        if (err) {
+          if (err === "data validation error") {
+            return res.status(400).json({
+              success: 0,
+              message: err
+            });
+          }
+          else {
+            return res.status(500).json({
+              success: 0,
+              message: "internal server error"
+            })
+          }
+        } if (JSON.parse(JSON.stringify(results)).changedRows === 0) {
+          return res.json ({
+            success : 0,
+            message: "Failed to update feedback"
+          })
+        } else{
+          return res.status(200).json({
+            success: 1,
+            data: "updated successfully"
+          })
+        }
     })
+    }
+  })
 }
 
 /**
@@ -371,24 +443,39 @@ export const controllerAddFeedbackRating = (req, res) => {
  * @param {*} res 
  */
  export const controllerAddFeedbackText = (req, res) => {
-    const id = req.body.ticket_id;
-    const feedback_text = req.body.feedback_text; 
-    addFeedbackText (id, feedback_text, (err, results) => {
-        if (err) {
-            console.log(err);
-            return;
-        } 
-        if (!results) {
-            return res.json ({
-                success : 0,
-                message: "Failed to update user"
-            })
-        } 
-        return res.status(200).json({
-            success: 1,
-            data: "updated sucessfully"
+  const id = req.body.ticket_id;
+  const feedback_text = req.body.feedback_text; 
+  getTicketById(id, (err,results) => {
+    if (err) {
+      return res.status(500).json({
+        success: 0,
+        message: "internal server error"
+      })
+    } else{
+      if (results.length === 0) {
+        return res.status(400).json({
+          success: 0,
+          message: "service request not found"
         })
-    })
+      }
+      addFeedbackText (id, feedback_text, (err, results) => {
+        if (err) {
+          return res.json({
+            success: 0,
+            message: err
+          });
+        } if (JSON.parse(JSON.stringify(results)).changedRows === 0) {
+          return res.json ({
+            success : 0,
+            message: "Failed to update feedback"
+          })
+        } return res.status(200).json({
+          success: 1,
+          data: "updated successfully"
+        })
+      })
+    }
+  })
 }
 
 /**
@@ -409,17 +496,20 @@ export const controllerCloseTicketStatus = (req, res) => {
     closeTicketStatus (id, status, (err,results) => {
         if (err) {
             console.log(err);
-            return;
+            return res.json({
+              success: 0,
+              message: err
+            });
         } 
-        if (!results) {
-            return res.json ({
-                success : 0,
-                message: "Failed to update user"
-            })
+        if (JSON.parse(JSON.stringify(results)).changedRows === 0) {
+          return res.status(400).json ({
+            success : 0,
+            message: "Failed to update status"
+          })
         } 
         return res.status(200).json({
             success: 1,
-            data: "updated sucessfully"
+            data: "updated successfully"
         })
     })
 }
@@ -460,75 +550,81 @@ export const controllerRejectTicketWork = (req, res) => {
  * @param {json} res 
  */
 export const controllerGetLeaseByTenant = (req,res) => {
-    let tenantID = "";
-    getTenantUserId(req.body.email, (err, results) => {
-        if (err) {
-            console.log(err)
-            return
-        } 
-        if (!results) {
-            return res.json({
-                success:0,
-                message: "tenant not registered."
-            })
-        } else {
-            tenantID = results.tenant_user_id;
-            // console.log(tenantID)
-            getLeaseByTenant(tenantID, (err, results) => {
-                if (err) {
-                    console.log(err);
-                    return res.status(500).json({
-                        success: 0,
-                        message: "Database connection error"
-                    });
-                } else {
-                    return res.status(200).json({
-                        success:1,
-                        data: results
-                    });
-                };
-            })
-        }
+  let tenantID = "";
+  if (!req.body.email) {
+    return res.json({
+      success: 0,
+      message: "missing data entry!"
     })
+  }
+  getTenantUserId(req.body.email, (err, results) => {
+    if (err) {
+      console.log(err)
+      return
+    } if (results.length === 0) {
+      return res.json({
+        success:0,
+        message: "tenant not registered."
+      })
+    } else {
+        tenantID = results[0].tenant_user_id;
+        console.log(tenantID)
+        getLeaseByTenant(tenantID, (err, results) => {
+            if (err) {
+                console.log(err);
+                return res.status(500).json({
+                    success: 0,
+                    message: "Database connection error"
+                });
+            } else {
+                return res.status(200).json({
+                    success:1,
+                    data: results
+                });
+            };
+        })
+    }
+  })
 }
 
 export const controllerGetQuotation = (req, res) => {
-    const id = req.query.id;
-    console.log('id in controller', id)
-    getQuotationPath(id, (err, results) => {
-        if (err) {
-            console.log(err);
-            return;
-        }
-        if (!results) {
-            return res.json({
-                success: 0,
-                message: "service ticket not found",
-            });
-        } else {
-            var filepath = results.quotation_path;
-            console.log(filepath);
-            if (filepath == null){
-                res.send("No quotation uploaded yet!")
-                return
-            }
-            fs.readFile(filepath, (err, data) => {
-                if (err) {
-                    console.log('error')
-                    console.error(err);
-                    res.status(500).send("Internal Server Error");
-                    return;
-                }
-                // Set headers for the response
-                res.setHeader("Content-Type", "application/pdf");
-                res.setHeader("Content-Disposition", "attachment; filename=file.pdf");
-                // Send the PDF file data as the response
-                res.send(data);
-            });
-            if (err){
-                return console.log(err);
-            }
-        }
-    });
+  const id = req.query.id;
+  if (!id) {
+    return res.send("missing data entry!")
+  }
+  getQuotationPath(id, (err, results) => {
+      if (err) {
+          console.log(err);
+          return;
+      }
+      if (results.length === 0) {
+        return res.json({
+          success: 0,
+          message: "service ticket not found",
+        });
+      } else {
+          var filepath = results[0].quotation_path;
+          console.log(filepath);
+          if (filepath == null){
+              res.send("No quotation uploaded yet!")
+              return
+          }
+          fs.readFile(filepath, (err, data) => {
+              if (err) {
+                  console.log('error')
+                  console.error(err);
+                  res.status(500).send("Internal Server Error");
+                  return;
+              }
+              // Set headers for the response
+              res.setHeader("Content-Type", "application/pdf");
+              res.setHeader("Content-Disposition", "attachment; filename=file.pdf");
+              // Send the PDF file data as the response
+              res.send(data);
+          });
+          if (err){
+              return console.log(err);
+          }
+      }
+  });
 };
-

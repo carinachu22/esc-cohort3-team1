@@ -8,25 +8,42 @@ const statuses = ["tenant_ticket_created", "landlord_ticket_rejected", "landlord
  * @param {*} callBack 
  */
 export const createLandlord = (email, password, ticket_type, public_building_id, role, callBack) => {
-  pool.query(
-    `
-    INSERT INTO LANDLORD_USER(email, password, ticket_type, public_building_id, role)
-    VALUES (?, ?, ?, ?, ?)
-    `,
-    [
-      email,
-      password,
-      ticket_type,
-      public_building_id,
-      role
-    ],
-    (error, results, fields) => {
-      if (error) {
-        callBack(error);
-      }
-      callBack(null, results);
-    }
-  );
+  if (email && password && role) {
+    pool.query(
+      `SELECT * FROM landlord_user WHERE email = ?`,
+      [email],
+      (error, results) => {
+        if(error){
+          callBack(error)
+        }
+        if (results.length > 0) {
+          console.log(results)
+          callBack("landlord user already exists")
+        } else {
+          pool.query(
+            `
+            INSERT INTO LANDLORD_USER(email, password, ticket_type, public_building_id, role)
+            VALUES (?, ?, ?, ?, ?)
+            `,
+            [
+              email,
+              password,
+              ticket_type,
+              public_building_id,
+              role
+            ],
+            (error, results, fields) => {
+              if (error) {
+                callBack(error);
+              } else {
+                callBack(null, results)
+              }
+            })
+          }
+        }
+      )} else {
+        callBack("missing data entry!")
+  }
 };
 
 /**
@@ -96,8 +113,7 @@ export const getLandlordById = (id, callBack) => {
       if (error) {
         callBack(error);
       } else {
-        // console.log(results);
-        callBack(null, results[0]);
+        callBack(null, results);
       }
     }
   );
@@ -123,7 +139,7 @@ export const updateLandlordPassword = ({password, id}, callBack) => {
       if(error){
         callBack(error);
       }
-      return callBack(null, results[0]);
+      return callBack(null, results);
     }
   );
 }
@@ -134,6 +150,9 @@ export const updateLandlordPassword = ({password, id}, callBack) => {
  * @param {*} callBack 
  */
 export const updateLandlord = (data, callBack) => {
+  if (!data.email || !data.password || !data.landlord_user_id || !data.role) {
+    return callBack("missing data entry!")
+  }
   pool.query(
     'UPDATE landlord_user SET email=?, password=?, ticket_type=?, public_building_id=?, role=? WHERE landlord_user_id=? ',
     [
@@ -148,7 +167,7 @@ export const updateLandlord = (data, callBack) => {
       if(error){
         callBack(error);
       }
-      return callBack(null, results[0]);
+      return callBack(null, results);
     }
   );
 }
@@ -159,6 +178,9 @@ export const updateLandlord = (data, callBack) => {
  * @param {*} callBack 
  */
 export const deleteLandlord = (deletedDate, email, callBack) => {
+  if ( !deletedDate || !email ) {
+    return callBack("missing data entry!")
+  }
   pool.query(
     'UPDATE landlord_user SET deleted_date = ? WHERE email = ?',
     [
@@ -169,7 +191,7 @@ export const deleteLandlord = (deletedDate, email, callBack) => {
       if(error){
         callBack(error);
       }
-      return callBack(null, results[0]);
+      return callBack(null, results);
     }
   );
 }
@@ -180,6 +202,9 @@ export const deleteLandlord = (deletedDate, email, callBack) => {
  * @param {*} callBack 
  */
 export const deleteAllTenants = (deletedDate, buildingID, callBack) => {
+  if (!deletedDate || !buildingID) {
+    return callBack("missing data entry!")
+  }
   pool.query(
     'UPDATE tenant_user SET deleted_date = ? WHERE public_building_id = ? AND deleted_date IS NULL',
     [
@@ -190,7 +215,7 @@ export const deleteAllTenants = (deletedDate, buildingID, callBack) => {
       if(error){
         callBack(error);
       }
-      return callBack(null, results[0]);
+      return callBack(null, results);
     }
   );
 }
@@ -222,6 +247,9 @@ export const deleteAllLandlords = (deletedDate, buildingID, callBack) => {
  * @param {*} callBack 
  */
 export const deleteTenantByEmail = (deletedDate, email, callBack) => {
+  if (!deletedDate || !email) {
+    return callBack("missing data entry!")
+  }
   pool.query(
     'UPDATE tenant_user SET deleted_date = ? WHERE email = ?',
     [
@@ -232,7 +260,7 @@ export const deleteTenantByEmail = (deletedDate, email, callBack) => {
       if(error){
         callBack(error);
       }
-      return callBack(null, results[0]);
+      return callBack(null, results);
     }
   );
 }
@@ -265,23 +293,39 @@ export const deleteLandlordByEmail = (deletedDate, email, callBack) => {
  * @param {*} callBack 
  */
 export const createTenant = (email, password, public_building_id, callBack) => {
-  pool.query(
-    `
-    INSERT INTO TENANT_USER(email, password, public_building_id)
-    VALUES (?, ?, ?)
-    `,
-    [
-      email,
-      password,
-      public_building_id
-    ],
-    (error, results, fields) => {
-      if (error) {
-        callBack(error);
+  if (email && password && public_building_id) {
+    pool.query(
+      `SELECT * FROM tenant_user WHERE email = ?`,
+      [email],
+      (error,results) => {
+        if (results.length > 0 && results.deleted_date == null){
+          callBack("tenant user already exists")
+        } else if (error) {
+          callBack(error)
+        } else {
+          pool.query(
+            `
+            INSERT INTO TENANT_USER(email, password, public_building_id)
+            VALUES (?, ?, ?)
+            `,
+            [
+              email,
+              password,
+              public_building_id
+            ],
+            (error, results, fields) => {
+              if (error) {
+                callBack(error);
+              }
+              callBack(null, results);
+            }
+          );
+        }
       }
-      callBack(null, results);
-    }
-  );
+    )
+  } else{
+    callBack("missing data entry!")
+  }
 };
 
 /**
@@ -327,7 +371,7 @@ export const getTicketById = (id, callBack) => {
       if (error) {
         callBack(error);
       } else {
-        callBack(null, results[0]);
+        callBack(null, results);
       }
     }
   );
@@ -385,61 +429,35 @@ export const getTicketsByStatus = (status, callBack) => {
 };
 
 /**
- * Update quotation
- * @param {*} id public_service_request_id (YYYY-MM-DD 00:00:00)
- * @param {*} data  status(string)
- * @param {*} callBack 
- */
-// export const updateQuotation = (id, data, callBack) => {
-//   const status = "landlord_quotation_sent";
-//   if (statuses.includes(status)) {
-//     console.log("id", id)
-//     pool.query(
-//       `
-//       UPDATE SERVICE_REQUEST
-//       SET  status = ?
-//       WHERE public_service_request_id = ?
-//       `,
-//       [status, id],
-//       (error, results, fields) => {
-//         if (error) {
-//           callBack(error);
-//         } else {
-//           callBack(null, results);
-//         }
-//       }
-//     );
-//   } else {
-//     callBack("invalid status")
-//   }
-// };
-
-/**
  * upload quotation's path in the file system
  * @param {*} param0 filepath, public_service_request_id (YYYY-MM-DD 00:00:00)
  * @param {*} callBack 
  */
 export const uploadQuotation = ({filepath, id}, callBack) => {
-  pool.query(
-    `
-    UPDATE service_request
-    SET quotation_path = ?,
-    status = ?
-    WHERE public_service_request_id = ?
-    `,
-    [
-      filepath,
-      "landlord_quotation_sent",
-      id
-    ],
-    (error, results, fields) => {
-      if (error) {
-        callBack(error);
-      } else {
-        callBack(null, results);
+  if (filepath && id) {
+    pool.query(
+      `
+      UPDATE service_request
+      SET quotation_path = ?,
+      status = ?
+      WHERE public_service_request_id = ?
+      `,
+      [
+        filepath,
+        "landlord_quotation_sent",
+        id
+      ],
+      (error, results, fields) => {
+        if (error) {
+          callBack(error);
+        } else {
+          callBack(null, results);
+        }
       }
-    }
-  );
+    );
+  } else {
+    callBack("missing data entry field!")
+  }
 }
 
 
@@ -462,35 +480,35 @@ export const getQuotationPath = (id, callBack) => {
       if (error) {
         callBack(error);
       } else {
-        callBack(null, results[0]);
+        callBack(null, results);
       }
     }
   );
 }
 
-/**
- * 
- * @param {*} filepath 
- * @param {*} callBack 
- */
-export const getQuotation = (filepath, callBack) => {
-  pool.query(
-    `
-    SELECT 
-    LOAD_FILE(?)
-    `,
-    [
-      filepath
-    ],
-    (error, results, fields) => {
-      if (error) {
-        callBack(error);
-      } else {
-        callBack(null, results[0]);
-      }
-    }
-  );
-}
+// /**
+//  * 
+//  * @param {*} filepath 
+//  * @param {*} callBack 
+//  */
+// export const getQuotation = (filepath, callBack) => {
+//   pool.query(
+//     `
+//     SELECT 
+//     LOAD_FILE(?)
+//     `,
+//     [
+//       filepath
+//     ],
+//     (error, results, fields) => {
+//       if (error) {
+//         callBack(error);
+//       } else {
+//         callBack(null, results);
+//       }
+//     }
+//   );
+// }
 
 
 /**
@@ -501,29 +519,37 @@ export const getQuotation = (filepath, callBack) => {
  * @param {*} status 
  * @param {*} callBack 
  */
-export const ticketApproval = (id, quotationRequired, data, status, callBack) => {
-  if (statuses.includes(status)) {
-    pool.query(
-      `
-      UPDATE service_request
-      SET status = ?, quotation_required = ?
-      WHERE public_service_request_id = ?
-      `,
-      [
-        status,
-        quotationRequired,
-        id
-      ],
-      (error, results, fields) => {
-        if (error) {
-          callBack(error);
-        } else {
-          callBack(null,results);
+export const ticketApproval = (id, quotationRequired, status, callBack) => {
+  if (quotationRequired !== 0 && quotationRequired !== 1) {
+    callBack("missing data entry!")
+    return
+  }
+  if (id && status ) {
+    if (statuses.includes(status)) {
+      pool.query(
+        `
+        UPDATE service_request
+        SET status = ?, quotation_required = ?
+        WHERE public_service_request_id = ?
+        `,
+        [
+          status,
+          quotationRequired,
+          id
+        ],
+        (error, results, fields) => {
+          if (error) {
+            callBack(error);
+          } else {
+            callBack(null,results);
+          }
         }
-      }
-    )
+      )
+    } else {
+      callBack("invalid status")
+    }
   } else {
-    callBack("invalid status")
+    callBack("missing data entry!")
   }
 };
 
@@ -535,28 +561,32 @@ export const ticketApproval = (id, quotationRequired, data, status, callBack) =>
  * @param {*} status 
  * @param {*} callBack 
  */
-export const ticketWork = (id, data, status, callBack) => {
-  if (statuses.includes(status)) {
-    pool.query(
-      `
-      UPDATE service_request
-      SET status = ?
-      WHERE public_service_request_id = ?
-      `,
-      [
-        status,
-        id
-      ],
-      (error, results, fields) => {
-        if (error) {
-          callBack(error);
-        } else {
-          callBack(null,results);
+export const ticketWork = (id, status, callBack) => {
+  if (status && id) {
+    if (statuses.includes(status)) {
+      pool.query(
+        `
+        UPDATE service_request
+        SET status = ?
+        WHERE public_service_request_id = ?
+        `,
+        [
+          status,
+          id
+        ],
+        (error, results, fields) => {
+          if (error) {
+            callBack(error);
+          } else {
+            callBack(null,results);
+          }
         }
-      }
-    )
+      )
+    } else {
+      callBack("invalid status")
+    }
   } else {
-    callBack("invalid status")
+    callBack("missing data entry!")
   }
 };
 
@@ -596,28 +626,32 @@ export const getTenantAccounts = (public_building_id, callBack) => {
  * @param {*} callBack 
  */
 export const createLease = (publicLeaseID, landlordID, tenantID, data, callBack) => {
-  pool.query (
-    `
-    INSERT INTO lease
-    (public_lease_id, tenant_user_id, landlord_user_id, floor, unit_number)
-    VALUES (?,?,?,?,?)
-    `,
-    [
-      publicLeaseID,
-      tenantID,
-      landlordID,
-      data.floor,
-      data.unit_number,
-      data.pdf_path
-    ],
-    (error, results, fields) => {
-      if (error) {
-        callBack(error);
-      } else {
-        callBack(null,results);
+  if (publicLeaseID && landlordID && tenantID && data.floor && data.unit_number) {
+    pool.query (
+      `
+      INSERT INTO lease
+      (public_lease_id, tenant_user_id, landlord_user_id, floor, unit_number)
+      VALUES (?,?,?,?,?)
+      `,
+      [
+        publicLeaseID,
+        tenantID,
+        landlordID,
+        data.floor,
+        data.unit_number,
+        data.pdf_path
+      ],
+      (error, results, fields) => {
+        if (error) {
+          callBack(error);
+        } else {
+          callBack(null,results);
+        }
       }
-    }
-  )
+    )
+  } else {
+    callBack("missing data entry!")
+  }
 }
 
 
@@ -628,24 +662,28 @@ export const createLease = (publicLeaseID, landlordID, tenantID, data, callBack)
  * @param {*} callBack 
  */
 export const uploadLease = ({filepath, publicLeaseID}, callBack) => {
-  pool.query(
-    `
-    UPDATE lease
-    SET pdf_path = ?
-    WHERE public_lease_id = ?
-    `,
-    [
-      filepath,
-      publicLeaseID
-    ],
-    (error, results, fields) => {
-      if (error) {
-        callBack(error);
-      } else {
-        callBack(null,results);
+  if (filepath && publicLeaseID) {
+    pool.query(
+      `
+      UPDATE lease
+      SET pdf_path = ?
+      WHERE public_lease_id = ?
+      `,
+      [
+        filepath,
+        publicLeaseID
+      ],
+      (error, results, fields) => {
+        if (error) {
+          callBack(error);
+        } else {
+          callBack(null,results);
+        }
       }
-    }
-  )
+    )
+  } else {
+    callBack("missing data entry!")
+  }  
 }
 
 
@@ -666,7 +704,7 @@ export const getLandlordUserId = (email, callBack) => {
       if (error) {
         callBack(error);
       } else {
-        callBack(null, results[0])
+        callBack(null, results)
       };
     }
   )
@@ -744,7 +782,7 @@ export const getLeaseDetails = (tenant_user_id, callBack) => {
       if(error){
         callBack(error);
       }
-      return callBack(null, results[0]);
+      return callBack(null, results);
     }
   );
 }
@@ -756,16 +794,16 @@ export const getLeaseDetails = (tenant_user_id, callBack) => {
  */
 export const deleteLease = (lease_id, callBack) => {
   pool.query(
-    'DELETE lease where public_lease_id = ?',
+    'DELETE FROM lease WHERE public_lease_id = ?',
     [
-      deletedDate,
+      // deletedDate,
       lease_id
     ],
     (error, results, fields) => {
       if(error){
         callBack(error);
       }
-      return callBack(null, results[0]);
+      return callBack(null, results);
     }
   );
 }
@@ -785,35 +823,39 @@ export const deleteLease = (lease_id, callBack) => {
  * @param {*} callBack 
  */
 export const updateLease = (landlordID, tenantID, data, callBack) => {
-  pool.query (
-    `
-    UPDATE lease
-    SET 
-      public_lease_id = ?,
-      tenant_user_id = ?,
-      landlord_user_id = ?,
-      floor = ?, 
-      unit_number = ?, 
-      pdf_path =?
-    WHERE public_lease_id = ?
-    `,
-    [
-      data.new_public_lease_id,
-      tenantID,
-      landlordID,
-      data.floor,
-      data.unit_number,
-      data.pdf_path,
-      data.old_public_lease_id
-    ],
-    (error, results, fields) => {
-      if (error) {
-        callBack(error);
-      } else {
-        callBack(null,results);
+  if (landlordID && tenantID && data.new_public_lease_id && data.floor && data.unit_number && data.old_public_lease_id) {
+    pool.query (
+      `
+      UPDATE lease
+      SET 
+        public_lease_id = ?,
+        tenant_user_id = ?,
+        landlord_user_id = ?,
+        floor = ?, 
+        unit_number = ?, 
+        pdf_path =?
+      WHERE public_lease_id = ?
+      `,
+      [
+        data.new_public_lease_id,
+        tenantID,
+        landlordID,
+        data.floor,
+        data.unit_number,
+        data.pdf_path,
+        data.old_public_lease_id
+      ],
+      (error, results, fields) => {
+        if (error) {
+          callBack(error);
+        } else {
+          callBack(null,results);
+        }
       }
-    }
-  )
+    )
+  } else {
+    callBack("missing data entry!")
+  }
 }
 
 
@@ -840,29 +882,30 @@ export const getLeasePath = (tenantID, callBack) => {
   )
 }
 
-/**
- * 
- * @param {*} filepath 
- * @param {*} callBack 
- */
-export const getLease = (filepath, callBack) => {
-  pool.query(
-    `
-    SELECT 
-    LOAD_FILE(?)
-    `,
-    [
-      filepath
-    ],
-    (error, results, fields) => {
-      if (error) {
-        callBack(error);
-      } else {
-        callBack(null, results[0]);
-      }
-    }
-  );
-}
+// /**
+//  * 
+//  * @param {*} filepath 
+//  * @param {*} callBack 
+//  */
+// export const getLease = (filepath, callBack) => {
+//   pool.query(
+//     `
+//     SELECT 
+//     LOAD_FILE(?)
+//     `,
+//     [
+//       filepath
+//     ],
+//     (error, results, fields) => {
+//       if (error) {
+//         callBack(error);
+//       } else {
+//         console.log(results)
+//         callBack(null, results);
+//       }
+//     }
+//   );
+// }
 
 /**
  * get building id of landlord

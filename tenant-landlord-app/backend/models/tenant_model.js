@@ -31,7 +31,6 @@ export const getTenantByEmail = (email, callBack) => {
       if (error) {
         callBack(error);
       } else {
-        // console.log(results)
         callBack(null, results);
       }
     }
@@ -50,8 +49,7 @@ export const getTenantById = (id, callBack) => {
       if (error) {
         callBack(error);
       } else {
-        // console.log(results);
-        callBack(null, results[0]);
+        callBack(null, results);
       }
     }
   );
@@ -72,7 +70,7 @@ export const updateTenantPassword = ({password, id}, callBack) => {
       if(error){
         callBack(error);
       }
-      return callBack(null, results[0]);
+      return callBack(null, results);
     }
   );
 }
@@ -96,7 +94,7 @@ export const recoverTenantAccount = (id, callBack) => {
       if(error){
         callBack(error);
       }
-      return callBack(null, results[0]);
+      return callBack(null, results);
     }
   );
 }
@@ -136,7 +134,7 @@ export const getTicketById = (id, callBack) => {
       if (error) {
         callBack(error);
       } else {
-        callBack(null, results[0]);
+        callBack(null, results);
       }
     }
   );
@@ -253,8 +251,7 @@ export const getTicketsByStatus = (email, status, callBack) => {
 
 /**
  * Tenant can approve quotation from landlord
- * @param {int} id service_ticket_id
- * @param {int} id public_service_request_id (YYYY-MM-DD 00:00:00)
+ * @param {string} id public_service_request_id (YYYY-MM-DD 00:00:00)
  * @param {*} data 
  * @param {string} status updated status
  * @param {*} callBack 
@@ -285,36 +282,38 @@ export const quotationApproval = (id, status, callBack) => {
 
 /**
  * Adds feedback rating to feedback_rating
- * @param {int} id public_service_request_id (YYYY-MM-DD 00:00:00)
+ * @param {string} id public_service_request_id (YYYY-MM-DD 00:00:00)
  * @param {int} data feedback_rating
  * @param {*} callBack 
  */
 export const addFeedbackRating = (id, feedback_rating, callBack) => {
-  console.log("feedback_rating", feedback_rating)
-  console.log("id", id)
-  pool.query (
-    `
-    UPDATE service_request
-    SET feedback_rating = ?, status = ?
-    WHERE public_service_request_id = ?
-    `,
-    [
-      feedback_rating, "tenant_feedback_given", id
-    ],
-    
-    (error, results, fields) => {
-      if (error) {
-        callBack(error);
-      } else {
-        callBack(null,results);
+  if (feedback_rating=="1" || feedback_rating=="2" || feedback_rating=="3" || feedback_rating=="4" || feedback_rating=="5") {
+    pool.query (
+      `
+      UPDATE service_request
+      SET feedback_rating = ?, status = ?
+      WHERE public_service_request_id = ?
+      `,
+      [
+        feedback_rating, "tenant_feedback_given", id
+      ],
+      
+      (error, results, fields) => {
+        if (error) {
+          callBack(error);
+        } else {
+          callBack(null,results);
+        }
       }
-    }
-  )
+    )
+  } else{
+    callBack("data validation error")
+  }
 };
 
 /**
  * Adds feedback text to feedback_text
- * @param {int} id public_service_request_id (YYYY-MM-DD 00:00:00)
+ * @param {string} id public_service_request_id (YYYY-MM-DD 00:00:00)
  * @param {string} data feedback_text
  * @param {*} callBack 
  */
@@ -340,7 +339,7 @@ export const addFeedbackText = (id, feedback_text, callBack) => {
 
 /**
  * Change ticket's status to close
- * @param {int} id public_service_request_id (YYYY-MM-DD 00:00:00)
+ * @param {string} id public_service_request_id (YYYY-MM-DD 00:00:00)
  * @param {string} data status to close
  * @param {*} callBack 
  */
@@ -407,7 +406,7 @@ export const getTenantUserId = (email, callBack) => {
       if (error) {
         callBack(error);
       } else {
-        callBack(null, results[0]);
+        callBack(null, results);
       }
     }
   )
@@ -516,31 +515,7 @@ export const updateTenantLease = (publicLeaseID, tenantID, callBack) => {
       if (error) {
         callBack(error);
       } else {
-        callBack(null, results[0]);
-      }
-    }
-  );
-}
-
-/**
- * 
- * @param {*} filepath 
- * @param {*} callBack 
- */
-export const getQuotation = (filepath, callBack) => {
-  pool.query(
-    `
-    SELECT 
-    LOAD_FILE(?)
-    `,
-    [
-      filepath
-    ],
-    (error, results, fields) => {
-      if (error) {
-        callBack(error);
-      } else {
-        callBack(null, results[0]);
+        callBack(null, results);
       }
     }
   );

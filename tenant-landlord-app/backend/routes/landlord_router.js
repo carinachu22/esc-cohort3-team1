@@ -94,9 +94,9 @@ router.patch("/ticketApproval/", checkLandlordToken, controllerTicketApproval);
 router.patch("/ticketWork/", checkLandlordToken, controllerTicketWork);
 router.patch("/assignLandlord", controllerAssignLandlord);
 
-router.get("/getTenantAccounts/", controllerGetTenantAccounts);
-router.patch("/deleteAllTenants", controllerDeleteAllTenants);
-router.patch("/deleteTenantByEmail", controllerDeleteTenantByEmail);
+router.get("/getTenantAccounts/", checkLandlordToken, controllerGetTenantAccounts);
+router.patch("/deleteAllTenants", checkLandlordToken, controllerDeleteAllTenants);
+router.patch("/deleteTenantByEmail", checkLandlordToken, controllerDeleteTenantByEmail);
 
 router.get("/getLandlordAccounts", controllerGetLandlordAccounts);
 router.get("/getLandlordDetails", checkLandlordToken, controllerGetLandlordDetails);
