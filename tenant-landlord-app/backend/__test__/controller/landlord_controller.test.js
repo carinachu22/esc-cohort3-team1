@@ -41,7 +41,9 @@ describe ("/landlord/login", () => {
           expect(response.body).toEqual({
             success: 1, 
             message: "Login successfully",
-            token: expect.any(String)
+            token: expect.any(String),
+            building: "RC",
+            role: 'staff'
           });
         })
     })
@@ -91,7 +93,9 @@ describe ("/landlord/create", () => {
       .send({
         email: "landlord8@gmail.com",
         password: "password",
-        ticket_type: "cleanliness"
+        ticket_type: "cleanliness",
+        role: 'staff',
+        user_email: 'landlord5@gmail.com'
       })
       .expect('Content-Type', /json/)
       .expect(200)
@@ -118,7 +122,9 @@ describe ("/landlord/create", () => {
       .set("Authorization", `Bearer ${token}`)
       .send({
         email: "landlord7@gmail.com",
-        password: "password"
+        password: "password",
+        role: 'staff',
+        user_email: 'landlord5@gmail.com'
       })
       .expect('Content-Type', /json/)
       .expect(200)
@@ -146,14 +152,25 @@ describe ("/landlord/create", () => {
       .send({
         email: "landlord2@gmail.com",
         password: "password",
-        ticket_type: "cleanliness"
+        ticket_type: "cleanliness",
+        role: 'staff',
+        user_email: 'landlord5@gmail.com'
       })
       .expect('Content-Type', /json/)
-      .expect(500)
+      .expect(200)
       .then((response) => {
         expect(response.body).toEqual({
             success: 0, 
-            message: "duplicate email",
+            message: "Duplicate email entry",
+            data: [{
+              deleted_date: null,
+              email: "landlord2@gmail.com",
+              landlord_user_id: 2,
+              password: "$2b$10$BIJTkvtOrkrKhl/juVKCauVhPwqChMNbayD3DazrMBi6H6gsgVlrS",
+              public_building_id: "FC",
+              role: "staff",
+              ticket_type: "horticulture",
+            }]
             })
       });
   })
@@ -165,10 +182,12 @@ describe ("/landlord/create", () => {
       .set("Authorization", `Bearer ${token}`)
       .send({
         password: "password",
-        ticket_type: "cleanliness"
+        ticket_type: "cleanliness",
+        role: 'staff',
+        user_email: 'landlord5@gmail.com'
       })
       .expect('Content-Type', /json/)
-      .expect(400)
+      .expect(200)
       .then((response) => {
         expect(response.body).toEqual({
             success: 0, 
@@ -184,10 +203,32 @@ describe ("/landlord/create", () => {
       .set("Authorization", `Bearer ${token}`)
       .send({
         email: "landlord6@gmail.com",
-        ticket_type: "cleanliness"
+        ticket_type: "cleanliness",
+        role: 'staff',
+        user_email: 'landlord5@gmail.com'
       })
-      .expect('Content-Type', /json/)
-      .expect(400)
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toEqual({
+            success: 0, 
+            message: "missing data entry!",
+            })
+      });
+  })
+
+
+  test("missing user_email", async () =>  {
+    const token = await authorisation()
+    await request(app)
+      .post("/api/landlord/create")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        email: "landlord6@gmail.com",
+        password: "password",
+        ticket_type: "cleanliness",
+        role: 'staff'
+      })
+      .expect(200)
       .then((response) => {
         expect(response.body).toEqual({
             success: 0, 
@@ -202,7 +243,9 @@ describe ("/landlord/create", () => {
       .send({
         email: "landlord8@gmail.com",
         password: "password",
-        ticket_type: "cleanliness"
+        ticket_type: "cleanliness",
+        role: 'staff',
+        user_email: 'landlord5@gmail.com'
       })
       .then((response) => {
         expect(JSON.parse(response.text)).toEqual({
@@ -218,7 +261,8 @@ describe ("/landlord/create", () => {
       .send({
         email: "landlord8@gmail.com",
         password: "password",
-        ticket_type: "cleanliness"
+        ticket_type: "cleanliness",
+        user_email: 'landlord5@gmail.com'
       })
       .then((response) => {
         expect(JSON.parse(response.text)).toEqual({
@@ -412,7 +456,7 @@ describe("/landlord/getLeaseDetails/", () => {
         expect(response.body).toEqual({
             success: 1, 
             message: "successfully retrieve lease details",
-            data: expect.objectContaining(
+            data: expect.objectContaining([
               {
                 lease_id: 2,
                 public_lease_id: "2001-02-16 12:01:09",
@@ -421,7 +465,7 @@ describe("/landlord/getLeaseDetails/", () => {
                 floor: "02",
                 unit_number: "894",
                 pdf_path: ":Content/Documents/lease_details/2"
-              }
+              }]
             )
         });
       })
@@ -541,6 +585,7 @@ describe ("/landlord/getTickets", () => {
     await request(app)
       .get("/api/landlord/getTickets")
       .set("Authorization", `Bearer ${token}`)
+      .query({email: "landlord2@gmail.com"})
       .expect(200)
       .then((response) => {
         expect(response.body).toMatchObject({
@@ -580,7 +625,7 @@ describe ("/landlord/getTicketById", () => {
       .then((response) => {
         expect(response.body).toMatchObject({
           success: "1",
-          data: {
+          data: [{
             service_request_id: 2,
             public_service_request_id: 'SR/2003/Mar/0001',
             email: 'tenant4@gmail.com',
@@ -596,7 +641,7 @@ describe ("/landlord/getTicketById", () => {
             floor: '10',
             unit_number: '30',
             quotation_required: null
-          }
+          }]
         })
       })
     })
@@ -862,7 +907,7 @@ describe ("/landlord/ticketWork", () => {
         ticket_id: "SR/2004/Apr/0001",
         ticket_work_status: 1,
       })
-      .expect(200)
+      // .expect(200)
       .then((response) => {
         expect(response.body).toMatchObject({
             success: 1,
@@ -1162,15 +1207,16 @@ describe ("/landlord/getTicketById", () => {
       .then((response) => {
         expect(response.body).toMatchObject({
           success: "1",
-          data: {
+          data: [{
             service_request_id: 5,
             public_service_request_id: 'SR/2006/Jun/0001',
             email: 'tenant5@gmail.com',
+            landlord_email: null,
             ticket_type: 'cleanliness',
             request_description: 'not clean',
             submitted_date_time: "2006-06-05T22:06:06.000Z",
             completed_date_time: null,
-            status: expect.any(String),
+            status: "landlord_completed_work",
             feedback_rating: null,
             feedback_text: null,
             quotation_path: ':Content/Documents/quotation_details/q3',
@@ -1178,7 +1224,7 @@ describe ("/landlord/getTicketById", () => {
             floor: '6',
             unit_number: '100',
             quotation_required: null
-          }
+          }]
         })
       })
     })

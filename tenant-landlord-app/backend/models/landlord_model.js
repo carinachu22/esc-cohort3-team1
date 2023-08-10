@@ -7,16 +7,11 @@ const statuses = ["tenant_ticket_created", "landlord_ticket_rejected", "landlord
  * @param {*} data email, password(unhashed), ticket_type
  * @param {*} callBack 
  */
-export const createLandlord = (data, callBack) => {
-  if (data.email && data.password && data.role) {
-    const email = data.email
-    const password = data.password
-    const role = data.role
-    const ticket_type = data.ticket_type
-    const public_building_id = data.public_building_id
+export const createLandlord = (email, password, ticket_type, public_building_id, role, callBack) => {
+  if (email && password && role) {
     pool.query(
       `SELECT * FROM landlord_user WHERE email = ?`,
-      [data.email],
+      [email],
       (error, results) => {
         if(error){
           callBack(error)

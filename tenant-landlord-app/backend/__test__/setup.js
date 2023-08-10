@@ -56,7 +56,7 @@ export default async function setup() {
                     ('landlord2@gmail.com',"${hash_password}", "FC", "horticulture", 'staff'),
                     ('landlord3@gmail.com',"${hash_password}", "CWP", "aircon", 'staff'),
                     ('landlord4@gmail.com',"${hash_password}", "EPM", "security", 'staff'),
-                    ('landlord5@gmail.com',"${hash_password}", "TM1", "cleanliness", 'staff');
+                    ('landlord5@gmail.com',"${hash_password}", "TM1", "cleanliness", 'supervisor');
         `);
 
         //        CREATE TEMPORARY TABLE admin_user table
