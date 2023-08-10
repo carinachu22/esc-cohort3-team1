@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/16</span>
+                <span class='fraction'>16/16</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/16</span>
+                <span class='fraction'>16/16</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -138,7 +138,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -152,27 +152,27 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import {
   controllerLoginTenant,
   controllerGetTickets,
@@ -193,7 +193,7 @@
 import express from "express";
 import { checkTenantToken } from "../auth/tenant_validation.js";
 &nbsp;
-const router = <span class="cstat-no" title="statement not covered" >express.Router();</span>
+const router = express.Router();
 &nbsp;
 /**
  * API CALLS
@@ -207,27 +207,27 @@ const router = <span class="cstat-no" title="statement not covered" >express.Rou
  * 8. Change Ticket Status to close
  */
 &nbsp;
-<span class="cstat-no" title="statement not covered" >router.post("/login", controllerLoginTenant);</span>
-<span class="cstat-no" title="statement not covered" >router.post("/forgot-password", controllerForgotPasswordTenant);</span>
-<span class="cstat-no" title="statement not covered" >router.post("/reset-password/:id/:jsontoken", controllerResetPasswordTenant);</span>
-<span class="cstat-no" title="statement not covered" >router.get("/reset-password/:id/:jsontoken", controllerResetPasswordPageTenant);</span>
+router.post("/login", controllerLoginTenant);
+router.post("/forgot-password", controllerForgotPasswordTenant);
+router.post("/reset-password/:id/:jsontoken", controllerResetPasswordTenant);
+router.get("/reset-password/:id/:jsontoken", controllerResetPasswordPageTenant);
 &nbsp;
-<span class="cstat-no" title="statement not covered" >router.get("/getLease", checkTenantToken, controllerGetLeaseByTenant);</span>
+router.get("/getLease", checkTenantToken, controllerGetLeaseByTenant);
 &nbsp;
-<span class="cstat-no" title="statement not covered" >router.get("/getQuotation/", checkTenantToken, controllerGetQuotation);</span>
+router.get("/getQuotation/", checkTenantToken, controllerGetQuotation);
 &nbsp;
-<span class="cstat-no" title="statement not covered" >router.post("/createTicket", checkTenantToken, controllerCreateTicket);</span>
-<span class="cstat-no" title="statement not covered" >router.patch("/quotationApproval/", checkTenantToken, controllerQuotationApproval);</span>
+router.post("/createTicket", checkTenantToken, controllerCreateTicket);
+router.patch("/quotationApproval/", checkTenantToken, controllerQuotationApproval);
 &nbsp;
-<span class="cstat-no" title="statement not covered" >router.get("/getTickets",checkTenantToken, controllerGetTickets);</span>
-<span class="cstat-no" title="statement not covered" >router.get("/getTicketById/", checkTenantToken, controllerGetTicketById);</span>
-<span class="cstat-no" title="statement not covered" >router.get("/getTicketsByStatus/:status",checkTenantToken, controllerGetTicketsByStatus);</span>
+router.get("/getTickets",checkTenantToken, controllerGetTickets);
+router.get("/getTicketById/", checkTenantToken, controllerGetTicketById);
+router.get("/getTicketsByStatus/:status",checkTenantToken, controllerGetTicketsByStatus);
 &nbsp;
-<span class="cstat-no" title="statement not covered" >router.patch("/addFeedbackRating/", checkTenantToken, controllerAddFeedbackRating);</span>
-<span class="cstat-no" title="statement not covered" >router.patch("/addFeedbackText/", checkTenantToken, controllerAddFeedbackText);</span>
-<span class="cstat-no" title="statement not covered" >router.patch("/closeTicketStatus/", checkTenantToken, controllerCloseTicketStatus);</span>
+router.patch("/addFeedbackRating/", checkTenantToken, controllerAddFeedbackRating);
+router.patch("/addFeedbackText/", checkTenantToken, controllerAddFeedbackText);
+router.patch("/closeTicketStatus/", checkTenantToken, controllerCloseTicketStatus);
 &nbsp;
-<span class="cstat-no" title="statement not covered" >router.patch("/rejectTicketWork/", checkTenantToken, controllerRejectTicketWork)</span>
+router.patch("/rejectTicketWork/", checkTenantToken, controllerRejectTicketWork)
 export default router;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -235,7 +235,7 @@ export default router;</pre></td></tr></table></pre>
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-08-10T06:24:35.061Z
+                at 2023-08-10T10:34:39.488Z
             </div>
         <script src="../prettify.js"></script>
         <script>

@@ -28,7 +28,7 @@ const LoginPage = () => {
   if (location.state != null) {
     role = location.state.role;
   }
-  console.log(role);
+  //console.log(role);
 
   const validate = (values) => {
     let errors = {};

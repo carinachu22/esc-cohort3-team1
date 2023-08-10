@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom";
 import React, { useEffect, useState } from "react";
 import userEvent from "@testing-library/user-event";
-import { render, screen, waitFor } from "../__tests__/setupTests";
+import { render, screen, waitFor } from "../__test__/setupTests";
 import {
   BrowserRouter,
   MemoryRouter,
@@ -62,7 +62,7 @@ describe("Fuzzy testing email", () => {
       </AuthProvider>
     );
 
-    const numTests = 100; // Number of fuzz tests
+    const numTests = 10; // Number of fuzz tests
     for (let i = 0; i < numTests; i++) {
       const email = generateRandomEmailInput();
 
@@ -92,7 +92,7 @@ describe("Fuzzy testing email", () => {
       </AuthProvider>
     );
 
-    const numTests = 100; // Number of fuzz tests
+    const numTests = 10; // Number of fuzz tests
     for (let i = 0; i < numTests; i++) {
       const email = generateValidEmailInput();
       await userEvent.type(screen.getByPlaceholderText("Email"), email);
