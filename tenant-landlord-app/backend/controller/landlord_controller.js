@@ -653,7 +653,7 @@ export const controllerGetTicketById = (req, res) => {
           } else {
             return res.json({
                 success: "1",
-                data: results,
+                data: results[0],
             });
         }
     });
@@ -812,7 +812,21 @@ export const controllerTicketApproval = (req, res) => {
     console.log(quotationRequired);
     const body = req.body;
     let status;
+    if (!id) {
+        return res.json({
+            success: 0,
+            message: "missing data entry!"
+        })
+    }
+    if (quotationRequired !== 0 && quotationRequired !== 1) {
+        console.log("data validation error")
+        return res.status(400).json({
+          success: 0,
+          message: "Data validation error"
+        })
+      }
     if (body.ticket_approved_by_landlord !== 0 && body.ticket_approved_by_landlord !== 1) {
+        console.log("data validation error")
         return res.status(400).json({
           success: 0,
           message: "Data validation error"

@@ -507,7 +507,7 @@ describe ("/tenant/getTicketById", () => {
         console.log(response.body)
         expect(response.body).toMatchObject({
           success: "1",
-          data: [{
+          data: {
             service_request_id: 1,
             public_service_request_id: 'SR/2002/Feb/0001',
             email: 'tenant1@gmail.com',
@@ -516,7 +516,7 @@ describe ("/tenant/getTicketById", () => {
             request_description: 'aircon warm',
             submitted_date_time: "2002-02-01T18:02:02.000Z",
             completed_date_time: null,
-            status: expect.any(String),
+            status: "ticket_quotation_rejected",
             feedback_rating: null,
             feedback_text: null,
             quotation_path: null,
@@ -524,7 +524,7 @@ describe ("/tenant/getTicketById", () => {
             floor: '9',
             unit_number: '154',
             quotation_required: null
-          }]
+          }
         })
       })
     })

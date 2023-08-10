@@ -520,7 +520,11 @@ export const getQuotationPath = (id, callBack) => {
  * @param {*} callBack 
  */
 export const ticketApproval = (id, quotationRequired, status, callBack) => {
-  if (id && status && (quotationRequired == 0 || quotationRequired == 1)) {
+  if (quotationRequired !== 0 && quotationRequired !== 1) {
+    callBack("missing data entry!")
+    return
+  }
+  if (id && status ) {
     if (statuses.includes(status)) {
       pool.query(
         `

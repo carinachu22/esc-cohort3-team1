@@ -192,7 +192,7 @@ describe("testing createLandlord() in landlord model", () => {
             ticket_type: 'cleanliness',
             role: 'supervisor'
         }
-        createLandlord(data, (err, results) => {
+        createLandlord(data.email, data.password, data.ticket_type, data.public_building_id, data.role, (err, results) => {
             if (err){
                 console.log("ERROR",err)
             }
@@ -208,7 +208,7 @@ describe("testing createLandlord() in landlord model", () => {
             ticket_type: 'cleanliness',
             role:'supervisor'
         }
-        createLandlord(data, (err, results) => {
+        createLandlord(data.email, data.password, data.ticket_type, data.public_building_id, data.role, (err, results) => {
             expect(err).toBe("missing data entry!");
             done();
         })
@@ -220,7 +220,7 @@ describe("testing createLandlord() in landlord model", () => {
             ticket_type: 'cleanliness',
             role: 'supervisor'
         }
-        createLandlord(data, (err, results) => {
+        createLandlord(data.email, data.password, data.ticket_type, data.public_building_id, data.role, (err, results) => {
             expect(err).toBe("missing data entry!");
             done();
         })
@@ -232,7 +232,7 @@ describe("testing createLandlord() in landlord model", () => {
             password: '$2b$10$BIJTkvtOrkrKhl/juVKCauVhPwqChMNbayD3DazrMBi6H6gsgVlrS',
             role: 'supervisor'
         }
-        createLandlord(data, (err, results) => {
+        createLandlord(data.email, data.password, data.ticket_type, data.public_building_id, data.role, (err, results) => {
             const rowsChanged = JSON.parse(JSON.stringify(results)).affectedRows
             expect(rowsChanged).toBe(1);
             done();
@@ -245,7 +245,7 @@ describe("testing createLandlord() in landlord model", () => {
             password: '$2b$10$BIJTkvtOrkrKhl/juVKCauVhPwqChMNbayD3DazrMBi6H6gsgVlrS',
             ticket_type: 'cleanliness',
         }
-        createLandlord(data, (err, results) => {
+        createLandlord(data.email, data.password, data.ticket_type, data.public_building_id, data.role, (err, results) => {
             expect(err).toBe("missing data entry!");
             done();
         })
@@ -258,7 +258,7 @@ describe("testing createLandlord() in landlord model", () => {
             ticket_type: 'horticuture',
             role: 'supervisor'
         }
-        createLandlord(data, (err, results) => {
+        createLandlord(data.email, data.password, data.ticket_type, data.public_building_id, data.role, (err, results) => {
             expect(err).toBe("landlord user already exists");
             done();
         })
@@ -339,7 +339,7 @@ describe("Testing deleteTenantByEmail() in landlord model", () => {
 describe("testing createTenant() in landlord model", () => {
     test ("Test calling createTenant() with valid values",(done) => {
         const data = {
-            email: 'tenant11@gmail.com',
+            email: 'tenant12@gmail.com',
             password: '$2b$10$BIJTkvtOrkrKhl/juVKCauVhPwqChMNbayD3DazrMBi6H6gsgVlrS',
             public_building_id: 'EPM'
         }
@@ -493,6 +493,7 @@ describe("Testing ticketApproval() in landlord model", () => {
             if (err){
                 console.log("ERROR",err)
             }
+            console.log(results)
             const rowsChanged = JSON.parse(JSON.stringify(results)).changedRows
             expect(rowsChanged).toBe(1);
             done();
@@ -596,7 +597,7 @@ describe("testing getTenantAccounts() in landlord model", () => {
             if (err){
                 console.log("ERROR",err)
             }
-            expect(results.length).toBe(2);
+            expect(results.length).toBe(3);
             done();
         })
     });

@@ -625,10 +625,11 @@ describe ("/landlord/getTicketById", () => {
       .then((response) => {
         expect(response.body).toMatchObject({
           success: "1",
-          data: [{
+          data: {
             service_request_id: 2,
             public_service_request_id: 'SR/2003/Mar/0001',
             email: 'tenant4@gmail.com',
+            landlord_email: null,
             ticket_type: 'aircon',
             request_description: 'aircon',
             submitted_date_time: "2003-03-02T19:03:03.000Z",
@@ -641,7 +642,7 @@ describe ("/landlord/getTicketById", () => {
             floor: '10',
             unit_number: '30',
             quotation_required: null
-          }]
+          }
         })
       })
     })
@@ -853,7 +854,7 @@ describe ("/landlord/ticketApproval", () => {
       .then((response) => {
         expect(response.body).toMatchObject({
             success: 0,
-            message: "missing data entry!"
+            message: "Data validation error"
           })
         })
   })
@@ -1193,71 +1194,6 @@ describe("/landlord/deleteTenantByEmail/", () => {
 })
 
 /**
- * Test tenant get ticket by id API
- */
-describe ("/landlord/getTicketById", () => {
-
-  test("valid ticket id", async () =>  {
-    const token = await authorisation()
-    await request(app)
-      .get("/api/landlord/getTicketById")
-      .set("Authorization", `Bearer ${token}`)
-      .query({ id: "SR/2006/Jun/0001" })
-      .expect(200)
-      .then((response) => {
-        expect(response.body).toMatchObject({
-          success: "1",
-          data: [{
-            service_request_id: 5,
-            public_service_request_id: 'SR/2006/Jun/0001',
-            email: 'tenant5@gmail.com',
-            landlord_email: null,
-            ticket_type: 'cleanliness',
-            request_description: 'not clean',
-            submitted_date_time: "2006-06-05T22:06:06.000Z",
-            completed_date_time: null,
-            status: "landlord_completed_work",
-            feedback_rating: null,
-            feedback_text: null,
-            quotation_path: ':Content/Documents/quotation_details/q3',
-            service_requestcol: null,
-            floor: '6',
-            unit_number: '100',
-            quotation_required: null
-          }]
-        })
-      })
-    })
-
-  test("invalid ticket id", async () =>  {
-    const token = await authorisation()
-    await request(app)
-      .get("/api/landlord/getTicketById")
-      .set("Authorization", `Bearer ${token}`)
-      .query({ id: "SR/9999/999/9999" })
-      .expect(200)
-      .then((response) => {
-        expect(response.body).toMatchObject({
-          success: 0,
-          message: "Record not found"
-        })
-      })
-  })
-
-  test("unauthorised landlord", async () => {
-    await request(app)
-      .get("/api/landlord/getTicketById")
-      .query({ id: "SR/2003/Mar/0001" })
-      .then((response) => {
-        expect(JSON.parse(response.text)).toEqual({
-            success: 0,
-            message: "Access denied: You are unauthorized!",
-          })
-        })
-  })
-})
-
-/**
  * Test tenant upload quotation API
  */
 describe("/landlord/uploadQuotation", () => {
@@ -1395,7 +1331,7 @@ describe("/landlord/getlease", () => {
     await request(app)
       .get(`/api/landlord/getLease`)
       .set("Authorization", `Bearer ${token}`)
-      .query({tenantID: 8})
+      .query({tenantID: 11})
       .expect("Content-Type", "application/pdf")
       .expect("Content-Disposition", "attachment; filename=file.pdf")
       .expect(200)
