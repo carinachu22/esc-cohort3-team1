@@ -20,8 +20,12 @@ app.use(express.urlencoded({ extended: true }));
 // app.use(upload.array());
 app.use(express.static("public"));
 
+// The commented line makes it so that it uses a new random port instead of always 5000
+// It fixes the address already in use error for jest, but for mocha it requires the specific 5000 port for the api calls to work
+// So, this is commented out for the time being because jest will work but mocha will not
+//app.listen((process.env.NODE_ENV === 'test' ? 0 : process.env.APP_PORT), () => {
 app.listen(process.env.APP_PORT, () => {
-  // console.log(`Server is working on PORT: `, process.env.APP_PORT);
+  //console.log(`Server is working on PORT: `, process.env.APP_PORT);
 });
 
 app.get("/api", (req, res) => {
