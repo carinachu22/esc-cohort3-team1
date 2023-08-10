@@ -9,7 +9,7 @@ import {
     getLandlordById,
     updateLandlordPassword,
     uploadQuotation,
-    getQuotation,
+    // getQuotation,
     getQuotationPath,
     ticketApproval,
     ticketWork,

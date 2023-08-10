@@ -12,7 +12,7 @@ import {
     getTicketById,
     getTenantUserId,
     getLeaseByTenant,
-    getQuotation,
+    // getQuotation,
     getQuotationPath,
     getLeaseByTenantEmail,
     rejectTicketWork
@@ -203,7 +203,7 @@ export const controllerCreateTicket = (req, res) => {
     const tenantEmail = req.body.email;
     console.log("tenantEmail", tenantEmail);
     console.log("req.body", body);
-    if ( !body.email || !body.request_type || !body.request_description || !body.submitted_date_time) {
+    if ( !body.email || !body.ticket_type || !body.request_description || !body.submitted_date_time) {
       return res.status(400).json({
         success: 0,
         message: "Incomplete data fields"
@@ -289,22 +289,41 @@ export const controllerGetTickets = (req, res) => {
  * @param {*} res 
  */
 export const controllerGetTicketsByStatus = (req, res) => {
-    const email = req.body.email;
-    const status = req.params.status;
-    getTicketsByStatus(email, status, (err,results) => {
-        if (err) {
-            console.log(err);
-            return res.status(500).json({
-                success: 0,
-                message: "Database connection error"
-            });
+  const email = req.body.email;
+  const status = req.params.status;
+  getTenantByEmail(email, (err,result) => {
+    if (err) {
+      console.log(err)
+      return res.status(500).json({
+        success: 0,
+        message: "Database connection error"
+      })
+    } else if (result.length === 0) {
+      return res.status(400).json({
+        success: 0,
+        message: "User not found"
+      })
+    } else {
+      getTicketsByStatus(email, status, (err,results) => {
+        if (err === "invalid status") {
+          return res.status(400).json({
+            success: 0,
+            message: `${err}`
+          });
+        } else if (err) {
+          return res.status(500).json({
+            success: 0,
+            message: "Database connection error"
+          });
         } else {
-            return res.json({
-                success: "1",
-                data: results,
-            });
+          return res.json({
+            success: "1",
+            data: results,
+          });
         }
-    });
+      });
+    }
+  })
 };
 
 export const controllerGetTicketById = (req, res) => {
@@ -314,7 +333,7 @@ export const controllerGetTicketById = (req, res) => {
             console.log(err);
             return;
         }
-        if (!results) {
+        if (results.length === 0) {
             return res.json({
                 success: 0,
                 message: "Record not found",
@@ -478,17 +497,20 @@ export const controllerCloseTicketStatus = (req, res) => {
     closeTicketStatus (id, status, (err,results) => {
         if (err) {
             console.log(err);
-            return;
+            return res.json({
+              success: 0,
+              message: err
+            });
         } 
-        if (!results) {
-            return res.json ({
-                success : 0,
-                message: "Failed to update user"
-            })
+        if (JSON.parse(JSON.stringify(results)).changedRows === 0) {
+          return res.status(400).json ({
+            success : 0,
+            message: "Failed to update status"
+          })
         } 
         return res.status(200).json({
             success: 1,
-            data: "updated sucessfully"
+            data: "updated successfully"
         })
     })
 }
@@ -546,36 +568,22 @@ export const controllerGetLeaseByTenant = (req,res) => {
         message: "tenant not registered."
       })
     } else {
-      tenantID = results[0].tenant_user_id;
-      getLeaseByTenant(tenantID, (err, results) => {
-        if (err) {
-            console.log(err)
-            return
-        } 
-        if (!results) {
-            return res.json({
-                success:0,
-                message: "tenant not registered."
-            })
-        } else {
-            tenantID = results.tenant_user_id;
-            // console.log(tenantID)
-            getLeaseByTenant(tenantID, (err, results) => {
-                if (err) {
-                    console.log(err);
-                    return res.status(500).json({
-                        success: 0,
-                        message: "Database connection error"
-                    });
-                } else {
-                    return res.status(200).json({
-                        success:1,
-                        data: results
-                    });
-                };
-            })
-        }
-    })
+        tenantID = results[0].tenant_user_id;
+        console.log(tenantID)
+        getLeaseByTenant(tenantID, (err, results) => {
+            if (err) {
+                console.log(err);
+                return res.status(500).json({
+                    success: 0,
+                    message: "Database connection error"
+                });
+            } else {
+                return res.status(200).json({
+                    success:1,
+                    data: results
+                });
+            };
+        })
     }
   })
 }
@@ -586,57 +594,38 @@ export const controllerGetQuotation = (req, res) => {
     return res.send("missing data entry!")
   }
   getQuotationPath(id, (err, results) => {
-    if (err) {
-      return;
-    }
-    if (results.length === 0) {
-      return res.json({
-        success: 0,
-        message: "service ticket not found",
-      });
-    } else {
-      var filepath = results[0].quotation_path;
-      if (filepath == null){
-        res.send("No quotation uploaded yet!")
-        return
-
-      }
-      fs.readFile(filepath, (err, data) => {
-        if (err) {
-          console.error(err);
-          res.status(500).send("Internal Server Error");
+      if (err) {
+          console.log(err);
           return;
-        }
-        if (!results) {
-            return res.json({
-                success: 0,
-                message: "service ticket not found",
-            });
-        } else {
-            var filepath = results.quotation_path;
-            console.log(filepath);
-            if (filepath == null){
-                res.send("No quotation uploaded yet!")
-                return
-            }
-            fs.readFile(filepath, (err, data) => {
-                if (err) {
-                    console.log('error')
-                    console.error(err);
-                    res.status(500).send("Internal Server Error");
-                    return;
-                }
-                // Set headers for the response
-                res.setHeader("Content-Type", "application/pdf");
-                res.setHeader("Content-Disposition", "attachment; filename=file.pdf");
-                // Send the PDF file data as the response
-                res.send(data);
-            });
-            if (err){
-                return console.log(err);
-            }
-        }
-    });
-  };
-  })
-}
+      }
+      if (results.length === 0) {
+        return res.json({
+          success: 0,
+          message: "service ticket not found",
+        });
+      } else {
+          var filepath = results[0].quotation_path;
+          console.log(filepath);
+          if (filepath == null){
+              res.send("No quotation uploaded yet!")
+              return
+          }
+          fs.readFile(filepath, (err, data) => {
+              if (err) {
+                  console.log('error')
+                  console.error(err);
+                  res.status(500).send("Internal Server Error");
+                  return;
+              }
+              // Set headers for the response
+              res.setHeader("Content-Type", "application/pdf");
+              res.setHeader("Content-Disposition", "attachment; filename=file.pdf");
+              // Send the PDF file data as the response
+              res.send(data);
+          });
+          if (err){
+              return console.log(err);
+          }
+      }
+  });
+};

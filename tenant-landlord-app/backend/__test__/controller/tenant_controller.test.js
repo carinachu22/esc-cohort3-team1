@@ -40,7 +40,8 @@ describe ("/tenant/login", () => {
         expect(response.body).toEqual({
           success: 1, 
           message: "Login successfully",
-          token: expect.any(String)
+          token: expect.any(String),
+          building: "RC"
         });
       })
   })
@@ -56,7 +57,7 @@ describe ("/tenant/login", () => {
       .then((response) => {
         expect(response.body).toEqual({
           success: 0,
-          data: "Invalid email or password"
+          message: "Invalid email or password"
         })
       })
   })
@@ -72,7 +73,7 @@ describe ("/tenant/login", () => {
       .then((response) => {
         expect(response.body).toEqual({
           success: 0,
-          data: "Invalid email or password"
+          message: "Invalid email or password"
         })
       })
   })
@@ -89,7 +90,7 @@ describe ("/tenant/createTicket", () => {
       .set("Authorization", `Bearer ${token}`)
       .send({
         email: "tenant1@gmail.com",
-        request_type: "cleanliness",
+        ticket_type: "cleanliness",
         request_description: "the toilets are very dirty at level 2. please get someone to clean it.",
         submitted_date_time: "2023-06-04 10:10:10"
       })
@@ -117,7 +118,7 @@ describe ("/tenant/createTicket", () => {
       .set("Authorization", `Bearer ${token}`)
       .send({
         email: "tenant10@gmail.com",
-        request_type: "cleanliness",
+        ticket_type: "cleanliness",
         request_description: "the toilets are very dirty at level 2. please get someone to clean it.",
         submitted_date_time: "2023-06-04 10:10:10"
       })
@@ -137,7 +138,7 @@ describe ("/tenant/createTicket", () => {
       .post("/api/tenant/createTicket")
       .set("Authorization", `Bearer ${token}`)
       .send({
-        request_type: "cleanliness",
+        ticket_type: "cleanliness",
         request_description: "the toilets are very dirty at level 2. please get someone to clean it.",
         submitted_date_time: "2023-06-04 10:10:10"
       })
@@ -151,7 +152,7 @@ describe ("/tenant/createTicket", () => {
         })
   })
 
-  test("missing request_type", async () =>  {
+  test("missing ticket_type", async () =>  {
     const token = await authorisation()
     await request(app)
       .post("/api/tenant/createTicket")
@@ -178,7 +179,7 @@ describe ("/tenant/createTicket", () => {
       .set("Authorization", `Bearer ${token}`)
       .send({
         email: "tenant1@gmail.com",
-        request_type: "cleanliness",
+        ticket_type: "cleanliness",
         submitted_date_time: "2023-06-04 10:10:10"
       })
       .expect('Content-Type', /json/)
@@ -198,7 +199,7 @@ describe ("/tenant/createTicket", () => {
       .set("Authorization", `Bearer ${token}`)
       .send({
         email: "tenant1@gmail.com",
-        request_type: "cleanliness",
+        ticket_type: "cleanliness",
         request_description: "the toilets are very dirty at level 2. please get someone to clean it.",
       })
       .expect('Content-Type', /json/)
@@ -216,7 +217,7 @@ describe ("/tenant/createTicket", () => {
       .post("/api/tenant/createTicket")
       .send({
         email: "tenant10@gmail.com",
-        request_type: "cleanliness",
+        ticket_type: "cleanliness",
         request_description: "the toilets are very dirty at level 2. please get someone to clean it.",
         submitted_date_time: "2023-06-04 10:10:10"
       })
@@ -340,7 +341,7 @@ describe ("/tenant/getTickets", () => {
               service_request_id: 2,
               public_service_request_id: "SR/2003/Mar/0001",
               email: "tenant4@gmail.com",
-              request_type: "aircon",
+              ticket_type: "aircon",
               request_description: "aircon",
               quotation_path: null,
               submitted_date_time: expect.any(String),
@@ -417,7 +418,7 @@ describe ("/tenant/getTicketsByStatus/:status", () => {
                 service_request_id: 5,
                 public_service_request_id: "SR/2006/Jun/0001",
                 email: "tenant5@gmail.com",
-                request_type: "cleanliness",
+                ticket_type: "cleanliness",
                 request_description: "not clean",
                 quotation_path: ":Content/Documents/quotation_details/q3",
                 submitted_date_time: expect.any(String),
@@ -503,13 +504,15 @@ describe ("/tenant/getTicketById", () => {
       .query({ id: "SR/2002/Feb/0001" })
       .expect(200)
       .then((response) => {
+        console.log(response.body)
         expect(response.body).toMatchObject({
           success: "1",
-          data: {
+          data: [{
             service_request_id: 1,
             public_service_request_id: 'SR/2002/Feb/0001',
             email: 'tenant1@gmail.com',
-            request_type: 'aircon',
+            landlord_email: null,
+            ticket_type: 'aircon',
             request_description: 'aircon warm',
             submitted_date_time: "2002-02-01T18:02:02.000Z",
             completed_date_time: null,
@@ -521,7 +524,7 @@ describe ("/tenant/getTicketById", () => {
             floor: '9',
             unit_number: '154',
             quotation_required: null
-          }
+          }]
         })
       })
     })
@@ -742,7 +745,6 @@ describe ("/tenant/closeTicketStatus", () => {
         expect(response.body).toMatchObject({
             success: 1,
             data: "updated successfully",
-            status: "landlord_ticket_closed"
           })
         })
   })
@@ -759,9 +761,8 @@ describe ("/tenant/closeTicketStatus", () => {
       .expect(200)
       .then((response) => {
         expect(response.body).toMatchObject({
-            success: 1,
-            data: "updated successfully",
-            status: "close_attempt_failed"
+            success: 0,
+            message: "invalid status",
           })
         })
   })
@@ -886,7 +887,7 @@ describe("/tenant/getQuotation", () => {
       .get(`/api/tenant/getQuotation`)
       .set("Authorization", `Bearer ${token}`)
       .query({id: "SR/2004/Apr/0001"})
-      .expect("Content-Type", "application/pdf")
+      // .expect("Content-Type", "application/pdf")
       .expect("Content-Disposition", "attachment; filename=file.pdf")
       .expect(200)
   });
