@@ -18,6 +18,7 @@ git clone https://github.com/Purritzo/esc-cohort3-team1.git
 Next, prepare `.env` inside backend folder and tenant-landlord-app (for testing)
 
 Finally, run `npm start` in backend
+
 run `npm start` in tenant-landlord-app
 
 The application should be accessible through http://localhost:3000/ now
