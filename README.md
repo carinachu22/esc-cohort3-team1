@@ -37,20 +37,35 @@ run `npm test` in tenant-landlord-app
 ## .env properties
 
 APP_PORT - Port that the backend runs on, for example '5000'
+
 DB_PORT - Port that the database runs on, for example '3306'
+
 DB_HOST - IP that the database is hosted, for example "127.0.0.1"
+
 DB_USER - Username to login to database, for example "root"
+
 DB_PASSWORD - Password to login to database
+
 DB_MYSQL - Name of schema to use, for example  'landlord_tenant_portal'
 
+
 JWT_SECRET - Any secret key that only the app knows, to generate reset password links 
+
 AUTH_USER - Email that will send out reset password links
+
 AUTH_PASSWORD - Third party password to login to the above email
 
+
 These properties are required for running npm test.
+
 DB_TESTPORT = '3306'
+
 DB_TESTHOST = '127.0.0.1'
+
 DB_TESTUSER = 'root'
+
 DB_TESTPASSWORD
+
 DB_TESTMYSQL = 'testing_landlord_tenant_portal'
+
 
