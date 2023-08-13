@@ -25,7 +25,7 @@ The application should be accessible through http://localhost:3000/ now <br>
 
 ## Testing
 Have a `quotation.pdf` and a `lease.pdf` as a test pdf file <br>
-run `npm run test-launch` in backend instead of `npm start` <br>
+Stop any running backend and run `npm run test-launch` in backend instead of `npm start` <br>
 run `npm test` in tenant-landlord-app
 
 ## .env properties
