@@ -24,8 +24,7 @@ run `npm start` in tenant-landlord-app <br>
 The application should be accessible through http://localhost:3000/ now <br>
 
 ## Testing
-Create a new MySQL schema named `testing_landlord_tenant_portal` <br>
-Have this schema be a copy of `landlord_tenant_portal` <br>
+Have a `quotation.pdf` and a `lease.pdf` as a test pdf file <br>
 run `npm run test-launch` in backend instead of `npm start` <br>
 run `npm test` in tenant-landlord-app
 
