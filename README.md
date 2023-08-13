@@ -24,4 +24,5 @@ The application should be accessible through http://localhost:3000/ now
 
 ## Testing
 run `npm run test-launch` in backend instead of `npm start`
+
 run `npm test` in tenant-landlord-app
