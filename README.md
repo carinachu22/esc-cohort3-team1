@@ -15,7 +15,8 @@ git clone https://github.com/Purritzo/esc-cohort3-team1.git
 2. backend
 3. endtoend_test
 
-Import MySQL tables into `landlord_tenant_portal` schema <br>
+Create 2 MySQL schemas `landlord_tenant_portal` and `testing_landlord_tenant_portal` <br>
+Import MySQL tables into `landlord_tenant_portal` and `testing_landlord_tenant_portal` schemas <br>
 Link: https://drive.google.com/file/d/1-E6-4RjQT3LWA-GsjMCXmqcBcCNo6M5d/view?usp=sharing <br>
 Next, prepare `.env` inside backend folder and tenant-landlord-app (for testing) <br> 
 Finally, run `npm start` in backend <br>
