@@ -1,6 +1,4 @@
 # esc-cohort3-team1
-## Github How-To
-
 ### Collaborating
 
 First, clone the repository using `git clone`   
